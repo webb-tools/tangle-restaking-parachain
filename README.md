@@ -1,81 +1,87 @@
-# Extended Parachain Template
+<div align="center">
+<a href="https://www.tangle.tools/">
+    
+![Alt text](<assets/Tangle dApp OG.png>)
+  </a>
+  </div>
+<h1 align="left"> The Tangle Network </h1>
+<p align="left">
+    <strong>An parachain for restaking for the DOT ecosystem. </strong>
+</p>
 
-[![Check Build](https://github.com/paritytech/extended-parachain-template/actions/workflows/build.yml/badge.svg)](https://github.com/paritytech/extended-parachain-template/actions/workflows/build.yml)
+<div align="left" >
 
+[![Twitter](https://img.shields.io/twitter/follow/webbprotocol.svg?style=flat-square&label=Twitter&color=1DA1F2)](https://twitter.com/intent/user?screen_name=tangle_network)
+[![Telegram](https://img.shields.io/badge/Telegram-gray?logo=telegram)](https://t.me/webbprotocol)
+[![Discord](https://img.shields.io/discord/833784453251596298.svg?style=flat-square&label=Discord&logo=discord)](https://discord.gg/cv8EfJu3Tn)
 
-The **Extended Parachain Template** is a ready-to-use parachain template, pre-configured with the [Assets](https://paritytech.github.io/substrate/master/pallet_assets/index.html) pallet, a simple Governance system ([Collective](https://paritytech.github.io/substrate/master/pallet_collective/index.html) & [Motion](https://github.com/paritytech/extended-parachain-template/tree/main/pallets/motion) pallets), and other useful base features.
+</div>
 
-This is a solid starting point for most Parachain projects as it is a more feature-rich alternative to the base [Substrate Parachain Template](https://github.com/substrate-developer-hub/substrate-parachain-template) (which it is derived from).
+<!-- TABLE OF CONTENTS -->
+<h2 id="table-of-contents"> Table of Contents</h2>
 
-This template is maintained by the **Delivery Services** team at **Parity**.
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ul>
+    <li><a href="#start"> Getting Started</a></li>
+    <li><a href="#prerequisites">Prerequisites</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+    <li><a href="#contribute">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+  </ul>  
+</details>
 
-## 🚀 Getting Started
+<h1 id="start"> Getting Started </h1>
+Tangle's Restaking Parachain is a Polkadot parachain node specifically designed for restaking and staking assets within the DOT ecosystem. Its primary function is to secure Tangle's Multi-Party Computation (MPC) and offchain compute infrastructure, providing a robust and secure platform for operations within the Tangle Network.
 
-### 🦀 Rust Setup
+If you would like to familiarize yourself with Tangle Network check out following repo and docs:
 
-First, complete the [basic Rust setup instructions](./docs/rust-setup.md).
+- [Webb Gadgets](https://github.com/webb-tools/gadgets)
+- [Tangle Docs](https://docs.tangle.tools/docs)
+- [Tangle Website](https://tangle.tools/)
 
-### 🔧 Build
+<h2 id="prerequisites"> Prerequisites</h2>
 
-Clone the extended parachain template repository: 
+This guide uses <https://rustup.rs> installer and the `rustup` tool to manage the Rust toolchain.
 
-```sh
-git clone https://github.com/paritytech/extended-parachain-template
+First install and configure `rustup`:
+
+```bash
+# Install
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# Configure
+source ~/.cargo/env
 ```
 
-Use the following command to build the node without launching it:
+### Installation
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/webb-tools/tangle-restaking-parachain.git
+   ```
+2. Compile the node:
+   ```sh
+   cargo build --release
+   ```
 
-```sh
-cargo build --release
+<h2 id="troubleshooting"> Troubleshooting </h2>
+
+The linking phase may fail due to not finding libgmp (i.e., "could not find library -lgmp") when building on apple silicon. To fix this problem, run:
+
+```bash
+brew install gmp
+# make sure to run the commands below each time when starting a new env, or, append them to .zshrc
+export LIBRARY_PATH=$LIBRARY_PATH:/opt/homebrew/lib
+export INCLUDE_PATH=$INCLUDE_PATH:/opt/homebrew/include
 ```
 
-### 🕸️ Run a local network 
-Next you will need a compatible release of [Polkadot](https://github.com/paritytech/polkadot-sdk) to run a testnet. You may also want to use [Zombienet (available for Linux and MacOS)](https://github.com/paritytech/zombienet/releases) for spinning up a testnet: 
+<h2 id="contribute"> Contributing </h2>
 
+Interested in contributing to the Tangle Network? Thank you so much for your interest! We are always appreciative for contributions from the open-source community!
 
-You can find linux and macOS executables of the Zombienet CLI here:
+If you have a contribution in mind, please check out our [Contribution Guide](./.github/CONTRIBUTING.md) for information on how to do so. We are excited for your first contribution!
 
-https://github.com/paritytech/zombienet/releases
-Download the Zombienet CLI according to your operating system.
+<h2 id="license"> License </h2>
 
-Tip: If you want the executable to be available system-wide then you can follow these steps (otherwise just download the executable to your working directory):
-```sh
-wget https://github.com/paritytech/zombienet/releases/download/v1.3.30/zombienet-macos
-chmod +x zombienet-macos 
-cp zombienet-macos /usr/local/bin
-```
-Make sure Zombienet CLI is installed correctly:
-```sh
-./zombienet-macos --help
-```
-You should see some similar output:
-```sh
-Usage: zombienet [options] [command]
+Licensed under <a href="LICENSE">GNU General Public License v3.0</a>.
 
-Options:
-  -c, --spawn-concurrency <concurrency>  Number of concurrent spawning process to launch, default is 1
-  -p, --provider <provider>              Override provider to use (choices: "podman", "kubernetes", "native")
-  -m, --monitor                          Start as monitor, do not auto cleanup network
-  -h, --help                             display help for command
-
-Commands:
-  spawn <networkConfig> [creds]          Spawn the network defined in the config
-  test <testFile> [runningNetworkSpec]   Run tests on the network defined
-  setup <binaries...>                    Setup is meant for downloading and making dev environment of Zombienet ready
-  version                                Prints zombienet version
-  help [command]                         display help for command
-
-```
-You may use a reference implementation from the folder `zombienet-config` or make your own. More instructions here: [Simulate parachains in a test network
-](https://docs.substrate.io/test/simulate-parachains/)
-
-👉 Learn more about parachains [here](https://wiki.polkadot.network/docs/learn-parachains), and
-parathreads [here](https://wiki.polkadot.network/docs/learn-parathreads).
-
-
-🧙 Learn about how to use this template and run your own parachain testnet for it in the
-[Devhub Cumulus Tutorial](https://docs.substrate.io/tutorials/v3/cumulus/start-relay/).
-
- ## 🏛 Governance
-
- Parachain governance is a very crucial topic that goes beyond using `sudo` for privileged calls. [Read our Governance Explainer here](./docs/governance.md)
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this crate by you, as defined in the GNU General Public License v3.0 license, shall be licensed as above, without any additional terms or conditions.
