@@ -52,7 +52,6 @@ pallet-utility = { workspace = true, default-features = false }
 pallet-message-queue = { workspace = true, default-features = false }
 pallet-multisig = { workspace = true, default-features = false }
 pallet-preimage = { workspace = true, default-features = false }
-pallet-safe-mode = { workspace = true, default-features = false }
 pallet-tx-pause = { workspace = true, default-features = false }
 sp-api = { workspace = true, default-features = false }
 sp-block-builder = { workspace = true, default-features = false }
@@ -76,12 +75,10 @@ xcm-builder = { workspace = true, default-features = false }
 xcm-executor = { workspace = true, default-features = false }
 
 # Cumulus
-assets-common = { workspace = true, default-features = false }
 cumulus-pallet-aura-ext = { workspace = true, default-features = false }
 cumulus-pallet-parachain-system = { workspace = true, default-features = false, features = [
   "parameterized-consensus-hook",
 ] }
-cumulus-pallet-session-benchmarking = { workspace = true, default-features = false }
 cumulus-pallet-xcm = { workspace = true, default-features = false }
 cumulus-pallet-xcmp-queue = { workspace = true, default-features = false }
 cumulus-primitives-core = { workspace = true, default-features = false }
@@ -98,7 +95,6 @@ std = [
   "parity-scale-codec/std",
   "log/std",
   "scale-info/std",
-  "assets-common/std",
   "cumulus-pallet-aura-ext/std",
   "pallet-message-queue/std",
   "cumulus-pallet-parachain-system/std",
@@ -128,7 +124,6 @@ std = [
   "pallet-transaction-payment/std",
   "pallet-utility/std",
   "pallet-xcm/std",
-  "pallet-safe-mode/std",
   "pallet-tx-pause/std",
   "parachain-info/std",
   "parachains-common/std",
@@ -155,7 +150,6 @@ std = [
 runtime-benchmarks = [
   "hex-literal",
   "frame-benchmarking/runtime-benchmarks",
-  "assets-common/runtime-benchmarks",
   "frame-support/runtime-benchmarks",
   "frame-system-benchmarking/runtime-benchmarks",
   "frame-system/runtime-benchmarks",
@@ -171,11 +165,9 @@ runtime-benchmarks = [
   "pallet-timestamp/runtime-benchmarks",
   "pallet-utility/runtime-benchmarks",
   "pallet-xcm/runtime-benchmarks",
-  "pallet-safe-mode/runtime-benchmarks",
   "pallet-tx-pause/runtime-benchmarks",
   "sp-runtime/runtime-benchmarks",
   "xcm-builder/runtime-benchmarks",
-  "cumulus-pallet-session-benchmarking/runtime-benchmarks",
   "cumulus-pallet-xcmp-queue/runtime-benchmarks",
   "parachains-common/runtime-benchmarks",
 ]
@@ -205,7 +197,6 @@ try-runtime = [
   "pallet-transaction-payment/try-runtime",
   "pallet-utility/try-runtime",
   "pallet-xcm/try-runtime",
-  "pallet-safe-mode/try-runtime",
   "pallet-tx-pause/try-runtime",
   "parachain-info/try-runtime",
 ]
