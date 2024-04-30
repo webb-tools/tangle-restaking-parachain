@@ -16,14 +16,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#[cfg(feature = "std")]
-fn main() {
-	substrate_wasm_builder::WasmBuilder::new()
-		.with_current_project()
-		.export_heap_base()
-		.import_memory()
-		.build()
-}
+pub mod referenda;
 
-#[cfg(not(feature = "std"))]
-fn main() {}
+use super::*;
+pub use bifrost_runtime_common::dollar;
+pub mod fellowship;
+mod origins;
+pub use origins::{
+	custom_origins, CoreAdmin, Fellows, FellowshipAdmin, FellowshipExperts, FellowshipInitiates,
+	FellowshipMasters, LiquidStaking, ReferendumCanceller, ReferendumKiller, SALPAdmin, TechAdmin,
+	WhitelistedCaller, *,
+};
+mod tracks;
+pub use tracks::TracksInfo;
+
+pub type CoreAdminOrCouncil = EitherOfDiverse<
+	CoreAdmin,
+	EitherOfDiverse<MoreThanHalfCouncil, EnsureRootOrAllTechnicalCommittee>,
+>;
+
+pub type TechAdminOrCouncil = EitherOfDiverse<
+	TechAdmin,
+	EitherOfDiverse<MoreThanHalfCouncil, EnsureRootOrAllTechnicalCommittee>,
+>;
