@@ -29,7 +29,6 @@ use sp_runtime::{
 	FixedU128, MultiSignature, OpaqueExtrinsic, Permill,
 };
 use xcm::v3::prelude::*;
-use xcm_executor::traits::{AssetTransferError, TransferType, XcmAssetTransfers};
 
 pub mod currency;
 mod salp;
@@ -310,19 +309,6 @@ impl<Call> ExecuteXcm<Call> for DoNothingExecuteXcm {
 	}
 }
 
-impl XcmAssetTransfers for DoNothingExecuteXcm {
-	type IsReserve = ();
-	type IsTeleporter = ();
-	type AssetTransactor = ();
-
-	fn determine_for(
-		_asset: &MultiAsset,
-		_dest: &MultiLocation,
-	) -> Result<TransferType, AssetTransferError> {
-		Ok(TransferType::DestinationReserve)
-	}
-}
-
 #[derive(Encode, Decode, Eq, PartialEq, Copy, Clone, RuntimeDebug, TypeInfo)]
 pub enum XcmOperationType {
 	// SALP operations
@@ -350,7 +336,6 @@ pub enum XcmOperationType {
 	Vote,
 	RemoveVote,
 	Any,
-	SupplementaryFee,
 }
 
 pub struct ExtraFeeInfo {
