@@ -23,10 +23,8 @@ bifrost-cli              = { path = "node/cli" }
 bifrost-farming-rpc      = { path = "pallets/farming/rpc" }
 bifrost-flexible-fee-rpc = { path = "pallets/flexible-fee/rpc" }
 bifrost-rpc              = { path = "node/rpc" }
-bifrost-salp-rpc         = { path = "pallets/salp/rpc" }
 bifrost-stable-pool-rpc  = { path = "pallets/stable-pool/rpc" }
 bifrost-ve-minting-rpc   = { path = "pallets/ve-minting/rpc" }
-lend-market-rpc          = { path = "pallets/lend-market/rpc" }
 
 devnet-runtime = { path = "runtime/devnet" }
 mainnet-runtime = { path = "runtime/mainnet" }
@@ -44,8 +42,6 @@ bifrost-fee-share                    = { path = "pallets/fee-share", default-fea
 bifrost-flexible-fee                 = { path = "pallets/flexible-fee", default-features = false }
 bifrost-flexible-fee-rpc-runtime-api = { path = "pallets/flexible-fee/rpc/runtime-api", default-features = false }
 bifrost-primitives                   = { path = "primitives" , default-features = false }
-bifrost-salp                         = { path = "pallets/salp", default-features = false }
-bifrost-salp-rpc-runtime-api         = { path = "pallets/salp/rpc/runtime-api", default-features = false }
 bifrost-service                      = { path = "node/service", default-features = false }
 bifrost-slp                          = { path = "pallets/slp", default-features = false }
 bifrost-stable-asset                 = { path = "pallets/stable-asset", default-features = false }
@@ -53,20 +49,11 @@ bifrost-stable-pool                  = { path = "pallets/stable-pool", default-f
 bifrost-stable-pool-rpc-runtime-api  = { path = "pallets/stable-pool/rpc/runtime-api", default-features = false }
 bifrost-system-maker                 = { path = "pallets/system-maker", default-features = false }
 bifrost-system-staking               = { path = "pallets/system-staking", default-features = false }
-bifrost-token-issuer                 = { path = "pallets/token-issuer", default-features = false }
 bifrost-ve-minting                   = { path = "pallets/ve-minting", default-features = false }
 bifrost-ve-minting-rpc-runtime-api   = { path = "pallets/ve-minting/rpc/runtime-api", default-features = false }
-bifrost-vesting                      = { path = "pallets/vesting", default-features = false }
-bifrost-vsbond-auction               = { path = "pallets/vsbond-auction", default-features = false }
-bifrost-vstoken-conversion           = { path = "pallets/vstoken-conversion", default-features = false }
 bifrost-vtoken-minting               = { path = "pallets/vtoken-minting", default-features = false }
-bifrost-vtoken-voting                = { path = "pallets/vtoken-voting", default-features = false }
 bifrost-xcm-interface                = { path = "pallets/xcm-interface", default-features = false }
-lend-market                          = { path = "pallets/lend-market", default-features = false }
-lend-market-rpc-runtime-api          = { path = "pallets/lend-market/rpc/runtime-api", default-features = false }
-pallet-prices                        = { path = "pallets/prices", default-features = false }
 pallet-traits                        = { path = "pallets/traits", default-features = false }
-leverage-staking                     = { path = "pallets/leverage-staking", default-features = false }
 bifrost-channel-commission			 = { path = "pallets/channel-commission", default-features = false }
 
 # Zenlink

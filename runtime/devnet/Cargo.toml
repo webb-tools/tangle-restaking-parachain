@@ -1,7 +1,6 @@
 [package]
-name = "bifrost-kusama-runtime"
+name = "devnet-runtime"
 version = "0.8.0"
-authors = ["Edwin Wang <lark930@gmail.com>"]
 edition = "2021"
 build = "build.rs"
 
@@ -113,23 +112,11 @@ bifrost-asset-registry = { workspace = true }
 bifrost-currencies = { workspace = true }
 bifrost-primitives = { workspace = true }
 runtime-common = { workspace = true }
-bifrost-salp = { workspace = true }
-bifrost-salp-rpc-runtime-api = { workspace = true }
 bifrost-slp = { workspace = true }
 bifrost-stable-pool = { workspace = true }
 bifrost-stable-pool-rpc-runtime-api = { workspace = true }
-bifrost-token-issuer = { workspace = true }
-bifrost-vesting = { workspace = true }
-bifrost-vsbond-auction = { workspace = true }
-bifrost-vstoken-conversion = { workspace = true }
 bifrost-vtoken-minting = { workspace = true }
-bifrost-vtoken-voting = { workspace = true, features = [ "kusama" ] }
 bifrost-xcm-interface = { workspace = true }
-lend-market = { workspace = true }
-lend-market-rpc-runtime-api = { workspace = true }
-pallet-prices = { workspace = true }
-leverage-staking = { workspace = true }
-bifrost-channel-commission = { workspace = true }
 
 [build-dependencies]
 substrate-wasm-builder = { workspace = true, optional = true }
@@ -224,24 +211,12 @@ std = [
 	"bifrost-primitives/std",
 	"bifrost-asset-registry/std",
 	"runtime-common/std",
-	"bifrost-salp-rpc-runtime-api/std",
-	"bifrost-salp/std",
 	"bifrost-slp/std",
 	"bifrost-stable-pool-rpc-runtime-api/std",
 	"bifrost-stable-pool/std",
-	"bifrost-token-issuer/std",
-	"bifrost-vesting/std",
-	"bifrost-vsbond-auction/std",
-	"bifrost-vstoken-conversion/std",
 	"bifrost-vtoken-minting/std",
-	"bifrost-vtoken-voting/std",
-	"lend-market/std",
-	"lend-market-rpc-runtime-api/std",
-	"pallet-prices/std",
-	"leverage-staking/std",
 	"bifrost-stable-asset/std",
 	"bifrost-xcm-interface/std",
-	"bifrost-channel-commission/std",
 
 	"substrate-wasm-builder"
 ]
@@ -264,32 +239,17 @@ runtime-benchmarks = [
 	"pallet-timestamp/runtime-benchmarks",
 	"pallet-treasury/runtime-benchmarks",
 	"pallet-utility/runtime-benchmarks",
-	"bifrost-vesting/runtime-benchmarks",
 	"pallet-xcm/runtime-benchmarks",
 	"pallet-tips/runtime-benchmarks",
 	"pallet-elections-phragmen/runtime-benchmarks",
 	"pallet-whitelist/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
 	"xcm-builder/runtime-benchmarks",
-	"bifrost-salp/runtime-benchmarks",
-	"bifrost-vsbond-auction/runtime-benchmarks",
-	"bifrost-token-issuer/runtime-benchmarks",
-	"bifrost-call-switchgear/runtime-benchmarks",
 	"bifrost-vtoken-minting/runtime-benchmarks",
-	"bifrost-farming/runtime-benchmarks",
-	"bifrost-system-staking/runtime-benchmarks",
-	"bifrost-system-maker/runtime-benchmarks",
-	"bifrost-vstoken-conversion/runtime-benchmarks",
 	"bifrost-slp/runtime-benchmarks",
 	"bifrost-asset-registry/runtime-benchmarks",
 	"sp-api/disable-logging",
-	"bifrost-cross-in-out/runtime-benchmarks",
-	"bifrost-fee-share/runtime-benchmarks",
 	"bifrost-stable-pool/runtime-benchmarks",
-	"bifrost-vtoken-voting/runtime-benchmarks",
-	"lend-market/runtime-benchmarks",
-	"leverage-staking/runtime-benchmarks",
-	"bifrost-channel-commission/runtime-benchmarks",
 ]
 
 try-runtime = [
@@ -323,7 +283,6 @@ try-runtime = [
 	"pallet-identity/try-runtime",
 	"pallet-ranked-collective/try-runtime",
 	"pallet-referenda/try-runtime",
-	"bifrost-vesting/try-runtime",
 	"pallet-treasury/try-runtime",
 	"pallet-bounties/try-runtime",
 	"pallet-tips/try-runtime",
@@ -339,27 +298,12 @@ try-runtime = [
 	"merkle-distributor/try-runtime",
 	"zenlink-stable-amm/try-runtime",
 	"zenlink-swap-router/try-runtime",
-	"bifrost-flexible-fee/try-runtime",
-	"bifrost-salp/try-runtime",
-	"bifrost-token-issuer/try-runtime",
-	"bifrost-vsbond-auction/try-runtime",
 	"bifrost-asset-registry/try-runtime",
 	"bifrost-vtoken-minting/try-runtime",
 	"bifrost-slp/try-runtime",
 	"bifrost-xcm-interface/try-runtime",
-	"bifrost-vstoken-conversion/try-runtime",
-	"bifrost-farming/try-runtime",
-	"bifrost-system-staking/try-runtime",
-	"bifrost-system-maker/try-runtime",
-	"bifrost-fee-share/try-runtime",
-	"bifrost-cross-in-out/try-runtime",
 	"bifrost-stable-asset/try-runtime",
 	"bifrost-stable-pool/try-runtime",
-	"lend-market/try-runtime",
-	"pallet-prices/try-runtime",
-	"bifrost-vtoken-voting/try-runtime",
-	"leverage-staking/try-runtime",
-	"bifrost-channel-commission/try-runtime",
 ]
 
 # When enabled, the runtime API will not be build.
