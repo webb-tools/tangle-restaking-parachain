@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,16 +28,6 @@ pub use crate::{
 	Junction::AccountId32,
 	Junctions::X1,
 };
-use bifrost_asset_registry::AssetMetadata;
-use bifrost_parachain_staking::ParachainStakingInterface;
-use bifrost_primitives::{
-	currency::{BNC, KSM, MANTA, MOVR, PHA},
-	traits::XcmDestWeightAndFeeHandler,
-	CurrencyId, CurrencyIdExt, CurrencyIdMapping, DerivativeAccountHandler, DerivativeIndex,
-	SlpHostingFeeProvider, SlpOperator, TimeUnit, VtokenMintingOperator, XcmOperationType, ASTR,
-	DOT, FIL, GLMR,
-};
-use bifrost_stable_pool::traits::StablePoolHandler;
 use cumulus_primitives_core::{relay_chain::HashT, ParaId};
 use frame_support::{pallet_prelude::*, traits::Contains, weights::Weight};
 use frame_system::{
@@ -55,6 +42,16 @@ use sp_core::{bounded::BoundedVec, H160};
 use sp_io::hashing::blake2_256;
 use sp_runtime::traits::{CheckedAdd, CheckedSub, Convert, TrailingZeroInput, UniqueSaturatedFrom};
 use sp_std::{boxed::Box, vec, vec::Vec};
+use tangle_asset_registry::AssetMetadata;
+use tangle_parachain_staking::ParachainStakingInterface;
+use tangle_primitives::{
+	currency::{BNC, KSM, MANTA, MOVR, PHA},
+	lstMintingOperator,
+	traits::XcmDestWeightAndFeeHandler,
+	CurrencyId, CurrencyIdExt, CurrencyIdMapping, DerivativeAccountHandler, DerivativeIndex,
+	SlpHostingFeeProvider, SlpOperator, TimeUnit, XcmOperationType, ASTR, DOT, FIL, GLMR,
+};
+use tangle_stable_pool::traits::StablePoolHandler;
 pub use weights::WeightInfo;
 use xcm::{
 	prelude::*,
@@ -97,10 +94,10 @@ const ITERATE_LENGTH: usize = 100;
 pub mod pallet {
 	use super::*;
 	use crate::agents::{AstarAgent, FilecoinAgent, ParachainStakingAgent, PhalaAgent};
-	use bifrost_primitives::{RedeemType, SlpxOperator};
 	use frame_support::dispatch::GetDispatchInfo;
 	use orml_traits::XcmTransfer;
 	use pallet_xcm::ensure_response;
+	use tangle_primitives::{RedeemType, SlpxOperator};
 	use xcm::v3::{MaybeErrorCode, Response};
 
 	#[pallet::config]
@@ -119,15 +116,15 @@ pub mod pallet {
 		/// Set default weight.
 		type WeightInfo: WeightInfo;
 
-		/// The interface to call VtokenMinting module functions.
-		type VtokenMinting: VtokenMintingOperator<
+		/// The interface to call lstMinting module functions.
+		type lstMinting: lstMintingOperator<
 			CurrencyId,
 			BalanceOf<Self>,
 			AccountIdOf<Self>,
 			TimeUnit,
 		>;
 
-		type BifrostSlpx: SlpxOperator<BalanceOf<Self>>;
+		type tangleSlpx: SlpxOperator<BalanceOf<Self>>;
 
 		/// xtokens xcm transfer interface
 		type XcmTransfer: XcmTransfer<AccountIdOf<Self>, BalanceOf<Self>, CurrencyIdOf<Self>>;
@@ -545,7 +542,7 @@ pub mod pallet {
 	const STORAGE_VERSION: StorageVersion = StorageVersion::new(3);
 
 	/// One operate origin(can be a multisig account) for a currency. An operating origins are
-	/// normal account in Bifrost chain.
+	/// normal account in tangle chain.
 	#[pallet::storage]
 	#[pallet::getter(fn get_operate_origin)]
 	pub type OperateOrigins<T> = StorageMap<_, Blake2_128Concat, CurrencyId, AccountIdOf<T>>;
@@ -1172,7 +1169,7 @@ pub mod pallet {
 			// Ensure the amount is valid.
 			ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
 
-			T::VtokenMinting::increase_token_pool(currency_id, amount)?;
+			T::lstMinting::increase_token_pool(currency_id, amount)?;
 
 			// Deposit event.
 			Pallet::<T>::deposit_event(Event::PoolTokenIncreased { currency_id, amount });
@@ -1192,7 +1189,7 @@ pub mod pallet {
 			// Ensure the amount is valid.
 			ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
 
-			T::VtokenMinting::decrease_token_pool(currency_id, amount)?;
+			T::lstMinting::decrease_token_pool(currency_id, amount)?;
 
 			// Deposit event.
 			Pallet::<T>::deposit_event(Event::PoolTokenDecreased { currency_id, amount });
@@ -1221,14 +1218,14 @@ pub mod pallet {
 
 			ensure!(blocks_between >= interval, Error::<T>::TooFrequent);
 
-			let old_op = T::VtokenMinting::get_ongoing_time_unit(currency_id);
+			let old_op = T::lstMinting::get_ongoing_time_unit(currency_id);
 
 			if let Some(old) = old_op.clone() {
 				// enusre old TimeUnit < new TimeUnit
 				ensure!(old < time_unit, Error::<T>::InvalidTimeUnit);
 			}
 
-			T::VtokenMinting::update_ongoing_time_unit(currency_id, time_unit.clone())?;
+			T::lstMinting::update_ongoing_time_unit(currency_id, time_unit.clone())?;
 
 			// update LastTimeUpdatedOngoingTimeUnit storage
 			LastTimeUpdatedOngoingTimeUnit::<T>::insert(currency_id, current_block);
@@ -1253,8 +1250,7 @@ pub mod pallet {
 			Self::ensure_authorized(origin, currency_id)?;
 
 			// Get entrance_account and exit_account, as well as their currency balances.
-			let (entrance_account, exit_account) =
-				T::VtokenMinting::get_entrance_and_exit_accounts();
+			let (entrance_account, exit_account) = T::lstMinting::get_entrance_and_exit_accounts();
 			let mut exit_account_balance =
 				T::MultiCurrency::free_balance(currency_id, &exit_account);
 
@@ -1263,9 +1259,9 @@ pub mod pallet {
 			}
 
 			// Get the currency due unlocking records
-			let time_unit = T::VtokenMinting::get_ongoing_time_unit(currency_id)
+			let time_unit = T::lstMinting::get_ongoing_time_unit(currency_id)
 				.ok_or(Error::<T>::TimeUnitNotExist)?;
-			let rs = T::VtokenMinting::get_unlock_records(currency_id, time_unit.clone());
+			let rs = T::lstMinting::get_unlock_records(currency_id, time_unit.clone());
 
 			let mut extra_weight = 0 as u64;
 
@@ -1279,7 +1275,7 @@ pub mod pallet {
 					}
 					// get idx record amount
 					let idx_record_amount_op =
-						T::VtokenMinting::get_token_unlock_ledger(currency_id, *idx);
+						T::lstMinting::get_token_unlock_ledger(currency_id, *idx);
 
 					if let Some((user_account, idx_record_amount, _unlock_era, redeem_type)) =
 						idx_record_amount_op
@@ -1288,11 +1284,11 @@ pub mod pallet {
 						if exit_account_balance < idx_record_amount {
 							match redeem_type {
 								RedeemType::Native => {},
-								RedeemType::Astar(_) |
-								RedeemType::Moonbeam(_) |
-								RedeemType::Hydradx(_) |
-								RedeemType::Manta(_) |
-								RedeemType::Interlay(_) => break,
+								RedeemType::Astar(_)
+								| RedeemType::Moonbeam(_)
+								| RedeemType::Hydradx(_)
+								| RedeemType::Manta(_)
+								| RedeemType::Interlay(_) => break,
 							};
 							deduct_amount = exit_account_balance;
 						};
@@ -1310,7 +1306,7 @@ pub mod pallet {
 								let dest = MultiLocation {
 									parents: 1,
 									interior: X2(
-										Parachain(T::VtokenMinting::get_astar_parachain_id()),
+										Parachain(T::lstMinting::get_astar_parachain_id()),
 										AccountId32 {
 											network: None,
 											id: receiver.encode().try_into().unwrap(),
@@ -1329,7 +1325,7 @@ pub mod pallet {
 								let dest = MultiLocation {
 									parents: 1,
 									interior: X2(
-										Parachain(T::VtokenMinting::get_hydradx_parachain_id()),
+										Parachain(T::lstMinting::get_hydradx_parachain_id()),
 										AccountId32 {
 											network: None,
 											id: receiver.encode().try_into().unwrap(),
@@ -1348,7 +1344,7 @@ pub mod pallet {
 								let dest = MultiLocation {
 									parents: 1,
 									interior: X2(
-										Parachain(T::VtokenMinting::get_interlay_parachain_id()),
+										Parachain(T::lstMinting::get_interlay_parachain_id()),
 										AccountId32 {
 											network: None,
 											id: receiver.encode().try_into().unwrap(),
@@ -1367,7 +1363,7 @@ pub mod pallet {
 								let dest = MultiLocation {
 									parents: 1,
 									interior: X2(
-										Parachain(T::VtokenMinting::get_manta_parachain_id()),
+										Parachain(T::lstMinting::get_manta_parachain_id()),
 										AccountId32 {
 											network: None,
 											id: receiver.encode().try_into().unwrap(),
@@ -1386,7 +1382,7 @@ pub mod pallet {
 								let dest = MultiLocation {
 									parents: 1,
 									interior: X2(
-										Parachain(T::VtokenMinting::get_moonbeam_parachain_id()),
+										Parachain(T::lstMinting::get_moonbeam_parachain_id()),
 										AccountKey20 {
 											network: None,
 											key: receiver.to_fixed_bytes(),
@@ -1396,7 +1392,7 @@ pub mod pallet {
 								if currency_id == FIL {
 									let assets = vec![
 										(currency_id, deduct_amount),
-										(BNC, T::BifrostSlpx::get_moonbeam_transfer_to_fee()),
+										(BNC, T::tangleSlpx::get_moonbeam_transfer_to_fee()),
 									];
 
 									T::XcmTransfer::transfer_multicurrencies(
@@ -1418,7 +1414,7 @@ pub mod pallet {
 							},
 						};
 						// Delete the corresponding unlocking record storage.
-						T::VtokenMinting::deduct_unlock_amount(currency_id, *idx, deduct_amount)?;
+						T::lstMinting::deduct_unlock_amount(currency_id, *idx, deduct_amount)?;
 
 						extra_weight =
 							T::OnRefund::on_refund(currency_id, user_account, deduct_amount);
@@ -1453,8 +1449,8 @@ pub mod pallet {
 
 			if extra_weight != 0 {
 				Ok(Some(
-					<T as Config>::WeightInfo::refund_currency_due_unbond() +
-						Weight::from_parts(extra_weight, 0),
+					<T as Config>::WeightInfo::refund_currency_due_unbond()
+						+ Weight::from_parts(extra_weight, 0),
 				)
 				.into())
 			} else {
@@ -1543,10 +1539,10 @@ pub mod pallet {
 		}
 
 		#[pallet::call_index(20)]
-		#[pallet::weight(<T as Config>::WeightInfo::charge_host_fee_and_tune_vtoken_exchange_rate())]
-		/// Charge staking host fee, tune vtoken/token exchange rate, and update delegator ledger
+		#[pallet::weight(<T as Config>::WeightInfo::charge_host_fee_and_tune_lst_exchange_rate())]
+		/// Charge staking host fee, tune lst/token exchange rate, and update delegator ledger
 		/// for single delegator.
-		pub fn charge_host_fee_and_tune_vtoken_exchange_rate(
+		pub fn charge_host_fee_and_tune_lst_exchange_rate(
 			origin: OriginFor<T>,
 			currency_id: CurrencyId,
 			#[pallet::compact] value: BalanceOf<T>,
@@ -1562,14 +1558,14 @@ pub mod pallet {
 			let (limit_num, max_permill) = Self::get_currency_tune_exchange_rate_limit(currency_id)
 				.ok_or(Error::<T>::TuneExchangeRateLimitNotSet)?;
 			// Get pool token value
-			let pool_token = T::VtokenMinting::get_token_pool(currency_id);
+			let pool_token = T::lstMinting::get_token_pool(currency_id);
 			// Calculate max increase allowed.
 			let max_to_increase = max_permill.mul_floor(pool_token);
 			ensure!(value <= max_to_increase, Error::<T>::GreaterThanMaximum);
 
 			// Ensure this tune is within limit.
 			// Get current TimeUnit.
-			let current_time_unit = T::VtokenMinting::get_ongoing_time_unit(currency_id)
+			let current_time_unit = T::lstMinting::get_ongoing_time_unit(currency_id)
 				.ok_or(Error::<T>::TimeUnitNotExist)?;
 			// If this is the first time.
 			if !CurrencyLatestTuneRecord::<T>::contains_key(currency_id) {
@@ -1609,10 +1605,10 @@ pub mod pallet {
 			)?;
 
 			// Tune the new exchange rate.
-			staking_agent.tune_vtoken_exchange_rate(
+			staking_agent.tune_lst_exchange_rate(
 				&who,
 				value,
-				// Dummy value for vtoken amount
+				// Dummy value for lst amount
 				Zero::zero(),
 				currency_id,
 			)?;
@@ -2398,43 +2394,43 @@ pub mod pallet {
 		}
 
 		#[pallet::call_index(47)]
-		#[pallet::weight(<T as Config>::WeightInfo::convert_treasury_vtoken())]
-		pub fn convert_treasury_vtoken(
+		#[pallet::weight(<T as Config>::WeightInfo::convert_treasury_lst())]
+		pub fn convert_treasury_lst(
 			origin: OriginFor<T>,
-			vtoken: CurrencyId,
+			lst: CurrencyId,
 			amount: BalanceOf<T>,
 		) -> DispatchResult {
 			T::ControlOrigin::ensure_origin(origin)?;
 			ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
 
-			let token = vtoken.to_token().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
-			let (pool_id, _, _) = T::StablePoolHandler::get_pool_id(&vtoken, &token)
+			let token = lst.to_token().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
+			let (pool_id, _, _) = T::StablePoolHandler::get_pool_id(&lst, &token)
 				.ok_or(Error::<T>::StablePoolNotFound)?;
 
-			let vtoken_index = T::StablePoolHandler::get_pool_token_index(pool_id, vtoken)
+			let lst_index = T::StablePoolHandler::get_pool_token_index(pool_id, lst)
 				.ok_or(Error::<T>::StablePoolTokenIndexNotFound)?;
 			let token_index = T::StablePoolHandler::get_pool_token_index(pool_id, token)
 				.ok_or(Error::<T>::StablePoolTokenIndexNotFound)?;
 
-			// get the vtoken balance of the treasury account
-			let source_vtoken_balance =
-				T::MultiCurrency::free_balance(vtoken, &T::TreasuryAccount::get());
+			// get the lst balance of the treasury account
+			let source_lst_balance =
+				T::MultiCurrency::free_balance(lst, &T::TreasuryAccount::get());
 
-			// max_amount is 1% of the vtoken balance of the treasury account
+			// max_amount is 1% of the lst balance of the treasury account
 			let percentage = Permill::from_percent(1);
-			let max_amount = percentage.mul_floor(source_vtoken_balance);
+			let max_amount = percentage.mul_floor(source_lst_balance);
 
 			ensure!(
 				amount <= BalanceOf::<T>::unique_saturated_from(max_amount),
 				Error::<T>::ExceedLimit
 			);
 
-			// swap vtoken from treasury account for token
+			// swap lst from treasury account for token
 			let treasury = T::TreasuryAccount::get();
 			T::StablePoolHandler::swap(
 				&treasury,
 				pool_id,
-				vtoken_index,
+				lst_index,
 				token_index,
 				amount,
 				Zero::zero(),
@@ -2516,7 +2512,9 @@ pub mod pallet {
 			match origin.clone().into() {
 				Ok(RawOrigin::Signed(ref signer))
 					if Some(signer) == <OperateOrigins<T>>::get(currency_id).as_ref() =>
-					Ok(()),
+				{
+					Ok(())
+				},
 				_ => {
 					T::ControlOrigin::ensure_origin(origin)
 						.map_err(|_| Error::<T>::NotAuthorized)?;

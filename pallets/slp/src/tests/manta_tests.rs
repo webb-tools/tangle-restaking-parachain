@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,11 +26,11 @@ use crate::{
 	Junctions::X2,
 	*,
 };
-use bifrost_primitives::{currency::VMANTA, Balance};
 use frame_support::{assert_noop, assert_ok, PalletId};
 use parity_scale_codec::alloc::collections::BTreeMap;
 use polkadot_parachain_primitives::primitives::Sibling;
 use sp_runtime::traits::AccountIdConversion;
+use tangle_primitives::{currency::VMANTA, Balance};
 use xcm::opaque::v3::Junction::AccountId32;
 
 const VALIDATOR_0_ACCOUNT_ID_32: [u8; 32] =
@@ -59,26 +56,26 @@ const VALIDATOR_1_LOCATION: MultiLocation = MultiLocation {
 #[test]
 fn initialize_manta_delegator() {
 	ExtBuilder::default().build().execute_with(|| {
-		let bifrost_parachain_account_id_32_right: AccountId =
+		let tangle_parachain_account_id_32_right: AccountId =
 			hex_literal::hex!["7369626cee070000000000000000000000000000000000000000000000000000"]
 				.into();
-		let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+		let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
-		assert_eq!(bifrost_parachain_account_id_32_right, bifrost_parachain_account_id_32);
+		assert_eq!(tangle_parachain_account_id_32_right, tangle_parachain_account_id_32);
 
 		// subaccount_id_0: 0x863c1faef3c3b8f8735ecb7f8ed18996356dd3de
 		let subaccount_id_0_right: AccountId =
 			hex_literal::hex!["69f880852768f2d00acfa7824533aa4378e48d1b9fbc6b44500e8b98debeaccd"]
 				.into();
 		let subaccount_id_0 =
-			Utility::derivative_account_id(bifrost_parachain_account_id_32.clone(), 0);
+			Utility::derivative_account_id(tangle_parachain_account_id_32.clone(), 0);
 		assert_eq!(subaccount_id_0_right, subaccount_id_0);
 
 		// subaccount_id_1: 0x3afe20b0c85801b74e65586fe7070df827172574
 		let subaccount_id_1_right: AccountId =
 			hex_literal::hex!["39d0a3c793549eda79b5cd3f8ab1c5879326352eb6583696249e38684b9451c1"]
 				.into();
-		let subaccount_id_1 = Utility::derivative_account_id(bifrost_parachain_account_id_32, 1);
+		let subaccount_id_1 = Utility::derivative_account_id(tangle_parachain_account_id_32, 1);
 		assert_eq!(subaccount_id_1_right, subaccount_id_1);
 
 		let subaccount0_location = MultiLocation {
@@ -278,10 +275,10 @@ fn manta_setup() {
 
 #[test]
 fn manta_bond_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -307,10 +304,10 @@ fn manta_bond_works() {
 
 #[test]
 fn manta_bond_extra_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -358,10 +355,10 @@ fn manta_bond_extra_works() {
 
 #[test]
 fn manta_unbond_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -409,10 +406,10 @@ fn manta_unbond_works() {
 
 #[test]
 fn manta_rebond_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -470,10 +467,10 @@ fn manta_rebond_works() {
 
 #[test]
 fn manta_undelegate_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -521,10 +518,10 @@ fn manta_undelegate_works() {
 
 #[test]
 fn manta_liquidize_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -670,10 +667,10 @@ fn manta_liquidize_works() {
 
 #[test]
 fn manta_bond_and_bond_extra_confirm_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
 		interior: X2(
@@ -802,10 +799,10 @@ fn manta_bond_and_bond_extra_confirm_works() {
 
 #[test]
 fn manta_unbond_confirm_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -993,10 +990,10 @@ fn manta_unbond_confirm_works() {
 
 #[test]
 fn manta_unbond_all_confirm_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1126,10 +1123,10 @@ fn manta_unbond_all_confirm_works() {
 
 #[test]
 fn manta_rebond_confirm_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1224,10 +1221,10 @@ fn manta_rebond_confirm_works() {
 
 #[test]
 fn manta_undelegate_confirm_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1399,10 +1396,10 @@ fn manta_undelegate_confirm_works() {
 
 #[test]
 fn manta_transfer_back_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1435,10 +1432,10 @@ fn manta_transfer_back_works() {
 
 #[test]
 fn manta_transfer_to_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1470,10 +1467,10 @@ fn manta_transfer_to_works() {
 
 #[test]
 fn supplement_fee_account_whitelist_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1584,11 +1581,11 @@ fn supplement_fee_account_whitelist_works() {
 }
 
 #[test]
-fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
-	let bifrost_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
+fn charge_host_fee_and_tune_lst_exchange_rate_works() {
+	let tangle_parachain_account_id_32 = Sibling::from(2030).into_account_truncating();
 
 	let subaccount_0_account_id_32 =
-		Utility::derivative_account_id(bifrost_parachain_account_id_32, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id_32, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1604,7 +1601,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 
 		// manta_setup();
 
-		bifrost_vtoken_minting::OngoingTimeUnit::<Runtime>::insert(MANTA, TimeUnit::Round(1));
+		tangle_lst_minting::OngoingTimeUnit::<Runtime>::insert(MANTA, TimeUnit::Round(1));
 
 		DelegatorsIndex2Multilocation::<Runtime>::insert(MANTA, 0, subaccount_0_location);
 		DelegatorsMultilocation2Index::<Runtime>::insert(MANTA, subaccount_0_location, 0);
@@ -1647,7 +1644,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 		// Set delegator ledger
 		DelegatorLedgers::<Runtime>::insert(MANTA, subaccount_0_location, ledger);
 
-		// Set the hosting fee to be 20%, and the beneficiary to be bifrost treasury account.
+		// Set the hosting fee to be 20%, and the beneficiary to be tangle treasury account.
 		let pct = Permill::from_percent(20);
 		let treasury_location = MultiLocation {
 			parents: 0,
@@ -1667,12 +1664,12 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 			Some((1, pct_100))
 		));
 
-		// First set base vtoken exchange rate. Should be 1:1.
+		// First set base lst exchange rate. Should be 1:1.
 		assert_ok!(Currencies::deposit(VMANTA, &ALICE, 100));
 		assert_ok!(Slp::increase_token_pool(RuntimeOrigin::signed(ALICE), MANTA, 100));
 
-		// call the charge_host_fee_and_tune_vtoken_exchange_rate
-		assert_ok!(Slp::charge_host_fee_and_tune_vtoken_exchange_rate(
+		// call the charge_host_fee_and_tune_lst_exchange_rate
+		assert_ok!(Slp::charge_host_fee_and_tune_lst_exchange_rate(
 			RuntimeOrigin::signed(ALICE),
 			MANTA,
 			100,
@@ -1680,7 +1677,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 		));
 
 		// Tokenpool should have been added 100.
-		let new_token_pool_amount = <Runtime as Config>::VtokenMinting::get_token_pool(MANTA);
+		let new_token_pool_amount = <Runtime as Config>::lstMinting::get_token_pool(MANTA);
 		assert_eq!(new_token_pool_amount, 200);
 
 		// let tune_record = DelegatorLatestTuneRecord::<Runtime>::get(MANTA,

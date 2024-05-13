@@ -1,5 +1,5 @@
 [package]
-name = "bifrost-stable-pool"
+name = "tangle-stable-pool"
 version = "0.8.0"
 description = "FRAME pallet template for defining custom runtime logic."
 authors = ["Sora Yu <ymlll0508@gmail.com>"]
@@ -14,24 +14,24 @@ sp-core = { workspace = true }
 sp-runtime = { workspace = true }
 scale-info = { workspace = true, features = ["derive"] }
 parity-scale-codec = { workspace = true, features = ["derive"] }
-bifrost-primitives = { workspace = true }
+tangle-primitives = { workspace = true }
 orml-traits = { workspace = true }
 frame-support = { workspace = true }
 frame-system = { workspace = true }
 frame-benchmarking = { workspace = true, optional = true }
-bifrost-stable-asset = { workspace = true }
+tangle-stable-asset = { workspace = true }
 log = { workspace = true }
-bifrost-vtoken-minting = { workspace = true }
+tangle-lst-minting = { workspace = true }
 
 [dev-dependencies]
 sp-io = { workspace = true }
 pallet-balances = { workspace = true }
 orml-tokens = { workspace = true }
-bifrost-currencies = { workspace = true }
+tangle-currencies = { workspace = true }
 orml-xtokens = { workspace = true }
 env_logger = { workspace = true }
-runtime-common = { workspace = true }
-bifrost-asset-registry = { workspace = true }
+tangle-runtime-common = { workspace = true }
+tangle-asset-registry = { workspace = true }
 xcm = { workspace = true }
 xcm-executor = { workspace = true }
 xcm-builder = { workspace = true }
@@ -46,11 +46,11 @@ std = [
 	"frame-system/std",
 	"scale-info/std",
 	"pallet-balances/std",
-	"bifrost-stable-asset/std",
+	"tangle-stable-asset/std",
 	"orml-traits/std",
-	"bifrost-primitives/std",
-	"bifrost-asset-registry/std",
-	"runtime-common/std",
+	"tangle-primitives/std",
+	"tangle-asset-registry/std",
+	"tangle-runtime-common/std",
 	"orml-xtokens/std",
 ]
 runtime-benchmarks = [

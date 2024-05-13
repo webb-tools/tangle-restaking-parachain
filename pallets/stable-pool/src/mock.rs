@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,14 +12,7 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-use crate as bifrost_stable_pool;
-use bifrost_asset_registry::AssetIdMaps;
-pub use bifrost_primitives::{
-	currency::{MOVR, VMOVR},
-	AccountId, Balance, CurrencyId, CurrencyIdMapping, SlpOperator, SlpxOperator, TokenSymbol,
-	ASTR, BNC, DOT, DOT_TOKEN_ID, GLMR, VBNC, VDOT,
-};
-use bifrost_runtime_common::milli;
+use crate as tangle_stable_pool;
 use frame_support::{
 	ord_parameter_types, parameter_types,
 	traits::{ConstU128, ConstU16, ConstU32, ConstU64, Everything, Nothing},
@@ -35,6 +25,13 @@ use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup},
 	BuildStorage,
 };
+use tangle_asset_registry::AssetIdMaps;
+pub use tangle_primitives::{
+	currency::{MOVR, VMOVR},
+	AccountId, Balance, CurrencyId, CurrencyIdMapping, SlpOperator, SlpxOperator, TokenSymbol,
+	ASTR, BNC, DOT, DOT_TOKEN_ID, GLMR, VBNC, VDOT,
+};
+use tangle_runtime_common::milli;
 use xcm::{
 	prelude::*,
 	v3::{MultiLocation, Weight},
@@ -49,14 +46,14 @@ frame_support::construct_runtime!(
 	pub enum Test {
 		System: frame_system,
 		Tokens: orml_tokens,
-		Currencies: bifrost_currencies,
+		Currencies: tangle_currencies,
 		Balances: pallet_balances,
 		XTokens: orml_xtokens,
 		PolkadotXcm: pallet_xcm,
-		AssetRegistry: bifrost_asset_registry,
-		StableAsset: bifrost_stable_asset,
-		StablePool: bifrost_stable_pool,
-		VtokenMinting: bifrost_vtoken_minting,
+		AssetRegistry: tangle_asset_registry,
+		StableAsset: tangle_stable_asset,
+		StablePool: tangle_stable_pool,
+		lstMinting: tangle_lst_minting,
 	}
 );
 
@@ -97,12 +94,12 @@ orml_traits::parameter_type_with_key! {
 		match currency_id {
 			&CurrencyId::Native(TokenSymbol::BNC) => 10 * milli::<Test>(NativeCurrencyId::get()),   // 0.01 BNC
 			&CurrencyId::Token(TokenSymbol::KSM) => 0,
-			&CurrencyId::VToken(TokenSymbol::KSM) => 0,
+			&CurrencyId::lst(TokenSymbol::KSM) => 0,
 			&DOT => 0,
 			&VDOT => 0,
 			&VBNC => 0,
 			&CurrencyId::BLP(_) => 0,
-			_ => bifrost_asset_registry::AssetIdMaps::<Test>::get_currency_metadata(*currency_id)
+			_ => tangle_asset_registry::AssetIdMaps::<Test>::get_currency_metadata(*currency_id)
 				.map_or(Balance::max_value(), |metatata| metatata.minimal_balance)
 		}
 	};
@@ -128,9 +125,9 @@ parameter_types! {
 pub type BlockNumber = u64;
 pub type Amount = i128;
 pub type AdaptedBasicCurrency =
-	bifrost_currencies::BasicCurrencyAdapter<Test, Balances, Amount, BlockNumber>;
+	tangle_currencies::BasicCurrencyAdapter<Test, Balances, Amount, BlockNumber>;
 
-impl bifrost_currencies::Config for Test {
+impl tangle_currencies::Config for Test {
 	type GetNativeCurrencyId = GetNativeCurrencyId;
 	type MultiCurrency = Tokens;
 	type NativeCurrency = AdaptedBasicCurrency;
@@ -232,7 +229,7 @@ impl pallet_balances::Config for Test {
 ord_parameter_types! {
 	pub const One: u128 = 1;
 }
-impl bifrost_asset_registry::Config for Test {
+impl tangle_asset_registry::Config for Test {
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
 	type RegisterOrigin = EnsureSignedBy<One, u128>;
@@ -240,7 +237,7 @@ impl bifrost_asset_registry::Config for Test {
 }
 
 pub struct EnsurePoolAssetId;
-impl bifrost_stable_asset::traits::ValidateAssetId<CurrencyId> for EnsurePoolAssetId {
+impl tangle_stable_asset::traits::ValidateAssetId<CurrencyId> for EnsurePoolAssetId {
 	fn validate(_: CurrencyId) -> bool {
 		true
 	}
@@ -249,7 +246,7 @@ parameter_types! {
 	pub const StableAssetPalletId: PalletId = PalletId(*b"nuts/sta");
 }
 
-impl bifrost_stable_asset::Config for Test {
+impl tangle_stable_asset::Config for Test {
 	type RuntimeEvent = RuntimeEvent;
 	type AssetId = CurrencyId;
 	type Balance = Balance;
@@ -265,13 +262,13 @@ impl bifrost_stable_asset::Config for Test {
 	type EnsurePoolAssetId = EnsurePoolAssetId;
 }
 
-impl bifrost_stable_pool::Config for Test {
+impl tangle_stable_pool::Config for Test {
 	type WeightInfo = ();
 	type ControlOrigin = EnsureRoot<u128>;
 	type CurrencyId = CurrencyId;
 	type MultiCurrency = Currencies;
 	type StableAsset = StableAsset;
-	type VtokenMinting = VtokenMinting;
+	type lstMinting = lstMinting;
 	type CurrencyIdConversion = AssetIdMaps<Test>;
 	type CurrencyIdRegister = AssetIdMaps<Test>;
 }
@@ -279,9 +276,9 @@ impl bifrost_stable_pool::Config for Test {
 parameter_types! {
 	pub const MaximumUnlockIdOfUser: u32 = 1_000;
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 1_000;
-	pub BifrostEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
-	pub BifrostExitAccount: PalletId = PalletId(*b"bf/vtout");
-	// pub BifrostFeeAccount: AccountId = 1.into();
+	pub tangleEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
+	pub tangleExitAccount: PalletId = PalletId(*b"bf/vtout");
+	// pub tangleFeeAccount: AccountId = 1.into();
 }
 
 pub struct SlpxInterface;
@@ -295,16 +292,16 @@ ord_parameter_types! {
 	pub const RelayCurrencyId: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 }
 
-impl bifrost_vtoken_minting::Config for Test {
+impl tangle_lst_minting::Config for Test {
 	type RuntimeEvent = RuntimeEvent;
 	type MultiCurrency = Tokens;
 	type ControlOrigin = EnsureSignedBy<One, u128>;
 	type MaximumUnlockIdOfUser = MaximumUnlockIdOfUser;
 	type MaximumUnlockIdOfTimeUnit = MaximumUnlockIdOfTimeUnit;
-	type EntranceAccount = BifrostEntranceAccount;
-	type ExitAccount = BifrostExitAccount;
+	type EntranceAccount = tangleEntranceAccount;
+	type ExitAccount = tangleExitAccount;
 	type FeeAccount = One;
-	type BifrostSlp = Slp;
+	type tangleSlp = Slp;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Test>;
 	type CurrencyIdRegister = AssetIdMaps<Test>;
@@ -313,7 +310,7 @@ impl bifrost_vtoken_minting::Config for Test {
 	type XcmTransfer = XTokens;
 	type AstarParachainId = ConstU32<2007>;
 	type MoonbeamParachainId = ConstU32<2023>;
-	type BifrostSlpx = SlpxInterface;
+	type tangleSlpx = SlpxInterface;
 	type HydradxParachainId = ConstU32<2034>;
 	type MantaParachainId = ConstU32<2104>;
 	type InterlayParachainId = ConstU32<2032>;
@@ -402,7 +399,7 @@ impl ExtBuilder {
 	pub fn build(self) -> sp_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::<Test>::default().build_storage().unwrap().into();
 
-		bifrost_asset_registry::GenesisConfig::<Test> {
+		tangle_asset_registry::GenesisConfig::<Test> {
 			currency: vec![
 				// (CurrencyId::Token(TokenSymbol::DOT), 100_000_000, None),
 				(CurrencyId::Token(TokenSymbol::KSM), 10_000_000, None),

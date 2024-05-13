@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,11 +14,11 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::MultiLocation;
-use bifrost_primitives::{CurrencyId, TimeUnit};
 use parity_scale_codec::{Decode, Encode};
 use scale_info::TypeInfo;
 use sp_runtime::RuntimeDebug;
 use sp_std::vec::Vec;
+use tangle_primitives::{CurrencyId, TimeUnit};
 
 #[derive(PartialEq, Eq, Clone, Encode, Decode, RuntimeDebug, TypeInfo)]
 pub struct SubstrateLedger<Balance> {

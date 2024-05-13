@@ -1,7 +1,6 @@
 [package]
-name = "bifrost-primitives"
+name = "tangle-primitives"
 version = "0.8.0"
-authors = ["Edwin Wang <lark930@gmail.com>"]
 edition = "2021"
 
 [dependencies]
@@ -37,11 +36,11 @@ std = [
 	"orml-oracle/std",
 ]
 
-with-bifrost-runtime = [
-	"with-bifrost-kusama-runtime",
-	"with-bifrost-polkadot-runtime",
+with-tangle-runtime = [
+	"with-tangle-kusama-runtime",
+	"with-tangle-polkadot-runtime",
 ]
-with-bifrost-kusama-runtime = []
-with-bifrost-polkadot-runtime = []
-with-all-runtime = ["with-bifrost-runtime"]
+with-tangle-kusama-runtime = []
+with-tangle-polkadot-runtime = []
+with-all-runtime = ["with-tangle-runtime"]
 runtime-benchmarks = []

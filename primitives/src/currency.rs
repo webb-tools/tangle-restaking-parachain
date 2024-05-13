@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Low-level types used throughout the Bifrost code.
+//! Low-level types used throughout the tangle code.
 
 use bstringify::bstringify;
 use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
@@ -35,32 +32,32 @@ use crate::{
 };
 
 pub const MOVR: CurrencyId = CurrencyId::Token(TokenSymbol::MOVR);
-pub const VMOVR: CurrencyId = CurrencyId::VToken(TokenSymbol::MOVR);
+pub const VMOVR: CurrencyId = CurrencyId::lst(TokenSymbol::MOVR);
 pub const BNC: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
-pub const VBNC: CurrencyId = CurrencyId::VToken(TokenSymbol::BNC);
+pub const VBNC: CurrencyId = CurrencyId::lst(TokenSymbol::BNC);
 pub const KSM: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
-pub const VKSM: CurrencyId = CurrencyId::VToken(TokenSymbol::KSM);
+pub const VKSM: CurrencyId = CurrencyId::lst(TokenSymbol::KSM);
 pub const VSKSM: CurrencyId = CurrencyId::VSToken(TokenSymbol::KSM);
 pub const PHA: CurrencyId = CurrencyId::Token(TokenSymbol::PHA);
-pub const VPHA: CurrencyId = CurrencyId::VToken(TokenSymbol::PHA);
+pub const VPHA: CurrencyId = CurrencyId::lst(TokenSymbol::PHA);
 pub const ZLK: CurrencyId = CurrencyId::Token(TokenSymbol::ZLK);
 
 pub const DOT_TOKEN_ID: u8 = 0u8;
 pub const DOT: CurrencyId = CurrencyId::Token2(DOT_TOKEN_ID);
-pub const VDOT: CurrencyId = CurrencyId::VToken2(DOT_TOKEN_ID);
+pub const VDOT: CurrencyId = CurrencyId::lst2(DOT_TOKEN_ID);
 pub const GLMR_TOKEN_ID: u8 = 1u8;
 pub const GLMR: CurrencyId = CurrencyId::Token2(GLMR_TOKEN_ID);
-pub const VGLMR: CurrencyId = CurrencyId::VToken2(GLMR_TOKEN_ID);
+pub const VGLMR: CurrencyId = CurrencyId::lst2(GLMR_TOKEN_ID);
 pub const DOT_U_TOKEN_ID: u8 = 2u8;
 pub const DOT_U: CurrencyId = CurrencyId::Token2(DOT_U_TOKEN_ID);
 pub const ASTR_TOKEN_ID: u8 = 3u8;
 pub const ASTR: CurrencyId = CurrencyId::Token2(ASTR_TOKEN_ID);
 pub const FIL_TOKEN_ID: u8 = 4u8;
 pub const FIL: CurrencyId = CurrencyId::Token2(FIL_TOKEN_ID);
-pub const VFIL: CurrencyId = CurrencyId::VToken2(FIL_TOKEN_ID);
+pub const VFIL: CurrencyId = CurrencyId::lst2(FIL_TOKEN_ID);
 pub const MANTA_TOKEN_ID: u8 = 8u8;
 pub const MANTA: CurrencyId = CurrencyId::Token2(MANTA_TOKEN_ID);
-pub const VMANTA: CurrencyId = CurrencyId::VToken2(MANTA_TOKEN_ID);
+pub const VMANTA: CurrencyId = CurrencyId::lst2(MANTA_TOKEN_ID);
 pub const VSBOND_BNC_2001_0_8: CurrencyId = CurrencyId::VSBond(TokenSymbol::BNC, 2001, 0, 8);
 
 pub const LDOT: CurrencyId = CurrencyId::Lend(0);
@@ -109,7 +106,7 @@ macro_rules! create_currency_id {
 			fn try_convert_from(id: CurrencyId, para_id: u32) -> Result<AssetId, ()> {
 				let _index = match id {
 					$(CurrencyId::Native(TokenSymbol::$symbol) => Ok((0_u64, TokenSymbol::$symbol as u64)),)*
-					$(CurrencyId::VToken(TokenSymbol::$symbol) => Ok((1_u64, TokenSymbol::$symbol as u64)),)*
+					$(CurrencyId::lst(TokenSymbol::$symbol) => Ok((1_u64, TokenSymbol::$symbol as u64)),)*
 					$(CurrencyId::Token(TokenSymbol::$symbol) => Ok((2_u64, TokenSymbol::$symbol as u64)),)*
 					$(CurrencyId::Stable(TokenSymbol::$symbol) => Ok((3_u64, TokenSymbol::$symbol as u64)),)*
 					$(CurrencyId::VSToken(TokenSymbol::$symbol) => Ok((4_u64, TokenSymbol::$symbol as u64)),)*
@@ -121,7 +118,7 @@ macro_rules! create_currency_id {
 						Ok((6 as u64, currency_index0 + currency_index1))
 					},
 					CurrencyId::Token2(token_id) => Ok((8_u64, token_id as u64)),
-					CurrencyId::VToken2(token_id) => Ok((9_u64, token_id as u64)),
+					CurrencyId::lst2(token_id) => Ok((9_u64, token_id as u64)),
 					CurrencyId::VSToken2(token_id) => Ok((10_u64, token_id as u64)),
 					// ForeignAsset, vsbond and vsbond2 are not allowed to be transferred to zenlink pool(c_disc is 7, 5 and 11).
 					_ => Err(()),
@@ -153,13 +150,13 @@ macro_rules! create_currency_id {
 
 				match c_discr {
 					0 => Ok(CurrencyId::Native(TokenSymbol::try_from(_index)?)),
-					1 => Ok(CurrencyId::VToken(TokenSymbol::try_from(_index)?)),
+					1 => Ok(CurrencyId::lst(TokenSymbol::try_from(_index)?)),
 					2 => Ok(CurrencyId::Token(TokenSymbol::try_from(_index)?)),
 					3 => Ok(CurrencyId::Stable(TokenSymbol::try_from(_index)?)),
 					4 => Ok(CurrencyId::VSToken(TokenSymbol::try_from(_index)?)),
 					6 => Ok(CurrencyId::try_from(id)?),
 					8 => Ok(CurrencyId::Token2(_index)),
-					9 => Ok(CurrencyId::VToken2(_index)),
+					9 => Ok(CurrencyId::lst2(_index)),
 					10 => Ok(CurrencyId::VSToken2(_index)),
 					_ => Err(()),
 				}
@@ -173,7 +170,7 @@ macro_rules! create_currency_id {
 					$(CurrencyId::Native(TokenSymbol::$symbol) => Some($name),)*
 					$(CurrencyId::Stable(TokenSymbol::$symbol) => Some($name),)*
 					$(CurrencyId::Token(TokenSymbol::$symbol) => Some($name),)*
-					$(CurrencyId::VToken(TokenSymbol::$symbol) => Some($name),)*
+					$(CurrencyId::lst(TokenSymbol::$symbol) => Some($name),)*
 					$(CurrencyId::VSToken(TokenSymbol::$symbol) => Some($name),)*
 					$(CurrencyId::VSBond(TokenSymbol::$symbol, ..) => Some($name),)*
 					CurrencyId::LPToken(ts1, type1, ts2, type2) => {
@@ -194,7 +191,7 @@ macro_rules! create_currency_id {
 					$(CurrencyId::Native(TokenSymbol::$symbol) => Some(stringify!($symbol)),)*
 					$(CurrencyId::Stable(TokenSymbol::$symbol) => Some(stringify!($symbol)),)*
 					$(CurrencyId::Token(TokenSymbol::$symbol) => Some(stringify!($symbol)),)*
-					$(CurrencyId::VToken(TokenSymbol::$symbol) => Some(stringify!($symbol)),)*
+					$(CurrencyId::lst(TokenSymbol::$symbol) => Some(stringify!($symbol)),)*
 					$(CurrencyId::VSToken(TokenSymbol::$symbol) => Some(stringify!($symbol)),)*
 					$(CurrencyId::VSBond(TokenSymbol::$symbol, ..) => Some(stringify!($symbol)),)*
 					CurrencyId::LPToken(_ts1, _, _ts2, _) => Some(stringify!(_ts1, ",", _ts2)),
@@ -208,7 +205,7 @@ macro_rules! create_currency_id {
 					$(CurrencyId::Native(TokenSymbol::$symbol) => Some($deci),)*
 					$(CurrencyId::Stable(TokenSymbol::$symbol) => Some($deci),)*
 					$(CurrencyId::Token(TokenSymbol::$symbol) => Some($deci),)*
-					$(CurrencyId::VToken(TokenSymbol::$symbol) => Some($deci),)*
+					$(CurrencyId::lst(TokenSymbol::$symbol) => Some($deci),)*
 					$(CurrencyId::VSToken(TokenSymbol::$symbol) => Some($deci),)*
 					$(CurrencyId::VSBond(TokenSymbol::$symbol, ..) => Some($deci),)*
 					CurrencyId::LPToken(..) => Some(1u8),
@@ -230,7 +227,7 @@ macro_rules! create_currency_id {
     }
 }
 
-// Bifrost Tokens list
+// tangle Tokens list
 create_currency_id! {
 	// Represent a Token symbol with 8 bit
 	// Bit 8 : 0 for Pokladot Ecosystem, 1 for Kusama Ecosystem
@@ -240,7 +237,7 @@ create_currency_id! {
 	#[repr(u8)]
 	pub enum TokenSymbol {
 		ASG("Asgard", 12) = 0,
-		BNC("Bifrost", 12) = 1,
+		BNC("tangle", 12) = 1,
 		KUSD("Karura Dollar", 12) = 2,
 		DOT("Polkadot", 10) = 3,
 		KSM("Kusama", 12) = 4,
@@ -281,7 +278,7 @@ pub type TokenId = u8;
 #[non_exhaustive]
 pub enum CurrencyId {
 	Native(TokenSymbol),
-	VToken(TokenSymbol),
+	lst(TokenSymbol),
 	Token(TokenSymbol),
 	Stable(TokenSymbol),
 	VSToken(TokenSymbol),
@@ -290,7 +287,7 @@ pub enum CurrencyId {
 	LPToken(TokenSymbol, u8, TokenSymbol, u8),
 	ForeignAsset(ForeignAssetId),
 	Token2(TokenId),
-	VToken2(TokenId),
+	lst2(TokenId),
 	VSToken2(TokenId),
 	VSBond2(TokenId, ParaId, LeasePeriod, LeasePeriod),
 	StableLpToken(PoolId),
@@ -321,8 +318,9 @@ impl CurrencyId {
 		let vsbond_origin = CurrencyId::VSBond(symbol, index, first_slot, last_slot);
 
 		let vsbond_fixed = match vsbond_origin {
-			Self::VSBond(TokenSymbol::KSM, 2001, 13, 20) =>
-				Self::VSBond(TokenSymbol::BNC, 2001, 13, 20),
+			Self::VSBond(TokenSymbol::KSM, 2001, 13, 20) => {
+				Self::VSBond(TokenSymbol::BNC, 2001, 13, 20)
+			},
 			_ => vsbond_origin,
 		};
 
@@ -331,18 +329,18 @@ impl CurrencyId {
 
 	pub fn to_token(&self) -> Result<Self, ()> {
 		match self {
-			Self::VToken(TokenSymbol::BNC) => Ok(Self::Native(TokenSymbol::BNC)),
-			Self::VToken(symbol) => Ok(Self::Token(*symbol)),
-			Self::VToken2(id) => Ok(Self::Token2(*id)),
+			Self::lst(TokenSymbol::BNC) => Ok(Self::Native(TokenSymbol::BNC)),
+			Self::lst(symbol) => Ok(Self::Token(*symbol)),
+			Self::lst2(id) => Ok(Self::Token2(*id)),
 			_ => Err(()),
 		}
 	}
 
-	pub fn to_vtoken(&self) -> Result<Self, ()> {
+	pub fn to_lst(&self) -> Result<Self, ()> {
 		match self {
-			Self::Token(symbol) => Ok(Self::VToken(*symbol)),
-			Self::Token2(id) => Ok(Self::VToken2(*id)),
-			Self::Native(TokenSymbol::BNC) => Ok(Self::VToken(TokenSymbol::BNC)),
+			Self::Token(symbol) => Ok(Self::lst(*symbol)),
+			Self::Token2(id) => Ok(Self::lst2(*id)),
+			Self::Native(TokenSymbol::BNC) => Ok(Self::lst(TokenSymbol::BNC)),
 			_ => Err(()),
 		}
 	}
@@ -359,8 +357,8 @@ impl CurrencyId {
 impl CurrencyIdExt for CurrencyId {
 	type TokenSymbol = TokenSymbol;
 
-	fn is_vtoken(&self) -> bool {
-		matches!(self, CurrencyId::VToken(_) | CurrencyId::VToken2(_))
+	fn is_lst(&self) -> bool {
+		matches!(self, CurrencyId::lst(_) | CurrencyId::lst2(_))
 	}
 
 	fn is_token(&self) -> bool {
@@ -410,7 +408,7 @@ impl TryFrom<u64> for CurrencyId {
 
 		match c_discr {
 			0 => Ok(Self::Native(TokenSymbol::try_from(t_discr)?)),
-			1 => Ok(Self::VToken(TokenSymbol::try_from(t_discr)?)),
+			1 => Ok(Self::lst(TokenSymbol::try_from(t_discr)?)),
 			2 => Ok(Self::Token(TokenSymbol::try_from(t_discr)?)),
 			3 => Ok(Self::Stable(TokenSymbol::try_from(t_discr)?)),
 			4 => Ok(Self::VSToken(TokenSymbol::try_from(t_discr)?)),
@@ -436,7 +434,7 @@ impl TryFrom<u64> for CurrencyId {
 			},
 			9 => {
 				let token_id = t_discr as TokenId;
-				Ok(Self::VToken2(token_id))
+				Ok(Self::lst2(token_id))
 			},
 			10 => {
 				let token_id = t_discr as TokenId;

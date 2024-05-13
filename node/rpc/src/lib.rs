@@ -1,0 +1,149 @@
+// This file is part of Tangle.
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+//! A collection of node-specific RPC methods.
+//!
+//! Since `substrate` core functionality makes no assumptions
+//! about the modules used inside the runtime, so do
+//! RPC methods defined in `sc-rpc` crate.
+//! It means that `client/rpc` can't have any methods that
+//! need some strong assumptions about the particular runtime.
+//!
+//! The RPCs available in this crate however can make some assumptions
+//! about how the runtime is constructed and what FRAME pallets
+//! are part of it. Therefore all node-runtime-specific RPCs can
+//! be placed here or imported from corresponding FRAME RPC definitions.
+
+#![warn(missing_docs)]
+
+use std::sync::Arc;
+
+use lend_market_rpc::{LendMarket, LendMarketApiServer};
+use lend_market_rpc_runtime_api::LendMarketApi;
+use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
+use sc_rpc_api::DenyUnsafe;
+use sc_transaction_pool_api::TransactionPool;
+use sp_api::ProvideRuntimeApi;
+use sp_block_builder::BlockBuilder;
+use sp_blockchain::{Error as BlockChainError, HeaderBackend, HeaderMetadata};
+use sp_runtime::traits::BlockIdTo;
+use substrate_frame_rpc_system::{System, SystemApiServer};
+use tangle_farming_rpc::{FarmingRpc, FarmingRpcApiServer};
+use tangle_farming_rpc_runtime_api::FarmingRuntimeApi;
+use tangle_flexible_fee_rpc::{FeeRpcApiServer, FlexibleFeeRpc};
+use tangle_flexible_fee_rpc_runtime_api::FlexibleFeeRuntimeApi as FeeRuntimeApi;
+use tangle_primitives::{AccountId, Balance, Block, CurrencyId, Nonce, ParaId, PoolId};
+use tangle_salp_rpc::{SalpRpc, SalpRpcApiServer};
+use tangle_salp_rpc_runtime_api::SalpRuntimeApi;
+use tangle_stable_pool_rpc::{StablePoolRpc, StablePoolRpcApiServer};
+use tangle_stable_pool_rpc_runtime_api::StablePoolRuntimeApi;
+use zenlink_protocol::AssetId;
+use zenlink_protocol_rpc::{ZenlinkProtocol, ZenlinkProtocolApiServer};
+use zenlink_protocol_runtime_api::ZenlinkProtocolApi as ZenlinkProtocolRuntimeApi;
+use zenlink_stable_amm_rpc::{StableAmm, StableAmmApiServer};
+/// Full client dependencies.
+pub struct FullDeps<C, P> {
+	/// The client instance to use.
+	pub client: Arc<C>,
+	/// Transaction pool instance.
+	pub pool: Arc<P>,
+	/// Whether to deny unsafe calls
+	pub deny_unsafe: DenyUnsafe,
+}
+
+/// A IO handler that uses all Full RPC extensions.
+pub type RpcExtension = jsonrpsee::RpcModule<()>;
+
+/// RPC of tangle-kusama runtime.
+pub fn create_full<C, P>(
+	deps: FullDeps<C, P>,
+) -> Result<RpcExtension, Box<dyn std::error::Error + Send + Sync>>
+where
+	C: ProvideRuntimeApi<Block>
+		+ HeaderBackend<Block>
+		+ HeaderMetadata<Block, Error = BlockChainError>
+		+ Send
+		+ Sync
+		+ 'static,
+	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
+	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
+	C::Api: FarmingRuntimeApi<Block, AccountId, PoolId, CurrencyId>,
+	C::Api: FeeRuntimeApi<Block, AccountId>,
+	C::Api: SalpRuntimeApi<Block, ParaId, AccountId>,
+	C::Api: StablePoolRuntimeApi<Block>,
+	C::Api: LendMarketApi<Block, AccountId, Balance>,
+	C::Api: ZenlinkProtocolRuntimeApi<Block, AccountId, AssetId>,
+	C::Api:
+		zenlink_stable_amm_runtime_api::StableAmmApi<Block, CurrencyId, Balance, AccountId, PoolId>,
+	C::Api: BlockBuilder<Block>,
+	P: TransactionPool + Sync + Send + 'static,
+{
+	let mut module = RpcExtension::new(());
+	let FullDeps { client, pool, deny_unsafe } = deps;
+
+	module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
+	module.merge(TransactionPayment::new(client.clone()).into_rpc())?;
+
+	module.merge(FarmingRpc::new(client.clone()).into_rpc())?;
+	module.merge(FlexibleFeeRpc::new(client.clone()).into_rpc())?;
+	module.merge(SalpRpc::new(client.clone()).into_rpc())?;
+	module.merge(ZenlinkProtocol::new(client.clone()).into_rpc())?;
+	module.merge(StableAmm::new(client.clone()).into_rpc())?;
+	module.merge(StablePoolRpc::new(client.clone()).into_rpc())?;
+	module.merge(LendMarket::new(client).into_rpc())?;
+
+	Ok(module)
+}
+
+/// RPC of tangle-polkadot runtime.
+pub fn create_full_polkadot<C, P>(
+	deps: FullDeps<C, P>,
+) -> Result<RpcExtension, Box<dyn std::error::Error + Send + Sync>>
+where
+	C: ProvideRuntimeApi<Block>
+		+ HeaderBackend<Block>
+		+ HeaderMetadata<Block, Error = BlockChainError>
+		+ Send
+		+ Sync
+		+ 'static
+		+ BlockIdTo<Block>,
+	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
+	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
+	C::Api: FarmingRuntimeApi<Block, AccountId, PoolId, CurrencyId>,
+	C::Api: FeeRuntimeApi<Block, AccountId>,
+	C::Api: SalpRuntimeApi<Block, ParaId, AccountId>,
+	C::Api: VeMintingRuntimeApi<Block, AccountId>,
+	C::Api: LendMarketApi<Block, AccountId, Balance>,
+	C::Api: ZenlinkProtocolRuntimeApi<Block, AccountId, AssetId>,
+	C::Api: StablePoolRuntimeApi<Block>,
+	C::Api: BlockBuilder<Block>,
+	P: TransactionPool + Sync + Send + 'static,
+{
+	let mut module = RpcExtension::new(());
+	let FullDeps { client, pool, deny_unsafe } = deps;
+
+	module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
+	module.merge(TransactionPayment::new(client.clone()).into_rpc())?;
+
+	module.merge(FarmingRpc::new(client.clone()).into_rpc())?;
+	module.merge(FlexibleFeeRpc::new(client.clone()).into_rpc())?;
+	module.merge(SalpRpc::new(client.clone()).into_rpc())?;
+	module.merge(VeMintingRpc::new(client.clone()).into_rpc())?;
+	module.merge(ZenlinkProtocol::new(client.clone()).into_rpc())?;
+	module.merge(StablePoolRpc::new(client.clone()).into_rpc())?;
+	module.merge(LendMarket::new(client).into_rpc())?;
+
+	Ok(module)
+}

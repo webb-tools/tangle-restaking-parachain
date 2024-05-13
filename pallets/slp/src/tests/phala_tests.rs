@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,10 +22,10 @@ use crate::{
 	Junctions::X2,
 	*,
 };
-use bifrost_primitives::currency::{PHA, VPHA};
 use frame_support::{assert_noop, assert_ok, PalletId};
 use polkadot_parachain_primitives::primitives::Sibling;
 use sp_runtime::traits::AccountIdConversion;
+use tangle_primitives::currency::{PHA, VPHA};
 
 // parents 0 means vault, parents 1 means stake_pool
 const VALIDATOR_0_LOCATION: MultiLocation =
@@ -46,20 +43,20 @@ const VALIDATOR_1_LOCATION: MultiLocation =
 #[test]
 fn initialize_phala_delegator_works() {
 	ExtBuilder::default().build().execute_with(|| {
-		let bifrost_parachain_account_id_32_right: AccountId =
+		let tangle_parachain_account_id_32_right: AccountId =
 			// parachain_account: 43E7ZtPTcFQLEGnJCWmiNDoof4AKGukKFX47xA1VDJRtJ1ME
 			hex_literal::hex!["7369626cd1070000000000000000000000000000000000000000000000000000"]
 				.into();
-		let bifrost_parachain_account_id_32: AccountId =
+		let tangle_parachain_account_id_32: AccountId =
 			Sibling::from(2001).into_account_truncating();
-		assert_eq!(bifrost_parachain_account_id_32_right, bifrost_parachain_account_id_32);
+		assert_eq!(tangle_parachain_account_id_32_right, tangle_parachain_account_id_32);
 
 		// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 		let subaccount_id_0_right: AccountId =
 			hex_literal::hex!["290bf94235666a351d9c8082c77e689813a905d0bbffdbd8b4a619ec5303ba27"]
 				.into();
 		let subaccount_id_0 = SubAccountIndexMultiLocationConvertor::derivative_account_id(
-			bifrost_parachain_account_id_32.clone(),
+			tangle_parachain_account_id_32.clone(),
 			0,
 		);
 		assert_eq!(subaccount_id_0_right, subaccount_id_0);
@@ -69,7 +66,7 @@ fn initialize_phala_delegator_works() {
 			hex_literal::hex!["c94f02677ffb78dc23fbd3b95beb2650fe4fa5c466e5aedee74e89d96351800c"]
 				.into();
 		let subaccount_id_1 = SubAccountIndexMultiLocationConvertor::derivative_account_id(
-			bifrost_parachain_account_id_32,
+			tangle_parachain_account_id_32,
 			1,
 		);
 		assert_eq!(subaccount_id_1_right, subaccount_id_1);
@@ -164,10 +161,9 @@ fn add_validator_works() {
 
 #[test]
 fn phala_delegate_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
-	let subaccount_id_0: AccountId =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0);
+	let subaccount_id_0: AccountId = Utility::derivative_account_id(tangle_parachain_account_id, 0);
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -369,10 +365,9 @@ fn phala_xcm_setup() {
 }
 
 fn phala_setup() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
-	let subaccount_id_0: AccountId =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0);
+	let subaccount_id_0: AccountId = Utility::derivative_account_id(tangle_parachain_account_id, 0);
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -405,10 +400,10 @@ fn phala_setup() {
 
 #[test]
 fn phala_bond_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -532,10 +527,9 @@ fn phala_bond_works() {
 
 #[test]
 fn phala_unbond_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
-	let subaccount_id_0: AccountId =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0);
+	let subaccount_id_0: AccountId = Utility::derivative_account_id(tangle_parachain_account_id, 0);
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -688,10 +682,10 @@ fn phala_unbond_works() {
 
 #[test]
 fn phala_rebond_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -748,10 +742,10 @@ fn phala_rebond_works() {
 
 #[test]
 fn phala_undelegate_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -852,10 +846,10 @@ fn phala_undelegate_works() {
 
 #[test]
 fn phala_redelegate_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -926,10 +920,10 @@ fn phala_redelegate_works() {
 
 #[test]
 fn phala_liquidize_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1021,10 +1015,10 @@ fn phala_liquidize_works() {
 
 #[test]
 fn phala_bond_confirm_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1100,10 +1094,10 @@ fn phala_bond_confirm_works() {
 
 #[test]
 fn phala_unbond_confirm_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1178,10 +1172,10 @@ fn phala_unbond_confirm_works() {
 
 #[test]
 fn phala_transfer_back_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1231,10 +1225,10 @@ fn phala_transfer_back_works() {
 
 #[test]
 fn phala_transfer_to_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1291,10 +1285,10 @@ fn phala_transfer_to_works() {
 
 #[test]
 fn supplement_fee_account_whitelist_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1407,11 +1401,11 @@ fn supplement_fee_account_whitelist_works() {
 }
 
 #[test]
-fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+fn charge_host_fee_and_tune_lst_exchange_rate_works() {
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1427,7 +1421,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 
 		phala_setup();
 
-		bifrost_vtoken_minting::OngoingTimeUnit::<Runtime>::insert(PHA, TimeUnit::Hour(1));
+		tangle_lst_minting::OngoingTimeUnit::<Runtime>::insert(PHA, TimeUnit::Hour(1));
 
 		let ledger = PhalaLedger::<BalanceOf<Runtime>> {
 			account: subaccount_0_location,
@@ -1443,7 +1437,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 		// Set delegator ledger
 		DelegatorLedgers::<Runtime>::insert(PHA, subaccount_0_location, phala_ledger);
 
-		// Set the hosting fee to be 20%, and the beneficiary to be bifrost treasury account.
+		// Set the hosting fee to be 20%, and the beneficiary to be tangle treasury account.
 		let pct = Permill::from_percent(20);
 		let treasury_location = MultiLocation {
 			parents: 0,
@@ -1463,12 +1457,12 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 			Some((1, pct_100))
 		));
 
-		// First set base vtoken exchange rate. Should be 1:1.
+		// First set base lst exchange rate. Should be 1:1.
 		assert_ok!(Currencies::deposit(VPHA, &ALICE, 100));
 		assert_ok!(Slp::increase_token_pool(RuntimeOrigin::signed(ALICE), PHA, 100));
 
-		// call the charge_host_fee_and_tune_vtoken_exchange_rate
-		assert_ok!(Slp::charge_host_fee_and_tune_vtoken_exchange_rate(
+		// call the charge_host_fee_and_tune_lst_exchange_rate
+		assert_ok!(Slp::charge_host_fee_and_tune_lst_exchange_rate(
 			RuntimeOrigin::signed(ALICE),
 			PHA,
 			100,
@@ -1476,7 +1470,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 		));
 
 		// Tokenpool should have been added 100.
-		let new_token_pool_amount = <Runtime as Config>::VtokenMinting::get_token_pool(PHA);
+		let new_token_pool_amount = <Runtime as Config>::lstMinting::get_token_pool(PHA);
 		assert_eq!(new_token_pool_amount, 200);
 
 		// let tune_record = DelegatorLatestTuneRecord::<Runtime>::get(PHA,
@@ -1494,10 +1488,10 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 
 #[test]
 fn add_validator_and_remove_validator_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1548,10 +1542,10 @@ fn add_validator_and_remove_validator_works() {
 
 #[test]
 fn phala_convert_asset_works() {
-	let bifrost_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
 	let subaccount_0_account_id_32: [u8; 32] =
-		Utility::derivative_account_id(bifrost_parachain_account_id, 0).into();
+		Utility::derivative_account_id(tangle_parachain_account_id, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,

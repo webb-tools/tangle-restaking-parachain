@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,11 +18,11 @@
 #![cfg(test)]
 
 use super::*;
-use bifrost_primitives::TokenSymbol;
 use frame_support::{assert_noop, assert_ok};
 use mock::{
 	AssetRegistry, CouncilAccount, ExtBuilder, Runtime, RuntimeEvent, RuntimeOrigin, System,
 };
+use tangle_primitives::TokenSymbol;
 use xcm::prelude::*;
 
 #[test]
@@ -188,7 +185,7 @@ fn update_native_asset_works() {
 fn register_token_metadata_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
@@ -204,10 +201,10 @@ fn register_token_metadata_should_work() {
 }
 
 #[test]
-fn register_vtoken_metadata_should_work() {
+fn register_lst_metadata_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
@@ -219,10 +216,7 @@ fn register_vtoken_metadata_should_work() {
 			minimal_balance: 0,
 		};
 		assert_noop!(
-			AssetRegistry::register_vtoken_metadata(
-				RuntimeOrigin::signed(CouncilAccount::get()),
-				1
-			),
+			AssetRegistry::register_lst_metadata(RuntimeOrigin::signed(CouncilAccount::get()), 1),
 			Error::<Runtime>::CurrencyIdNotExists
 		);
 
@@ -231,15 +225,12 @@ fn register_vtoken_metadata_should_work() {
 			Box::new(metadata.clone())
 		));
 
-		assert_ok!(AssetRegistry::register_vtoken_metadata(
+		assert_ok!(AssetRegistry::register_lst_metadata(
 			RuntimeOrigin::signed(CouncilAccount::get()),
 			0
 		));
 
-		assert_eq!(
-			CurrencyMetadatas::<Runtime>::get(CurrencyId::VToken2(0)),
-			Some(v_metadata.clone())
-		)
+		assert_eq!(CurrencyMetadatas::<Runtime>::get(CurrencyId::lst2(0)), Some(v_metadata.clone()))
 	})
 }
 
@@ -259,10 +250,7 @@ fn register_vstoken_metadata_should_work() {
 			minimal_balance: 0,
 		};
 		assert_noop!(
-			AssetRegistry::register_vtoken_metadata(
-				RuntimeOrigin::signed(CouncilAccount::get()),
-				1
-			),
+			AssetRegistry::register_lst_metadata(RuntimeOrigin::signed(CouncilAccount::get()), 1),
 			Error::<Runtime>::CurrencyIdNotExists
 		);
 
@@ -296,10 +284,7 @@ fn register_vsbond_metadata_should_work() {
 		let v_metadata =
 			AssetMetadata { name: name.clone(), symbol: name, decimals: 12, minimal_balance: 0 };
 		assert_noop!(
-			AssetRegistry::register_vtoken_metadata(
-				RuntimeOrigin::signed(CouncilAccount::get()),
-				1
-			),
+			AssetRegistry::register_lst_metadata(RuntimeOrigin::signed(CouncilAccount::get()), 1),
 			Error::<Runtime>::CurrencyIdNotExists
 		);
 
@@ -327,7 +312,7 @@ fn register_vsbond_metadata_should_work() {
 fn register_multilocation_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
@@ -390,7 +375,7 @@ fn register_multilocation_should_work() {
 fn force_set_multilocation_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,

@@ -1,7 +1,7 @@
 [package]
-name = "bifrost-xcm-interface"
+name = "tangle-xcm-interface"
 version = "0.8.0"
-authors = ["Ron yang<yrong1997@gmail.com>"]
+
 edition = "2021"
 
 [dependencies]
@@ -18,8 +18,8 @@ pallet-xcm = { workspace = true }
 xcm = { workspace = true }
 cumulus-primitives-core = { workspace = true }
 orml-traits = { workspace = true }
-bifrost-primitives = { workspace = true }
-bifrost-asset-registry = { workspace = true }
+tangle-primitives = { workspace = true }
+tangle-asset-registry = { workspace = true }
 
 [dev-dependencies]
 sp-io = { workspace = true }
@@ -42,7 +42,7 @@ std = [
 	"xcm/std",
 	"orml-traits/std",
 	"cumulus-primitives-core/std",
-	"bifrost-primitives/std",
+	"tangle-primitives/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking",

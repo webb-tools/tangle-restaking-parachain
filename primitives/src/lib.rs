@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Low-level types used throughout the Bifrost code.
+//! Low-level types used throughout the tangle code.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
@@ -62,8 +59,8 @@ pub type AccountIndex = u32;
 /// An index to an asset
 pub type AssetId = u32;
 
-/// Vtoken Mint type
-pub type VtokenMintPrice = u128;
+/// lst Mint type
+pub type lstMintPrice = u128;
 
 /// Balance of an account.
 pub type Balance = u128;
@@ -160,12 +157,12 @@ pub type TimeStampedPrice = orml_oracle::TimestampedValue<Price, Moment>;
 pub enum ExtraFeeName {
 	SalpContribute,
 	StatemineTransfer,
-	VoteVtoken,
+	Votelst,
 	VoteRemoveDelegatorVote,
 	NoExtraFee,
 }
 
-// For vtoken-minting and slp modules
+// For lst-minting and slp modules
 #[derive(Encode, Decode, Clone, RuntimeDebug, Eq, TypeInfo, MaxEncodedLen)]
 pub enum TimeUnit {
 	// Kusama staking time unit
@@ -225,7 +222,7 @@ impl PartialOrd for TimeUnit {
 	}
 }
 
-// For vtoken-minting
+// For lst-minting
 #[derive(
 	PartialEq, Eq, Clone, Encode, Decode, MaxEncodedLen, RuntimeDebug, scale_info::TypeInfo,
 )]
@@ -332,10 +329,11 @@ pub enum XcmOperationType {
 	XtokensTransferBack,
 	ExecuteLeave,
 	ConvertAsset,
-	// VtokenVoting operations
+	// lstVoting operations
 	Vote,
 	RemoveVote,
 	Any,
+	SupplementaryFee,
 }
 
 pub struct ExtraFeeInfo {

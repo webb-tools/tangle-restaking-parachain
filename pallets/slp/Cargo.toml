@@ -1,5 +1,5 @@
 [package]
-name = "bifrost-slp"
+name = "tangle-slp"
 version = "0.8.0"
 authors = ["Herry Ho <herry.heyi@gmail.com>"]
 edition = "2021"
@@ -13,7 +13,7 @@ parity-scale-codec = { workspace = true, features = ["derive"] }
 scale-info = { workspace = true, features = ["derive"] }
 orml-traits = { workspace = true }
 orml-tokens = { workspace = true }
-bifrost-primitives = { workspace = true }
+tangle-primitives = { workspace = true }
 frame-benchmarking = { workspace = true, optional = true }
 frame-support = { workspace = true }
 frame-system = { workspace = true }
@@ -28,19 +28,20 @@ cumulus-primitives-core = { workspace = true }
 pallet-balances = { workspace = true }
 pallet-utility = { workspace = true }
 polkadot-parachain-primitives = { workspace = true }
-bifrost-xcm-interface = { workspace = true }
-bifrost-vtoken-minting = { workspace = true }
-bifrost-asset-registry = { workspace = true }
-bifrost-stable-pool = { workspace = true }
-bifrost-stable-asset = { workspace = true }
+tangle-xcm-interface = { workspace = true }
+tangle-lst-minting = { workspace = true }
+tangle-asset-registry = { workspace = true }
+tangle-parachain-staking = { workspace = true }
+tangle-stable-pool = { workspace = true }
+tangle-stable-asset = { workspace = true }
 
 [dev-dependencies]
 hex = "0.4.3"
 orml-tokens = { workspace = true }
 orml-xtokens = { workspace = true }
 orml-traits = { workspace = true }
-bifrost-currencies = { workspace = true }
-bifrost-asset-registry = { workspace = true }
+tangle-currencies = { workspace = true }
+tangle-asset-registry = { workspace = true }
 pallet-indices = { workspace = true }
 xcm-executor = { workspace = true }
 xcm-builder = { workspace = true }
@@ -59,7 +60,7 @@ std = [
     "sp-arithmetic/std",
     "orml-traits/std",
     "orml-tokens/std",
-    "bifrost-primitives/std",
+    "tangle-primitives/std",
     "sp-core/std",
     "sp-io/std",
     "sp-std/std",
@@ -69,10 +70,11 @@ std = [
     "pallet-balances/std",
     "pallet-indices/std",
     "pallet-utility/std",
-    "bifrost-vtoken-minting/std",
-    "bifrost-asset-registry/std",
+    "tangle-lst-minting/std",
+    "tangle-asset-registry/std",
+    "tangle-parachain-staking/std",
     "orml-xtokens/std",
-    "bifrost-stable-pool/std",
+    "tangle-stable-pool/std",
 ]
 
 runtime-benchmarks = [
@@ -81,6 +83,6 @@ runtime-benchmarks = [
     "frame-system/runtime-benchmarks",
     "pallet-xcm/runtime-benchmarks",
     "xcm-builder/runtime-benchmarks",
-    "bifrost-primitives/runtime-benchmarks",
+    "tangle-primitives/runtime-benchmarks",
 ]
 try-runtime = [ "frame-support/try-runtime" ]

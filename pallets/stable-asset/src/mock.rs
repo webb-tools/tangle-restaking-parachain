@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -41,7 +38,7 @@ frame_support::construct_runtime!(
 		System: frame_system,
 		Balances: pallet_balances,
 		Tokens: orml_tokens,
-		Currencies: bifrost_currencies,
+		Currencies: tangle_currencies,
 		StableAsset: stable_asset,
 	}
 );
@@ -117,9 +114,9 @@ parameter_types! {
 pub type BlockNumber = u64;
 pub type Amount = i128;
 pub type AdaptedBasicCurrency =
-	bifrost_currencies::BasicCurrencyAdapter<Test, Balances, Amount, BlockNumber>;
+	tangle_currencies::BasicCurrencyAdapter<Test, Balances, Amount, BlockNumber>;
 
-impl bifrost_currencies::Config for Test {
+impl tangle_currencies::Config for Test {
 	type GetNativeCurrencyId = GetNativeCurrencyId;
 	type MultiCurrency = Tokens;
 	type NativeCurrency = AdaptedBasicCurrency;

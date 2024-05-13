@@ -1,5 +1,5 @@
 [package]
-name = "bifrost-stable-asset"
+name = "tangle-stable-asset"
 authors = ["Sora Yu <ymlll0508@gmail.com>"]
 description = "Substrate-based runtime version of NUTS stable assets."
 edition = "2021"
@@ -13,7 +13,7 @@ parity-scale-codec = { workspace = true, features = ["derive"] }
 scale-info = { workspace = true, features = ["derive"] }
 orml-traits = { workspace = true }
 log = { workspace = true }
-bifrost-primitives = { workspace = true }
+tangle-primitives = { workspace = true }
 frame-support = { workspace = true }
 frame-system = { workspace = true }
 sp-core = { workspace = true }
@@ -23,7 +23,7 @@ sp-runtime = { workspace = true }
 [dev-dependencies]
 serde = { workspace = true }
 orml-tokens = { workspace = true }
-bifrost-currencies = { workspace = true }
+tangle-currencies = { workspace = true }
 sp-io = { workspace = true }
 pallet-balances = { workspace = true }
 
@@ -36,7 +36,7 @@ std = [
 	"scale-info/std",
 	"sp-std/std",
 	"sp-runtime/std",
-	"bifrost-primitives/std",
+	"tangle-primitives/std",
 	"orml-traits/std",
 ]
 runtime-benchmarks = [

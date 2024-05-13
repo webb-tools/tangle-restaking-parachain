@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,21 +27,21 @@ pub mod weights;
 pub use weights::*;
 pub mod traits;
 
-use bifrost_primitives::{
-	CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdRegister, TimeUnit,
-	VtokenMintingOperator,
-};
-pub use bifrost_stable_asset::{
-	MintResult, PoolCount, PoolTokenIndex, Pools, RedeemMultiResult, RedeemProportionResult,
-	RedeemSingleResult, StableAsset, StableAssetPoolId, StableAssetPoolInfo, SwapResult,
-	TokenRateHardcap,
-};
 use frame_support::{self, pallet_prelude::*, sp_runtime::traits::Zero, transactional};
 use frame_system::pallet_prelude::*;
 use orml_traits::MultiCurrency;
 use sp_core::U256;
 use sp_runtime::{Permill, SaturatedConversion};
 use sp_std::prelude::*;
+use tangle_primitives::{
+	lstMintingOperator, CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdRegister,
+	TimeUnit,
+};
+pub use tangle_stable_asset::{
+	MintResult, PoolCount, PoolTokenIndex, Pools, RedeemMultiResult, RedeemProportionResult,
+	RedeemSingleResult, StableAsset, StableAssetPoolId, StableAssetPoolInfo, SwapResult,
+	TokenRateHardcap,
+};
 
 #[allow(type_alias_bounds)]
 pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
@@ -53,7 +50,7 @@ pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
 pub type AssetIdOf<T> = <T as Config>::CurrencyId;
 
 #[allow(type_alias_bounds)]
-pub type AtLeast64BitUnsignedOf<T> = <T as bifrost_stable_asset::Config>::AtLeast64BitUnsigned;
+pub type AtLeast64BitUnsignedOf<T> = <T as tangle_stable_asset::Config>::AtLeast64BitUnsigned;
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
@@ -64,7 +61,7 @@ pub mod pallet {
 
 	#[pallet::config]
 	pub trait Config:
-		frame_system::Config + bifrost_stable_asset::Config<AssetId = AssetIdOf<Self>>
+		frame_system::Config + tangle_stable_asset::Config<AssetId = AssetIdOf<Self>>
 	{
 		type WeightInfo: WeightInfo;
 
@@ -83,7 +80,7 @@ pub mod pallet {
 			+ From<CurrencyId>
 			+ Into<CurrencyId>;
 
-		type StableAsset: bifrost_stable_asset::StableAsset<
+		type StableAsset: tangle_stable_asset::StableAsset<
 			AssetId = AssetIdOf<Self>,
 			Balance = Self::Balance,
 			AccountId = AccountIdOf<Self>,
@@ -92,7 +89,7 @@ pub mod pallet {
 			BlockNumber = BlockNumberFor<Self>,
 		>;
 
-		type VtokenMinting: VtokenMintingOperator<
+		type lstMinting: lstMintingOperator<
 			AssetIdOf<Self>,
 			Self::Balance,
 			AccountIdOf<Self>,
@@ -137,7 +134,7 @@ pub mod pallet {
 				precision
 					.saturated_into::<u128>()
 					.checked_ilog10()
-					.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?
+					.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?
 					.saturated_into::<u8>(),
 			)?;
 			T::StableAsset::create_pool(
@@ -243,15 +240,15 @@ pub mod pallet {
 			T::ControlOrigin::ensure_origin(origin)?;
 			let fee_denominator: T::AtLeast64BitUnsigned = T::FeePrecision::get();
 			ensure!(
-				mint_fee.map(|x| x < fee_denominator).unwrap_or(true) &&
-					swap_fee.map(|x| x < fee_denominator).unwrap_or(true) &&
-					redeem_fee.map(|x| x < fee_denominator).unwrap_or(true),
-				bifrost_stable_asset::Error::<T>::ArgumentsError
+				mint_fee.map(|x| x < fee_denominator).unwrap_or(true)
+					&& swap_fee.map(|x| x < fee_denominator).unwrap_or(true)
+					&& redeem_fee.map(|x| x < fee_denominator).unwrap_or(true),
+				tangle_stable_asset::Error::<T>::ArgumentsError
 			);
 			Pools::<T>::try_mutate_exists(pool_id, |maybe_pool_info| -> DispatchResult {
 				let pool_info = maybe_pool_info
 					.as_mut()
-					.ok_or(bifrost_stable_asset::Error::<T>::PoolNotFound)?;
+					.ok_or(tangle_stable_asset::Error::<T>::PoolNotFound)?;
 				if let Some(fee) = mint_fee {
 					pool_info.mint_fee = fee;
 				}
@@ -261,8 +258,8 @@ pub mod pallet {
 				if let Some(fee) = redeem_fee {
 					pool_info.redeem_fee = fee;
 				}
-				bifrost_stable_asset::Pallet::<T>::deposit_event(
-					bifrost_stable_asset::Event::<T>::FeeModified {
+				tangle_stable_asset::Pallet::<T>::deposit_event(
+					tangle_stable_asset::Event::<T>::FeeModified {
 						pool_id,
 						mint_fee: pool_info.mint_fee,
 						swap_fee: pool_info.swap_fee,
@@ -285,15 +282,15 @@ pub mod pallet {
 			Pools::<T>::try_mutate_exists(pool_id, |maybe_pool_info| -> DispatchResult {
 				let pool_info = maybe_pool_info
 					.as_mut()
-					.ok_or(bifrost_stable_asset::Error::<T>::PoolNotFound)?;
+					.ok_or(tangle_stable_asset::Error::<T>::PoolNotFound)?;
 				if let Some(recipient) = fee_recipient {
 					pool_info.fee_recipient = recipient;
 				}
 				if let Some(recipient) = yield_recipient {
 					pool_info.yield_recipient = recipient;
 				}
-				bifrost_stable_asset::Pallet::<T>::deposit_event(
-					bifrost_stable_asset::Event::<T>::RecipientModified {
+				tangle_stable_asset::Pallet::<T>::deposit_event(
+					tangle_stable_asset::Event::<T>::RecipientModified {
 						pool_id,
 						fee_recipient: pool_info.fee_recipient.clone(),
 						yield_recipient: pool_info.yield_recipient.clone(),
@@ -314,42 +311,39 @@ pub mod pallet {
 			)>,
 		) -> DispatchResult {
 			T::ControlOrigin::ensure_origin(origin)?;
-			bifrost_stable_asset::Pallet::<T>::set_token_rate(pool_id, token_rate_info)
+			tangle_stable_asset::Pallet::<T>::set_token_rate(pool_id, token_rate_info)
 		}
 
 		#[pallet::call_index(10)]
-		#[pallet::weight(<T as pallet::Config>::WeightInfo::config_vtoken_auto_refresh())]
-		pub fn config_vtoken_auto_refresh(
+		#[pallet::weight(<T as pallet::Config>::WeightInfo::config_lst_auto_refresh())]
+		pub fn config_lst_auto_refresh(
 			origin: OriginFor<T>,
-			vtoken: AssetIdOf<T>,
+			lst: AssetIdOf<T>,
 			hardcap: Permill,
 		) -> DispatchResult {
 			T::ControlOrigin::ensure_origin(origin)?;
 
 			ensure!(
-				CurrencyId::is_vtoken(&vtoken.into()),
-				bifrost_stable_asset::Error::<T>::ArgumentsError
+				CurrencyId::is_lst(&lst.into()),
+				tangle_stable_asset::Error::<T>::ArgumentsError
 			);
-			TokenRateHardcap::<T>::insert(vtoken, hardcap);
+			TokenRateHardcap::<T>::insert(lst, hardcap);
 
-			bifrost_stable_asset::Pallet::<T>::deposit_event(
-				bifrost_stable_asset::Event::<T>::TokenRateHardcapConfigured { vtoken, hardcap },
+			tangle_stable_asset::Pallet::<T>::deposit_event(
+				tangle_stable_asset::Event::<T>::TokenRateHardcapConfigured { lst, hardcap },
 			);
 			Ok(())
 		}
 
 		#[pallet::call_index(11)]
-		#[pallet::weight(<T as pallet::Config>::WeightInfo::remove_vtoken_auto_refresh())]
-		pub fn remove_vtoken_auto_refresh(
-			origin: OriginFor<T>,
-			vtoken: AssetIdOf<T>,
-		) -> DispatchResult {
+		#[pallet::weight(<T as pallet::Config>::WeightInfo::remove_lst_auto_refresh())]
+		pub fn remove_lst_auto_refresh(origin: OriginFor<T>, lst: AssetIdOf<T>) -> DispatchResult {
 			T::ControlOrigin::ensure_origin(origin)?;
 
-			TokenRateHardcap::<T>::remove(vtoken);
+			TokenRateHardcap::<T>::remove(lst);
 
-			bifrost_stable_asset::Pallet::<T>::deposit_event(
-				bifrost_stable_asset::Event::<T>::TokenRateHardcapRemoved { vtoken },
+			tangle_stable_asset::Pallet::<T>::deposit_event(
+				tangle_stable_asset::Event::<T>::TokenRateHardcapRemoved { lst },
 			);
 			Ok(())
 		}
@@ -366,7 +360,7 @@ impl<T: Config> Pallet<T> {
 				return Some((
 					token_in,
 					T::MultiCurrency::total_issuance(token_in).into(),
-					T::VtokenMinting::get_token_pool(token_out).into(),
+					T::lstMinting::get_token_pool(token_out).into(),
 					hardcap,
 				));
 			}
@@ -375,7 +369,7 @@ impl<T: Config> Pallet<T> {
 				return Some((
 					token_out,
 					T::MultiCurrency::total_issuance(token_out).into(),
-					T::VtokenMinting::get_token_pool(token_in).into(),
+					T::lstMinting::get_token_pool(token_in).into(),
 					hardcap,
 				));
 			}
@@ -385,13 +379,13 @@ impl<T: Config> Pallet<T> {
 
 	fn refresh_token_rate(
 		pool_id: StableAssetPoolId,
-		vtoken: AssetIdOf<T>,
-		vtoken_issuance: AtLeast64BitUnsignedOf<T>,
+		lst: AssetIdOf<T>,
+		lst_issuance: AtLeast64BitUnsignedOf<T>,
 		token_pool_amount: AtLeast64BitUnsignedOf<T>,
 		hardcap: Permill,
 	) -> Option<()> {
 		if let Some((demoninator, numerator)) =
-			bifrost_stable_asset::Pallet::<T>::get_token_rate(pool_id, vtoken)
+			tangle_stable_asset::Pallet::<T>::get_token_rate(pool_id, lst)
 		{
 			let fee_denominator = T::FeePrecision::get().saturated_into::<u128>();
 			let numerator_u256 = U256::from(numerator.saturated_into::<u128>());
@@ -402,15 +396,15 @@ impl<T: Config> Pallet<T> {
 				.checked_div(demoninator_u256)?;
 			let new_price = U256::from(fee_denominator)
 				.checked_mul(U256::from(token_pool_amount.saturated_into::<u128>()))?
-				.checked_div(U256::from(vtoken_issuance.saturated_into::<u128>()))?;
+				.checked_div(U256::from(lst_issuance.saturated_into::<u128>()))?;
 			let old_price = U256::from(fee_denominator)
 				.checked_mul(numerator_u256)?
 				.checked_div(demoninator_u256)?;
 			// Skip if the new price is less than old price.
 			if new_price <= delta.checked_add(old_price)? && new_price > old_price {
-				return bifrost_stable_asset::Pallet::<T>::set_token_rate(
+				return tangle_stable_asset::Pallet::<T>::set_token_rate(
 					pool_id,
-					sp_std::vec![(vtoken, (vtoken_issuance, token_pool_amount))],
+					sp_std::vec![(lst, (lst_issuance, token_pool_amount))],
 				)
 				.ok();
 			} else if new_price == old_price {
@@ -421,8 +415,8 @@ impl<T: Config> Pallet<T> {
 		None
 	}
 
-	fn get_token_rate_hardcap(vtoken: AssetIdOf<T>) -> Option<Permill> {
-		TokenRateHardcap::<T>::get(vtoken)
+	fn get_token_rate_hardcap(lst: AssetIdOf<T>) -> Option<Permill> {
+		TokenRateHardcap::<T>::get(lst)
 	}
 
 	#[transactional]
@@ -433,7 +427,7 @@ impl<T: Config> Pallet<T> {
 		min_mint_amount: T::Balance,
 	) -> DispatchResult {
 		let mut pool_info =
-			T::StableAsset::pool(pool_id).ok_or(bifrost_stable_asset::Error::<T>::PoolNotFound)?;
+			T::StableAsset::pool(pool_id).ok_or(tangle_stable_asset::Error::<T>::PoolNotFound)?;
 		let amounts_old = amounts.clone();
 		for (i, amount) in amounts.iter_mut().enumerate() {
 			*amount = Self::upscale(
@@ -442,33 +436,33 @@ impl<T: Config> Pallet<T> {
 				*pool_info
 					.assets
 					.get(i as usize)
-					.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
+					.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
 			)?;
 		}
 		T::StableAsset::collect_yield(pool_id, &mut pool_info)?;
 		let MintResult { mint_amount, fee_amount, balances, total_supply } =
-			bifrost_stable_asset::Pallet::<T>::get_mint_amount(&pool_info, &amounts)?;
+			tangle_stable_asset::Pallet::<T>::get_mint_amount(&pool_info, &amounts)?;
 		let a = T::StableAsset::get_a(
 			pool_info.a,
 			pool_info.a_block,
 			pool_info.future_a,
 			pool_info.future_a_block,
 		)
-		.ok_or(bifrost_stable_asset::Error::<T>::Math)?;
+		.ok_or(tangle_stable_asset::Error::<T>::Math)?;
 		ensure!(mint_amount >= min_mint_amount, Error::<T>::MintUnderMin);
 		for (i, amount) in amounts.iter().enumerate() {
 			if *amount == Zero::zero() {
 				continue;
 			}
 			ensure!(
-				amounts_old[i] >=
-					Self::downscale(
+				amounts_old[i]
+					>= Self::downscale(
 						*amount,
 						pool_id,
 						*pool_info
 							.assets
 							.get(i as usize)
-							.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
+							.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
 					)?,
 				Error::<T>::CantMint
 			);
@@ -480,13 +474,13 @@ impl<T: Config> Pallet<T> {
 			)?;
 		}
 		if fee_amount > Zero::zero() {
-			<T as bifrost_stable_asset::Config>::Assets::deposit(
+			<T as tangle_stable_asset::Config>::Assets::deposit(
 				pool_info.pool_asset,
 				&pool_info.fee_recipient,
 				fee_amount,
 			)?;
 		}
-		<T as bifrost_stable_asset::Config>::Assets::deposit(
+		<T as tangle_stable_asset::Config>::Assets::deposit(
 			pool_info.pool_asset,
 			who,
 			mint_amount.into(),
@@ -495,8 +489,8 @@ impl<T: Config> Pallet<T> {
 		pool_info.balances = balances;
 		T::StableAsset::collect_fee(pool_id, &mut pool_info)?;
 		T::StableAsset::insert_pool(pool_id, &pool_info);
-		bifrost_stable_asset::Pallet::<T>::deposit_event(
-			bifrost_stable_asset::Event::<T>::LiquidityAdded {
+		tangle_stable_asset::Pallet::<T>::deposit_event(
+			tangle_stable_asset::Event::<T>::LiquidityAdded {
 				minter: who.clone(),
 				pool_id,
 				a,
@@ -519,11 +513,11 @@ impl<T: Config> Pallet<T> {
 		min_redeem_amounts: Vec<T::Balance>,
 	) -> DispatchResult {
 		let mut pool_info =
-			T::StableAsset::pool(pool_id).ok_or(bifrost_stable_asset::Error::<T>::PoolNotFound)?;
+			T::StableAsset::pool(pool_id).ok_or(tangle_stable_asset::Error::<T>::PoolNotFound)?;
 		T::StableAsset::collect_yield(pool_id, &mut pool_info)?;
 		ensure!(
 			min_redeem_amounts.len() == pool_info.assets.len(),
-			bifrost_stable_asset::Error::<T>::ArgumentsMismatch
+			tangle_stable_asset::Error::<T>::ArgumentsMismatch
 		);
 		let RedeemProportionResult {
 			mut amounts,
@@ -531,7 +525,7 @@ impl<T: Config> Pallet<T> {
 			fee_amount,
 			total_supply,
 			redeem_amount,
-		} = bifrost_stable_asset::Pallet::<T>::get_redeem_proportion_amount(&pool_info, amount)?;
+		} = tangle_stable_asset::Pallet::<T>::get_redeem_proportion_amount(&pool_info, amount)?;
 
 		for (i, amount) in amounts.iter_mut().enumerate() {
 			*amount = Self::downscale(
@@ -540,20 +534,20 @@ impl<T: Config> Pallet<T> {
 				*pool_info
 					.assets
 					.get(i as usize)
-					.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
+					.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
 			)?;
 		}
 
 		let zero = Zero::zero();
 		for i in 0..amounts.len() {
 			ensure!(
-				amounts[i] >=
-					*min_redeem_amounts
+				amounts[i]
+					>= *min_redeem_amounts
 						.get(i as usize)
-						.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
-				bifrost_stable_asset::Error::<T>::RedeemUnderMin
+						.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
+				tangle_stable_asset::Error::<T>::RedeemUnderMin
 			);
-			<T as bifrost_stable_asset::Config>::Assets::transfer(
+			<T as tangle_stable_asset::Config>::Assets::transfer(
 				pool_info.assets[i],
 				&pool_info.account_id,
 				who,
@@ -561,14 +555,14 @@ impl<T: Config> Pallet<T> {
 			)?;
 		}
 		if fee_amount > zero {
-			<T as bifrost_stable_asset::Config>::Assets::transfer(
+			<T as tangle_stable_asset::Config>::Assets::transfer(
 				pool_info.pool_asset,
 				who,
 				&pool_info.fee_recipient,
 				fee_amount,
 			)?;
 		}
-		<T as bifrost_stable_asset::Config>::Assets::withdraw(
+		<T as tangle_stable_asset::Config>::Assets::withdraw(
 			pool_info.pool_asset,
 			who,
 			redeem_amount,
@@ -586,9 +580,9 @@ impl<T: Config> Pallet<T> {
 			pool_info.future_a,
 			pool_info.future_a_block,
 		)
-		.ok_or(bifrost_stable_asset::Error::<T>::Math)?;
-		bifrost_stable_asset::Pallet::<T>::deposit_event(
-			bifrost_stable_asset::Event::<T>::RedeemedProportion {
+		.ok_or(tangle_stable_asset::Error::<T>::Math)?;
+		tangle_stable_asset::Pallet::<T>::deposit_event(
+			tangle_stable_asset::Event::<T>::RedeemedProportion {
 				redeemer: who.clone(),
 				pool_id,
 				a,
@@ -611,7 +605,7 @@ impl<T: Config> Pallet<T> {
 		max_redeem_amount: T::Balance,
 	) -> DispatchResult {
 		let mut pool_info =
-			T::StableAsset::pool(pool_id).ok_or(bifrost_stable_asset::Error::<T>::PoolNotFound)?;
+			T::StableAsset::pool(pool_id).ok_or(tangle_stable_asset::Error::<T>::PoolNotFound)?;
 		T::StableAsset::collect_yield(pool_id, &mut pool_info)?;
 		let mut new_amounts = amounts.clone();
 		for (i, amount) in new_amounts.iter_mut().enumerate() {
@@ -621,18 +615,18 @@ impl<T: Config> Pallet<T> {
 				*pool_info
 					.assets
 					.get(i as usize)
-					.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
+					.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
 			)?;
 		}
 		let RedeemMultiResult { redeem_amount, fee_amount, balances, total_supply, burn_amount } =
-			bifrost_stable_asset::Pallet::<T>::get_redeem_multi_amount(
+			tangle_stable_asset::Pallet::<T>::get_redeem_multi_amount(
 				&mut pool_info,
 				&new_amounts,
 			)?;
 		let zero: T::Balance = Zero::zero();
 		ensure!(redeem_amount <= max_redeem_amount, Error::<T>::RedeemOverMax);
 		if fee_amount > zero {
-			<T as bifrost_stable_asset::Config>::Assets::transfer(
+			<T as tangle_stable_asset::Config>::Assets::transfer(
 				pool_info.pool_asset,
 				who,
 				&pool_info.fee_recipient,
@@ -641,7 +635,7 @@ impl<T: Config> Pallet<T> {
 		}
 		for (idx, amount) in amounts.iter().enumerate() {
 			if *amount > zero {
-				<T as bifrost_stable_asset::Config>::Assets::transfer(
+				<T as tangle_stable_asset::Config>::Assets::transfer(
 					pool_info.assets[idx],
 					&pool_info.account_id,
 					who,
@@ -649,7 +643,7 @@ impl<T: Config> Pallet<T> {
 				)?;
 			}
 		}
-		<T as bifrost_stable_asset::Config>::Assets::withdraw(
+		<T as tangle_stable_asset::Config>::Assets::withdraw(
 			pool_info.pool_asset,
 			who,
 			burn_amount,
@@ -665,9 +659,9 @@ impl<T: Config> Pallet<T> {
 			pool_info.future_a,
 			pool_info.future_a_block,
 		)
-		.ok_or(bifrost_stable_asset::Error::<T>::Math)?;
-		bifrost_stable_asset::Pallet::<T>::deposit_event(
-			bifrost_stable_asset::Event::<T>::RedeemedMulti {
+		.ok_or(tangle_stable_asset::Error::<T>::Math)?;
+		tangle_stable_asset::Pallet::<T>::deposit_event(
+			tangle_stable_asset::Event::<T>::RedeemedMulti {
 				redeemer: who.clone(),
 				pool_id,
 				a,
@@ -692,24 +686,24 @@ impl<T: Config> Pallet<T> {
 		asset_length: u32,
 	) -> Result<(T::Balance, T::Balance), DispatchError> {
 		let mut pool_info =
-			T::StableAsset::pool(pool_id).ok_or(bifrost_stable_asset::Error::<T>::PoolNotFound)?;
+			T::StableAsset::pool(pool_id).ok_or(tangle_stable_asset::Error::<T>::PoolNotFound)?;
 
 		T::StableAsset::collect_yield(pool_id, &mut pool_info)?;
 		let RedeemSingleResult { mut dy, fee_amount, total_supply, balances, redeem_amount } =
-			bifrost_stable_asset::Pallet::<T>::get_redeem_single_amount(&mut pool_info, amount, i)?;
+			tangle_stable_asset::Pallet::<T>::get_redeem_single_amount(&mut pool_info, amount, i)?;
 		dy = Self::downscale(
 			dy,
 			pool_id,
 			*pool_info
 				.assets
 				.get(i as usize)
-				.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
+				.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
 		)?;
 		let i_usize = i as usize;
 		let pool_size = pool_info.assets.len();
 		let asset_length_usize = asset_length as usize;
-		ensure!(asset_length_usize == pool_size, bifrost_stable_asset::Error::<T>::ArgumentsError);
-		ensure!(dy >= min_redeem_amount, bifrost_stable_asset::Error::<T>::RedeemUnderMin);
+		ensure!(asset_length_usize == pool_size, tangle_stable_asset::Error::<T>::ArgumentsError);
+		ensure!(dy >= min_redeem_amount, tangle_stable_asset::Error::<T>::RedeemUnderMin);
 		if fee_amount > Zero::zero() {
 			T::MultiCurrency::transfer(
 				pool_info.pool_asset,
@@ -733,9 +727,9 @@ impl<T: Config> Pallet<T> {
 			pool_info.future_a,
 			pool_info.future_a_block,
 		)
-		.ok_or(bifrost_stable_asset::Error::<T>::Math)?;
-		bifrost_stable_asset::Pallet::<T>::deposit_event(
-			bifrost_stable_asset::Event::<T>::RedeemedSingle {
+		.ok_or(tangle_stable_asset::Error::<T>::Math)?;
+		tangle_stable_asset::Pallet::<T>::deposit_event(
+			tangle_stable_asset::Event::<T>::RedeemedSingle {
 				redeemer: who.clone(),
 				pool_id,
 				a,
@@ -761,20 +755,20 @@ impl<T: Config> Pallet<T> {
 		min_dy: T::Balance,
 	) -> DispatchResult {
 		let mut pool_info =
-			T::StableAsset::pool(pool_id).ok_or(bifrost_stable_asset::Error::<T>::PoolNotFound)?;
+			T::StableAsset::pool(pool_id).ok_or(tangle_stable_asset::Error::<T>::PoolNotFound)?;
 
 		let token_in = *pool_info
 			.assets
 			.get(currency_id_in as usize)
-			.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?;
+			.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?;
 		let token_out = *pool_info
 			.assets
 			.get(currency_id_out as usize)
-			.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?;
+			.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?;
 		T::StableAsset::collect_yield(pool_id, &mut pool_info)?;
 		let dx = Self::upscale(amount, pool_id, token_in)?;
 		let SwapResult { dx: _, dy, y, balance_i } =
-			bifrost_stable_asset::Pallet::<T>::get_swap_amount(
+			tangle_stable_asset::Pallet::<T>::get_swap_amount(
 				&pool_info,
 				currency_id_in,
 				currency_id_out,
@@ -789,13 +783,13 @@ impl<T: Config> Pallet<T> {
 		let j_usize = currency_id_out as usize;
 		balances[i_usize] = balance_i;
 		balances[j_usize] = y;
-		<T as bifrost_stable_asset::Config>::Assets::transfer(
+		<T as tangle_stable_asset::Config>::Assets::transfer(
 			pool_info.assets[i_usize],
 			who,
 			&pool_info.account_id,
 			amount,
 		)?;
-		<T as bifrost_stable_asset::Config>::Assets::transfer(
+		<T as tangle_stable_asset::Config>::Assets::transfer(
 			pool_info.assets[j_usize],
 			&pool_info.account_id,
 			who,
@@ -811,9 +805,9 @@ impl<T: Config> Pallet<T> {
 			pool_info.future_a,
 			pool_info.future_a_block,
 		)
-		.ok_or(bifrost_stable_asset::Error::<T>::Math)?;
-		bifrost_stable_asset::Pallet::<T>::deposit_event(
-			bifrost_stable_asset::Event::<T>::TokenSwapped {
+		.ok_or(tangle_stable_asset::Error::<T>::Math)?;
+		tangle_stable_asset::Pallet::<T>::deposit_event(
+			tangle_stable_asset::Event::<T>::TokenSwapped {
 				swapper: who.clone(),
 				pool_id,
 				a,
@@ -826,20 +820,14 @@ impl<T: Config> Pallet<T> {
 				output_amount: downscale_out,
 			},
 		);
-		if let Some((vtoken, vtoken_issuance, token_pool_amount, hardcap)) =
+		if let Some((lst, lst_issuance, token_pool_amount, hardcap)) =
 			Self::ensure_can_refresh(token_in, token_out)
 		{
-			if Self::refresh_token_rate(
-				pool_id,
-				vtoken,
-				vtoken_issuance,
-				token_pool_amount,
-				hardcap,
-			)
-			.is_none()
+			if Self::refresh_token_rate(pool_id, lst, lst_issuance, token_pool_amount, hardcap)
+				.is_none()
 			{
-				bifrost_stable_asset::Pallet::<T>::deposit_event(
-					bifrost_stable_asset::Event::<T>::TokenRateRefreshFailed { pool_id },
+				tangle_stable_asset::Pallet::<T>::deposit_event(
+					tangle_stable_asset::Event::<T>::TokenRateRefreshFailed { pool_id },
 				)
 			}
 		}
@@ -852,7 +840,7 @@ impl<T: Config> Pallet<T> {
 		currency_id: AssetIdOf<T>,
 	) -> Result<T::Balance, DispatchError> {
 		if let Some((demoninator, numerator)) =
-			bifrost_stable_asset::Pallet::<T>::get_token_rate(pool_id, currency_id)
+			tangle_stable_asset::Pallet::<T>::get_token_rate(pool_id, currency_id)
 		{
 			return Ok(Self::calculate_scaling(
 				amount.into(),
@@ -868,7 +856,7 @@ impl<T: Config> Pallet<T> {
 		currency_id: AssetIdOf<T>,
 	) -> Result<T::Balance, DispatchError> {
 		if let Some((numerator, demoninator)) =
-			bifrost_stable_asset::Pallet::<T>::get_token_rate(pool_id, currency_id)
+			tangle_stable_asset::Pallet::<T>::get_token_rate(pool_id, currency_id)
 		{
 			return Ok(Self::calculate_scaling(
 				amount.into(),
@@ -887,13 +875,13 @@ impl<T: Config> Pallet<T> {
 		let amount: u128 = amount.saturated_into::<u128>();
 		let denominator: u128 = denominator.saturated_into::<u128>();
 		let numerator: u128 = numerator.saturated_into::<u128>();
-		let can_get_vtoken = U256::from(amount)
+		let can_get_lst = U256::from(amount)
 			.checked_mul(U256::from(numerator))
 			.and_then(|n| n.checked_div(U256::from(denominator)))
 			.and_then(|n| TryInto::<u128>::try_into(n).ok())
 			.unwrap_or_else(Zero::zero);
 
-		let charge_amount: AtLeast64BitUnsignedOf<T> = can_get_vtoken.into();
+		let charge_amount: AtLeast64BitUnsignedOf<T> = can_get_lst.into();
 		charge_amount.into()
 	}
 
@@ -904,16 +892,16 @@ impl<T: Config> Pallet<T> {
 		amount: T::Balance,
 	) -> Result<T::Balance, DispatchError> {
 		let pool_info =
-			T::StableAsset::pool(pool_id).ok_or(bifrost_stable_asset::Error::<T>::PoolNotFound)?;
+			T::StableAsset::pool(pool_id).ok_or(tangle_stable_asset::Error::<T>::PoolNotFound)?;
 		let dx = Self::upscale(
 			amount,
 			pool_id,
 			*pool_info
 				.assets
 				.get(currency_id_in as usize)
-				.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
+				.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
 		)?;
-		let SwapResult { dx: _, dy, .. } = bifrost_stable_asset::Pallet::<T>::get_swap_amount(
+		let SwapResult { dx: _, dy, .. } = tangle_stable_asset::Pallet::<T>::get_swap_amount(
 			&pool_info,
 			currency_id_in,
 			currency_id_out,
@@ -925,7 +913,7 @@ impl<T: Config> Pallet<T> {
 			*pool_info
 				.assets
 				.get(currency_id_out as usize)
-				.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
+				.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
 		)?;
 
 		Ok(downscale_out)
@@ -938,30 +926,29 @@ impl<T: Config> Pallet<T> {
 		amount: T::Balance,
 	) -> Result<T::Balance, DispatchError> {
 		let pool_info =
-			T::StableAsset::pool(pool_id).ok_or(bifrost_stable_asset::Error::<T>::PoolNotFound)?;
+			T::StableAsset::pool(pool_id).ok_or(tangle_stable_asset::Error::<T>::PoolNotFound)?;
 		let dy = Self::upscale(
 			amount,
 			pool_id,
 			*pool_info
 				.assets
 				.get(currency_id_out as usize)
-				.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
+				.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
 		)?;
-		let SwapResult { dx, dy: _, .. } =
-			bifrost_stable_asset::Pallet::<T>::get_swap_amount_exact(
-				&pool_info,
-				currency_id_in,
-				currency_id_out,
-				dy,
-			)
-			.ok_or(bifrost_stable_asset::Error::<T>::Math)?;
+		let SwapResult { dx, dy: _, .. } = tangle_stable_asset::Pallet::<T>::get_swap_amount_exact(
+			&pool_info,
+			currency_id_in,
+			currency_id_out,
+			dy,
+		)
+		.ok_or(tangle_stable_asset::Error::<T>::Math)?;
 		let downscale_out = Self::downscale(
 			dx,
 			pool_id,
 			*pool_info
 				.assets
 				.get(currency_id_in as usize)
-				.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
+				.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
 		)?;
 
 		Ok(downscale_out)
@@ -972,7 +959,7 @@ impl<T: Config> Pallet<T> {
 		mut amounts: Vec<T::Balance>,
 	) -> Result<T::Balance, DispatchError> {
 		let pool_info =
-			T::StableAsset::pool(pool_id).ok_or(bifrost_stable_asset::Error::<T>::PoolNotFound)?;
+			T::StableAsset::pool(pool_id).ok_or(tangle_stable_asset::Error::<T>::PoolNotFound)?;
 		for (i, amount) in amounts.iter_mut().enumerate() {
 			*amount = Self::upscale(
 				*amount,
@@ -980,11 +967,11 @@ impl<T: Config> Pallet<T> {
 				*pool_info
 					.assets
 					.get(i as usize)
-					.ok_or(bifrost_stable_asset::Error::<T>::ArgumentsMismatch)?,
+					.ok_or(tangle_stable_asset::Error::<T>::ArgumentsMismatch)?,
 			)?;
 		}
 		let MintResult { mint_amount, .. } =
-			bifrost_stable_asset::Pallet::<T>::get_mint_amount(&pool_info, &amounts)?;
+			tangle_stable_asset::Pallet::<T>::get_mint_amount(&pool_info, &amounts)?;
 
 		Ok(mint_amount)
 	}
@@ -994,12 +981,12 @@ impl<T: Config> Pallet<T> {
 		currency_id_out: &AssetIdOf<T>,
 	) -> Option<(StableAssetPoolId, PoolTokenIndex, PoolTokenIndex)> {
 		Pools::<T>::iter().find_map(|(pool_id, pool_info)| {
-			if pool_info.assets.get(0) == Some(currency_id_in) &&
-				pool_info.assets.get(1) == Some(currency_id_out)
+			if pool_info.assets.get(0) == Some(currency_id_in)
+				&& pool_info.assets.get(1) == Some(currency_id_out)
 			{
 				Some((pool_id, 0, 1))
-			} else if pool_info.assets.get(0) == Some(currency_id_out) &&
-				pool_info.assets.get(1) == Some(currency_id_in)
+			} else if pool_info.assets.get(0) == Some(currency_id_out)
+				&& pool_info.assets.get(1) == Some(currency_id_in)
 			{
 				Some((pool_id, 1, 0))
 			} else {

@@ -1,7 +1,0 @@
-# npx @acala-network/chopsticks@latest --config=./scripts/chopsticks/testnet.yml
-endpoint: wss://rpc.tangle.tools
-mock-signature-host: true
-
-import-storage:
-  Sudo:
-    Key: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
