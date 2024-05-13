@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +20,6 @@ use crate::{
 	LedgerUpdateEntry, MinimumsAndMaximums, MultiLocation, Pallet, TimeUnit, Validators,
 	ValidatorsByDelegator, ValidatorsByDelegatorUpdateEntry,
 };
-use bifrost_primitives::{CurrencyId, VtokenMintingOperator};
 use core::marker::PhantomData;
 pub use cumulus_primitives_core::ParaId;
 use frame_support::ensure;
@@ -34,6 +30,7 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
+use tangle_primitives::{lstMintingOperator, CurrencyId};
 use xcm::v3::prelude::*;
 
 /// StakingAgent implementation for Filecoin
@@ -363,7 +360,7 @@ impl<T: Config>
 		Err(Error::<T>::Unsupported)
 	}
 
-	/// Make token transferred back to Bifrost chain account.
+	/// Make token transferred back to tangle chain account.
 	fn transfer_back(
 		&self,
 		_from: &MultiLocation,
@@ -386,7 +383,7 @@ impl<T: Config>
 	) -> Result<(), Error<T>> {
 		// "from" account must be entrance account
 		let from_account = Pallet::<T>::native_multilocation_to_account(from)?;
-		let (entrance_account, _) = T::VtokenMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = T::lstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account == entrance_account, Error::<T>::InvalidAccount);
 
 		// "to" account must be one of the validator(worker) accounts
@@ -418,11 +415,11 @@ impl<T: Config>
 	/// aggregating all its miner accounts' interests.
 	// Filecoin use TimeUnit::Kblock, which means 1000 blocks. Filecoin produces
 	// one block per 30 seconds . Kblock takes around 8.33 hours.
-	fn tune_vtoken_exchange_rate(
+	fn tune_lst_exchange_rate(
 		&self,
 		who: &Option<MultiLocation>,
 		token_amount: BalanceOf<T>,
-		_vtoken_amount: BalanceOf<T>,
+		_lst_amount: BalanceOf<T>,
 		currency_id: CurrencyId,
 	) -> Result<(), Error<T>> {
 		let who = who.as_ref().ok_or(Error::<T>::ValidatorNotExist)?;
@@ -433,7 +430,7 @@ impl<T: Config>
 		ensure!(validator_vec.contains(who), Error::<T>::ValidatorNotExist);
 
 		// Get current TimeUnit.
-		let current_time_unit = T::VtokenMinting::get_ongoing_time_unit(currency_id)
+		let current_time_unit = T::lstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 		// Get DelegatorLatestTuneRecord for the currencyId.
 		let latest_time_unit_op = DelegatorLatestTuneRecord::<T>::get(currency_id, &who);
@@ -454,12 +451,12 @@ impl<T: Config>
 			token_amount.checked_sub(&fee_to_charge).ok_or(Error::<T>::UnderFlow)?;
 
 		if amount_to_increase > Zero::zero() {
-			// Tune the vtoken exchange rate.
-			T::VtokenMinting::increase_token_pool(currency_id, amount_to_increase)
+			// Tune the lst exchange rate.
+			T::lstMinting::increase_token_pool(currency_id, amount_to_increase)
 				.map_err(|_| Error::<T>::IncreaseTokenPoolError)?;
 
 			// Deposit token to entrance account
-			let (entrance_account, _) = T::VtokenMinting::get_entrance_and_exit_accounts();
+			let (entrance_account, _) = T::lstMinting::get_entrance_and_exit_accounts();
 			T::MultiCurrency::deposit(currency_id, &entrance_account, amount_to_increase)
 				.map_err(|_e| Error::<T>::MultiCurrencyError)?;
 

@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,10 +26,6 @@ use crate::{
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	ValidatorsByDelegator, ValidatorsByDelegatorXcmUpdateQueue,
 };
-use bifrost_primitives::{
-	currency::KSM, CurrencyId, VtokenMintingOperator, XcmDestWeightAndFeeHandler, XcmOperationType,
-	DOT,
-};
 use core::marker::PhantomData;
 pub use cumulus_primitives_core::ParaId;
 use frame_support::{ensure, traits::Get};
@@ -42,6 +35,10 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
+use tangle_primitives::{
+	currency::KSM, lstMintingOperator, CurrencyId, XcmDestWeightAndFeeHandler, XcmOperationType,
+	DOT,
+};
 use xcm::{opaque::v3::MultiLocation, v3::prelude::*, VersionedMultiAssets};
 
 /// StakingAgent implementation for Kusama/Polkadot
@@ -617,9 +614,10 @@ impl<T: Config>
 		};
 		// Construct xcm message.
 		let call = match currency_id {
-			KSM =>
+			KSM => {
 				KusamaCall::Staking(StakingCall::<T>::PayoutStakers(validator_account, payout_era))
-					.encode(),
+					.encode()
+			},
 			DOT => PolkadotCall::Staking(StakingCall::<T>::PayoutStakers(
 				validator_account,
 				payout_era,
@@ -673,8 +671,9 @@ impl<T: Config>
 
 		// Construct xcm message.
 		let call = match currency_id {
-			KSM =>
-				KusamaCall::Staking(StakingCall::<T>::WithdrawUnbonded(num_slashing_spans)).encode(),
+			KSM => {
+				KusamaCall::Staking(StakingCall::<T>::WithdrawUnbonded(num_slashing_spans)).encode()
+			},
 			DOT => PolkadotCall::Staking(StakingCall::<T>::WithdrawUnbonded(num_slashing_spans))
 				.encode(),
 			_ => Err(Error::NotSupportedCurrencyId)?,
@@ -776,7 +775,7 @@ impl<T: Config>
 		Ok(query_id)
 	}
 
-	/// Make token transferred back to Bifrost chain account.
+	/// Make token transferred back to tangle chain account.
 	fn transfer_back(
 		&self,
 		from: &MultiLocation,
@@ -846,7 +845,7 @@ impl<T: Config>
 		Ok(())
 	}
 
-	/// Make token from Bifrost chain account to the staking chain account.
+	/// Make token from tangle chain account to the staking chain account.
 	/// Receiving account must be one of the currency_id delegators.
 	fn transfer_to(
 		&self,
@@ -861,9 +860,9 @@ impl<T: Config>
 			Error::<T>::DelegatorNotExist
 		);
 
-		// Make sure from account is the entrance account of vtoken-minting module.
+		// Make sure from account is the entrance account of lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
-		let (entrance_account, _) = T::VtokenMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = T::lstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
 
 		// transfer supplementary fee from treasury to the "from" account. Return the added up
@@ -891,20 +890,16 @@ impl<T: Config>
 		Err(Error::<T>::Unsupported)
 	}
 
-	fn tune_vtoken_exchange_rate(
+	fn tune_lst_exchange_rate(
 		&self,
 		who: &Option<MultiLocation>,
 		token_amount: BalanceOf<T>,
-		_vtoken_amount: BalanceOf<T>,
+		_lst_amount: BalanceOf<T>,
 		currency_id: CurrencyId,
 	) -> Result<(), Error<T>> {
 		let who = who.as_ref().ok_or(Error::<T>::DelegatorNotExist)?;
 
-		Pallet::<T>::tune_vtoken_exchange_rate_without_update_ledger(
-			who,
-			token_amount,
-			currency_id,
-		)?;
+		Pallet::<T>::tune_lst_exchange_rate_without_update_ledger(who, token_amount, currency_id)?;
 
 		// update delegator ledger
 		DelegatorLedgers::<T>::mutate(currency_id, who, |old_ledger| -> Result<(), Error<T>> {
@@ -951,12 +946,11 @@ impl<T: Config>
 		currency_id: CurrencyId,
 	) -> DispatchResult {
 		// Get current VKSM/KSM or VDOT/DOT exchange rate.
-		let vtoken = currency_id.to_vtoken().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
+		let lst = currency_id.to_lst().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
 
-		let charge_amount =
-			Pallet::<T>::inner_calculate_vtoken_hosting_fee(amount, vtoken, currency_id)?;
+		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, lst, currency_id)?;
 
-		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, vtoken)
+		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, lst)
 	}
 
 	/// Deposit some amount as fee to nominator accounts.
@@ -1238,7 +1232,7 @@ impl<T: Config> PolkadotAgent<T> {
 		// Insert a delegator ledger update record into DelegatorLedgerXcmUpdateQueue<T>.
 		let unlock_time = match &update_operation {
 			Unlock => Pallet::<T>::get_unlocking_time_unit_from_current(false, currency_id)?,
-			Liquidize => T::VtokenMinting::get_ongoing_time_unit(currency_id),
+			Liquidize => T::lstMinting::get_ongoing_time_unit(currency_id),
 			_ => None,
 		};
 

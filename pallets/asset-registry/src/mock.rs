@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,13 +17,13 @@
 
 #![cfg(test)]
 
-use bifrost_primitives::{AccountId, Balance};
 use frame_support::{
 	construct_runtime, ord_parameter_types, pallet_prelude::ConstU32, parameter_types,
 	traits::Everything,
 };
 use frame_system::EnsureSignedBy;
 use sp_runtime::BuildStorage;
+use tangle_primitives::{AccountId, Balance};
 
 use crate as asset_registry;
 

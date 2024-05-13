@@ -1,5 +1,5 @@
 [package]
-name = "bifrost-stable-pool-rpc-runtime-api"
+name = "tangle-stable-pool-rpc-runtime-api"
 version = "0.8.0"
 authors = ["Sora Yu <ymlll0508@gmail.com>"]
 edition = "2021"
@@ -8,12 +8,12 @@ edition = "2021"
 parity-scale-codec = { workspace = true, features = ["derive"] }
 sp-std = { workspace = true }
 sp-api = { workspace = true }
-bifrost-primitives = { workspace = true }
+tangle-primitives = { workspace = true }
 
 [features]
 default = ["std"]
 std = [
     "parity-scale-codec/std",
     "sp-api/std",
-    "bifrost-primitives/std",
+    "tangle-primitives/std",
 ]

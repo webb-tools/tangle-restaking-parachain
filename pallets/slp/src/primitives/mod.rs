@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,10 +23,10 @@ pub use parachain_staking_primitives::*;
 pub use phala_primitives::*;
 pub use polkadot_primitives::*;
 
-use bifrost_primitives::TimeUnit;
 use parity_scale_codec::{Decode, Encode};
 use scale_info::TypeInfo;
 use sp_runtime::RuntimeDebug;
+use tangle_primitives::TimeUnit;
 
 pub type QueryId = u64;
 pub const TIMEOUT_BLOCKS: u32 = 1000;

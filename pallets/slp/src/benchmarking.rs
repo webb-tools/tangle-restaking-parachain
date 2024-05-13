@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,11 +17,11 @@
 #![cfg(feature = "runtime-benchmarks")]
 
 use crate::*;
-use bifrost_primitives::{DOT, VDOT, VKSM};
 use frame_benchmarking::v2::*;
 use frame_support::{assert_ok, PalletId};
 use frame_system::RawOrigin as SystemOrigin;
 use sp_runtime::traits::{AccountIdConversion, StaticLookup, UniqueSaturatedFrom};
+use tangle_primitives::{DOT, VDOT, VKSM};
 
 const DELEGATOR1: MultiLocation =
 	MultiLocation { parents: 1, interior: X1(AccountId32 { network: None, id: [1u8; 32] }) };
@@ -41,9 +38,9 @@ pub fn unit(d: u128) -> u128 {
 
 fn init_stable_asset_pool<
 	T: Config
-		+ bifrost_stable_pool::Config
+		+ tangle_stable_pool::Config
 		+ pallet_balances::Config<Balance = u128>
-		+ bifrost_stable_asset::Config,
+		+ tangle_stable_asset::Config,
 >() -> Result<(), BenchmarkError> {
 	let caller: AccountIdOf<T> = whitelisted_caller();
 	let account_id = T::Lookup::unlookup(caller.clone());
@@ -54,15 +51,15 @@ fn init_stable_asset_pool<
 	)
 	.unwrap();
 
-	<T as bifrost_stable_pool::Config>::MultiCurrency::deposit(
+	<T as tangle_stable_pool::Config>::MultiCurrency::deposit(
 		DOT.into(),
 		&caller,
-		<T as bifrost_stable_asset::Config>::Balance::from(unit(1_000_000).into()),
+		<T as tangle_stable_asset::Config>::Balance::from(unit(1_000_000).into()),
 	)?;
-	<T as bifrost_stable_pool::Config>::MultiCurrency::deposit(
+	<T as tangle_stable_pool::Config>::MultiCurrency::deposit(
 		VDOT.into(),
 		&caller,
-		<T as bifrost_stable_asset::Config>::Balance::from(unit(1_000_000).into()),
+		<T as tangle_stable_asset::Config>::Balance::from(unit(1_000_000).into()),
 	)?;
 	let fee_account: AccountIdOf<T> = account("caller", 2, 2);
 	pallet_balances::Pallet::<T>::force_set_balance(
@@ -81,14 +78,14 @@ fn init_stable_asset_pool<
 	let coin0 = DOT;
 	let coin1 = VDOT;
 	let amounts = vec![
-		<T as bifrost_stable_asset::Config>::Balance::from(unit(100u128).into()),
-		<T as bifrost_stable_asset::Config>::Balance::from(unit(100u128).into()),
+		<T as tangle_stable_asset::Config>::Balance::from(unit(100u128).into()),
+		<T as tangle_stable_asset::Config>::Balance::from(unit(100u128).into()),
 	];
 
 	let origin = <T as Config>::ControlOrigin::try_successful_origin()
 		.map_err(|_| BenchmarkError::Weightless)?;
 
-	assert_ok!(bifrost_stable_pool::Pallet::<T>::create_pool(
+	assert_ok!(tangle_stable_pool::Pallet::<T>::create_pool(
 		origin.clone() as <T as frame_system::Config>::RuntimeOrigin,
 		vec![coin0.into(), coin1.into()],
 		vec![1u128.into(), 1u128.into()],
@@ -100,7 +97,7 @@ fn init_stable_asset_pool<
 		fee_account.clone(),
 		1000000000000u128.into()
 	));
-	assert_ok!(bifrost_stable_pool::Pallet::<T>::edit_token_rate(
+	assert_ok!(tangle_stable_pool::Pallet::<T>::edit_token_rate(
 		origin.clone() as <T as frame_system::Config>::RuntimeOrigin,
 		0,
 		vec![
@@ -108,19 +105,19 @@ fn init_stable_asset_pool<
 			(VDOT.into(), (90_000_000u128.into(), 100_000_000u128.into()))
 		]
 	));
-	assert_ok!(bifrost_stable_pool::Pallet::<T>::add_liquidity(
+	assert_ok!(tangle_stable_pool::Pallet::<T>::add_liquidity(
 		SystemOrigin::Signed(caller.clone()).into(),
 		0,
 		amounts,
-		<T as bifrost_stable_asset::Config>::Balance::zero()
+		<T as tangle_stable_asset::Config>::Balance::zero()
 	));
 
 	let treasury_account = PalletId(*b"bf/trsry").into_account_truncating();
 	// deposit some VDOT to the treasury account
-	<T as bifrost_stable_pool::Config>::MultiCurrency::deposit(
+	<T as tangle_stable_pool::Config>::MultiCurrency::deposit(
 		VDOT.into(),
 		&treasury_account,
-		<T as bifrost_stable_asset::Config>::Balance::from(unit(1_000_000).into()),
+		<T as tangle_stable_asset::Config>::Balance::from(unit(1_000_000).into()),
 	)?;
 
 	Ok(())
@@ -194,15 +191,15 @@ pub fn init_ongoing_time<T: Config>(origin: <T as frame_system::Config>::Runtime
 	assert_ok!(Pallet::<T>::set_currency_delays(origin.clone(), KSM, Some(delay)));
 }
 
-#[benchmarks(where T: Config + orml_tokens::Config<CurrencyId = CurrencyId> + bifrost_vtoken_minting::Config+ bifrost_stable_pool::Config+ pallet_balances::Config<Balance=u128> + bifrost_asset_registry::Config)]
-// #[benchmarks(where T: Config + bifrost_stable_pool::Config +
+#[benchmarks(where T: Config + orml_tokens::Config<CurrencyId = CurrencyId> + tangle_lst_minting::Config+ tangle_stable_pool::Config+ pallet_balances::Config<Balance=u128> + tangle_asset_registry::Config)]
+// #[benchmarks(where T: Config + tangle_stable_pool::Config +
 // pallet_balances::Config<Balance=u128>)]
 mod benchmarks {
 	use super::*;
 	use crate::primitives::{PhalaLedger, SubstrateValidatorsByDelegatorUpdateEntry};
-	use bifrost_primitives::VKSM;
 	use frame_benchmarking::impl_benchmark_test_suite;
 	use sp_arithmetic::traits::SaturatedConversion;
+	use tangle_primitives::VKSM;
 
 	#[benchmark]
 	fn initialize_delegator() -> Result<(), BenchmarkError> {
@@ -559,7 +556,7 @@ mod benchmarks {
 			Some((Weight::from_parts(4000000000, 100000), 0u32.into())),
 		)?;
 
-		let (_, exit_account) = <T as Config>::VtokenMinting::get_entrance_and_exit_accounts();
+		let (_, exit_account) = <T as Config>::lstMinting::get_entrance_and_exit_accounts();
 		let exit_account_32 = Pallet::<T>::account_id_to_account_32(exit_account).unwrap();
 		let to = Pallet::<T>::account_32_to_parent_location(exit_account_32).unwrap();
 
@@ -601,7 +598,7 @@ mod benchmarks {
 			Some((Weight::from_parts(4000000000, 100000), 0u32.into())),
 		)?;
 
-		let (entrance_account, _) = <T as Config>::VtokenMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = <T as Config>::lstMinting::get_entrance_and_exit_accounts();
 		let entrance_account_32 = Pallet::<T>::account_id_to_account_32(entrance_account).unwrap();
 		let from = Pallet::<T>::account_32_to_local_location(entrance_account_32).unwrap();
 
@@ -716,7 +713,7 @@ mod benchmarks {
 			.map_err(|_| BenchmarkError::Weightless)?;
 		init_ongoing_time::<T>(origin.clone());
 
-		let (_, exit_account) = <T as Config>::VtokenMinting::get_entrance_and_exit_accounts();
+		let (_, exit_account) = <T as Config>::lstMinting::get_entrance_and_exit_accounts();
 		orml_tokens::Pallet::<T>::deposit(
 			KSM,
 			&exit_account,
@@ -736,7 +733,7 @@ mod benchmarks {
 			.map_err(|_| BenchmarkError::Weightless)?;
 		set_mins_and_maxs::<T>(origin.clone());
 
-		let (entrance_account, _) = <T as Config>::VtokenMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = <T as Config>::lstMinting::get_entrance_and_exit_accounts();
 		let entrance_account_32 = Pallet::<T>::account_id_to_account_32(entrance_account).unwrap();
 		let from = Pallet::<T>::account_32_to_local_location(entrance_account_32).unwrap();
 
@@ -756,7 +753,7 @@ mod benchmarks {
 	}
 
 	#[benchmark]
-	fn charge_host_fee_and_tune_vtoken_exchange_rate() -> Result<(), BenchmarkError> {
+	fn charge_host_fee_and_tune_lst_exchange_rate() -> Result<(), BenchmarkError> {
 		let origin = <T as Config>::ControlOrigin::try_successful_origin()
 			.map_err(|_| BenchmarkError::Weightless)?;
 		init_bond::<T>(origin.clone());
@@ -1183,7 +1180,7 @@ mod benchmarks {
 	}
 
 	#[benchmark]
-	fn convert_treasury_vtoken() -> Result<(), BenchmarkError> {
+	fn convert_treasury_lst() -> Result<(), BenchmarkError> {
 		let origin = <T as Config>::ControlOrigin::try_successful_origin()
 			.map_err(|_| BenchmarkError::Weightless)?;
 
@@ -1206,7 +1203,7 @@ mod benchmarks {
 			minimal_balance: Zero::zero(),
 		};
 		// register DOT in registry pallet
-		assert_ok!(bifrost_asset_registry::Pallet::<T>::register_token_metadata(
+		assert_ok!(tangle_asset_registry::Pallet::<T>::register_token_metadata(
 			origin.clone(),
 			Box::new(metadata.clone())
 		));
@@ -1253,7 +1250,7 @@ mod benchmarks {
 		Ok(())
 	}
 
-	//   `cargo test -p bifrost-slp --all-features`
+	//   `cargo test -p tangle-slp --all-features`
 	impl_benchmark_test_suite!(
 		Pallet,
 		crate::mocks::mock_kusama::ExtBuilder::default().build(),

@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -544,11 +541,11 @@ pub mod pallet {
 			token_rate: Vec<(T::AssetId, (T::AtLeast64BitUnsigned, T::AtLeast64BitUnsigned))>,
 		},
 		TokenRateHardcapConfigured {
-			vtoken: T::AssetId,
+			lst: T::AssetId,
 			hardcap: Permill,
 		},
 		TokenRateHardcapRemoved {
-			vtoken: T::AssetId,
+			lst: T::AssetId,
 		},
 		TokenRateRefreshFailed {
 			pool_id: StableAssetPoolId,
@@ -2330,8 +2327,9 @@ impl<T: Config> StableAsset for Pallet<T> {
 	) -> Option<SwapResult<Self::Balance>> {
 		let pool_info_opt = Self::pool(pool_id);
 		match pool_info_opt {
-			Some(pool_info) =>
-				Self::get_swap_amount(&pool_info, input_index, output_index, dx_bal).ok(),
+			Some(pool_info) => {
+				Self::get_swap_amount(&pool_info, input_index, output_index, dx_bal).ok()
+			},
 			None => None,
 		}
 	}
@@ -2344,8 +2342,9 @@ impl<T: Config> StableAsset for Pallet<T> {
 	) -> Option<SwapResult<Self::Balance>> {
 		let pool_info_opt = Self::pool(pool_id);
 		match pool_info_opt {
-			Some(pool_info) =>
-				Self::get_swap_amount_exact(&pool_info, input_index, output_index, dy_bal),
+			Some(pool_info) => {
+				Self::get_swap_amount_exact(&pool_info, input_index, output_index, dy_bal)
+			},
 			None => None,
 		}
 	}

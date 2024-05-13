@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,11 +22,11 @@ use crate::{
 	},
 	BNC, *,
 };
-use bifrost_parachain_staking::RoundInfo;
-use bifrost_primitives::VBNC;
 use frame_support::{assert_noop, assert_ok, PalletId};
 use parity_scale_codec::alloc::collections::BTreeMap;
 use sp_runtime::traits::AccountIdConversion;
+use tangle_parachain_staking::RoundInfo;
+use tangle_primitives::VBNC;
 
 #[test]
 fn initialize_parachain_staking_delegator() {
@@ -278,9 +275,9 @@ fn parachain_staking_bond_to_liquidize_works() {
 			BNC,
 			TimeUnit::Round(48)
 		));
-		bifrost_parachain_staking::Round::<Runtime>::set(RoundInfo::new(10000000, 0, 1));
+		tangle_parachain_staking::Round::<Runtime>::set(RoundInfo::new(10000000, 0, 1));
 		assert_eq!(ParachainStaking::round(), RoundInfo::new(10000000, 0, 1));
-		assert_ok!(VtokenMinting::update_ongoing_time_unit(BNC, TimeUnit::Round(1000)));
+		assert_ok!(lstMinting::update_ongoing_time_unit(BNC, TimeUnit::Round(1000)));
 
 		// let delegation_scheduled_requests = ParachainStaking::delegation_scheduled_requests(BOB);
 		// log::debug!("test5{:?}", delegation_scheduled_requests);
@@ -990,7 +987,7 @@ fn add_validator_and_remove_validator_works() {
 }
 
 #[test]
-fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
+fn charge_host_fee_and_tune_lst_exchange_rate_works() {
 	let subaccount_0_location =
 		MultiLocation { parents: 0, interior: X1(AccountId32 { network: None, id: ALICE.into() }) };
 
@@ -998,11 +995,11 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 		// environment setup
 		parachain_staking_setup();
 
-		// First set base vtoken exchange rate. Should be 1:1.
+		// First set base lst exchange rate. Should be 1:1.
 		assert_ok!(Currencies::deposit(VBNC, &ALICE, 1000));
 		assert_ok!(Slp::increase_token_pool(RuntimeOrigin::signed(ALICE), BNC, 1000));
 
-		// Set the hosting fee to be 20%, and the beneficiary to be bifrost treasury account.
+		// Set the hosting fee to be 20%, and the beneficiary to be tangle treasury account.
 		let pct = Permill::from_percent(20);
 		let treasury_account_id_32: [u8; 32] = PalletId(*b"bf/trsry").into_account_truncating();
 		let treasury_location = MultiLocation {
@@ -1023,8 +1020,8 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 			Some((1, pct_100))
 		));
 
-		// call the charge_host_fee_and_tune_vtoken_exchange_rate
-		assert_ok!(Slp::charge_host_fee_and_tune_vtoken_exchange_rate(
+		// call the charge_host_fee_and_tune_lst_exchange_rate
+		assert_ok!(Slp::charge_host_fee_and_tune_lst_exchange_rate(
 			RuntimeOrigin::signed(ALICE),
 			BNC,
 			1000,
@@ -1032,7 +1029,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 		));
 
 		// check token pool, should be 1000 + 1000 = 2000
-		assert_eq!(<Runtime as Config>::VtokenMinting::get_token_pool(BNC), 2000);
+		assert_eq!(<Runtime as Config>::lstMinting::get_token_pool(BNC), 2000);
 		// check vBNC issuance, should be 1000 + 20% * 1000 = 1200
 		assert_eq!(Currencies::total_issuance(VBNC), 1200);
 	});

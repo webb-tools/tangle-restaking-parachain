@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,9 +16,9 @@
 #![cfg(test)]
 
 use crate::{mocks::mock::*, primitives::FilecoinLedger, *};
-use bifrost_primitives::currency::{FIL, VFIL};
 use frame_support::{assert_noop, assert_ok, PalletId};
 use sp_runtime::traits::AccountIdConversion;
+use tangle_primitives::currency::{FIL, VFIL};
 
 fn mins_maxs_setup() {
 	let mins_and_maxs = MinimumsMaximums {
@@ -346,7 +343,7 @@ fn undelegate_should_work() {
 }
 
 #[test]
-fn charge_host_fee_and_tune_vtoken_exchange_rate_should_work() {
+fn charge_host_fee_and_tune_lst_exchange_rate_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let location =
 			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
@@ -355,7 +352,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_should_work() {
 		let treasury_32: [u8; 32] = treasury_id.clone().into();
 
 		assert_noop!(
-			Slp::charge_host_fee_and_tune_vtoken_exchange_rate(
+			Slp::charge_host_fee_and_tune_lst_exchange_rate(
 				RuntimeOrigin::signed(ALICE),
 				FIL,
 				100,
@@ -364,9 +361,9 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_should_work() {
 			Error::<Runtime>::TuneExchangeRateLimitNotSet
 		);
 
-		bifrost_vtoken_minting::OngoingTimeUnit::<Runtime>::insert(FIL, TimeUnit::Era(1));
+		tangle_lst_minting::OngoingTimeUnit::<Runtime>::insert(FIL, TimeUnit::Era(1));
 
-		// Set the hosting fee to be 20%, and the beneficiary to be bifrost treasury account.
+		// Set the hosting fee to be 20%, and the beneficiary to be tangle treasury account.
 		let pct = Permill::from_percent(20);
 		let treasury_location = MultiLocation {
 			parents: 0,
@@ -390,14 +387,14 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_should_work() {
 		let validator_list = BoundedVec::try_from(vec![location]).unwrap();
 		Validators::<Runtime>::insert(FIL, validator_list);
 
-		// First set base vtoken exchange rate. Should be 1:1.
+		// First set base lst exchange rate. Should be 1:1.
 		assert_ok!(Currencies::deposit(VFIL, &ALICE, 100));
 		assert_ok!(Slp::increase_token_pool(RuntimeOrigin::signed(ALICE), FIL, 100));
 
 		bond_setup();
 
-		// call the charge_host_fee_and_tune_vtoken_exchange_rate
-		assert_ok!(Slp::charge_host_fee_and_tune_vtoken_exchange_rate(
+		// call the charge_host_fee_and_tune_lst_exchange_rate
+		assert_ok!(Slp::charge_host_fee_and_tune_lst_exchange_rate(
 			RuntimeOrigin::signed(ALICE),
 			FIL,
 			100,
@@ -405,7 +402,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_should_work() {
 		));
 
 		// Tokenpool should have been added 100.
-		let new_token_pool_amount = <Runtime as Config>::VtokenMinting::get_token_pool(FIL);
+		let new_token_pool_amount = <Runtime as Config>::lstMinting::get_token_pool(FIL);
 		assert_eq!(new_token_pool_amount, 180);
 
 		let tune_record = DelegatorLatestTuneRecord::<Runtime>::get(FIL, &location);

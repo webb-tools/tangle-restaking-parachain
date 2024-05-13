@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,13 +17,8 @@
 
 #![cfg(test)]
 
-use crate as bifrost_slp;
+use crate as tangle_slp;
 use crate::{Config, DispatchResult, QueryResponseManager, XcmDestWeightAndFeeHandler};
-use bifrost_asset_registry::AssetIdMaps;
-use bifrost_primitives::{
-	currency::{BNC, KSM},
-	Amount, Balance, CurrencyId, SlpxOperator, TokenSymbol, XcmOperationType,
-};
 pub use cumulus_primitives_core::ParaId;
 use frame_support::{
 	construct_runtime, ord_parameter_types,
@@ -46,6 +38,11 @@ use sp_runtime::{
 	AccountId32, BuildStorage, Percent,
 };
 use sp_std::{boxed::Box, vec::Vec};
+use tangle_asset_registry::AssetIdMaps;
+use tangle_primitives::{
+	currency::{BNC, KSM},
+	Amount, Balance, CurrencyId, SlpxOperator, TokenSymbol, XcmOperationType,
+};
 use xcm::v3::{prelude::*, Weight};
 use xcm_builder::{FixedWeightBounds, FrameTransactionalProcessor};
 use xcm_executor::XcmExecutor;
@@ -62,13 +59,13 @@ construct_runtime!(
 	pub enum Runtime {
 		System: frame_system,
 		Balances: pallet_balances,
-		Currencies: bifrost_currencies,
+		Currencies: tangle_currencies,
 		Tokens: orml_tokens,
 		XTokens: orml_xtokens,
-		Slp: bifrost_slp,
-		VtokenMinting: bifrost_vtoken_minting,
-		AssetRegistry: bifrost_asset_registry,
-		ParachainStaking: bifrost_parachain_staking,
+		Slp: tangle_slp,
+		lstMinting: tangle_lst_minting,
+		AssetRegistry: tangle_asset_registry,
+		ParachainStaking: tangle_parachain_staking,
 		Utility: pallet_utility,
 		PolkadotXcm: pallet_xcm,
 	}
@@ -161,12 +158,12 @@ impl orml_tokens::Config for Runtime {
 	type CurrencyHooks = ();
 }
 
-pub type BifrostToken = bifrost_currencies::BasicCurrencyAdapter<Runtime, Balances, Amount, u64>;
+pub type tangleToken = tangle_currencies::BasicCurrencyAdapter<Runtime, Balances, Amount, u64>;
 
-impl bifrost_currencies::Config for Runtime {
+impl tangle_currencies::Config for Runtime {
 	type GetNativeCurrencyId = NativeCurrencyId;
 	type MultiCurrency = Tokens;
-	type NativeCurrency = BifrostToken;
+	type NativeCurrency = tangleToken;
 	type WeightInfo = ();
 }
 
@@ -202,25 +199,25 @@ impl orml_xtokens::Config for Runtime {
 parameter_types! {
 	pub const MaximumUnlockIdOfUser: u32 = 10;
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 50;
-	pub BifrostEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
-	pub BifrostExitAccount: PalletId = PalletId(*b"bf/vtout");
-	pub BifrostFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
+	pub tangleEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
+	pub tangleExitAccount: PalletId = PalletId(*b"bf/vtout");
+	pub tangleFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
 }
 
-impl bifrost_vtoken_minting::Config for Runtime {
+impl tangle_lst_minting::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
 	type MaximumUnlockIdOfUser = MaximumUnlockIdOfUser;
 	type MaximumUnlockIdOfTimeUnit = MaximumUnlockIdOfTimeUnit;
-	type EntranceAccount = BifrostEntranceAccount;
-	type ExitAccount = BifrostExitAccount;
-	type FeeAccount = BifrostFeeAccount;
+	type EntranceAccount = tangleEntranceAccount;
+	type ExitAccount = tangleExitAccount;
+	type FeeAccount = tangleFeeAccount;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;
 	type CurrencyIdRegister = AssetIdMaps<Runtime>;
-	type BifrostSlp = Slp;
-	type BifrostSlpx = SlpxInterface;
+	type tangleSlp = Slp;
+	type tangleSlpx = SlpxInterface;
 	type WeightInfo = ();
 	type OnRedeemSuccess = ();
 	type XcmTransfer = XTokens;
@@ -256,7 +253,7 @@ parameter_types! {
 	pub ToMigrateInvulnables: Vec<AccountId> = vec![AccountId32::new([1u8; 32])];
 	pub InitSeedStk: u128 = 10;
 }
-impl bifrost_parachain_staking::Config for Runtime {
+impl tangle_parachain_staking::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
 	type MonetaryGovernanceOrigin = frame_system::EnsureRoot<AccountId>;
@@ -291,7 +288,7 @@ impl bifrost_parachain_staking::Config for Runtime {
 ord_parameter_types! {
 	pub const CouncilAccount: AccountId = AccountId::from([1u8; 32]);
 }
-impl bifrost_asset_registry::Config for Runtime {
+impl tangle_asset_registry::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
 	type RegisterOrigin = EnsureSignedBy<CouncilAccount, AccountId>;
@@ -303,14 +300,14 @@ ord_parameter_types! {
 }
 
 parameter_types! {
-	pub BifrostParachainAccountId20: [u8; 20] = hex_literal::hex!["7369626cd1070000000000000000000000000000"].into();
+	pub tangleParachainAccountId20: [u8; 20] = hex_literal::hex!["7369626cd1070000000000000000000000000000"].into();
 }
 
 pub struct SubAccountIndexMultiLocationConvertor;
 impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationConvertor {
 	fn convert((sub_account_index, currency_id): (u16, CurrencyId)) -> MultiLocation {
 		match currency_id {
-			// AccountKey20 format of Bifrost sibling para account
+			// AccountKey20 format of tangle sibling para account
 			CurrencyId::Token(TokenSymbol::MOVR) => MultiLocation::new(
 				1,
 				X2(
@@ -325,7 +322,7 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 					},
 				),
 			),
-			// Only relay chain use the Bifrost para account with "para"
+			// Only relay chain use the tangle para account with "para"
 			CurrencyId::Token(TokenSymbol::KSM) => MultiLocation::new(
 				1,
 				X1(Junction::AccountId32 {
@@ -337,7 +334,7 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 					.into(),
 				}),
 			),
-			// Bifrost Kusama Native token
+			// tangle Kusama Native token
 			CurrencyId::Native(TokenSymbol::BNC) => MultiLocation::new(
 				0,
 				X1(Junction::AccountId32 {
@@ -350,10 +347,10 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 					.into(),
 				}),
 			),
-			// Other sibling chains use the Bifrost para account with "sibl"
+			// Other sibling chains use the tangle para account with "sibl"
 			_ => {
 				// get parachain id
-				if let Some(location) = BifrostCurrencyIdConvert::convert(currency_id) {
+				if let Some(location) = tangleCurrencyIdConvert::convert(currency_id) {
 					if let Some(Parachain(para_id)) = location.interior().first() {
 						MultiLocation::new(
 							1,
@@ -403,7 +400,7 @@ parameter_types! {
 	pub const MaxTypeEntryPerBlock: u32 = 10;
 	pub const MaxRefundPerBlock: u32 = 10;
 	pub const MaxLengthLimit: u32 = 100;
-	pub BifrostTreasuryAccount: AccountId = PalletId(*b"bf/trsry").into_account_truncating();
+	pub tangleTreasuryAccount: AccountId = PalletId(*b"bf/trsry").into_account_truncating();
 }
 
 impl QueryResponseManager<QueryId, MultiLocation, u64, RuntimeCall> for () {
@@ -422,8 +419,8 @@ impl QueryResponseManager<QueryId, MultiLocation, u64, RuntimeCall> for () {
 	}
 }
 
-pub struct BifrostCurrencyIdConvert;
-impl Convert<CurrencyId, Option<MultiLocation>> for BifrostCurrencyIdConvert {
+pub struct tangleCurrencyIdConvert;
+impl Convert<CurrencyId, Option<MultiLocation>> for tangleCurrencyIdConvert {
 	fn convert(id: CurrencyId) -> Option<MultiLocation> {
 		use CurrencyId::*;
 		use TokenSymbol::*;
@@ -455,8 +452,8 @@ impl Config for Runtime {
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
 	type WeightInfo = ();
-	type VtokenMinting = VtokenMinting;
-	type BifrostSlpx = SlpxInterface;
+	type lstMinting = lstMinting;
+	type tangleSlpx = SlpxInterface;
 	type AccountConverter = SubAccountIndexMultiLocationConvertor;
 	type ParachainId = ParachainId;
 	type SubstrateResponseManager = ();
@@ -470,7 +467,7 @@ impl Config for Runtime {
 	type ChannelCommission = ();
 	type StablePoolHandler = ();
 	type AssetIdMaps = AssetIdMaps<Runtime>;
-	type TreasuryAccount = BifrostTreasuryAccount;
+	type TreasuryAccount = tangleTreasuryAccount;
 }
 
 pub struct XcmDestWeightAndFee;

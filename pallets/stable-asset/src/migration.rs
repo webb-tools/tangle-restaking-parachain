@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -62,17 +59,17 @@ impl<T: super::Config> OnRuntimeUpgrade for StableAssetOnRuntimeUpgrade<T> {
 	fn pre_upgrade() -> Result<sp_std::prelude::Vec<u8>, sp_runtime::DispatchError> {
 		#[allow(unused_imports)]
 		use frame_support::PalletId;
-		log::info!("Bifrost `pre_upgrade`...");
+		log::info!("tangle `pre_upgrade`...");
 
 		Ok(vec![])
 	}
 
 	fn on_runtime_upgrade() -> Weight {
-		log::info!("Bifrost `on_runtime_upgrade`...");
+		log::info!("tangle `on_runtime_upgrade`...");
 
 		let weight = super::migration::update_pallet_id::<T>();
 
-		log::info!("Bifrost `on_runtime_upgrade finished`");
+		log::info!("tangle `on_runtime_upgrade finished`");
 
 		weight
 	}
@@ -81,7 +78,7 @@ impl<T: super::Config> OnRuntimeUpgrade for StableAssetOnRuntimeUpgrade<T> {
 	fn post_upgrade(_: sp_std::prelude::Vec<u8>) -> Result<(), sp_runtime::DispatchError> {
 		#[allow(unused_imports)]
 		use frame_support::PalletId;
-		log::info!("Bifrost `post_upgrade`...");
+		log::info!("tangle `post_upgrade`...");
 		let old_pallet_id: PalletId = PalletId(*b"nuts/sta");
 
 		let pool_count: u32 = PoolCount::<T>::get();

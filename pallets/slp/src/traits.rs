@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,9 +14,9 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::{primitives::QueryId, Box, MultiLocation, TimeUnit};
-use bifrost_primitives::CurrencyId;
 use sp_runtime::DispatchResult;
 use sp_std::vec::Vec;
+use tangle_primitives::CurrencyId;
 use xcm::latest::Weight;
 
 /// Abstraction over a staking agent for a certain POS chain.
@@ -142,7 +139,7 @@ pub trait StakingAgent<
 		weight_and_fee: Option<(Weight, Balance)>,
 	) -> Result<QueryId, Error>;
 
-	/// Make token transferred back to Bifrost chain account.
+	/// Make token transferred back to tangle chain account.
 	fn transfer_back(
 		&self,
 		from: &MultiLocation,
@@ -152,7 +149,7 @@ pub trait StakingAgent<
 		weight_and_fee: Option<(Weight, Balance)>,
 	) -> Result<(), Error>;
 
-	/// Make token from Bifrost chain account to the staking chain account.
+	/// Make token from tangle chain account to the staking chain account.
 	fn transfer_to(
 		&self,
 		from: &MultiLocation,
@@ -171,17 +168,17 @@ pub trait StakingAgent<
 		weight_and_fee: Option<(Weight, Balance)>,
 	) -> Result<QueryId, Error>;
 
-	/// Tune the vtoken exchage rate.
-	fn tune_vtoken_exchange_rate(
+	/// Tune the lst exchage rate.
+	fn tune_lst_exchange_rate(
 		&self,
 		who: &Option<MultiLocation>,
 		token_amount: Balance,
-		vtoken_amount: Balance,
+		lst_amount: Balance,
 		currency_id: CurrencyId,
 	) -> Result<(), Error>;
 
 	/// ************************************
-	/// Abstraction over a fee manager for charging fee from the origin chain(Bifrost)
+	/// Abstraction over a fee manager for charging fee from the origin chain(tangle)
 	/// or deposit fee reserves for the destination chain nominator accounts.
 	/// ************************************
 	/// Charge hosting fee.

@@ -1,7 +1,6 @@
-// This file is part of Bifrost.
+// This file is part of Tangle.
 
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,8 +17,8 @@
 
 use std::{marker::PhantomData, sync::Arc};
 
-use bifrost_primitives::Balance;
-pub use bifrost_stable_pool_rpc_runtime_api::{self as runtime_api, StablePoolRuntimeApi};
+use tangle_primitives::Balance;
+pub use tangle_stable_pool_rpc_runtime_api::{self as runtime_api, StablePoolRuntimeApi};
 use jsonrpsee::{
 	core::{async_trait, RpcResult},
 	proc_macros::rpc,

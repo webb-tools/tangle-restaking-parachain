@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,11 +29,6 @@ use crate::{
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	Validators, ValidatorsByDelegatorUpdateEntry, BNC,
 };
-use bifrost_parachain_staking::ParachainStakingInterface;
-use bifrost_primitives::{
-	currency::{GLMR, MANTA, MOVR},
-	CurrencyId, VtokenMintingOperator, XcmOperationType,
-};
 use core::marker::PhantomData;
 pub use cumulus_primitives_core::ParaId;
 use frame_support::{ensure, traits::Get};
@@ -48,6 +40,11 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
+use tangle_parachain_staking::ParachainStakingInterface;
+use tangle_primitives::{
+	currency::{GLMR, MANTA, MOVR},
+	lstMintingOperator, CurrencyId, XcmOperationType,
+};
 use xcm::{
 	opaque::v3::{
 		Junction::{AccountId32, Parachain},
@@ -1069,7 +1066,7 @@ impl<T: Config>
 		// Check if it is in the delegator set.
 		let collator = (*validator).ok_or(Error::<T>::ValidatorNotProvided)?;
 		let mut leaving = false;
-		let now = T::VtokenMinting::get_ongoing_time_unit(currency_id)
+		let now = T::lstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 
 		let ledger_option = DelegatorLedgers::<T>::get(currency_id, who);
@@ -1347,7 +1344,7 @@ impl<T: Config>
 		Err(Error::<T>::Unsupported)
 	}
 
-	/// Make token transferred back to Bifrost chain account.
+	/// Make token transferred back to tangle chain account.
 	fn transfer_back(
 		&self,
 		from: &MultiLocation,
@@ -1363,10 +1360,10 @@ impl<T: Config>
 		DelegatorsMultilocation2Index::<T>::get(currency_id, from)
 			.ok_or(Error::<T>::DelegatorNotExist)?;
 
-		// Make sure the receiving account is the Exit_account from vtoken-minting module.
+		// Make sure the receiving account is the Exit_account from lst-minting module.
 		let to_account_id = Pallet::<T>::multilocation_to_account(&to)?;
 
-		let (_, exit_account) = T::VtokenMinting::get_entrance_and_exit_accounts();
+		let (_, exit_account) = T::lstMinting::get_entrance_and_exit_accounts();
 		ensure!(to_account_id == exit_account, Error::<T>::InvalidAccount);
 
 		if currency_id == BNC {
@@ -1423,7 +1420,7 @@ impl<T: Config>
 		Ok(())
 	}
 
-	/// Make token from Bifrost chain account to the staking chain account.
+	/// Make token from tangle chain account to the staking chain account.
 	/// Receiving account must be one of the MOVR/GLMR delegators.
 	fn transfer_to(
 		&self,
@@ -1438,9 +1435,9 @@ impl<T: Config>
 			Error::<T>::DelegatorNotExist
 		);
 
-		// Make sure from account is the entrance account of vtoken-minting module.
+		// Make sure from account is the entrance account of lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(&from)?;
-		let (entrance_account, _) = T::VtokenMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = T::lstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
 
 		if currency_id == BNC {
@@ -1474,17 +1471,17 @@ impl<T: Config>
 		Err(Error::<T>::Unsupported)
 	}
 
-	fn tune_vtoken_exchange_rate(
+	fn tune_lst_exchange_rate(
 		&self,
 		_who: &Option<MultiLocation>,
 		token_amount: BalanceOf<T>,
-		_vtoken_amount: BalanceOf<T>,
+		_lst_amount: BalanceOf<T>,
 		currency_id: CurrencyId,
 	) -> Result<(), Error<T>> {
 		ensure!(!token_amount.is_zero(), Error::<T>::AmountZero);
 
-		// Tune the vtoken exchange rate.
-		T::VtokenMinting::increase_token_pool(currency_id, token_amount)
+		// Tune the lst exchange rate.
+		T::lstMinting::increase_token_pool(currency_id, token_amount)
 			.map_err(|_| Error::<T>::IncreaseTokenPoolError)?;
 
 		Ok(())
@@ -1517,12 +1514,11 @@ impl<T: Config>
 		currency_id: CurrencyId,
 	) -> DispatchResult {
 		// Get current VMOVR/MOVR、VGLMR/GLMR exchange rate.
-		let vtoken = currency_id.to_vtoken().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
+		let lst = currency_id.to_lst().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
 
-		let charge_amount =
-			Pallet::<T>::inner_calculate_vtoken_hosting_fee(amount, vtoken, currency_id)?;
+		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, lst, currency_id)?;
 
-		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, vtoken)
+		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, lst)
 	}
 
 	/// Deposit some amount as fee to nominator accounts.

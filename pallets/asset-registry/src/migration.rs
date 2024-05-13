@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,10 +14,10 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::*;
-use bifrost_primitives::{CurrencyId, BNC};
 use frame_support::traits::{Get, OnRuntimeUpgrade};
 #[cfg(feature = "try-runtime")]
 use sp_runtime::TryRuntimeError;
+use tangle_primitives::{CurrencyId, BNC};
 use xcm::prelude::{GeneralKey, X1};
 
 const LOG_TARGET: &str = "asset-registry::migration";
@@ -28,7 +25,7 @@ const LOG_TARGET: &str = "asset-registry::migration";
 pub fn update_blp_metadata<T: Config>(pool_count: u32) -> Weight {
 	for pool_id in 0..pool_count {
 		if let Some(old_metadata) = CurrencyMetadatas::<T>::get(CurrencyId::BLP(pool_id)) {
-			let name = scale_info::prelude::format!("Bifrost Stable Pool Token {}", pool_id)
+			let name = scale_info::prelude::format!("tangle Stable Pool Token {}", pool_id)
 				.as_bytes()
 				.to_vec();
 			let symbol = scale_info::prelude::format!("BLP{}", pool_id).as_bytes().to_vec();
@@ -60,7 +57,7 @@ impl<T: Config> OnRuntimeUpgrade for InsertBNCMetadata<T> {
 		CurrencyMetadatas::<T>::insert(
 			BNC,
 			&AssetMetadata {
-				name: b"Bifrost Native Token".to_vec(),
+				name: b"tangle Native Token".to_vec(),
 				symbol: b"BNC".to_vec(),
 				decimals: 12,
 				minimal_balance: BalanceOf::<T>::unique_saturated_from(10_000_000_000u128),
@@ -87,7 +84,7 @@ impl<T: Config> OnRuntimeUpgrade for InsertBNCMetadata<T> {
 		assert_eq!(
 			metadata,
 			Some(AssetMetadata {
-				name: b"Bifrost Native Token".to_vec(),
+				name: b"tangle Native Token".to_vec(),
 				symbol: b"BNC".to_vec(),
 				decimals: 12,
 				minimal_balance: BalanceOf::<T>::unique_saturated_from(10_000_000_000u128),

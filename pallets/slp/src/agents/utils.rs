@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,13 +17,13 @@ use crate::{
 	Pallet, TrailingZeroInput, Validators, ValidatorsByDelegatorUpdateEntry, ASTR, DOT, GLMR, H160,
 	KSM, MANTA, MOVR, PHA,
 };
-use bifrost_primitives::CurrencyId;
-use bifrost_xcm_interface::traits::parachains;
 pub use cumulus_primitives_core::ParaId;
 use frame_support::ensure;
 use parity_scale_codec::Encode;
 use sp_core::Get;
 use sp_std::prelude::*;
+use tangle_primitives::CurrencyId;
+use tangle_xcm_interface::traits::parachains;
 use xcm::{
 	opaque::v3::{
 		Junction::{AccountId32, Parachain},
@@ -226,8 +223,9 @@ impl<T: Config> Pallet<T> {
 		if now <= timeout {
 			let currency_id = match entry.clone() {
 				LedgerUpdateEntry::Substrate(substrate_entry) => Some(substrate_entry.currency_id),
-				LedgerUpdateEntry::ParachainStaking(moonbeam_entry) =>
-					Some(moonbeam_entry.currency_id),
+				LedgerUpdateEntry::ParachainStaking(moonbeam_entry) => {
+					Some(moonbeam_entry.currency_id)
+				},
 				_ => None,
 			}
 			.ok_or(Error::<T>::NotSupportedCurrencyId)?;
@@ -259,8 +257,9 @@ impl<T: Config> Pallet<T> {
 		let mut updated = true;
 		if now <= timeout {
 			let currency_id = match entry.clone() {
-				ValidatorsByDelegatorUpdateEntry::Substrate(substrate_entry) =>
-					Some(substrate_entry.currency_id),
+				ValidatorsByDelegatorUpdateEntry::Substrate(substrate_entry) => {
+					Some(substrate_entry.currency_id)
+				},
 			}
 			.ok_or(Error::<T>::NotSupportedCurrencyId)?;
 
@@ -304,8 +303,9 @@ impl<T: Config> Pallet<T> {
 		let (entry, _) = Self::get_validators_by_delegator_update_entry(query_id)
 			.ok_or(Error::<T>::QueryNotExist)?;
 		let currency_id = match entry {
-			ValidatorsByDelegatorUpdateEntry::Substrate(substrate_entry) =>
-				Some(substrate_entry.currency_id),
+			ValidatorsByDelegatorUpdateEntry::Substrate(substrate_entry) => {
+				Some(substrate_entry.currency_id)
+			},
 		}
 		.ok_or(Error::<T>::NotSupportedCurrencyId)?;
 
@@ -328,14 +328,18 @@ impl<T: Config> Pallet<T> {
 	) -> Result<MultiLocation, Error<T>> {
 		match currency_id {
 			KSM | DOT => Ok(MultiLocation::parent()),
-			MOVR =>
-				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::moonriver::ID)) }),
-			GLMR =>
-				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::moonbeam::ID)) }),
-			ASTR =>
-				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::astar::ID)) }),
-			MANTA =>
-				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::manta::ID)) }),
+			MOVR => {
+				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::moonriver::ID)) })
+			},
+			GLMR => {
+				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::moonbeam::ID)) })
+			},
+			ASTR => {
+				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::astar::ID)) })
+			},
+			MANTA => {
+				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::manta::ID)) })
+			},
 			PHA => Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::phala::ID)) }),
 			_ => Err(Error::<T>::NotSupportedCurrencyId),
 		}
@@ -359,8 +363,9 @@ impl<T: Config> Pallet<T> {
 					PalletInstance(parachains::moonbeam::PALLET_ID),
 				),
 			}),
-			MANTA =>
-				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::manta::ID)) }),
+			MANTA => {
+				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::manta::ID)) })
+			},
 			_ => Err(Error::<T>::NotSupportedCurrencyId),
 		}
 	}

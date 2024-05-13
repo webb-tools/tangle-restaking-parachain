@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,7 +27,6 @@ use crate::{
 	Ledger, LedgerUpdateEntry, MinimumsAndMaximums, MultiLocation, Pallet, TimeUnit, Validators,
 	Vec, Weight, Xcm, XcmOperationType, Zero, ASTR, BNC, DOT, GLMR, KSM, MANTA, MOVR, PHA,
 };
-use bifrost_primitives::{CurrencyId, VtokenMintingOperator, XcmDestWeightAndFeeHandler};
 use frame_support::{dispatch::GetDispatchInfo, ensure, traits::Len};
 use orml_traits::{MultiCurrency, XcmTransfer};
 use polkadot_parachain_primitives::primitives::Sibling;
@@ -39,6 +35,7 @@ use sp_runtime::{
 	traits::{AccountIdConversion, CheckedAdd, UniqueSaturatedFrom, UniqueSaturatedInto},
 	DispatchResult, Saturating,
 };
+use tangle_primitives::{lstMintingOperator, CurrencyId, XcmDestWeightAndFeeHandler};
 use xcm::{opaque::v3::Instruction, v3::prelude::*, VersionedMultiLocation};
 
 // Some common business functions for all agents
@@ -167,27 +164,27 @@ impl<T: Config> Pallet<T> {
 		Ok(())
 	}
 
-	/// Charge vtoken for hosting fee.
-	pub(crate) fn inner_calculate_vtoken_hosting_fee(
+	/// Charge lst for hosting fee.
+	pub(crate) fn inner_calculate_lst_hosting_fee(
 		amount: BalanceOf<T>,
-		vtoken: CurrencyId,
+		lst: CurrencyId,
 		currency_id: CurrencyId,
 	) -> Result<BalanceOf<T>, Error<T>> {
 		ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
 
-		let vtoken_issuance = T::MultiCurrency::total_issuance(vtoken);
-		let token_pool = T::VtokenMinting::get_token_pool(currency_id);
+		let lst_issuance = T::MultiCurrency::total_issuance(lst);
+		let token_pool = T::lstMinting::get_token_pool(currency_id);
 		// Calculate how much vksm the beneficiary account can get.
 		let amount: u128 = amount.unique_saturated_into();
-		let vtoken_issuance: u128 = vtoken_issuance.unique_saturated_into();
+		let lst_issuance: u128 = lst_issuance.unique_saturated_into();
 		let token_pool: u128 = token_pool.unique_saturated_into();
-		let can_get_vtoken = U256::from(amount)
-			.checked_mul(U256::from(vtoken_issuance))
+		let can_get_lst = U256::from(amount)
+			.checked_mul(U256::from(lst_issuance))
 			.and_then(|n| n.checked_div(U256::from(token_pool)))
 			.and_then(|n| TryInto::<u128>::try_into(n).ok())
 			.unwrap_or_else(Zero::zero);
 
-		let charge_amount = BalanceOf::<T>::unique_saturated_from(can_get_vtoken);
+		let charge_amount = BalanceOf::<T>::unique_saturated_from(can_get_lst);
 
 		Ok(charge_amount)
 	}
@@ -215,9 +212,9 @@ impl<T: Config> Pallet<T> {
 		DelegatorsMultilocation2Index::<T>::get(currency_id, from)
 			.ok_or(Error::<T>::DelegatorNotExist)?;
 
-		// Make sure the receiving account is the Exit_account from vtoken-minting module.
+		// Make sure the receiving account is the Exit_account from lst-minting module.
 		let to_account_id = Self::multilocation_to_account(to)?;
-		let (_, exit_account) = T::VtokenMinting::get_entrance_and_exit_accounts();
+		let (_, exit_account) = T::lstMinting::get_entrance_and_exit_accounts();
 		ensure!(to_account_id == exit_account, Error::<T>::InvalidAccount);
 
 		// Prepare parameter dest and beneficiary.
@@ -236,7 +233,7 @@ impl<T: Config> Pallet<T> {
 		Ok((dest, beneficiary))
 	}
 
-	pub(crate) fn tune_vtoken_exchange_rate_without_update_ledger(
+	pub(crate) fn tune_lst_exchange_rate_without_update_ledger(
 		who: &MultiLocation,
 		token_amount: BalanceOf<T>,
 		currency_id: CurrencyId,
@@ -248,7 +245,7 @@ impl<T: Config> Pallet<T> {
 		);
 
 		// Get current TimeUnit.
-		let current_time_unit = T::VtokenMinting::get_ongoing_time_unit(currency_id)
+		let current_time_unit = T::lstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 		// Get DelegatorLatestTuneRecord for the currencyId.
 		let latest_time_unit_op = DelegatorLatestTuneRecord::<T>::get(currency_id, &who);
@@ -266,8 +263,8 @@ impl<T: Config> Pallet<T> {
 			Error::<T>::DelegatorNotBonded
 		);
 
-		// Tune the vtoken exchange rate.
-		T::VtokenMinting::increase_token_pool(currency_id, token_amount)
+		// Tune the lst exchange rate.
+		T::lstMinting::increase_token_pool(currency_id, token_amount)
 			.map_err(|_| Error::<T>::IncreaseTokenPoolError)?;
 
 		// Update the DelegatorLatestTuneRecord<T> storage.
@@ -408,10 +405,10 @@ impl<T: Config> Pallet<T> {
 		let responder = Self::get_para_multilocation_by_currency_id(currency_id)?;
 
 		let (notify_call_weight, callback_option) = match (currency_id, operation) {
-			(DOT, &XcmOperationType::Delegate) |
-			(DOT, &XcmOperationType::Undelegate) |
-			(KSM, &XcmOperationType::Delegate) |
-			(KSM, &XcmOperationType::Undelegate) => {
+			(DOT, &XcmOperationType::Delegate)
+			| (DOT, &XcmOperationType::Undelegate)
+			| (KSM, &XcmOperationType::Delegate)
+			| (KSM, &XcmOperationType::Undelegate) => {
 				let notify_call = Self::confirm_validators_by_delegator_call();
 				(notify_call.get_dispatch_info().weight, Some(notify_call))
 			},
@@ -489,7 +486,7 @@ impl<T: Config> Pallet<T> {
 		let unlock_time = match &update_operation {
 			BondLess | Revoke => Self::get_unlocking_time_unit_from_current(false, currency_id)?,
 			LeaveDelegator => Self::get_unlocking_time_unit_from_current(true, currency_id)?,
-			ExecuteRequest | ExecuteLeave => T::VtokenMinting::get_ongoing_time_unit(currency_id),
+			ExecuteRequest | ExecuteLeave => T::lstMinting::get_ongoing_time_unit(currency_id),
 			_ => None,
 		};
 
@@ -515,7 +512,7 @@ impl<T: Config> Pallet<T> {
 		// Ensure amount is greater than zero.
 		ensure!(!amount.is_zero(), Error::<T>::AmountZero);
 
-		// Ensure the from account is located within Bifrost chain. Otherwise, the xcm massage will
+		// Ensure the from account is located within tangle chain. Otherwise, the xcm massage will
 		// not succeed.
 		ensure!(from.parents.is_zero(), Error::<T>::InvalidTransferSource);
 
@@ -584,21 +581,22 @@ impl<T: Config> Pallet<T> {
 		if_leave: bool,
 		currency_id: CurrencyId,
 	) -> Result<Option<TimeUnit>, Error<T>> {
-		let current_time_unit = T::VtokenMinting::get_ongoing_time_unit(currency_id)
+		let current_time_unit = T::lstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 		let delays = CurrencyDelays::<T>::get(currency_id).ok_or(Error::<T>::DelaysNotExist)?;
 
 		let unlock_time_unit = match (currency_id, current_time_unit) {
-			(ASTR, TimeUnit::Era(current_era)) |
-			(KSM, TimeUnit::Era(current_era)) |
-			(DOT, TimeUnit::Era(current_era)) =>
+			(ASTR, TimeUnit::Era(current_era))
+			| (KSM, TimeUnit::Era(current_era))
+			| (DOT, TimeUnit::Era(current_era)) => {
 				if let TimeUnit::Era(delay_era) = delays.unlock_delay {
 					let unlock_era =
 						current_era.checked_add(delay_era).ok_or(Error::<T>::OverFlow)?;
 					TimeUnit::Era(unlock_era)
 				} else {
 					Err(Error::<T>::InvalidTimeUnit)?
-				},
+				}
+			},
 			(PHA, TimeUnit::Hour(current_hour)) => {
 				if let TimeUnit::Hour(delay_hour) = delays.unlock_delay {
 					let unlock_hour =
@@ -608,10 +606,10 @@ impl<T: Config> Pallet<T> {
 					Err(Error::<T>::InvalidTimeUnit)?
 				}
 			},
-			(BNC, TimeUnit::Round(current_round)) |
-			(MOVR, TimeUnit::Round(current_round)) |
-			(GLMR, TimeUnit::Round(current_round)) |
-			(MANTA, TimeUnit::Round(current_round)) => {
+			(BNC, TimeUnit::Round(current_round))
+			| (MOVR, TimeUnit::Round(current_round))
+			| (GLMR, TimeUnit::Round(current_round))
+			| (MANTA, TimeUnit::Round(current_round)) => {
 				let mut delay = delays.unlock_delay;
 				if if_leave {
 					delay = delays.leave_delegators_delay;

@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,11 +26,11 @@ use crate::{
 	Junctions::X2,
 	*,
 };
-use bifrost_primitives::{currency::VMOVR, Balance};
 use frame_support::{assert_noop, assert_ok, PalletId};
 use parity_scale_codec::alloc::collections::BTreeMap;
 use polkadot_parachain_primitives::primitives::Sibling;
 use sp_runtime::traits::AccountIdConversion;
+use tangle_primitives::{currency::VMOVR, Balance};
 
 const VALIDATOR_0_ACCOUNT_ID_20: [u8; 20] =
 	hex_literal::hex!["3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0"];
@@ -58,22 +55,22 @@ const VALIDATOR_1_LOCATION: MultiLocation = MultiLocation {
 #[test]
 fn initialize_moonriver_delegator() {
 	ExtBuilder::default().build().execute_with(|| {
-		let bifrost_parachain_account_id_20_right: [u8; 20] =
+		let tangle_parachain_account_id_20_right: [u8; 20] =
 			hex_literal::hex!["7369626cd1070000000000000000000000000000"].into();
-		let bifrost_parachain_account_id_20: [u8; 20] =
+		let tangle_parachain_account_id_20: [u8; 20] =
 			Sibling::from(2001).into_account_truncating();
-		assert_eq!(bifrost_parachain_account_id_20_right, bifrost_parachain_account_id_20);
+		assert_eq!(tangle_parachain_account_id_20_right, tangle_parachain_account_id_20);
 
 		// subaccount_id_0: 0x863c1faef3c3b8f8735ecb7f8ed18996356dd3de
 		let subaccount_id_0_right: [u8; 20] =
 			hex_literal::hex!["863c1faef3c3b8f8735ecb7f8ed18996356dd3de"].into();
-		let subaccount_id_0 = Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0);
+		let subaccount_id_0 = Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0);
 		assert_eq!(subaccount_id_0_right.as_slice(), subaccount_id_0.0);
 
 		// subaccount_id_1: 0x3afe20b0c85801b74e65586fe7070df827172574
 		let subaccount_id_1_right: [u8; 20] =
 			hex_literal::hex!["3afe20b0c85801b74e65586fe7070df827172574"].into();
-		let subaccount_id_1 = Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 1);
+		let subaccount_id_1 = Slp::derivative_account_id_20(tangle_parachain_account_id_20, 1);
 		assert_eq!(subaccount_id_1_right.as_slice(), subaccount_id_1.0);
 
 		let subaccount0_location = MultiLocation {
@@ -273,10 +270,10 @@ fn moonriver_setup() {
 
 #[test]
 fn moonriver_bond_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -305,10 +302,10 @@ fn moonriver_bond_works() {
 
 #[test]
 fn moonriver_bond_extra_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -359,10 +356,10 @@ fn moonriver_bond_extra_works() {
 
 #[test]
 fn moonriver_unbond_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -413,10 +410,10 @@ fn moonriver_unbond_works() {
 
 #[test]
 fn moonriver_rebond_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -477,10 +474,10 @@ fn moonriver_rebond_works() {
 
 #[test]
 fn moonriver_undelegate_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -531,10 +528,10 @@ fn moonriver_undelegate_works() {
 
 #[test]
 fn moonriver_liquidize_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -686,10 +683,10 @@ fn moonriver_liquidize_works() {
 
 #[test]
 fn moonriver_bond_and_bond_extra_confirm_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
 		interior: X2(
@@ -818,10 +815,10 @@ fn moonriver_bond_and_bond_extra_confirm_works() {
 
 #[test]
 fn moonriver_unbond_confirm_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1009,10 +1006,10 @@ fn moonriver_unbond_confirm_works() {
 
 #[test]
 fn moonriver_unbond_all_confirm_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1142,10 +1139,10 @@ fn moonriver_unbond_all_confirm_works() {
 
 #[test]
 fn moonriver_rebond_confirm_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1240,10 +1237,10 @@ fn moonriver_rebond_confirm_works() {
 
 #[test]
 fn moonriver_undelegate_confirm_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1415,10 +1412,10 @@ fn moonriver_undelegate_confirm_works() {
 
 #[test]
 fn moonriver_transfer_back_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1454,10 +1451,10 @@ fn moonriver_transfer_back_works() {
 
 #[test]
 fn moonriver_transfer_to_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1492,10 +1489,10 @@ fn moonriver_transfer_to_works() {
 
 #[test]
 fn supplement_fee_account_whitelist_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1609,11 +1606,11 @@ fn supplement_fee_account_whitelist_works() {
 }
 
 #[test]
-fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
-	let bifrost_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
+fn charge_host_fee_and_tune_lst_exchange_rate_works() {
+	let tangle_parachain_account_id_20: [u8; 20] = Sibling::from(2001).into_account_truncating();
 
 	let subaccount_0_account_id_20: [u8; 20] =
-		Slp::derivative_account_id_20(bifrost_parachain_account_id_20, 0).into();
+		Slp::derivative_account_id_20(tangle_parachain_account_id_20, 0).into();
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -1629,7 +1626,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 
 		// moonriver_setup();
 
-		bifrost_vtoken_minting::OngoingTimeUnit::<Runtime>::insert(MOVR, TimeUnit::Round(1));
+		tangle_lst_minting::OngoingTimeUnit::<Runtime>::insert(MOVR, TimeUnit::Round(1));
 
 		DelegatorsIndex2Multilocation::<Runtime>::insert(MOVR, 0, subaccount_0_location);
 		DelegatorsMultilocation2Index::<Runtime>::insert(MOVR, subaccount_0_location, 0);
@@ -1672,7 +1669,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 		// Set delegator ledger
 		DelegatorLedgers::<Runtime>::insert(MOVR, subaccount_0_location, ledger);
 
-		// Set the hosting fee to be 20%, and the beneficiary to be bifrost treasury account.
+		// Set the hosting fee to be 20%, and the beneficiary to be tangle treasury account.
 		let pct = Permill::from_percent(20);
 		let treasury_location = MultiLocation {
 			parents: 0,
@@ -1692,12 +1689,12 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 			Some((1, pct_100))
 		));
 
-		// First set base vtoken exchange rate. Should be 1:1.
+		// First set base lst exchange rate. Should be 1:1.
 		assert_ok!(Currencies::deposit(VMOVR, &ALICE, 100));
 		assert_ok!(Slp::increase_token_pool(RuntimeOrigin::signed(ALICE), MOVR, 100));
 
-		// call the charge_host_fee_and_tune_vtoken_exchange_rate
-		assert_ok!(Slp::charge_host_fee_and_tune_vtoken_exchange_rate(
+		// call the charge_host_fee_and_tune_lst_exchange_rate
+		assert_ok!(Slp::charge_host_fee_and_tune_lst_exchange_rate(
 			RuntimeOrigin::signed(ALICE),
 			MOVR,
 			100,
@@ -1705,7 +1702,7 @@ fn charge_host_fee_and_tune_vtoken_exchange_rate_works() {
 		));
 
 		// Tokenpool should have been added 100.
-		let new_token_pool_amount = <Runtime as Config>::VtokenMinting::get_token_pool(MOVR);
+		let new_token_pool_amount = <Runtime as Config>::lstMinting::get_token_pool(MOVR);
 		assert_eq!(new_token_pool_amount, 200);
 
 		// let tune_record = DelegatorLatestTuneRecord::<Runtime>::get(MOVR,

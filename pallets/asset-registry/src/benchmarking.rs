@@ -1,7 +1,4 @@
-// This file is part of Bifrost.
-
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+// This file is part of Tangle.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,10 +17,10 @@
 
 use super::*;
 use crate::Pallet as AssetRegistry;
-use bifrost_primitives::{CurrencyId, TokenSymbol};
 use frame_benchmarking::{benchmarks, v1::BenchmarkError};
 use frame_support::{assert_ok, traits::UnfilteredDispatchable};
 use sp_runtime::traits::UniqueSaturatedFrom;
+use tangle_primitives::{CurrencyId, TokenSymbol};
 use xcm::v3::prelude::*;
 
 benchmarks! {
@@ -100,7 +97,7 @@ benchmarks! {
 	register_token_metadata {
 		let origin = T::RegisterOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: BalanceOf::<T>::unique_saturated_from(0u128),
@@ -114,10 +111,10 @@ benchmarks! {
 		assert_eq!(CurrencyMetadatas::<T>::get(CurrencyId::Token2(0)), Some(metadata.clone()))
 	}
 
-	register_vtoken_metadata {
+	register_lst_metadata {
 		let origin = T::RegisterOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: BalanceOf::<T>::unique_saturated_from(0u128),
@@ -133,13 +130,13 @@ benchmarks! {
 			Box::new(metadata.clone())
 		));
 
-		let call = Call::<T>::register_vtoken_metadata {
+		let call = Call::<T>::register_lst_metadata {
 			token_id: 0
 		};
 	}: {call.dispatch_bypass_filter(origin)?}
 	verify {
 		assert_eq!(
-			CurrencyMetadatas::<T>::get(CurrencyId::VToken2(0)),
+			CurrencyMetadatas::<T>::get(CurrencyId::lst2(0)),
 			Some(v_metadata.clone())
 		)
 	}
@@ -211,7 +208,7 @@ benchmarks! {
 	register_multilocation {
 		let origin = T::RegisterOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: BalanceOf::<T>::unique_saturated_from(0u128),
@@ -250,7 +247,7 @@ benchmarks! {
 	force_set_multilocation {
 		let origin = T::RegisterOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: BalanceOf::<T>::unique_saturated_from(0u128),
