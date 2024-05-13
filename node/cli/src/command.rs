@@ -220,7 +220,7 @@ fn set_default_ss58_version(spec: &Box<dyn ChainSpec>) {
 	use sp_core::crypto::Ss58AddressFormatRegistry;
 
 	let ss58_version = if spec.is_tangle_kusama() || spec.is_tangle_polkadot() {
-		Ss58AddressFormatRegistry::tangleAccount
+		Ss58AddressFormatRegistry::TangleAccount
 	} else {
 		Ss58AddressFormatRegistry::SubstrateAccount
 	};
