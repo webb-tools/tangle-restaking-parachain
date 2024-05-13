@@ -30,8 +30,6 @@
 
 use std::sync::Arc;
 
-use lend_market_rpc::{LendMarket, LendMarketApiServer};
-use lend_market_rpc_runtime_api::LendMarketApi;
 use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
 use sc_rpc_api::DenyUnsafe;
 use sc_transaction_pool_api::TransactionPool;
@@ -40,19 +38,8 @@ use sp_block_builder::BlockBuilder;
 use sp_blockchain::{Error as BlockChainError, HeaderBackend, HeaderMetadata};
 use sp_runtime::traits::BlockIdTo;
 use substrate_frame_rpc_system::{System, SystemApiServer};
-use tangle_farming_rpc::{FarmingRpc, FarmingRpcApiServer};
-use tangle_farming_rpc_runtime_api::FarmingRuntimeApi;
-use tangle_flexible_fee_rpc::{FeeRpcApiServer, FlexibleFeeRpc};
-use tangle_flexible_fee_rpc_runtime_api::FlexibleFeeRuntimeApi as FeeRuntimeApi;
 use tangle_primitives::{AccountId, Balance, Block, CurrencyId, Nonce, ParaId, PoolId};
-use tangle_salp_rpc::{SalpRpc, SalpRpcApiServer};
-use tangle_salp_rpc_runtime_api::SalpRuntimeApi;
-use tangle_stable_pool_rpc::{StablePoolRpc, StablePoolRpcApiServer};
-use tangle_stable_pool_rpc_runtime_api::StablePoolRuntimeApi;
-use zenlink_protocol::AssetId;
-use zenlink_protocol_rpc::{ZenlinkProtocol, ZenlinkProtocolApiServer};
-use zenlink_protocol_runtime_api::ZenlinkProtocolApi as ZenlinkProtocolRuntimeApi;
-use zenlink_stable_amm_rpc::{StableAmm, StableAmmApiServer};
+
 /// Full client dependencies.
 pub struct FullDeps<C, P> {
 	/// The client instance to use.
@@ -79,14 +66,6 @@ where
 		+ 'static,
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
-	C::Api: FarmingRuntimeApi<Block, AccountId, PoolId, CurrencyId>,
-	C::Api: FeeRuntimeApi<Block, AccountId>,
-	C::Api: SalpRuntimeApi<Block, ParaId, AccountId>,
-	C::Api: StablePoolRuntimeApi<Block>,
-	C::Api: LendMarketApi<Block, AccountId, Balance>,
-	C::Api: ZenlinkProtocolRuntimeApi<Block, AccountId, AssetId>,
-	C::Api:
-		zenlink_stable_amm_runtime_api::StableAmmApi<Block, CurrencyId, Balance, AccountId, PoolId>,
 	C::Api: BlockBuilder<Block>,
 	P: TransactionPool + Sync + Send + 'static,
 {
@@ -95,14 +74,6 @@ where
 
 	module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
 	module.merge(TransactionPayment::new(client.clone()).into_rpc())?;
-
-	module.merge(FarmingRpc::new(client.clone()).into_rpc())?;
-	module.merge(FlexibleFeeRpc::new(client.clone()).into_rpc())?;
-	module.merge(SalpRpc::new(client.clone()).into_rpc())?;
-	module.merge(ZenlinkProtocol::new(client.clone()).into_rpc())?;
-	module.merge(StableAmm::new(client.clone()).into_rpc())?;
-	module.merge(StablePoolRpc::new(client.clone()).into_rpc())?;
-	module.merge(LendMarket::new(client).into_rpc())?;
 
 	Ok(module)
 }
@@ -121,13 +92,6 @@ where
 		+ BlockIdTo<Block>,
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
-	C::Api: FarmingRuntimeApi<Block, AccountId, PoolId, CurrencyId>,
-	C::Api: FeeRuntimeApi<Block, AccountId>,
-	C::Api: SalpRuntimeApi<Block, ParaId, AccountId>,
-	C::Api: VeMintingRuntimeApi<Block, AccountId>,
-	C::Api: LendMarketApi<Block, AccountId, Balance>,
-	C::Api: ZenlinkProtocolRuntimeApi<Block, AccountId, AssetId>,
-	C::Api: StablePoolRuntimeApi<Block>,
 	C::Api: BlockBuilder<Block>,
 	P: TransactionPool + Sync + Send + 'static,
 {
@@ -136,14 +100,6 @@ where
 
 	module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
 	module.merge(TransactionPayment::new(client.clone()).into_rpc())?;
-
-	module.merge(FarmingRpc::new(client.clone()).into_rpc())?;
-	module.merge(FlexibleFeeRpc::new(client.clone()).into_rpc())?;
-	module.merge(SalpRpc::new(client.clone()).into_rpc())?;
-	module.merge(VeMintingRpc::new(client.clone()).into_rpc())?;
-	module.merge(ZenlinkProtocol::new(client.clone()).into_rpc())?;
-	module.merge(StablePoolRpc::new(client.clone()).into_rpc())?;
-	module.merge(LendMarket::new(client).into_rpc())?;
 
 	Ok(module)
 }

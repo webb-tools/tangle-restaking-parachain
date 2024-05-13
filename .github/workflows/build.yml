@@ -50,7 +50,7 @@ jobs:
   
       - name: Check Build
         run: |
-          cargo check --release
+          cargo b --release
 
       - name: Run tests
         run: cargo test --release --locked --verbose --all
