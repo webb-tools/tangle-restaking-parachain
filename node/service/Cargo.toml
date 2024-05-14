@@ -123,6 +123,7 @@ with-all-runtime = [
 ]
 try-runtime = [
 	"tangle-kusama-runtime/try-runtime",
+	"polkadot-service/try-runtime"
 ]
 fast-runtime = [
 	"tangle-kusama-runtime/fast-runtime",
