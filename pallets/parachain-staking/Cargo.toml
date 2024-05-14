@@ -1,0 +1,50 @@
+[package]
+name = "tangle-parachain-staking"
+authors = ["PureStake"]
+description = "parachain staking pallet for collator selection and reward distribution"
+edition = "2021"
+version = "3.0.1"
+
+[dependencies]
+log = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+
+# Substrate
+frame-benchmarking = { workspace = true, optional = true }
+frame-support = { workspace = true }
+frame-system = { workspace = true }
+parity-scale-codec = { workspace = true, features = ["derive","max-encoded-len"] }
+scale-info = { workspace = true, features = ["derive", "decode"] }
+sp-runtime = { workspace = true }
+sp-std = { workspace = true }
+sp-staking = { workspace = true }
+substrate-fixed = { workspace = true }
+pallet-authorship = { workspace = true }
+pallet-session = { workspace = true }
+
+[dev-dependencies]
+similar-asserts = { workspace = true }
+
+pallet-balances = { workspace = true }
+sp-core = { workspace = true }
+sp-io = { workspace = true }
+
+[features]
+default = ["std"]
+std = [
+	"frame-benchmarking/std",
+	"frame-support/std",
+	"frame-system/std",
+	"parity-scale-codec/std",
+	"scale-info/std",
+	"sp-runtime/std",
+	"sp-std/std",
+	"sp-staking/std",
+	"substrate-fixed/std",
+	"serde/std",
+	"pallet-authorship/std",
+	"pallet-session/std",
+	"log/std",
+]
+runtime-benchmarks = ["frame-benchmarking"]
+try-runtime = ["frame-support/try-runtime"]

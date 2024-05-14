@@ -1,45 +1,131 @@
+// This file is part of Tangle.
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #![cfg_attr(not(feature = "std"), no_std)]
-use sp_runtime::Perbill;
-
-use frame_support::weights::{constants::WEIGHT_REF_TIME_PER_SECOND, Weight};
-
-// Cumulus types re-export
-// These types are shared between the mainnet and devnet runtimes
-//https://github.com/paritytech/cumulus/tree/master/parachains/common
-pub use parachains_common::{
-	impls::DealWithFees, AccountId, AuraId, Balance, Block, BlockNumber, Hash, Signature,
+use frame_support::{
+	parameter_types, sp_runtime::traits::BlockNumberProvider, traits::EitherOfDiverse,
+};
+use frame_system::EnsureRoot;
+use pallet_transaction_payment::{Multiplier, TargetedFeeAdjustment};
+pub use sp_consensus_aura::sr25519::AuthorityId as AuraId;
+use sp_runtime::{traits::Bounded, FixedPointNumber, Perquintill};
+use tangle_asset_registry::{AssetIdMaps, Config};
+use tangle_primitives::{
+	AccountId, Balance, BlockNumber, CurrencyId, CurrencyIdMapping, TokenInfo,
 };
 
-/// Nonce for an account
-pub type Nonce = u32;
+pub mod constants;
+pub mod currency_adapter;
 
-/// This determines the average expected block time that we are targeting.
-/// Blocks will be produced at a minimum duration defined by `SLOT_DURATION`.
-/// `SLOT_DURATION` is picked up by `pallet_timestamp` which is in turn picked
-/// up by `pallet_aura` to implement `fn slot_duration()`.
-///
-/// Change this to adjust the block time.
-pub const MILLISECS_PER_BLOCK: u64 = 12000;
+#[cfg(test)]
+mod tests;
 
-// NOTE: Currently it is not possible to change the slot duration after the chain has started.
-// Attempting to do so will brick block production.
-pub const SLOT_DURATION: u64 = MILLISECS_PER_BLOCK;
+pub struct RelaychainBlockNumberProvider<T>(sp_std::marker::PhantomData<T>);
 
-// Time is measured by number of blocks.
-pub const MINUTES: BlockNumber = 60_000 / (MILLISECS_PER_BLOCK as BlockNumber);
-pub const HOURS: BlockNumber = MINUTES * 60;
-pub const DAYS: BlockNumber = HOURS * 24;
+impl<T: cumulus_pallet_parachain_system::Config> BlockNumberProvider
+	for RelaychainBlockNumberProvider<T>
+{
+	type BlockNumber = BlockNumber;
 
-/// We assume that ~5% of the block weight is consumed by `on_initialize` handlers. This is
-/// used to limit the maximal weight of a single extrinsic.
-pub const AVERAGE_ON_INITIALIZE_RATIO: Perbill = Perbill::from_percent(5);
+	fn current_block_number() -> Self::BlockNumber {
+		cumulus_pallet_parachain_system::Pallet::<T>::validation_data()
+			.map(|d| d.relay_parent_number)
+			.unwrap_or_default()
+	}
+}
 
-/// We allow `Normal` extrinsics to fill up the block up to 75%, the rest can be used by
-/// `Operational` extrinsics.
-pub const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
+parameter_types! {
+	/// The portion of the `NORMAL_DISPATCH_RATIO` that we adjust the fees with. Blocks filled less
+	/// than this will decrease the weight and more will increase.
+	pub const TargetBlockFullness: Perquintill = Perquintill::from_percent(25);
+	/// The adjustment variable of the runtime. Higher values will cause `TargetBlockFullness` to
+	/// change the fees more rapidly.
+	pub AdjustmentVariable: Multiplier = Multiplier::saturating_from_rational(3, 100_000);
+	/// Minimum amount of the multiplier. This value cannot be too low. A test case should ensure
+	/// that combined with `AdjustmentVariable`, we can recover from the minimum.
+	/// See `multiplier_can_grow_from_zero`.
+	pub MinimumMultiplier: Multiplier = Multiplier::saturating_from_rational(1, 1_000_000u128);
+	/// The maximum amount of the multiplier.
+	pub MaximumMultiplier: Multiplier = Bounded::max_value();
+}
 
-/// We allow for 0.5 of a second of compute with a 12 second average block time.
-pub const MAXIMUM_BLOCK_WEIGHT: Weight = Weight::from_parts(
-	WEIGHT_REF_TIME_PER_SECOND.saturating_div(2),
-	polkadot_primitives::MAX_POV_SIZE as u64,
-);
+pub type SlowAdjustingFeeUpdate<R> = TargetedFeeAdjustment<
+	R,
+	TargetBlockFullness,
+	AdjustmentVariable,
+	MinimumMultiplier,
+	MaximumMultiplier,
+>;
+
+pub type CouncilCollective = pallet_collective::Instance1;
+
+pub type TechnicalCollective = pallet_collective::Instance2;
+
+pub type MoreThanHalfCouncil = EitherOfDiverse<
+	EnsureRoot<AccountId>,
+	pallet_collective::EnsureProportionMoreThan<AccountId, CouncilCollective, 1, 2>,
+>;
+
+// Technical Committee Council
+pub type EnsureRootOrAllTechnicalCommittee = EitherOfDiverse<
+	EnsureRoot<AccountId>,
+	pallet_collective::EnsureProportionAtLeast<AccountId, TechnicalCollective, 1, 1>,
+>;
+
+pub fn dollar<T: Config>(currency_id: CurrencyId) -> Balance {
+	let decimals = currency_id
+		.decimals()
+		.unwrap_or(
+			AssetIdMaps::<T>::get_currency_metadata(currency_id)
+				.map_or(12, |metatata| metatata.decimals.into()),
+		)
+		.into();
+
+	10u128.saturating_pow(decimals)
+}
+
+pub fn milli<T: Config>(currency_id: CurrencyId) -> Balance {
+	dollar::<T>(currency_id) / 1000
+}
+
+pub fn micro<T: Config>(currency_id: CurrencyId) -> Balance {
+	milli::<T>(currency_id) / 1000
+}
+
+pub fn cent<T: Config>(currency_id: CurrencyId) -> Balance {
+	dollar::<T>(currency_id) / 100
+}
+
+pub fn millicent<T: Config>(currency_id: CurrencyId) -> Balance {
+	cent::<T>(currency_id) / 1000
+}
+
+pub fn microcent<T: Config>(currency_id: CurrencyId) -> Balance {
+	millicent::<T>(currency_id) / 1000
+}
+
+pub struct RelayChainBlockNumberProvider<T>(sp_std::marker::PhantomData<T>);
+
+impl<T: cumulus_pallet_parachain_system::Config> BlockNumberProvider
+	for RelayChainBlockNumberProvider<T>
+{
+	type BlockNumber = BlockNumber;
+
+	fn current_block_number() -> Self::BlockNumber {
+		cumulus_pallet_parachain_system::Pallet::<T>::validation_data()
+			.map(|d| d.relay_parent_number)
+			.unwrap_or_default()
+	}
+}

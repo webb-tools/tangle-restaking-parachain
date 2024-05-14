@@ -1,87 +1,226 @@
-<div align="center">
-<a href="https://www.tangle.tools/">
-    
-![Alt text](<assets/Tangle dApp OG.png>)
-  </a>
-  </div>
-<h1 align="left"> The Tangle Network </h1>
+<a href="https://tangle.finance"><img align="center" src="./docs/res/readme/tangle-banner.svg" alt="tangle Banner"/></a>
+
+<a href="https://tangle.finance"><img align="right" width="100" src="./docs/res/readme/tangle-black-logo.svg" alt="tangle Logo"/></a>
+
+<h1 align="left"><a href="https://tangle.finance">Homepage</a></h1>
+
+Welcome,
+
+tangle is a Web3 derivatives protocol that provides decentralized cross-chain liquidity for staked assets. By leveraging on the cross-consensus message ([XCM](https://wiki.polkadot.network/docs/learn-xcm)) it can provide cross-chain liquid staking services for multiple chains.
+
+[Our mission](https://bifrost-finance.notion.site/7df6abf2acb54b398df75230e157c7da?v=02ecfe941c5242c3b5f8c77654512b80) is to provide standardized cross-chain interest-bearing derivatives for [Polkadot](https://polkadot.network) relay chains, parachains, and heterogeneous chains bridged with Polkadot.
+
+👉 _Discover the tangle at [tangle.finance](https://tangle.finance/)._  
+👉 _Learn to use the tangle with our [wiki](https://wiki.tangle.finance/)._
+
+<h4>🐣 Supported by</h4>
+
 <p align="left">
-    <strong>An parachain for restaking for the DOT ecosystem. </strong>
+  <a href="https://web3.foundation/grants"><img src="docs/res/readme/web3-foundation-grant.svg" width="200" alt="Web3 Foundation Grants"></a>
+  <a href="https://www.substrate.io/builders-program"><img src="docs/res/readme/substrate-builder.svg" width="200" alt="Substrate Builders Program"></a>
+  <a href="https://bootcamp.web3.foundation/"><img src="docs/res/readme/web3-bootcamp.svg" width="200" alt="Web3 Bootcamp"></a>
 </p>
 
-<div align="left" >
+[![master-build](https://img.shields.io/github/actions/workflow/status/bifrost-finance/tangle/ci-build.yml?logo=Buddy)](https://github.com/bifrost-finance/tangle/actions/workflows/ci-build.yml)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/acec53276777415593c2b02b2200f62e)](https://www.codacy.com/gh/bifrost-finance/tangle?utm_source=github.com&utm_medium=referral&utm_content=bifrost-finance/tangle&utm_campaign=Badge_Grade)
+[![Substrate Version](https://img.shields.io/badge/Substrate-latest-brightgreen?logo=Parity%20Substrate)](https://github.com/paritytech/substrate)
+[![License](https://img.shields.io/github/license/bifrost-finance/tangle?color=blue)](https://github.com/bifrost-finance/tangle/blob/master/LICENSE)
+[![Dapp](https://img.shields.io/badge/Dapp-5c5c5c?logo=Icinga)](https://tangle.app)
+[![Analytics](https://img.shields.io/badge/-Analytics-5c5c5c?logo=Google%20Analytics)](https://stats.tangle.app)
+[![Discord](https://img.shields.io/badge/-Discord-5c5c5c?logo=Discord)](https://discord.gg/bifrost-finance)
+[![Twitter](https://img.shields.io/badge/-Twitter-5c5c5c?logo=Twitter)](https://twitter.com/tangleFinance)
 
-[![Twitter](https://img.shields.io/twitter/follow/webbprotocol.svg?style=flat-square&label=Twitter&color=1DA1F2)](https://twitter.com/intent/user?screen_name=tangle_network)
-[![Telegram](https://img.shields.io/badge/Telegram-gray?logo=telegram)](https://t.me/webbprotocol)
-[![Discord](https://img.shields.io/discord/833784453251596298.svg?style=flat-square&label=Discord&logo=discord)](https://discord.gg/cv8EfJu3Tn)
+## Get Build Help
 
-</div>
-
-<!-- TABLE OF CONTENTS -->
-<h2 id="table-of-contents"> Table of Contents</h2>
-
-<details open="open">
-  <summary>Table of Contents</summary>
-  <ul>
-    <li><a href="#start"> Getting Started</a></li>
-    <li><a href="#prerequisites">Prerequisites</a></li>
-    <li><a href="#troubleshooting">Troubleshooting</a></li>
-    <li><a href="#contribute">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-  </ul>  
-</details>
-
-<h1 id="start"> Getting Started </h1>
-Tangle's Restaking Parachain is a Polkadot parachain node specifically designed for restaking and staking assets within the DOT ecosystem. Its primary function is to secure Tangle's Multi-Party Computation (MPC) and offchain compute infrastructure, providing a robust and secure platform for operations within the Tangle Network.
-
-If you would like to familiarize yourself with Tangle Network check out following repo and docs:
-
-- [Tangle Gadgets](https://github.com/webb-tools/gadget)
-- [Tangle Docs](https://docs.tangle.tools/docs)
-- [Tangle Website](https://tangle.tools/)
-
-<h2 id="prerequisites"> Prerequisites</h2>
-
-This guide uses <https://rustup.rs> installer and the `rustup` tool to manage the Rust toolchain.
-
-First install and configure `rustup`:
-
-```bash
-# Install
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-# Configure
-source ~/.cargo/env
+```sh
+make help
 ```
 
-### Installation
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/webb-tools/tangle-restaking-parachain.git
-   ```
-2. Compile the node:
-   ```sh
-   cargo build --release
-   ```
-
-<h2 id="troubleshooting"> Troubleshooting </h2>
-
-The linking phase may fail due to not finding libgmp (i.e., "could not find library -lgmp") when building on apple silicon. To fix this problem, run:
+## Install Rust and required tools
 
 ```bash
-brew install gmp
-# make sure to run the commands below each time when starting a new env, or, append them to .zshrc
-export LIBRARY_PATH=$LIBRARY_PATH:/opt/homebrew/lib
-export INCLUDE_PATH=$INCLUDE_PATH:/opt/homebrew/include
+curl https://sh.rustup.rs -sSf | sh
+make init
 ```
 
-<h2 id="contribute"> Contributing </h2>
+## Build binary
 
-Interested in contributing to the Tangle Network? Thank you so much for your interest! We are always appreciative for contributions from the open-source community!
+```bash
+make build-all-release
+```
 
-If you have a contribution in mind, please check out our [Contribution Guide](./.github/CONTRIBUTING.md) for information on how to do so. We are excited for your first contribution!
+## Format code
 
-<h2 id="license"> License </h2>
+```sh
+make format
+```
 
-Licensed under <a href="LICENSE">GNU General Public License v3.0</a>.
+## Lint code
 
-Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this crate by you, as defined in the GNU General Public License v3.0 license, shall be licensed as above, without any additional terms or conditions.
+```sh
+make clippy
+```
+
+## Testing
+
+```bash
+make test-all
+```
+
+## Generate runtime weights
+
+if runtime logic change we may do the benchmarking to regenerate WeightInfo for dispatch calls
+
+```bash
+make generate-all-weights
+```
+
+## Testing runtime migration
+
+If modify the storage, should test the data migration before production upgrade.
+
+```bash
+# tangle kusama
+make try-kusama-runtime-upgrade
+
+# tangle polkadot
+make try-polkadot-runtime-upgrade
+```
+
+## Run development chain
+
+```bash
+make run-dev
+```
+
+## Run local testnet with polkadot-launch
+
+### Install `polkadot-launch`
+
+```bash
+yarn global add polkadot-launch
+cd -
+```
+
+### Build polkadot
+
+```bash
+# replace version with your target polkadot version
+cargo install --git https://github.com/paritytech/polkadot --tag <version> polkadot --locked
+```
+
+### Launch Polkadot and the parachain
+
+```bash
+cd -
+polkadot-launch ./scripts/tangle-launch.json
+```
+
+It will take about 1-2 minutes for the parachain to start producing blocks.
+
+## Run local testnet with parachain-launch
+
+### Install `parachain-launch`
+
+```sh
+yarn global add @open-web3/parachain-launch
+```
+
+### Generate docker files
+
+```sh
+parachain-launch generate --config=scripts/tangle-docker-launch.yml --yes
+```
+
+It will pull images and generate required docker files in a folder called `output` in your current working directory
+
+### Start relaychain and parachain
+
+To start the nodes, navigate to the output folder that the generated docker scripts in and start containers:
+
+```sh
+cd ./output
+docker-compose up -d --build
+```
+
+## Run full node
+
+### Create `tangle-fullnode` directory, generate `node-key` and get `tangle.json`
+
+```sh
+mkdir -p ~/node-key
+subkey generate-node-key --file ~/node-key/tangle.key
+```
+
+### Start full node
+
+Replace your-fullnode-name
+
+```sh
+docker pull tanglenetwork/tangle:latest
+docker run -d \
+-v ~/node-key:/node-key \
+-p 9944:9944 \
+-p 9933:9933 \
+-p 30333:30333 \
+tanglenetwork/tangle:latest \
+  --name your-fullnode-name \
+  --base-path "/data" \
+  --node-key-file "/node-key/tangle.key" \
+  --chain "/spec/tangle.json" \
+  --pruning=archive \
+  --rpc-external \
+  --ws-external \
+  --rpc-cors all \
+  --trie-cache-size 0 \
+  --execution wasm
+```
+
+### snapshot
+
+There are also some snapshots you can use to quickly get started, these are provided by the community.
+
+-   Pre-req .
+
+    zstd and aria2
+
+    ```sh
+
+    sudo apt install zstd
+    sudo apt install aria2
+    ```
+
+#### tangle-kusama snapshots
+
+-   relay-chain data
+
+```sh
+# download dict
+wget https://snapshot-1258776962.cos.ap-hongkong.myqcloud.com/tangle-kusama/relay.dict
+
+# download zst data
+aria2c -x10 https://snapshot-1258776962.cos.ap-hongkong.myqcloud.com/tangle-kusama/relay.tar.zst
+
+# decompress: node is basepath, you can replace any dicrectory you like
+mkdir node
+tar -I 'zstd -vd -T0 -D relay.dict' -xvf relay.tar.zst -C node/.
+```
+
+-   parachain data
+
+```sh
+wget https://snapshot-1258776962.cos.ap-hongkong.myqcloud.com/tangle-kusama/para.dict
+aria2c -x10  https://snapshot-1258776962.cos.ap-hongkong.myqcloud.com/tangle-kusama/para.tar.zst
+
+tar -I 'zstd -vd -T0 -D para.dict' -xvf para.tar.zst -C node/.
+```
+
+#### tangle-polkadot snapshots
+
+link:
+
+-   [relay chain dict](https://snapshot-1258776962.cos.ap-hongkong.myqcloud.com/tangle-polkadot/relay.dict)
+-   [relay chain zst data](https://snapshot-1258776962.cos.ap-hongkong.myqcloud.com/tangle-polkadot/relay.tar.zst)
+
+-   [para chain dict](https://snapshot-1258776962.cos.ap-hongkong.myqcloud.com/tangle-polkadot/para.dict)
+-   [para chain zst data](https://snapshot-1258776962.cos.ap-hongkong.myqcloud.com/tangle-polkadot/para.tar.zst)
