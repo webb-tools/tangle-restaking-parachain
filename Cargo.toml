@@ -1,3 +1,11 @@
+[workspace.package]
+version = "0.5.0"
+authors = ["Webb Technologies Inc."]
+edition = "2021"
+license = "Unlicense"
+homepage = "https://tangle.finance"
+repository = "https://github.com/webb-tools/tangle-restaking-parachain"
+
 cargo-features = ["resolver"]
 
 [workspace]
@@ -19,6 +27,7 @@ members = [
 	"pallets/stable-pool",
 	"pallets/prices",
 	"runtime/tangle-kusama",
+	"tangle-restaking-subxt",
 ]
 resolver = "2"
 
