@@ -1,6 +1,6 @@
 {
   "name": "@webb-tools/tangle-restaking-types",
-  "version": "0.5.8",
+  "version": "0.1.0",
   "description": "Polkadot.js type definitions required for interacting with Webb's tangle network",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
