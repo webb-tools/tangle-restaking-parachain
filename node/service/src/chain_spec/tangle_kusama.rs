@@ -25,9 +25,9 @@ use tangle_kusama_runtime::{
 	constants::currency::DOLLARS, AccountId, AssetRegistryConfig, Balance, BalancesConfig,
 	BlockNumber, CouncilConfig, CouncilMembershipConfig, DefaultBlocksPerRound, DemocracyConfig,
 	IndicesConfig, InflationInfo, OracleMembershipConfig, ParachainInfoConfig,
-	ParachainStakingConfig, PolkadotXcmConfig, Range, RuntimeGenesisConfig, SS58Prefix, SalpConfig,
+	ParachainStakingConfig, PolkadotXcmConfig, Range, RuntimeGenesisConfig, SS58Prefix,
 	SessionConfig, SystemConfig, TechnicalCommitteeConfig, TechnicalMembershipConfig, TokensConfig,
-	VestingConfig, WASM_BINARY,
+	WASM_BINARY,
 };
 use tangle_primitives::{CurrencyId, CurrencyId::*, TokenInfo, TokenSymbol, TokenSymbol::*};
 use tangle_runtime_common::AuraId;
@@ -117,12 +117,10 @@ pub fn tangle_genesis(
 	candidates: Vec<(AccountId, AuraId, Balance)>,
 	delegations: Vec<(AccountId, AccountId, Balance)>,
 	balances: Vec<(AccountId, Balance)>,
-	vestings: Vec<(AccountId, BlockNumber, BlockNumber, Balance)>,
 	id: ParaId,
 	tokens: Vec<(AccountId, CurrencyId, Balance)>,
 	council_membership: Vec<AccountId>,
 	technical_committee_membership: Vec<AccountId>,
-	salp_multisig_key: AccountId,
 	asset_registry: (
 		Vec<(CurrencyId, Balance, Option<(String, String, u8)>)>,
 		Vec<CurrencyId>,
@@ -174,7 +172,6 @@ pub fn tangle_genesis(
 		aura: Default::default(),
 		aura_ext: Default::default(),
 		parachain_system: Default::default(),
-		vesting: VestingConfig { vesting: vestings },
 		tokens: TokensConfig { balances: tokens },
 		asset_registry: AssetRegistryConfig {
 			currency: asset_registry.0,
@@ -183,7 +180,6 @@ pub fn tangle_genesis(
 			phantom: Default::default(),
 		},
 		polkadot_xcm: PolkadotXcmConfig { safe_xcm_version: Some(2), _config: Default::default() },
-		salp: SalpConfig { initial_multisig_account: Some(salp_multisig_key) },
 		parachain_staking: ParachainStakingConfig {
 			candidates: candidates
 				.iter()
@@ -205,11 +201,7 @@ fn development_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 		whitelisted_caller(), // Benchmarking whitelist_account
 	];
 	let balances = endowed_accounts.iter().cloned().map(|x| (x, ENDOWMENT())).collect();
-	let vestings = endowed_accounts
-		.iter()
-		.cloned()
-		.map(|x| (x, 0u32, 100u32, ENDOWMENT() / 4))
-		.collect();
+
 	let tokens = endowed_accounts
 		.iter()
 		.flat_map(|x| {
@@ -238,12 +230,10 @@ fn development_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 		)],
 		vec![],
 		balances,
-		vestings,
 		id,
 		tokens,
 		council_membership,
 		technical_committee_membership,
-		salp_multisig,
 		(vec![], vec![], vec![]),
 		oracle_membership,
 	)
@@ -286,11 +276,7 @@ fn local_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 		hex!["6d6f646c62662f7374616b650000000000000000000000000000000000000000"].into(),
 	];
 	let balances = endowed_accounts.iter().cloned().map(|x| (x, ENDOWMENT())).collect();
-	let vestings = endowed_accounts
-		.iter()
-		.cloned()
-		.map(|x| (x, 0u32, 100u32, ENDOWMENT() / 4))
-		.collect();
+
 	let tokens = endowed_accounts
 		.iter()
 		.flat_map(|x| {
@@ -375,12 +361,10 @@ fn local_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 		],
 		vec![],
 		balances,
-		vestings,
 		id,
 		tokens,
 		council_membership,
 		technical_committee_membership,
-		salp_multisig,
 		(currency, vcurrency, vsbond),
 		oracle_membership,
 	)
@@ -467,12 +451,10 @@ fn rococo_testnet_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 		invulnerables,
 		vec![],
 		balances,
-		vec![],
 		id,
 		vec![],
 		council_membership,
 		technical_committee_membership,
-		salp_multisig,
 		(
 			vec![
 				(CurrencyId::Token(TokenSymbol::DOT), 100_000_000, None),
@@ -538,12 +520,10 @@ fn rococo_local_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 		],
 		vec![],
 		balances,
-		vec![],
 		id,
 		vec![],
 		council_membership,
 		technical_committee_membership,
-		salp_multisig,
 		(vec![(Token(DOT), 100_000_000, None), (Token(KSM), 10_000_000, None)], vec![], vec![]),
 		oracle_membership,
 	)
@@ -644,23 +624,15 @@ fn tangle_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 
 	assert_eq!(total_issuance, 32_000_000 * DOLLARS, "total issuance must be equal to 320 million");
 
-	let vesting_configs: Vec<VestingConfig> =
-		config_from_json_files(exe_dir.join("res/genesis_config/vesting")).unwrap();
-
-	let salp_multisig: AccountId =
-		hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
-
 	use sp_core::sp_std::collections::btree_map::BTreeMap;
 	tangle_genesis(
 		invulnerables,
 		vec![],
 		balances,
-		vesting_configs.into_iter().flat_map(|vc| vc.vesting).collect(),
 		id,
 		vec![], // tokens
 		vec![], // council membership
 		vec![], // technical committee membership
-		salp_multisig,
 		(vec![], vec![], vec![]),
 		vec![],
 	)
