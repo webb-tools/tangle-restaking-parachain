@@ -26,3 +26,9 @@ bin/*
 # zombienet binaries
 zombienet-macos
 zombienet-linux-x64
+
+
+# NodeJS
+**/node_modules/
+types/build
+types/ts-types
