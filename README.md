@@ -1,6 +1,6 @@
 <a href="https://tangle.finance"><img align="center" src="./assets/Tangle Banner 4.png" alt="tangle Banner"/></a>
 
-<h1 align="left">Tangle LST</a></h1>
+<h1 align="left">Tangle Restaking</a></h1>
 
 <p align="left">
 Welcome,
