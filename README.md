@@ -1,9 +1,8 @@
-<a href="https://tangle.finance"><img align="center" src="./docs/res/readme/tangle-banner.svg" alt="tangle Banner"/></a>
+<a href="https://tangle.finance"><img align="center" src="./assets/Tangle Banner 4.png" alt="tangle Banner"/></a>
 
-<a href="https://tangle.finance"><img align="right" width="100" src="./docs/res/readme/tangle-black-logo.svg" alt="tangle Logo"/></a>
+<h1 align="left">Tangle Restaking</a></h1>
 
-<h1 align="left"><a href="https://tangle.finance">Homepage</a></h1>
-
+<p align="left">
 Welcome,
 
 tangle is a Web3 derivatives protocol that provides decentralized cross-chain liquidity for staked assets. By leveraging on the cross-consensus message ([XCM](https://wiki.polkadot.network/docs/learn-xcm)) it can provide cross-chain liquid staking services for multiple chains.
@@ -13,22 +12,12 @@ tangle is a Web3 derivatives protocol that provides decentralized cross-chain li
 👉 _Discover the tangle at [tangle.finance](https://tangle.finance/)._  
 👉 _Learn to use the tangle with our [wiki](https://wiki.tangle.finance/)._
 
-<h4>🐣 Supported by</h4>
-
-<p align="left">
-  <a href="https://web3.foundation/grants"><img src="docs/res/readme/web3-foundation-grant.svg" width="200" alt="Web3 Foundation Grants"></a>
-  <a href="https://www.substrate.io/builders-program"><img src="docs/res/readme/substrate-builder.svg" width="200" alt="Substrate Builders Program"></a>
-  <a href="https://bootcamp.web3.foundation/"><img src="docs/res/readme/web3-bootcamp.svg" width="200" alt="Web3 Bootcamp"></a>
 </p>
 
-[![master-build](https://img.shields.io/github/actions/workflow/status/bifrost-finance/tangle/ci-build.yml?logo=Buddy)](https://github.com/bifrost-finance/tangle/actions/workflows/ci-build.yml)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/acec53276777415593c2b02b2200f62e)](https://www.codacy.com/gh/bifrost-finance/tangle?utm_source=github.com&utm_medium=referral&utm_content=bifrost-finance/tangle&utm_campaign=Badge_Grade)
-[![Substrate Version](https://img.shields.io/badge/Substrate-latest-brightgreen?logo=Parity%20Substrate)](https://github.com/paritytech/substrate)
-[![License](https://img.shields.io/github/license/bifrost-finance/tangle?color=blue)](https://github.com/bifrost-finance/tangle/blob/master/LICENSE)
-[![Dapp](https://img.shields.io/badge/Dapp-5c5c5c?logo=Icinga)](https://tangle.app)
-[![Analytics](https://img.shields.io/badge/-Analytics-5c5c5c?logo=Google%20Analytics)](https://stats.tangle.app)
-[![Discord](https://img.shields.io/badge/-Discord-5c5c5c?logo=Discord)](https://discord.gg/bifrost-finance)
-[![Twitter](https://img.shields.io/badge/-Twitter-5c5c5c?logo=Twitter)](https://twitter.com/tangleFinance)
+<div align="left" >
+
+[![master-build](https://img.shields.io/github/actions/workflow/status/bifrost-finance/tangle/ci-build.yml?logo=Buddy)](https://github.com/bifrost-finance/tangle/actions/workflows/ci-build.yml)[![Codacy Badge](https://app.codacy.com/project/badge/Grade/acec53276777415593c2b02b2200f62e)](https://www.codacy.com/gh/bifrost-finance/tangle?utm_source=github.com&utm_medium=referral&utm_content=bifrost-finance/tangle&utm_campaign=Badge_Grade)[![Substrate Version](https://img.shields.io/badge/Substrate-latest-brightgreen?logo=Parity%20Substrate)](https://github.com/paritytech/substrate)[![License](https://img.shields.io/github/license/bifrost-finance/tangle?color=blue)](https://github.com/bifrost-finance/tangle/blob/master/LICENSE)[![Dapp](https://img.shields.io/badge/Dapp-5c5c5c?logo=Icinga)](https://tangle.app)[![Analytics](https://img.shields.io/badge/-Analytics-5c5c5c?logo=Google%20Analytics)](https://stats.tangle.app)[![Discord](https://img.shields.io/badge/-Discord-5c5c5c?logo=Discord)](https://discord.gg/bifrost-finance)[![Twitter](https://img.shields.io/badge/-Twitter-5c5c5c?logo=Twitter)](https://twitter.com/tangleFinance)
+</div>
 
 ## Get Build Help
 
