@@ -20,13 +20,13 @@ cargo install subxt-cli@0.34.0 --force
 Run the release build of the `tangle-restaking` parachain node, then on another terminal run:
 
 ```bash
-subxt metadata -f bytes > ./metadata/tangle-kasuma-runtime.scale
+subxt metadata -f bytes > ./metadata/tangle-kusama-runtime.scale
 ```
 
 3. Generating the subxt code from the metadata:
 
 ```bash
-subxt codegen --file metadata/tangle-kasuma-runtime.scale --derive Clone --derive Eq --derive PartialEq | rustfmt --edition=2018 --emit=stdout > src/tangle_kasuma_runtime.rs
+subxt codegen --file metadata/tangle-kusama-runtime.scale --derive Clone --derive Eq --derive PartialEq | rustfmt --edition=2018 --emit=stdout > src/tangle_kusama_runtime.rs
 ```
 
 
