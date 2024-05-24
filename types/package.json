@@ -66,6 +66,7 @@
     "build:interfaces:defs": "npx ts-node node_modules/.bin/polkadot-types-from-defs --input ./src/interfaces --package @webb-tools/tangle-substrate-types --endpoint ./src/metadata/metadata.json",
     "build:interfaces:chain": "npx ts-node node_modules/.bin/polkadot-types-from-chain --endpoint ./src/metadata/metadata.json --output ./src/interfaces",
     "clean": "rm -rf build && rm -rf ts-types",
+    "format": "prettier -w '**/*.ts'",
     "publish-types": "node ./scripts/publish-types.js",
     "update:metadata": "npx ts-node ./scripts/updateMetadata.ts"
   }
