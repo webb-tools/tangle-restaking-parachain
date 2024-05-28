@@ -1,0 +1,32 @@
+[settings]
+timeout = 1000
+
+[relaychain]
+default_command = "../polkadot-sdk/target/release/polkadot"
+chain = "rococo-local"
+
+    [[relaychain.nodes]]
+    name = "Alice"
+    validator = true
+
+    [[relaychain.nodes]]
+    name = "Bob"
+    validator = true
+
+[[parachains]]
+id = 1000
+name = "tangle-parachain"
+chain = "tangle-local"
+cumulus_based = true
+add_to_genesis = true
+register_para = true
+
+    [[parachains.collators]]
+    name = "Alice"
+    command = "./target/release/tangle"
+    collator = true
+
+    [[parachains.collators]]
+    name = "Bob"
+    command = "./target/release/tangle"
+    collator = true

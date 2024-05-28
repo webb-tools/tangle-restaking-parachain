@@ -44,7 +44,7 @@ pub fn ENDOWMENT() -> u128 {
 	1_000_000 * DOLLARS
 }
 
-pub const PARA_ID: u32 = 2030;
+pub const PARA_ID: u32 = 1000;
 
 fn tangle_polkadot_properties() -> Properties {
 	let mut properties = sc_chain_spec::Properties::new();
