@@ -68,24 +68,24 @@ pub trait WeightInfo {
 
 // For backwards compatibility and tests
 impl WeightInfo for () {
-	/// Storage: lstVoting UndecidingTimeout (r:1 w:0)
-	/// Proof: lstVoting UndecidingTimeout (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
-	/// Storage: lstVoting DelegatorVote (r:2 w:1)
-	/// Proof: lstVoting DelegatorVote (max_values: None, max_size: Some(81), added: 2556, mode: MaxEncodedLen)
+	/// Storage: LstVoting UndecidingTimeout (r:1 w:0)
+	/// Proof: LstVoting UndecidingTimeout (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
+	/// Storage: LstVoting DelegatorVote (r:2 w:1)
+	/// Proof: LstVoting DelegatorVote (max_values: None, max_size: Some(81), added: 2556, mode: MaxEncodedLen)
 	/// Storage: Slp DelegatorsIndex2Multilocation (r:1 w:0)
 	/// Proof Skipped: Slp DelegatorsIndex2Multilocation (max_values: None, max_size: None, mode: Measured)
 	/// Storage: Slp DelegatorLedgers (r:1 w:0)
 	/// Proof Skipped: Slp DelegatorLedgers (max_values: None, max_size: None, mode: Measured)
-	/// Storage: lstVoting PendingVotingInfo (r:1 w:1)
-	/// Proof: lstVoting PendingVotingInfo (max_values: None, max_size: Some(117), added: 2592, mode: MaxEncodedLen)
-	/// Storage: lstVoting ReferendumInfoFor (r:1 w:1)
-	/// Proof: lstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
+	/// Storage: LstVoting PendingVotingInfo (r:1 w:1)
+	/// Proof: LstVoting PendingVotingInfo (max_values: None, max_size: Some(117), added: 2592, mode: MaxEncodedLen)
+	/// Storage: LstVoting ReferendumInfoFor (r:1 w:1)
+	/// Proof: LstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
 	/// Storage: Tokens Accounts (r:1 w:1)
 	/// Proof: Tokens Accounts (max_values: None, max_size: Some(118), added: 2593, mode: MaxEncodedLen)
-	/// Storage: lstVoting VotingFor (r:1 w:1)
-	/// Proof: lstVoting VotingFor (max_values: None, max_size: Some(13663), added: 16138, mode: MaxEncodedLen)
-	/// Storage: lstVoting ClassLocksFor (r:1 w:1)
-	/// Proof: lstVoting ClassLocksFor (max_values: None, max_size: Some(5162), added: 7637, mode: MaxEncodedLen)
+	/// Storage: LstVoting VotingFor (r:1 w:1)
+	/// Proof: LstVoting VotingFor (max_values: None, max_size: Some(13663), added: 16138, mode: MaxEncodedLen)
+	/// Storage: LstVoting ClassLocksFor (r:1 w:1)
+	/// Proof: LstVoting ClassLocksFor (max_values: None, max_size: Some(5162), added: 7637, mode: MaxEncodedLen)
 	/// Storage: Tokens Locks (r:1 w:1)
 	/// Proof: Tokens Locks (max_values: None, max_size: Some(1271), added: 3746, mode: MaxEncodedLen)
 	/// Storage: AssetRegistry CurrencyMetadatas (r:1 w:0)
@@ -96,8 +96,8 @@ impl WeightInfo for () {
 	/// Proof Skipped: PolkadotXcm QueryCounter (max_values: Some(1), max_size: None, mode: Measured)
 	/// Storage: ParachainInfo ParachainId (r:1 w:0)
 	/// Proof: ParachainInfo ParachainId (max_values: Some(1), max_size: Some(4), added: 499, mode: MaxEncodedLen)
-	/// Storage: lstVoting PendingReferendumInfo (r:0 w:1)
-	/// Proof: lstVoting PendingReferendumInfo (max_values: None, max_size: Some(34), added: 2509, mode: MaxEncodedLen)
+	/// Storage: LstVoting PendingReferendumInfo (r:0 w:1)
+	/// Proof: LstVoting PendingReferendumInfo (max_values: None, max_size: Some(34), added: 2509, mode: MaxEncodedLen)
 	/// Storage: PolkadotXcm Queries (r:0 w:1)
 	/// Proof Skipped: PolkadotXcm Queries (max_values: None, max_size: None, mode: Measured)
 	fn vote_new() -> Weight {
@@ -109,24 +109,24 @@ impl WeightInfo for () {
 			.saturating_add(RocksDbWeight::get().reads(15_u64))
 			.saturating_add(RocksDbWeight::get().writes(10_u64))
 	}
-	/// Storage: lstVoting UndecidingTimeout (r:1 w:0)
-	/// Proof: lstVoting UndecidingTimeout (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
-	/// Storage: lstVoting DelegatorVote (r:2 w:1)
-	/// Proof: lstVoting DelegatorVote (max_values: None, max_size: Some(81), added: 2556, mode: MaxEncodedLen)
+	/// Storage: LstVoting UndecidingTimeout (r:1 w:0)
+	/// Proof: LstVoting UndecidingTimeout (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
+	/// Storage: LstVoting DelegatorVote (r:2 w:1)
+	/// Proof: LstVoting DelegatorVote (max_values: None, max_size: Some(81), added: 2556, mode: MaxEncodedLen)
 	/// Storage: Slp DelegatorsIndex2Multilocation (r:1 w:0)
 	/// Proof Skipped: Slp DelegatorsIndex2Multilocation (max_values: None, max_size: None, mode: Measured)
 	/// Storage: Slp DelegatorLedgers (r:1 w:0)
 	/// Proof Skipped: Slp DelegatorLedgers (max_values: None, max_size: None, mode: Measured)
-	/// Storage: lstVoting PendingVotingInfo (r:1 w:1)
-	/// Proof: lstVoting PendingVotingInfo (max_values: None, max_size: Some(117), added: 2592, mode: MaxEncodedLen)
-	/// Storage: lstVoting ReferendumInfoFor (r:1 w:1)
-	/// Proof: lstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
+	/// Storage: LstVoting PendingVotingInfo (r:1 w:1)
+	/// Proof: LstVoting PendingVotingInfo (max_values: None, max_size: Some(117), added: 2592, mode: MaxEncodedLen)
+	/// Storage: LstVoting ReferendumInfoFor (r:1 w:1)
+	/// Proof: LstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
 	/// Storage: Tokens Accounts (r:1 w:1)
 	/// Proof: Tokens Accounts (max_values: None, max_size: Some(118), added: 2593, mode: MaxEncodedLen)
-	/// Storage: lstVoting VotingFor (r:1 w:1)
-	/// Proof: lstVoting VotingFor (max_values: None, max_size: Some(13663), added: 16138, mode: MaxEncodedLen)
-	/// Storage: lstVoting ClassLocksFor (r:1 w:1)
-	/// Proof: lstVoting ClassLocksFor (max_values: None, max_size: Some(5162), added: 7637, mode: MaxEncodedLen)
+	/// Storage: LstVoting VotingFor (r:1 w:1)
+	/// Proof: LstVoting VotingFor (max_values: None, max_size: Some(13663), added: 16138, mode: MaxEncodedLen)
+	/// Storage: LstVoting ClassLocksFor (r:1 w:1)
+	/// Proof: LstVoting ClassLocksFor (max_values: None, max_size: Some(5162), added: 7637, mode: MaxEncodedLen)
 	/// Storage: Tokens Locks (r:1 w:1)
 	/// Proof: Tokens Locks (max_values: None, max_size: Some(1271), added: 3746, mode: MaxEncodedLen)
 	/// Storage: AssetRegistry CurrencyMetadatas (r:1 w:0)
@@ -148,16 +148,16 @@ impl WeightInfo for () {
 			.saturating_add(RocksDbWeight::get().reads(15_u64))
 			.saturating_add(RocksDbWeight::get().writes(9_u64))
 	}
-	/// Storage: lstVoting ReferendumInfoFor (r:1 w:0)
-	/// Proof: lstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
-	/// Storage: lstVoting VoteLockingPeriod (r:1 w:0)
-	/// Proof: lstVoting VoteLockingPeriod (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
+	/// Storage: LstVoting ReferendumInfoFor (r:1 w:0)
+	/// Proof: LstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
+	/// Storage: LstVoting VoteLockingPeriod (r:1 w:0)
+	/// Proof: LstVoting VoteLockingPeriod (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
 	/// Storage: ParachainSystem ValidationData (r:1 w:0)
 	/// Proof Skipped: ParachainSystem ValidationData (max_values: Some(1), max_size: None, mode: Measured)
-	/// Storage: lstVoting VotingFor (r:1 w:1)
-	/// Proof: lstVoting VotingFor (max_values: None, max_size: Some(13663), added: 16138, mode: MaxEncodedLen)
-	/// Storage: lstVoting ClassLocksFor (r:1 w:1)
-	/// Proof: lstVoting ClassLocksFor (max_values: None, max_size: Some(5162), added: 7637, mode: MaxEncodedLen)
+	/// Storage: LstVoting VotingFor (r:1 w:1)
+	/// Proof: LstVoting VotingFor (max_values: None, max_size: Some(13663), added: 16138, mode: MaxEncodedLen)
+	/// Storage: LstVoting ClassLocksFor (r:1 w:1)
+	/// Proof: LstVoting ClassLocksFor (max_values: None, max_size: Some(5162), added: 7637, mode: MaxEncodedLen)
 	/// Storage: Tokens Locks (r:1 w:1)
 	/// Proof: Tokens Locks (max_values: None, max_size: Some(1271), added: 3746, mode: MaxEncodedLen)
 	/// Storage: Tokens Accounts (r:1 w:1)
@@ -173,22 +173,22 @@ impl WeightInfo for () {
 			.saturating_add(RocksDbWeight::get().reads(8_u64))
 			.saturating_add(RocksDbWeight::get().writes(4_u64))
 	}
-	/// Storage: lstVoting ReferendumInfoFor (r:1 w:0)
-	/// Proof: lstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
-	/// Storage: lstVoting VoteLockingPeriod (r:1 w:0)
-	/// Proof: lstVoting VoteLockingPeriod (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
+	/// Storage: LstVoting ReferendumInfoFor (r:1 w:0)
+	/// Proof: LstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
+	/// Storage: LstVoting VoteLockingPeriod (r:1 w:0)
+	/// Proof: LstVoting VoteLockingPeriod (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
 	/// Storage: ParachainSystem ValidationData (r:1 w:0)
 	/// Proof Skipped: ParachainSystem ValidationData (max_values: Some(1), max_size: None, mode: Measured)
-	/// Storage: lstVoting DelegatorVote (r:1 w:0)
-	/// Proof: lstVoting DelegatorVote (max_values: None, max_size: Some(81), added: 2556, mode: MaxEncodedLen)
+	/// Storage: LstVoting DelegatorVote (r:1 w:0)
+	/// Proof: LstVoting DelegatorVote (max_values: None, max_size: Some(81), added: 2556, mode: MaxEncodedLen)
 	/// Storage: XcmInterface XcmWeightAndFee (r:1 w:0)
 	/// Proof Skipped: XcmInterface XcmWeightAndFee (max_values: None, max_size: None, mode: Measured)
 	/// Storage: PolkadotXcm QueryCounter (r:1 w:1)
 	/// Proof Skipped: PolkadotXcm QueryCounter (max_values: Some(1), max_size: None, mode: Measured)
 	/// Storage: ParachainInfo ParachainId (r:1 w:0)
 	/// Proof: ParachainInfo ParachainId (max_values: Some(1), max_size: Some(4), added: 499, mode: MaxEncodedLen)
-	/// Storage: lstVoting PendingRemoveDelegatorVote (r:0 w:1)
-	/// Proof: lstVoting PendingRemoveDelegatorVote (max_values: None, max_size: Some(36), added: 2511, mode: MaxEncodedLen)
+	/// Storage: LstVoting PendingRemoveDelegatorVote (r:0 w:1)
+	/// Proof: LstVoting PendingRemoveDelegatorVote (max_values: None, max_size: Some(36), added: 2511, mode: MaxEncodedLen)
 	/// Storage: PolkadotXcm Queries (r:0 w:1)
 	/// Proof Skipped: PolkadotXcm Queries (max_values: None, max_size: None, mode: Measured)
 	fn remove_delegator_vote() -> Weight {
@@ -200,8 +200,8 @@ impl WeightInfo for () {
 			.saturating_add(RocksDbWeight::get().reads(7_u64))
 			.saturating_add(RocksDbWeight::get().writes(3_u64))
 	}
-	/// Storage: lstVoting ReferendumInfoFor (r:1 w:1)
-	/// Proof: lstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
+	/// Storage: LstVoting ReferendumInfoFor (r:1 w:1)
+	/// Proof: LstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
 	/// Storage: ParachainSystem ValidationData (r:1 w:0)
 	/// Proof Skipped: ParachainSystem ValidationData (max_values: Some(1), max_size: None, mode: Measured)
 	fn kill_referendum() -> Weight {
@@ -215,8 +215,8 @@ impl WeightInfo for () {
 	}
 	/// Storage: Slp DelegatorsIndex2Multilocation (r:1 w:0)
 	/// Proof Skipped: Slp DelegatorsIndex2Multilocation (max_values: None, max_size: None, mode: Measured)
-	/// Storage: lstVoting DelegatorVote (r:1 w:1)
-	/// Proof: lstVoting DelegatorVote (max_values: None, max_size: Some(81), added: 2556, mode: MaxEncodedLen)
+	/// Storage: LstVoting DelegatorVote (r:1 w:1)
+	/// Proof: LstVoting DelegatorVote (max_values: None, max_size: Some(81), added: 2556, mode: MaxEncodedLen)
 	fn add_delegator() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `372`
@@ -226,8 +226,8 @@ impl WeightInfo for () {
 			.saturating_add(RocksDbWeight::get().reads(2_u64))
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
-	/// Storage: lstVoting ReferendumInfoFor (r:1 w:1)
-	/// Proof: lstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
+	/// Storage: LstVoting ReferendumInfoFor (r:1 w:1)
+	/// Proof: LstVoting ReferendumInfoFor (max_values: None, max_size: Some(88), added: 2563, mode: MaxEncodedLen)
 	fn set_referendum_status() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `321`
@@ -237,8 +237,8 @@ impl WeightInfo for () {
 			.saturating_add(RocksDbWeight::get().reads(1_u64))
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
-	/// Storage: lstVoting UndecidingTimeout (r:0 w:1)
-	/// Proof: lstVoting UndecidingTimeout (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
+	/// Storage: LstVoting UndecidingTimeout (r:0 w:1)
+	/// Proof: LstVoting UndecidingTimeout (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
 	fn set_undeciding_timeout() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
@@ -247,8 +247,8 @@ impl WeightInfo for () {
 		Weight::from_parts(25_058_000, 0)
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
-	/// Storage: lstVoting VoteLockingPeriod (r:0 w:1)
-	/// Proof: lstVoting VoteLockingPeriod (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
+	/// Storage: LstVoting VoteLockingPeriod (r:0 w:1)
+	/// Proof: LstVoting VoteLockingPeriod (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
 	fn set_vote_locking_period() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
@@ -257,10 +257,10 @@ impl WeightInfo for () {
 		Weight::from_parts(24_174_000, 0)
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
-	/// Storage: lstVoting PendingVotingInfo (r:1 w:0)
-	/// Proof: lstVoting PendingVotingInfo (max_values: None, max_size: Some(117), added: 2592, mode: MaxEncodedLen)
-	/// Storage: lstVoting PendingReferendumInfo (r:1 w:0)
-	/// Proof: lstVoting PendingReferendumInfo (max_values: None, max_size: Some(34), added: 2509, mode: MaxEncodedLen)
+	/// Storage: LstVoting PendingVotingInfo (r:1 w:0)
+	/// Proof: LstVoting PendingVotingInfo (max_values: None, max_size: Some(117), added: 2592, mode: MaxEncodedLen)
+	/// Storage: LstVoting PendingReferendumInfo (r:1 w:0)
+	/// Proof: LstVoting PendingReferendumInfo (max_values: None, max_size: Some(34), added: 2509, mode: MaxEncodedLen)
 	fn notify_vote() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `361`
@@ -269,8 +269,8 @@ impl WeightInfo for () {
 		Weight::from_parts(44_901_000, 3582)
 			.saturating_add(RocksDbWeight::get().reads(2_u64))
 	}
-	/// Storage: lstVoting PendingRemoveDelegatorVote (r:1 w:0)
-	/// Proof: lstVoting PendingRemoveDelegatorVote (max_values: None, max_size: Some(36), added: 2511, mode: MaxEncodedLen)
+	/// Storage: LstVoting PendingRemoveDelegatorVote (r:1 w:0)
+	/// Proof: LstVoting PendingRemoveDelegatorVote (max_values: None, max_size: Some(36), added: 2511, mode: MaxEncodedLen)
 	fn notify_remove_delegator_vote() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `329`

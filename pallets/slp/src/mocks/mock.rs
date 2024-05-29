@@ -63,7 +63,7 @@ construct_runtime!(
 		Tokens: orml_tokens,
 		XTokens: orml_xtokens,
 		Slp: tangle_slp,
-		lstMinting: tangle_lst_minting,
+		LstMinting: tangle_lst_minting,
 		AssetRegistry: tangle_asset_registry,
 		ParachainStaking: tangle_parachain_staking,
 		Utility: pallet_utility,
@@ -201,7 +201,7 @@ parameter_types! {
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 50;
 	pub tangleEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
 	pub tangleExitAccount: PalletId = PalletId(*b"bf/vtout");
-	pub tangleFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
+	pub TangleFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
 }
 
 impl tangle_lst_minting::Config for Runtime {
@@ -212,7 +212,7 @@ impl tangle_lst_minting::Config for Runtime {
 	type MaximumUnlockIdOfTimeUnit = MaximumUnlockIdOfTimeUnit;
 	type EntranceAccount = tangleEntranceAccount;
 	type ExitAccount = tangleExitAccount;
-	type FeeAccount = tangleFeeAccount;
+	type FeeAccount = TangleFeeAccount;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;
 	type CurrencyIdRegister = AssetIdMaps<Runtime>;
@@ -300,7 +300,7 @@ ord_parameter_types! {
 }
 
 parameter_types! {
-	pub tangleParachainAccountId20: [u8; 20] = hex_literal::hex!["7369626cd1070000000000000000000000000000"].into();
+	pub TangleParachainAccountId20: [u8; 20] = hex_literal::hex!["7369626cd1070000000000000000000000000000"].into();
 }
 
 pub struct SubAccountIndexMultiLocationConvertor;
@@ -350,7 +350,7 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 			// Other sibling chains use the tangle para account with "sibl"
 			_ => {
 				// get parachain id
-				if let Some(location) = tangleCurrencyIdConvert::convert(currency_id) {
+				if let Some(location) = TangleCurrencyIdConvert::convert(currency_id) {
 					if let Some(Parachain(para_id)) = location.interior().first() {
 						MultiLocation::new(
 							1,
@@ -400,7 +400,7 @@ parameter_types! {
 	pub const MaxTypeEntryPerBlock: u32 = 10;
 	pub const MaxRefundPerBlock: u32 = 10;
 	pub const MaxLengthLimit: u32 = 100;
-	pub tangleTreasuryAccount: AccountId = PalletId(*b"bf/trsry").into_account_truncating();
+	pub TangleTreasuryAccount: AccountId = PalletId(*b"bf/trsry").into_account_truncating();
 }
 
 impl QueryResponseManager<QueryId, MultiLocation, u64, RuntimeCall> for () {
@@ -419,8 +419,8 @@ impl QueryResponseManager<QueryId, MultiLocation, u64, RuntimeCall> for () {
 	}
 }
 
-pub struct tangleCurrencyIdConvert;
-impl Convert<CurrencyId, Option<MultiLocation>> for tangleCurrencyIdConvert {
+pub struct TangleCurrencyIdConvert;
+impl Convert<CurrencyId, Option<MultiLocation>> for TangleCurrencyIdConvert {
 	fn convert(id: CurrencyId) -> Option<MultiLocation> {
 		use CurrencyId::*;
 		use TokenSymbol::*;
@@ -452,7 +452,7 @@ impl Config for Runtime {
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
 	type WeightInfo = ();
-	type lstMinting = lstMinting;
+	type LstMinting = LstMinting;
 	type tangleSlpx = SlpxInterface;
 	type AccountConverter = SubAccountIndexMultiLocationConvertor;
 	type ParachainId = ParachainId;
@@ -467,7 +467,7 @@ impl Config for Runtime {
 	type ChannelCommission = ();
 	type StablePoolHandler = ();
 	type AssetIdMaps = AssetIdMaps<Runtime>;
-	type TreasuryAccount = tangleTreasuryAccount;
+	type TreasuryAccount = TangleTreasuryAccount;
 }
 
 pub struct XcmDestWeightAndFee;

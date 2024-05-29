@@ -329,7 +329,7 @@ pub enum XcmOperationType {
 	XtokensTransferBack,
 	ExecuteLeave,
 	ConvertAsset,
-	// lstVoting operations
+	// LstVoting operations
 	Vote,
 	RemoveVote,
 	Any,

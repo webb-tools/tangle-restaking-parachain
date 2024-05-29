@@ -36,7 +36,7 @@ use sp_runtime::{
 };
 use sp_std::prelude::*;
 use tangle_primitives::{
-	currency::KSM, lstMintingOperator, CurrencyId, XcmDestWeightAndFeeHandler, XcmOperationType,
+	currency::KSM, CurrencyId, LstMintingOperator, XcmDestWeightAndFeeHandler, XcmOperationType,
 	DOT,
 };
 use xcm::{opaque::v3::MultiLocation, v3::prelude::*, VersionedMultiAssets};
@@ -862,7 +862,7 @@ impl<T: Config>
 
 		// Make sure from account is the entrance account of lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
-		let (entrance_account, _) = T::lstMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
 
 		// transfer supplementary fee from treasury to the "from" account. Return the added up
@@ -1232,7 +1232,7 @@ impl<T: Config> PolkadotAgent<T> {
 		// Insert a delegator ledger update record into DelegatorLedgerXcmUpdateQueue<T>.
 		let unlock_time = match &update_operation {
 			Unlock => Pallet::<T>::get_unlocking_time_unit_from_current(false, currency_id)?,
-			Liquidize => T::lstMinting::get_ongoing_time_unit(currency_id),
+			Liquidize => T::LstMinting::get_ongoing_time_unit(currency_id),
 			_ => None,
 		};
 

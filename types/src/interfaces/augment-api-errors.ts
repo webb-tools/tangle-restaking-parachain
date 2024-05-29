@@ -607,7 +607,7 @@ declare module '@polkadot/api-base/types/errors' {
 			 **/
 			[key: string]: AugmentedError<ApiType>;
 		};
-		lstMinting: {
+		LstMinting: {
 			BelowMinimumMint: AugmentedError<ApiType>;
 			BelowMinimumRedeem: AugmentedError<ApiType>;
 			CalculationOverflow: AugmentedError<ApiType>;
@@ -636,7 +636,7 @@ declare module '@polkadot/api-base/types/errors' {
 			 **/
 			[key: string]: AugmentedError<ApiType>;
 		};
-		lstVoting: {
+		LstVoting: {
 			/**
 			 * The account is already delegating.
 			 **/
@@ -1437,7 +1437,7 @@ declare module '@polkadot/api-base/types/errors' {
 			/**
 			 * Token not found in lst minting
 			 **/
-			TokenNotFoundInlstMinting: AugmentedError<ApiType>;
+			TokenNotFoundInLstMinting: AugmentedError<ApiType>;
 			/**
 			 * Token not found in zenlink
 			 **/

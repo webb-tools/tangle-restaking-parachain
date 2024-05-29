@@ -51,8 +51,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_slpx.
-pub struct tangleWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_slpx::WeightInfo for tangleWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_slpx::WeightInfo for TangleWeight<T> {
 	// Storage: Slpx WhitelistAccountId (r:1 w:1)
 	// Proof: Slpx WhitelistAccountId (max_values: None, max_size: Some(338), added: 2813, mode: MaxEncodedLen)
 	fn add_whitelist() -> Weight {
@@ -105,14 +105,14 @@ impl<T: frame_system::Config> tangle_slpx::WeightInfo for tangleWeight<T> {
 	// Proof Skipped: AssetRegistry CurrencyMetadatas (max_values: None, max_size: None, mode: Measured)
 	// Storage: System Account (r:3 w:2)
 	// Proof: System Account (max_values: None, max_size: Some(128), added: 2603, mode: MaxEncodedLen)
-	// Storage: lstMinting MinimumMint (r:1 w:0)
-	// Proof: lstMinting MinimumMint (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting TokenPool (r:1 w:1)
-	// Proof: lstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting MinimumMint (r:1 w:0)
+	// Proof: LstMinting MinimumMint (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenPool (r:1 w:1)
+	// Proof: LstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	// Storage: Tokens TotalIssuance (r:1 w:1)
 	// Proof: Tokens TotalIssuance (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting Fees (r:1 w:0)
-	// Proof: lstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
+	// Storage: LstMinting Fees (r:1 w:0)
+	// Proof: LstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
 	// Storage: AssetRegistry CurrencyIdToLocations (r:1 w:0)
 	// Proof Skipped: AssetRegistry CurrencyIdToLocations (max_values: None, max_size: None, mode: Measured)
 	// Storage: ParachainInfo ParachainId (r:1 w:0)
@@ -136,18 +136,18 @@ impl<T: frame_system::Config> tangle_slpx::WeightInfo for tangleWeight<T> {
 	// Proof Skipped: AssetRegistry CurrencyMetadatas (max_values: None, max_size: None, mode: Measured)
 	// Storage: System Account (r:2 w:1)
 	// Proof: System Account (max_values: None, max_size: Some(128), added: 2603, mode: MaxEncodedLen)
-	// Storage: lstMinting MinimumRedeem (r:1 w:0)
-	// Proof: lstMinting MinimumRedeem (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting MinimumRedeem (r:1 w:0)
+	// Proof: LstMinting MinimumRedeem (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	// Storage: Slp DelegationsOccupied (r:1 w:0)
 	// Proof Skipped: Slp DelegationsOccupied (max_values: None, max_size: None, mode: Measured)
-	// Storage: lstMinting Fees (r:1 w:0)
-	// Proof: lstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
-	// Storage: lstMinting TokenPool (r:1 w:0)
-	// Proof: lstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting Fees (r:1 w:0)
+	// Proof: LstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenPool (r:1 w:0)
+	// Proof: LstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	// Storage: Tokens TotalIssuance (r:1 w:0)
 	// Proof: Tokens TotalIssuance (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting OngoingTimeUnit (r:1 w:0)
-	// Proof: lstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	// Storage: LstMinting OngoingTimeUnit (r:1 w:0)
+	// Proof: LstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
 	// Storage: AssetRegistry CurrencyIdToLocations (r:1 w:0)
 	// Proof Skipped: AssetRegistry CurrencyIdToLocations (max_values: None, max_size: None, mode: Measured)
 	// Storage: ParachainInfo ParachainId (r:1 w:0)

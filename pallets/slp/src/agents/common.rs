@@ -35,7 +35,7 @@ use sp_runtime::{
 	traits::{AccountIdConversion, CheckedAdd, UniqueSaturatedFrom, UniqueSaturatedInto},
 	DispatchResult, Saturating,
 };
-use tangle_primitives::{lstMintingOperator, CurrencyId, XcmDestWeightAndFeeHandler};
+use tangle_primitives::{CurrencyId, LstMintingOperator, XcmDestWeightAndFeeHandler};
 use xcm::{opaque::v3::Instruction, v3::prelude::*, VersionedMultiLocation};
 
 // Some common business functions for all agents
@@ -173,7 +173,7 @@ impl<T: Config> Pallet<T> {
 		ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
 
 		let lst_issuance = T::MultiCurrency::total_issuance(lst);
-		let token_pool = T::lstMinting::get_token_pool(currency_id);
+		let token_pool = T::LstMinting::get_token_pool(currency_id);
 		// Calculate how much vksm the beneficiary account can get.
 		let amount: u128 = amount.unique_saturated_into();
 		let lst_issuance: u128 = lst_issuance.unique_saturated_into();
@@ -214,7 +214,7 @@ impl<T: Config> Pallet<T> {
 
 		// Make sure the receiving account is the Exit_account from lst-minting module.
 		let to_account_id = Self::multilocation_to_account(to)?;
-		let (_, exit_account) = T::lstMinting::get_entrance_and_exit_accounts();
+		let (_, exit_account) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(to_account_id == exit_account, Error::<T>::InvalidAccount);
 
 		// Prepare parameter dest and beneficiary.
@@ -245,7 +245,7 @@ impl<T: Config> Pallet<T> {
 		);
 
 		// Get current TimeUnit.
-		let current_time_unit = T::lstMinting::get_ongoing_time_unit(currency_id)
+		let current_time_unit = T::LstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 		// Get DelegatorLatestTuneRecord for the currencyId.
 		let latest_time_unit_op = DelegatorLatestTuneRecord::<T>::get(currency_id, &who);
@@ -264,7 +264,7 @@ impl<T: Config> Pallet<T> {
 		);
 
 		// Tune the lst exchange rate.
-		T::lstMinting::increase_token_pool(currency_id, token_amount)
+		T::LstMinting::increase_token_pool(currency_id, token_amount)
 			.map_err(|_| Error::<T>::IncreaseTokenPoolError)?;
 
 		// Update the DelegatorLatestTuneRecord<T> storage.
@@ -486,7 +486,7 @@ impl<T: Config> Pallet<T> {
 		let unlock_time = match &update_operation {
 			BondLess | Revoke => Self::get_unlocking_time_unit_from_current(false, currency_id)?,
 			LeaveDelegator => Self::get_unlocking_time_unit_from_current(true, currency_id)?,
-			ExecuteRequest | ExecuteLeave => T::lstMinting::get_ongoing_time_unit(currency_id),
+			ExecuteRequest | ExecuteLeave => T::LstMinting::get_ongoing_time_unit(currency_id),
 			_ => None,
 		};
 
@@ -581,7 +581,7 @@ impl<T: Config> Pallet<T> {
 		if_leave: bool,
 		currency_id: CurrencyId,
 	) -> Result<Option<TimeUnit>, Error<T>> {
-		let current_time_unit = T::lstMinting::get_ongoing_time_unit(currency_id)
+		let current_time_unit = T::LstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 		let delays = CurrencyDelays::<T>::get(currency_id).ok_or(Error::<T>::DelaysNotExist)?;
 

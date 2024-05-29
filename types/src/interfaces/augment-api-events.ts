@@ -960,7 +960,7 @@ declare module '@polkadot/api-base/types/events' {
 			 **/
 			[key: string]: AugmentedEvent<ApiType>;
 		};
-		lstMinting: {
+		LstMinting: {
 			CurrencyTimeUnitRecreated: AugmentedEvent<
 				ApiType,
 				[tokenId: TanglePrimitivesCurrencyCurrencyId, timeUnit: TanglePrimitivesTimeUnit],
@@ -1109,7 +1109,7 @@ declare module '@polkadot/api-base/types/events' {
 			 **/
 			[key: string]: AugmentedEvent<ApiType>;
 		};
-		lstVoting: {
+		LstVoting: {
 			DelegatorAdded: AugmentedEvent<
 				ApiType,
 				[lst: TanglePrimitivesCurrencyCurrencyId, derivativeIndex: u16],

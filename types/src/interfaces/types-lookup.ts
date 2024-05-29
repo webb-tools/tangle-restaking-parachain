@@ -9890,7 +9890,7 @@ declare module '@polkadot/types/lookup' {
 
 	/** @name TangleSlpxError (723) */
 	interface TangleSlpxError extends Enum {
-		readonly isTokenNotFoundInlstMinting: boolean;
+		readonly isTokenNotFoundInLstMinting: boolean;
 		readonly isTokenNotFoundInZenlink: boolean;
 		readonly isAccountIdAlreadyInWhitelist: boolean;
 		readonly isAccountIdNotInWhitelist: boolean;
@@ -9903,7 +9903,7 @@ declare module '@polkadot/types/lookup' {
 		readonly isErrorDelivering: boolean;
 		readonly isUnsupported: boolean;
 		readonly type:
-			| 'TokenNotFoundInlstMinting'
+			| 'TokenNotFoundInLstMinting'
 			| 'TokenNotFoundInZenlink'
 			| 'AccountIdAlreadyInWhitelist'
 			| 'AccountIdNotInWhitelist'

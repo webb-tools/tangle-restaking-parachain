@@ -37,7 +37,7 @@ fn relaychain_transact_works() {
 		});
 
 	let notify_vote_call =
-		RuntimeCall::lstVoting(tangle_lst_voting::Call::<Runtime>::notify_vote {
+		RuntimeCall::LstVoting(tangle_lst_voting::Call::<Runtime>::notify_vote {
 			query_id: 0,
 			response: Default::default(),
 		});
@@ -123,7 +123,7 @@ fn relaychain_transact_works() {
 		System::events().iter().for_each(|r| println!("tangle >>> {:?}", r.event));
 		assert!(System::events().iter().any(|r| matches!(
 			r.event,
-			RuntimeEvent::lstVoting(tangle_lst_voting::Event::ResponseReceived {
+			RuntimeEvent::LstVoting(tangle_lst_voting::Event::ResponseReceived {
 				responder: MultiLocation { parents: 1, interior: Here },
 				query_id: 0,
 				response: Response::DispatchResult(MaybeErrorCode::Success)

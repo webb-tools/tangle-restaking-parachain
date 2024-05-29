@@ -61,7 +61,7 @@ frame_support::construct_runtime!(
 		Balances: pallet_balances,
 		Currencies: tangle_currencies,
 		PolkadotXcm: pallet_xcm,
-		lstVoting: lst_voting,
+		LstVoting: lst_voting,
 	}
 );
 

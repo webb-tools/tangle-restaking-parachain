@@ -74,9 +74,9 @@ fn vote_works() {
 	});
 
 	tangleKusama::execute_with(|| {
-		use tangle_kusama_runtime::{lstMinting, lstVoting, RuntimeEvent, RuntimeOrigin, System};
+		use tangle_kusama_runtime::{LstMinting, LstVoting, RuntimeEvent, RuntimeOrigin, System};
 
-		assert_ok!(lstMinting::mint(
+		assert_ok!(LstMinting::mint(
 			RuntimeOrigin::signed(tangleKusamaAlice::get()),
 			KSM,
 			1_000_000_000_000,
@@ -132,16 +132,16 @@ fn vote_works() {
 			})))
 		));
 
-		assert_ok!(lstVoting::set_vote_cap_ratio(
+		assert_ok!(LstVoting::set_vote_cap_ratio(
 			RuntimeOrigin::root(),
 			lst,
 			Perbill::from_percent(90)
 		));
-		assert_ok!(lstVoting::add_delegator(RuntimeOrigin::root(), lst, 5));
-		assert_ok!(lstVoting::set_vote_locking_period(RuntimeOrigin::root(), lst, 0));
-		assert_ok!(lstVoting::set_undeciding_timeout(RuntimeOrigin::root(), lst, 100));
+		assert_ok!(LstVoting::add_delegator(RuntimeOrigin::root(), lst, 5));
+		assert_ok!(LstVoting::set_vote_locking_period(RuntimeOrigin::root(), lst, 0));
+		assert_ok!(LstVoting::set_undeciding_timeout(RuntimeOrigin::root(), lst, 100));
 
-		assert_ok!(lstVoting::vote(
+		assert_ok!(LstVoting::vote(
 			RuntimeOrigin::signed(tangleKusamaAlice::get()),
 			lst,
 			poll_index,
@@ -155,7 +155,7 @@ fn vote_works() {
 
 		assert!(System::events().iter().any(|r| matches!(
 			r.event,
-			RuntimeEvent::lstVoting(tangle_lst_voting::Event::Voted {
+			RuntimeEvent::LstVoting(tangle_lst_voting::Event::Voted {
 				who: _,
 				lst: VKSM,
 				poll_index: 0,
@@ -183,26 +183,26 @@ fn vote_works() {
 	});
 
 	tangleKusama::execute_with(|| {
-		use tangle_kusama_runtime::{lstVoting, RuntimeEvent, System};
+		use tangle_kusama_runtime::{LstVoting, RuntimeEvent, System};
 
 		System::events()
 			.iter()
 			.for_each(|r| log::debug!("tangleKusama >>> {:?}", r.event));
 		assert!(System::events().iter().any(|r| matches!(
 			r.event,
-			RuntimeEvent::lstVoting(tangle_lst_voting::Event::VoteNotified {
+			RuntimeEvent::LstVoting(tangle_lst_voting::Event::VoteNotified {
 				lst: VKSM,
 				poll_index: 0,
 				success: true,
 			})
 		)));
-		assert_ok!(lstVoting::set_referendum_status(
+		assert_ok!(LstVoting::set_referendum_status(
 			RuntimeOrigin::root(),
 			VKSM,
 			0,
 			tangle_lst_voting::ReferendumInfoOf::<Runtime>::Completed(1),
 		));
-		assert_ok!(lstVoting::remove_delegator_vote(
+		assert_ok!(LstVoting::remove_delegator_vote(
 			RuntimeOrigin::signed(tangleKusamaAlice::get()),
 			VKSM,
 			0,
@@ -234,7 +234,7 @@ fn vote_works() {
 			.for_each(|r| log::debug!("tangleKusama >>> {:?}", r.event));
 		assert!(System::events().iter().any(|r| matches!(
 			r.event,
-			RuntimeEvent::lstVoting(tangle_lst_voting::Event::DelegatorVoteRemovedNotified {
+			RuntimeEvent::LstVoting(tangle_lst_voting::Event::DelegatorVoteRemovedNotified {
 				lst: VKSM,
 				poll_index: 0,
 				success: true,
@@ -259,7 +259,7 @@ pub fn aye(amount: Balance, conviction: u8) -> AccountVote<Balance> {
 }
 
 fn tally(lst: CurrencyId, poll_index: u32) -> TallyOf<Runtime> {
-	tangle_kusama_runtime::lstVoting::ensure_referendum_ongoing(lst, poll_index)
+	tangle_kusama_runtime::LstVoting::ensure_referendum_ongoing(lst, poll_index)
 		.expect("No poll")
 		.tally
 }

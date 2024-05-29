@@ -36,7 +36,7 @@ use sp_runtime::{
 	DispatchResult, SaturatedConversion,
 };
 use sp_std::prelude::*;
-use tangle_primitives::{lstMintingOperator, TokenSymbol, XcmOperationType};
+use tangle_primitives::{LstMintingOperator, TokenSymbol, XcmOperationType};
 use xcm::{
 	opaque::v3::{Junction::GeneralIndex, MultiLocation},
 	v3::prelude::*,
@@ -629,7 +629,7 @@ impl<T: Config>
 
 		// Make sure from account is the entrance account of lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
-		let (entrance_account, _) = T::lstMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
 
 		// transfer supplementary fee from treasury to the "from" account. Return the added up

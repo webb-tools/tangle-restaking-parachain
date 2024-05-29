@@ -20,7 +20,7 @@ use integration_tests_common::{impls::AccountId, tangleKusama, Kusama};
 use orml_traits::MultiCurrency;
 use sp_runtime::Permill;
 use tangle_kusama_runtime::{
-	lstMinting, Balances, Currencies, NativeCurrencyId, RelayCurrencyId, Runtime, RuntimeOrigin,
+	Balances, Currencies, LstMinting, NativeCurrencyId, RelayCurrencyId, Runtime, RuntimeOrigin,
 	Slp, Tokens, XcmDestWeightAndFeeHandler,
 };
 use tangle_primitives::{TimeUnit, XcmOperationType as XcmOperation, KSM, VKSM};
@@ -320,7 +320,7 @@ fn lst_minting() {
 				Currencies::free_balance(KSM, &AccountId::from(ALICE)),
 				10000 * KSM_DECIMALS
 			);
-			assert_ok!(lstMinting::mint(
+			assert_ok!(LstMinting::mint(
 				RuntimeOrigin::signed(AccountId::from(ALICE)),
 				KSM,
 				100 * KSM_DECIMALS,
@@ -351,7 +351,7 @@ fn transfer_to() {
 
 	tangleKusama::execute_with(|| {
 		// Bond 50 ksm for sub-account index 0
-		assert_ok!(lstMinting::mint(
+		assert_ok!(LstMinting::mint(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			KSM,
 			100 * KSM_DECIMALS,
@@ -744,7 +744,7 @@ fn delegate_works() {
 
 		tangleKusama::execute_with(|| {
 			// Unbond 0.5 ksm, 0.5 ksm left.
-			assert_ok!(lstMinting::mint(
+			assert_ok!(LstMinting::mint(
 				RuntimeOrigin::signed(AccountId::from(ALICE)),
 				KSM,
 				100 * KSM_DECIMALS,

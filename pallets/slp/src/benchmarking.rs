@@ -556,7 +556,7 @@ mod benchmarks {
 			Some((Weight::from_parts(4000000000, 100000), 0u32.into())),
 		)?;
 
-		let (_, exit_account) = <T as Config>::lstMinting::get_entrance_and_exit_accounts();
+		let (_, exit_account) = <T as Config>::LstMinting::get_entrance_and_exit_accounts();
 		let exit_account_32 = Pallet::<T>::account_id_to_account_32(exit_account).unwrap();
 		let to = Pallet::<T>::account_32_to_parent_location(exit_account_32).unwrap();
 
@@ -598,7 +598,7 @@ mod benchmarks {
 			Some((Weight::from_parts(4000000000, 100000), 0u32.into())),
 		)?;
 
-		let (entrance_account, _) = <T as Config>::lstMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = <T as Config>::LstMinting::get_entrance_and_exit_accounts();
 		let entrance_account_32 = Pallet::<T>::account_id_to_account_32(entrance_account).unwrap();
 		let from = Pallet::<T>::account_32_to_local_location(entrance_account_32).unwrap();
 
@@ -713,7 +713,7 @@ mod benchmarks {
 			.map_err(|_| BenchmarkError::Weightless)?;
 		init_ongoing_time::<T>(origin.clone());
 
-		let (_, exit_account) = <T as Config>::lstMinting::get_entrance_and_exit_accounts();
+		let (_, exit_account) = <T as Config>::LstMinting::get_entrance_and_exit_accounts();
 		orml_tokens::Pallet::<T>::deposit(
 			KSM,
 			&exit_account,
@@ -733,7 +733,7 @@ mod benchmarks {
 			.map_err(|_| BenchmarkError::Weightless)?;
 		set_mins_and_maxs::<T>(origin.clone());
 
-		let (entrance_account, _) = <T as Config>::lstMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = <T as Config>::LstMinting::get_entrance_and_exit_accounts();
 		let entrance_account_32 = Pallet::<T>::account_id_to_account_32(entrance_account).unwrap();
 		let from = Pallet::<T>::account_32_to_local_location(entrance_account_32).unwrap();
 

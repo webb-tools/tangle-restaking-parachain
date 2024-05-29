@@ -67,7 +67,7 @@ frame_support::construct_runtime!(
 		XTokens: orml_xtokens,
 		Balances: pallet_balances,
 		Currencies: tangle_currencies,
-		lstMinting: lst_minting,
+		LstMinting: lst_minting,
 		Slp: tangle_slp,
 		AssetRegistry: tangle_asset_registry,
 		PolkadotXcm: pallet_xcm,
@@ -214,7 +214,7 @@ parameter_types! {
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 1_000;
 	pub tangleEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
 	pub tangleExitAccount: PalletId = PalletId(*b"bf/vtout");
-	pub tangleFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
+	pub TangleFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
 }
 
 ord_parameter_types! {
@@ -230,7 +230,7 @@ impl lst_minting::Config for Runtime {
 	type MaximumUnlockIdOfTimeUnit = MaximumUnlockIdOfTimeUnit;
 	type EntranceAccount = tangleEntranceAccount;
 	type ExitAccount = tangleExitAccount;
-	type FeeAccount = tangleFeeAccount;
+	type FeeAccount = TangleFeeAccount;
 	type tangleSlp = Slp;
 	type tangleSlpx = SlpxInterface;
 	type RelayChainToken = RelayCurrencyId;
@@ -348,7 +348,7 @@ impl tangle_slp::Config for Runtime {
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
 	type WeightInfo = ();
-	type lstMinting = lstMinting;
+	type LstMinting = LstMinting;
 	type tangleSlpx = SlpxInterface;
 	type AccountConverter = SubAccountIndexMultiLocationConvertor;
 	type ParachainId = ParachainId;
@@ -511,10 +511,10 @@ impl ExtBuilder {
 pub fn _run_to_block(n: BlockNumber) {
 	use frame_support::traits::Hooks;
 	while System::block_number() <= n {
-		lstMinting::on_finalize(System::block_number());
+		LstMinting::on_finalize(System::block_number());
 		System::on_finalize(System::block_number());
 		System::set_block_number(System::block_number() + 1);
 		System::on_initialize(System::block_number());
-		lstMinting::on_initialize(System::block_number());
+		LstMinting::on_initialize(System::block_number());
 	}
 }
