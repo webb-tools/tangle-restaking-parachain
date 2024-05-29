@@ -27,6 +27,7 @@ members = [
 	"pallets/stable-pool",
 	"pallets/prices",
 	"runtime/tangle-kusama",
+	"runtime/tangle-polkadot",
 	"tangle-restaking-subxt",
 ]
 resolver = "2"
