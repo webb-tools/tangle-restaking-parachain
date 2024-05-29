@@ -3,12 +3,9 @@
 <h1 align="left">Tangle Restaking</a></h1>
 
 <p align="left">
-Welcome,
+Tangle's Parachain is a liquid staking system built using [Bifrost's liquid staking modules.](https://github.com/bifrost-finance/bifrost/tree/develop/pallets) We leverage the liquid staking primarily for [Tangle's restaking infrastructure](https://github.com/webb-tools/tangle), rather than DeFi, as our main intention of creating liquid staking tokens in the Polkadot/Kusama ecosystem. The liquid staking system allows users to bond and nominate their chosen validators (or use programmatic defaults) while minting a liquid staked token representative of their nominations.
 
-tangle is a Web3 derivatives protocol that provides decentralized cross-chain liquidity for staked assets. By leveraging on the cross-consensus message ([XCM](https://wiki.polkadot.network/docs/learn-xcm)) it can provide cross-chain liquid staking services for multiple chains.
-
-[Our mission](https://bifrost-finance.notion.site/7df6abf2acb54b398df75230e157c7da?v=02ecfe941c5242c3b5f8c77654512b80) is to provide standardized cross-chain interest-bearing derivatives for [Polkadot](https://polkadot.network) relay chains, parachains, and heterogeneous chains bridged with Polkadot.
-
+Tangle's Parachain allows easy access to Polkadot liquidity for augmenting the security of Tangle's restaking infrastructure on Tangle mainnet. By minting liquid staked assets, users gain opportunities to secure restaking services, specifically [Blueprints](https://docs.tangle.tools/developers/blueprints), deployed on Tangle.
 
 ## Install Rust and required tools
 
