@@ -53,7 +53,7 @@ frame_support::construct_runtime!(
 		AssetRegistry: tangle_asset_registry,
 		StableAsset: tangle_stable_asset,
 		StablePool: tangle_stable_pool,
-		lstMinting: tangle_lst_minting,
+		LstMinting: tangle_lst_minting,
 	}
 );
 
@@ -268,7 +268,7 @@ impl tangle_stable_pool::Config for Test {
 	type CurrencyId = CurrencyId;
 	type MultiCurrency = Currencies;
 	type StableAsset = StableAsset;
-	type lstMinting = lstMinting;
+	type LstMinting = LstMinting;
 	type CurrencyIdConversion = AssetIdMaps<Test>;
 	type CurrencyIdRegister = AssetIdMaps<Test>;
 }
@@ -278,7 +278,7 @@ parameter_types! {
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 1_000;
 	pub tangleEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
 	pub tangleExitAccount: PalletId = PalletId(*b"bf/vtout");
-	// pub tangleFeeAccount: AccountId = 1.into();
+	// pub TangleFeeAccount: AccountId = 1.into();
 }
 
 pub struct SlpxInterface;

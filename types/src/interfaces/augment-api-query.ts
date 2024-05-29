@@ -912,7 +912,7 @@ declare module '@polkadot/api-base/types/storage' {
 			 **/
 			[key: string]: QueryableStorageEntry<ApiType>;
 		};
-		lstMinting: {
+		LstMinting: {
 			fees: AugmentedQuery<ApiType, () => Observable<ITuple<[Permill, Permill]>>, []> &
 				QueryableStorageEntry<ApiType, []>;
 			hookIterationLimit: AugmentedQuery<ApiType, () => Observable<u32>, []> &
@@ -1250,7 +1250,7 @@ declare module '@polkadot/api-base/types/storage' {
 			 **/
 			[key: string]: QueryableStorageEntry<ApiType>;
 		};
-		lstVoting: {
+		LstVoting: {
 			/**
 			 * The voting classes which have a non-zero lock requirement and the lock amounts which they
 			 * require. The actual amount locked on behalf of this pallet should always be the maximum of

@@ -1661,7 +1661,7 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			[key: string]: SubmittableExtrinsicFunction<ApiType>;
 		};
-		lstMinting: {
+		LstMinting: {
 			/**
 			 * See [`Pallet::add_support_rebond_token`].
 			 **/
@@ -2044,7 +2044,7 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			[key: string]: SubmittableExtrinsicFunction<ApiType>;
 		};
-		lstVoting: {
+		LstVoting: {
 			/**
 			 * See [`Pallet::add_delegator`].
 			 **/

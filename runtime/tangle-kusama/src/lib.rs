@@ -88,7 +88,7 @@ use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
 use polkadot_runtime_common::prod_or_fast;
 pub use tangle_primitives::{
 	traits::{
-		lstMintingInterface, lstMintingOperator, CheckSubAccount, FarmingInfo, FeeGetter,
+		CheckSubAccount, FarmingInfo, FeeGetter, LstMintingInterface, LstMintingOperator,
 		XcmDestWeightAndFeeHandler,
 	},
 	AccountId, Amount, AssetIds, Balance, BlockNumber, CurrencyId, CurrencyIdMapping,
@@ -122,9 +122,9 @@ use pallet_xcm::{EnsureResponse, QueryStatus};
 use sp_runtime::traits::IdentityLookup;
 use xcm::v3::prelude::*;
 pub use xcm_config::{
-	parachains, tangleCurrencyIdConvert, tangleTreasuryAccount, AccountId32Aliases,
-	ExistentialDeposits, MultiCurrency, SelfParaChainId, Sibling, SiblingParachainConvertsVia,
-	XcmConfig, XcmRouter,
+	parachains, AccountId32Aliases, ExistentialDeposits, MultiCurrency, SelfParaChainId, Sibling,
+	SiblingParachainConvertsVia, TangleCurrencyIdConvert, TangleTreasuryAccount, XcmConfig,
+	XcmRouter,
 };
 use xcm_executor::{traits::QueryHandler, XcmExecutor};
 
@@ -224,15 +224,15 @@ parameter_types! {
 
 parameter_types! {
 	pub const TreasuryPalletId: PalletId = PalletId(*b"bf/trsry");
-	pub const tangleCrowdloanId: PalletId = PalletId(*b"bf/salp#");
-	pub const tangleSalpLiteCrowdloanId: PalletId = PalletId(*b"bf/salpl");
+	pub const TangleCrowdloanId: PalletId = PalletId(*b"bf/salp#");
+	pub const TangleSalpLiteCrowdloanId: PalletId = PalletId(*b"bf/salpl");
 	pub const LiquidityMiningPalletId: PalletId = PalletId(*b"bf/lm###");
 	pub const LiquidityMiningDOTPalletId: PalletId = PalletId(*b"bf/lmdot");
 	pub const LighteningRedeemPalletId: PalletId = PalletId(*b"bf/ltnrd");
 	pub const MerkleDirtributorPalletId: PalletId = PalletId(*b"bf/mklds");
 	pub const VsbondAuctionPalletId: PalletId = PalletId(*b"bf/vsbnd");
 	pub const ParachainStakingPalletId: PalletId = PalletId(*b"bf/stake");
-	pub const tangleVsbondPalletId: PalletId = PalletId(*b"bf/salpb");
+	pub const TangleVsbondPalletId: PalletId = PalletId(*b"bf/salpb");
 	pub const SlpEntrancePalletId: PalletId = PalletId(*b"bf/vtkin");
 	pub const SlpExitPalletId: PalletId = PalletId(*b"bf/vtout");
 	pub const StableAmmPalletId: PalletId = PalletId(*b"bf/stamm");
@@ -775,7 +775,7 @@ impl pallet_treasury::Config for Runtime {
 	type AssetKind = ();
 	type Beneficiary = AccountId;
 	type BeneficiaryLookup = IdentityLookup<Self::Beneficiary>;
-	type Paymaster = PayFromAccount<Balances, tangleFeeAccount>;
+	type Paymaster = PayFromAccount<Balances, TangleFeeAccount>;
 	type BalanceConverter = UnityAssetBalanceConversion;
 	type PayoutPeriod = PayoutSpendPeriod;
 	#[cfg(feature = "runtime-benchmarks")]
@@ -1039,11 +1039,11 @@ impl FeeGetter<RuntimeCall> for ExtraFeeMatcher {
 				extra_fee_name: ExtraFeeName::StatemineTransfer,
 				extra_fee_currency: RelayCurrencyId::get(),
 			},
-			RuntimeCall::lstVoting(tangle_lst_voting::Call::vote { lst, .. }) => ExtraFeeInfo {
+			RuntimeCall::LstVoting(tangle_lst_voting::Call::vote { lst, .. }) => ExtraFeeInfo {
 				extra_fee_name: ExtraFeeName::Votelst,
 				extra_fee_currency: lst.to_token().unwrap_or(lst),
 			},
-			RuntimeCall::lstVoting(tangle_lst_voting::Call::remove_delegator_vote {
+			RuntimeCall::LstVoting(tangle_lst_voting::Call::remove_delegator_vote {
 				lst, ..
 			}) => ExtraFeeInfo {
 				extra_fee_name: ExtraFeeName::VoteRemoveDelegatorVote,
@@ -1055,7 +1055,7 @@ impl FeeGetter<RuntimeCall> for ExtraFeeMatcher {
 }
 
 parameter_types! {
-	pub tangleParachainAccountId20: [u8; 20] = cumulus_primitives_core::ParaId::from(ParachainInfo::get()).into_account_truncating();
+	pub TangleParachainAccountId20: [u8; 20] = cumulus_primitives_core::ParaId::from(ParachainInfo::get()).into_account_truncating();
 }
 
 pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLocation {
@@ -1106,7 +1106,7 @@ pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLoca
 		// Other sibling chains use the tangle para account with "sibl"
 		_ => {
 			// get parachain id
-			if let Some(location) = tangleCurrencyIdConvert::<SelfParaChainId>::convert(currency_id)
+			if let Some(location) = TangleCurrencyIdConvert::<SelfParaChainId>::convert(currency_id)
 			{
 				if let Some(Parachain(para_id)) = location.interior().first() {
 					MultiLocation::new(
@@ -1140,7 +1140,7 @@ impl tangle_token_issuer::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EitherOfDiverse<MoreThanHalfCouncil, EnsureRootOrAllTechnicalCommittee>;
-	type WeightInfo = weights::tangle_token_issuer::tangleWeight<Runtime>;
+	type WeightInfo = weights::tangle_token_issuer::TangleWeight<Runtime>;
 	type MaxLengthLimit = MaxLengthLimit;
 }
 
@@ -1148,7 +1148,7 @@ impl tangle_asset_registry::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
 	type RegisterOrigin = EitherOfDiverse<MoreThanHalfCouncil, TechAdmin>;
-	type WeightInfo = weights::tangle_asset_registry::tangleWeight<Runtime>;
+	type WeightInfo = weights::tangle_asset_registry::TangleWeight<Runtime>;
 }
 
 parameter_types! {
@@ -1207,8 +1207,8 @@ impl tangle_slp::Config for Runtime {
 	type RuntimeCall = RuntimeCall;
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EitherOfDiverse<TechAdminOrCouncil, LiquidStaking>;
-	type WeightInfo = weights::tangle_slp::tangleWeight<Runtime>;
-	type lstMinting = lstMinting;
+	type WeightInfo = weights::tangle_slp::TangleWeight<Runtime>;
+	type LstMinting = LstMinting;
 	type tangleSlpx = Slpx;
 	type AccountConverter = SubAccountIndexMultiLocationConvertor;
 	type ParachainId = SelfParaChainId;
@@ -1223,7 +1223,7 @@ impl tangle_slp::Config for Runtime {
 	type ChannelCommission = ();
 	type StablePoolHandler = StablePool;
 	type AssetIdMaps = AssetIdMaps<Runtime>;
-	type TreasuryAccount = tangleTreasuryAccount;
+	type TreasuryAccount = TangleTreasuryAccount;
 }
 
 parameter_types! {
@@ -1248,12 +1248,12 @@ impl tangle_lst_voting::Config for Runtime {
 	type XcmDestWeightAndFee = XcmInterface;
 	type DerivativeAccount = DerivativeAccountProvider<Runtime, DerivativeAccountTokenFilter>;
 	type RelaychainBlockNumberProvider = RelaychainDataProvider<Runtime>;
-	type lstSupplyProvider = lstMinting;
+	type lstSupplyProvider = LstMinting;
 	type ParachainId = SelfParaChainId;
 	type MaxVotes = ConstU32<256>;
 	type QueryTimeout = QueryTimeout;
 	type ReferendumCheckInterval = ReferendumCheckInterval;
-	type WeightInfo = weights::tangle_lst_voting::tangleWeight<Runtime>;
+	type WeightInfo = weights::tangle_lst_voting::TangleWeight<Runtime>;
 }
 
 // tangle modules end
@@ -1360,7 +1360,7 @@ impl tangle_lst_minting::OnRedeemSuccess<AccountId, CurrencyId, Balance> for OnR
 parameter_types! {
 	pub const MaximumUnlockIdOfUser: u32 = 10;
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 50;
-	pub tangleFeeAccount: AccountId = TreasuryPalletId::get().into_account_truncating();
+	pub TangleFeeAccount: AccountId = TreasuryPalletId::get().into_account_truncating();
 }
 
 impl tangle_lst_minting::Config for Runtime {
@@ -1371,10 +1371,10 @@ impl tangle_lst_minting::Config for Runtime {
 	type MaximumUnlockIdOfTimeUnit = MaximumUnlockIdOfTimeUnit;
 	type EntranceAccount = SlpEntrancePalletId;
 	type ExitAccount = SlpExitPalletId;
-	type FeeAccount = tangleFeeAccount;
+	type FeeAccount = TangleFeeAccount;
 	type tangleSlp = Slp;
 	type tangleSlpx = Slpx;
-	type WeightInfo = weights::tangle_lst_minting::tangleWeight<Runtime>;
+	type WeightInfo = weights::tangle_lst_minting::TangleWeight<Runtime>;
 	type OnRedeemSuccess = OnRedeemSuccess;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;
@@ -1393,14 +1393,14 @@ impl tangle_slpx::Config for Runtime {
 	type ControlOrigin = TechAdminOrCouncil;
 	type MultiCurrency = Currencies;
 	type DexOperator = ZenlinkProtocol;
-	type lstMintingInterface = lstMinting;
+	type LstMintingInterface = LstMinting;
 	type StablePoolHandler = StablePool;
 	type XcmTransfer = XTokens;
 	type XcmSender = XcmRouter;
 	type CurrencyIdConvert = AssetIdMaps<Runtime>;
-	type TreasuryAccount = tangleTreasuryAccount;
+	type TreasuryAccount = TangleTreasuryAccount;
 	type ParachainId = SelfParaChainId;
-	type WeightInfo = weights::tangle_slpx::tangleWeight<Runtime>;
+	type WeightInfo = weights::tangle_slpx::TangleWeight<Runtime>;
 }
 
 pub struct EnsurePoolAssetId;
@@ -1428,12 +1428,12 @@ impl tangle_stable_asset::Config for Runtime {
 }
 
 impl tangle_stable_pool::Config for Runtime {
-	type WeightInfo = weights::tangle_stable_pool::tangleWeight<Runtime>;
+	type WeightInfo = weights::tangle_stable_pool::TangleWeight<Runtime>;
 	type ControlOrigin = TechAdminOrCouncil;
 	type CurrencyId = CurrencyId;
 	type MultiCurrency = Currencies;
 	type StableAsset = StableAsset;
-	type lstMinting = lstMinting;
+	type LstMinting = LstMinting;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;
 	type CurrencyIdRegister = AssetIdMaps<Runtime>;
 }
@@ -1445,12 +1445,12 @@ parameter_types! {
 	pub OracleRootOperatorAccountId: AccountId = OraclePalletId::get().into_account_truncating();
 }
 
-type tangleDataProvider = orml_oracle::Instance1;
-impl orml_oracle::Config<tangleDataProvider> for Runtime {
+type TangleDataProvider = orml_oracle::Instance1;
+impl orml_oracle::Config<TangleDataProvider> for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type OnNewData = ();
 	type CombineData =
-		orml_oracle::DefaultCombineData<Runtime, MinimumCount, ExpiresIn, tangleDataProvider>;
+		orml_oracle::DefaultCombineData<Runtime, MinimumCount, ExpiresIn, TangleDataProvider>;
 	type Time = Timestamp;
 	type OracleKey = CurrencyId;
 	type OracleValue = Price;
@@ -1516,7 +1516,7 @@ impl pallet_membership::Config<pallet_membership::Instance3> for Runtime {
 parameter_types! {
 	pub const ClearingDuration: u32 = prod_or_fast!(1 * DAYS, 10 * MINUTES);
 	pub const NameLengthLimit: u32 = 20;
-	pub tangleCommissionReceiver: AccountId = TreasuryPalletId::get().into_account_truncating();
+	pub TangleCommissionReceiver: AccountId = TreasuryPalletId::get().into_account_truncating();
 }
 
 // Below is the implementation of tokens manipulation functions other than native token.
@@ -1678,7 +1678,7 @@ construct_runtime! {
 		// tangle modules
 		TokenIssuer: tangle_token_issuer = 109,
 		AssetRegistry: tangle_asset_registry = 114,
-		lstMinting: tangle_lst_minting = 115,
+		LstMinting: tangle_lst_minting = 115,
 		Slp: tangle_slp = 116,
 		XcmInterface: tangle_xcm_interface = 117,
 		Slpx: tangle_slpx = 125,
@@ -1686,7 +1686,7 @@ construct_runtime! {
 		FellowshipReferenda: pallet_referenda::<Instance2> = 127,
 		StableAsset: tangle_stable_asset exclude_parts { Call } = 128,
 		StablePool: tangle_stable_pool = 129,
-		lstVoting: tangle_lst_voting = 130,
+		LstVoting: tangle_lst_voting = 130,
 		Prices: pallet_prices = 132,
 		Oracle: orml_oracle::<Instance1> = 133,
 		OracleMembership: pallet_membership::<Instance3> = 134,
@@ -1768,8 +1768,8 @@ mod benches {
 		[tangle_slpx, Slpx]
 		[tangle_stable_pool, StablePool]
 		[tangle_token_issuer, TokenIssuer]
-		[tangle_lst_minting, lstMinting]
-		[tangle_lst_voting, lstVoting]
+		[tangle_lst_minting, LstMinting]
+		[tangle_lst_voting, LstVoting]
 	);
 }
 

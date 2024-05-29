@@ -53,7 +53,7 @@ pub mod api {
 		"ZenlinkSwapRouter",
 		"TokenIssuer",
 		"AssetRegistry",
-		"lstMinting",
+		"LstMinting",
 		"Slp",
 		"XcmInterface",
 		"Slpx",
@@ -61,7 +61,7 @@ pub mod api {
 		"FellowshipReferenda",
 		"StableAsset",
 		"StablePool",
-		"lstVoting",
+		"LstVoting",
 		"Prices",
 		"Oracle",
 		"OracleMembership",
@@ -36482,7 +36482,7 @@ pub mod api {
 					pub type ChannelId = ::core::option::Option<::core::primitive::u32>;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for Mint {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "mint";
 				}
 				#[derive(
@@ -36509,7 +36509,7 @@ pub mod api {
 					pub type LstAmount = ::core::primitive::u128;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for Redeem {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "redeem";
 				}
 				#[derive(
@@ -36536,7 +36536,7 @@ pub mod api {
 					pub type TokenAmount = ::core::primitive::u128;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for Rebond {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "rebond";
 				}
 				#[derive(
@@ -36563,7 +36563,7 @@ pub mod api {
 					pub type UnlockId = ::core::primitive::u32;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for RebondByUnlockId {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "rebond_by_unlock_id";
 				}
 				#[derive(
@@ -36590,7 +36590,7 @@ pub mod api {
 					pub type UnlockDuration = runtime_types::tangle_primitives::TimeUnit;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetUnlockDuration {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "set_unlock_duration";
 				}
 				#[derive(
@@ -36617,7 +36617,7 @@ pub mod api {
 					pub type Amount = ::core::primitive::u128;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetMinimumMint {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "set_minimum_mint";
 				}
 				#[derive(
@@ -36644,7 +36644,7 @@ pub mod api {
 					pub type Amount = ::core::primitive::u128;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetMinimumRedeem {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "set_minimum_redeem";
 				}
 				#[derive(
@@ -36669,7 +36669,7 @@ pub mod api {
 					pub type TokenId = runtime_types::tangle_primitives::currency::CurrencyId;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for AddSupportRebondToken {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "add_support_rebond_token";
 				}
 				#[derive(
@@ -36694,7 +36694,7 @@ pub mod api {
 					pub type TokenId = runtime_types::tangle_primitives::currency::CurrencyId;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for RemoveSupportRebondToken {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "remove_support_rebond_token";
 				}
 				#[derive(
@@ -36721,7 +36721,7 @@ pub mod api {
 					pub type RedeemFee = runtime_types::sp_arithmetic::per_things::Permill;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetFees {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "set_fees";
 				}
 				#[derive(
@@ -36746,7 +36746,7 @@ pub mod api {
 					pub type Limit = ::core::primitive::u32;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetHookIterationLimit {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "set_hook_iteration_limit";
 				}
 				#[derive(
@@ -36773,7 +36773,7 @@ pub mod api {
 					pub type Amount = ::core::primitive::u128;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetUnlockingTotal {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "set_unlocking_total";
 				}
 				#[derive(
@@ -36800,7 +36800,7 @@ pub mod api {
 					pub type TimeUnit = runtime_types::tangle_primitives::TimeUnit;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetMinTimeUnit {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "set_min_time_unit";
 				}
 				#[derive(
@@ -36827,7 +36827,7 @@ pub mod api {
 					pub type TimeUnit = runtime_types::tangle_primitives::TimeUnit;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for RecreateCurrencyOngoingTimeUnit {
-					const PALLET: &'static str = "lstMinting";
+					const PALLET: &'static str = "LstMinting";
 					const CALL: &'static str = "recreate_currency_ongoing_time_unit";
 				}
 			}
@@ -36842,7 +36842,7 @@ pub mod api {
 					channel_id: types::mint::ChannelId,
 				) -> ::subxt::tx::Payload<types::Mint> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"mint",
 						types::Mint { token_id, token_amount, remark, channel_id },
 						[
@@ -36860,7 +36860,7 @@ pub mod api {
 					lst_amount: types::redeem::LstAmount,
 				) -> ::subxt::tx::Payload<types::Redeem> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"redeem",
 						types::Redeem { lst_id, lst_amount },
 						[
@@ -36877,7 +36877,7 @@ pub mod api {
 					token_amount: types::rebond::TokenAmount,
 				) -> ::subxt::tx::Payload<types::Rebond> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"rebond",
 						types::Rebond { token_id, token_amount },
 						[
@@ -36894,7 +36894,7 @@ pub mod api {
 					unlock_id: types::rebond_by_unlock_id::UnlockId,
 				) -> ::subxt::tx::Payload<types::RebondByUnlockId> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"rebond_by_unlock_id",
 						types::RebondByUnlockId { token_id, unlock_id },
 						[
@@ -36912,7 +36912,7 @@ pub mod api {
 					unlock_duration: types::set_unlock_duration::UnlockDuration,
 				) -> ::subxt::tx::Payload<types::SetUnlockDuration> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"set_unlock_duration",
 						types::SetUnlockDuration { token_id, unlock_duration },
 						[
@@ -36929,7 +36929,7 @@ pub mod api {
 					amount: types::set_minimum_mint::Amount,
 				) -> ::subxt::tx::Payload<types::SetMinimumMint> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"set_minimum_mint",
 						types::SetMinimumMint { token_id, amount },
 						[
@@ -36947,7 +36947,7 @@ pub mod api {
 					amount: types::set_minimum_redeem::Amount,
 				) -> ::subxt::tx::Payload<types::SetMinimumRedeem> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"set_minimum_redeem",
 						types::SetMinimumRedeem { token_id, amount },
 						[
@@ -36963,7 +36963,7 @@ pub mod api {
 					token_id: types::add_support_rebond_token::TokenId,
 				) -> ::subxt::tx::Payload<types::AddSupportRebondToken> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"add_support_rebond_token",
 						types::AddSupportRebondToken { token_id },
 						[
@@ -36979,7 +36979,7 @@ pub mod api {
 					token_id: types::remove_support_rebond_token::TokenId,
 				) -> ::subxt::tx::Payload<types::RemoveSupportRebondToken> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"remove_support_rebond_token",
 						types::RemoveSupportRebondToken { token_id },
 						[
@@ -36997,7 +36997,7 @@ pub mod api {
 					redeem_fee: types::set_fees::RedeemFee,
 				) -> ::subxt::tx::Payload<types::SetFees> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"set_fees",
 						types::SetFees { mint_fee, redeem_fee },
 						[
@@ -37014,7 +37014,7 @@ pub mod api {
 					limit: types::set_hook_iteration_limit::Limit,
 				) -> ::subxt::tx::Payload<types::SetHookIterationLimit> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"set_hook_iteration_limit",
 						types::SetHookIterationLimit { limit },
 						[
@@ -37031,7 +37031,7 @@ pub mod api {
 					amount: types::set_unlocking_total::Amount,
 				) -> ::subxt::tx::Payload<types::SetUnlockingTotal> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"set_unlocking_total",
 						types::SetUnlockingTotal { token_id, amount },
 						[
@@ -37048,7 +37048,7 @@ pub mod api {
 					time_unit: types::set_min_time_unit::TimeUnit,
 				) -> ::subxt::tx::Payload<types::SetMinTimeUnit> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"set_min_time_unit",
 						types::SetMinTimeUnit { token_id, time_unit },
 						[
@@ -37066,7 +37066,7 @@ pub mod api {
 					time_unit: types::recreate_currency_ongoing_time_unit::TimeUnit,
 				) -> ::subxt::tx::Payload<types::RecreateCurrencyOngoingTimeUnit> {
 					::subxt::tx::Payload::new_static(
-						"lstMinting",
+						"LstMinting",
 						"recreate_currency_ongoing_time_unit",
 						types::RecreateCurrencyOngoingTimeUnit { token_id, time_unit },
 						[
@@ -37115,7 +37115,7 @@ pub mod api {
 				>;
 			}
 			impl ::subxt::events::StaticEvent for Minted {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "Minted";
 			}
 			#[derive(
@@ -37149,7 +37149,7 @@ pub mod api {
 				pub type UnlockId = ::core::primitive::u32;
 			}
 			impl ::subxt::events::StaticEvent for Redeemed {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "Redeemed";
 			}
 			#[derive(
@@ -37179,7 +37179,7 @@ pub mod api {
 				pub type TokenAmount = ::core::primitive::u128;
 			}
 			impl ::subxt::events::StaticEvent for RedeemSuccess {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "RedeemSuccess";
 			}
 			#[derive(
@@ -37211,7 +37211,7 @@ pub mod api {
 				pub type Fee = ::core::primitive::u128;
 			}
 			impl ::subxt::events::StaticEvent for Rebonded {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "Rebonded";
 			}
 			#[derive(
@@ -37245,7 +37245,7 @@ pub mod api {
 				pub type UnlockId = ::core::primitive::u32;
 			}
 			impl ::subxt::events::StaticEvent for RebondedByUnlockId {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "RebondedByUnlockId";
 			}
 			#[derive(
@@ -37271,7 +37271,7 @@ pub mod api {
 				pub type UnlockDuration = runtime_types::tangle_primitives::TimeUnit;
 			}
 			impl ::subxt::events::StaticEvent for UnlockDurationSet {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "UnlockDurationSet";
 			}
 			#[derive(
@@ -37297,7 +37297,7 @@ pub mod api {
 				pub type Amount = ::core::primitive::u128;
 			}
 			impl ::subxt::events::StaticEvent for MinimumMintSet {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "MinimumMintSet";
 			}
 			#[derive(
@@ -37323,7 +37323,7 @@ pub mod api {
 				pub type Amount = ::core::primitive::u128;
 			}
 			impl ::subxt::events::StaticEvent for MinimumRedeemSet {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "MinimumRedeemSet";
 			}
 			#[derive(
@@ -37347,7 +37347,7 @@ pub mod api {
 				pub type TokenId = runtime_types::tangle_primitives::currency::CurrencyId;
 			}
 			impl ::subxt::events::StaticEvent for SupportRebondTokenAdded {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "SupportRebondTokenAdded";
 			}
 			#[derive(
@@ -37371,7 +37371,7 @@ pub mod api {
 				pub type TokenId = runtime_types::tangle_primitives::currency::CurrencyId;
 			}
 			impl ::subxt::events::StaticEvent for SupportRebondTokenRemoved {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "SupportRebondTokenRemoved";
 			}
 			#[derive(
@@ -37398,7 +37398,7 @@ pub mod api {
 				pub type RedeemFee = runtime_types::sp_arithmetic::per_things::Permill;
 			}
 			impl ::subxt::events::StaticEvent for FeeSet {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "FeeSet";
 			}
 			#[derive(
@@ -37422,7 +37422,7 @@ pub mod api {
 				pub type Limit = ::core::primitive::u32;
 			}
 			impl ::subxt::events::StaticEvent for HookIterationLimitSet {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "HookIterationLimitSet";
 			}
 			#[derive(
@@ -37448,7 +37448,7 @@ pub mod api {
 				pub type Amount = ::core::primitive::u128;
 			}
 			impl ::subxt::events::StaticEvent for UnlockingTotalSet {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "UnlockingTotalSet";
 			}
 			#[derive(
@@ -37474,7 +37474,7 @@ pub mod api {
 				pub type TimeUnit = runtime_types::tangle_primitives::TimeUnit;
 			}
 			impl ::subxt::events::StaticEvent for MinTimeUnitSet {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "MinTimeUnitSet";
 			}
 			#[derive(
@@ -37498,7 +37498,7 @@ pub mod api {
 				pub type Err = runtime_types::sp_runtime::DispatchError;
 			}
 			impl ::subxt::events::StaticEvent for FastRedeemFailed {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "FastRedeemFailed";
 			}
 			#[derive(
@@ -37524,7 +37524,7 @@ pub mod api {
 				pub type TimeUnit = runtime_types::tangle_primitives::TimeUnit;
 			}
 			impl ::subxt::events::StaticEvent for CurrencyTimeUnitRecreated {
-				const PALLET: &'static str = "lstMinting";
+				const PALLET: &'static str = "LstMinting";
 				const EVENT: &'static str = "CurrencyTimeUnitRecreated";
 			}
 		}
@@ -37635,7 +37635,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"Fees",
 						vec![],
 						[
@@ -37655,7 +37655,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TokenPool",
 						vec![],
 						[
@@ -37676,7 +37676,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TokenPool",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -37696,7 +37696,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"UnlockDuration",
 						vec![],
 						[
@@ -37718,7 +37718,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"UnlockDuration",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -37739,7 +37739,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"OngoingTimeUnit",
 						vec![],
 						[
@@ -37760,7 +37760,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"OngoingTimeUnit",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -37780,7 +37780,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"MinimumMint",
 						vec![],
 						[
@@ -37801,7 +37801,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"MinimumMint",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -37821,7 +37821,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"MinimumRedeem",
 						vec![],
 						[
@@ -37842,7 +37842,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"MinimumRedeem",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -37862,7 +37862,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TokenUnlockNextId",
 						vec![],
 						[
@@ -37883,7 +37883,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TokenUnlockNextId",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -37903,7 +37903,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TokenUnlockLedger",
 						vec![],
 						[
@@ -37924,7 +37924,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TokenUnlockLedger",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -37946,7 +37946,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TokenUnlockLedger",
 						vec![
 							::subxt::storage::address::make_static_storage_map_key(_0.borrow()),
@@ -37969,7 +37969,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"UserUnlockLedger",
 						vec![],
 						[
@@ -37991,7 +37991,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"UserUnlockLedger",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -38014,7 +38014,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"UserUnlockLedger",
 						vec![
 							::subxt::storage::address::make_static_storage_map_key(_0.borrow()),
@@ -38038,7 +38038,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TimeUnitUnlockLedger",
 						vec![],
 						[
@@ -38059,7 +38059,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TimeUnitUnlockLedger",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -38081,7 +38081,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TimeUnitUnlockLedger",
 						vec![
 							::subxt::storage::address::make_static_storage_map_key(_0.borrow()),
@@ -38104,7 +38104,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TokenToRebond",
 						vec![],
 						[
@@ -38126,7 +38126,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"TokenToRebond",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -38147,7 +38147,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"MinTimeUnit",
 						vec![],
 						[
@@ -38169,7 +38169,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"MinTimeUnit",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -38190,7 +38190,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"UnlockingTotal",
 						vec![],
 						[
@@ -38211,7 +38211,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"UnlockingTotal",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -38231,7 +38231,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"HookIterationLimit",
 						vec![],
 						[
@@ -38253,7 +38253,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<::core::primitive::u32> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"MaximumUnlockIdOfUser",
 						[
 							98u8, 252u8, 116u8, 72u8, 26u8, 180u8, 225u8, 83u8, 200u8, 157u8,
@@ -38267,7 +38267,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<::core::primitive::u32> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"MaximumUnlockIdOfTimeUnit",
 						[
 							98u8, 252u8, 116u8, 72u8, 26u8, 180u8, 225u8, 83u8, 200u8, 157u8,
@@ -38281,7 +38281,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<runtime_types::frame_support::PalletId> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"EntranceAccount",
 						[
 							56u8, 243u8, 53u8, 83u8, 154u8, 179u8, 170u8, 80u8, 133u8, 173u8, 61u8,
@@ -38294,7 +38294,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<runtime_types::frame_support::PalletId> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"ExitAccount",
 						[
 							56u8, 243u8, 53u8, 83u8, 154u8, 179u8, 170u8, 80u8, 133u8, 173u8, 61u8,
@@ -38307,7 +38307,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<::subxt::utils::AccountId32> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"FeeAccount",
 						[
 							115u8, 233u8, 13u8, 223u8, 88u8, 20u8, 202u8, 139u8, 153u8, 28u8,
@@ -38323,7 +38323,7 @@ pub mod api {
 					runtime_types::tangle_primitives::currency::CurrencyId,
 				> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"RelayChainToken",
 						[
 							0u8, 142u8, 146u8, 232u8, 120u8, 214u8, 141u8, 122u8, 106u8, 238u8,
@@ -38337,7 +38337,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<::core::primitive::u32> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"AstarParachainId",
 						[
 							98u8, 252u8, 116u8, 72u8, 26u8, 180u8, 225u8, 83u8, 200u8, 157u8,
@@ -38351,7 +38351,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<::core::primitive::u32> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"MoonbeamParachainId",
 						[
 							98u8, 252u8, 116u8, 72u8, 26u8, 180u8, 225u8, 83u8, 200u8, 157u8,
@@ -38365,7 +38365,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<::core::primitive::u32> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"HydradxParachainId",
 						[
 							98u8, 252u8, 116u8, 72u8, 26u8, 180u8, 225u8, 83u8, 200u8, 157u8,
@@ -38379,7 +38379,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<::core::primitive::u32> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"InterlayParachainId",
 						[
 							98u8, 252u8, 116u8, 72u8, 26u8, 180u8, 225u8, 83u8, 200u8, 157u8,
@@ -38393,7 +38393,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<::core::primitive::u32> {
 					::subxt::constants::Address::new_static(
-						"lstMinting",
+						"LstMinting",
 						"MantaParachainId",
 						[
 							98u8, 252u8, 116u8, 72u8, 26u8, 180u8, 225u8, 83u8, 200u8, 157u8,
@@ -49011,7 +49011,7 @@ pub mod api {
 					>;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for Vote {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "vote";
 				}
 				#[derive(
@@ -49039,7 +49039,7 @@ pub mod api {
 					pub type PollIndex = ::core::primitive::u32;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for Unlock {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "unlock";
 				}
 				#[derive(
@@ -49070,7 +49070,7 @@ pub mod api {
 					pub type DerivativeIndex = ::core::primitive::u16;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for RemoveDelegatorVote {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "remove_delegator_vote";
 				}
 				#[derive(
@@ -49098,7 +49098,7 @@ pub mod api {
 					pub type PollIndex = ::core::primitive::u32;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for KillReferendum {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "kill_referendum";
 				}
 				#[derive(
@@ -49126,7 +49126,7 @@ pub mod api {
 					pub type DerivativeIndex = ::core::primitive::u16;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for AddDelegator {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "add_delegator";
 				}
 				#[derive(
@@ -49159,7 +49159,7 @@ pub mod api {
 					>;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetReferendumStatus {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "set_referendum_status";
 				}
 				#[derive(
@@ -49186,7 +49186,7 @@ pub mod api {
 					pub type LockingPeriod = ::core::primitive::u32;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetVoteLockingPeriod {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "set_vote_locking_period";
 				}
 				#[derive(
@@ -49213,7 +49213,7 @@ pub mod api {
 					pub type UndecidingTimeout = ::core::primitive::u32;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetUndecidingTimeout {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "set_undeciding_timeout";
 				}
 				#[derive(
@@ -49240,7 +49240,7 @@ pub mod api {
 					pub type Response = runtime_types::xcm::v3::Response;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for NotifyVote {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "notify_vote";
 				}
 				#[derive(
@@ -49267,7 +49267,7 @@ pub mod api {
 					pub type Response = runtime_types::xcm::v3::Response;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for NotifyRemoveDelegatorVote {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "notify_remove_delegator_vote";
 				}
 				#[derive(
@@ -49294,7 +49294,7 @@ pub mod api {
 					pub type VoteCapRatio = runtime_types::sp_arithmetic::per_things::Perbill;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetVoteCapRatio {
-					const PALLET: &'static str = "lstVoting";
+					const PALLET: &'static str = "LstVoting";
 					const CALL: &'static str = "set_vote_cap_ratio";
 				}
 			}
@@ -49308,7 +49308,7 @@ pub mod api {
 					lst_vote: types::vote::LstVote,
 				) -> ::subxt::tx::Payload<types::Vote> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"vote",
 						types::Vote { lst, poll_index, lst_vote },
 						[
@@ -49326,7 +49326,7 @@ pub mod api {
 					poll_index: types::unlock::PollIndex,
 				) -> ::subxt::tx::Payload<types::Unlock> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"unlock",
 						types::Unlock { lst, poll_index },
 						[
@@ -49345,7 +49345,7 @@ pub mod api {
 					derivative_index: types::remove_delegator_vote::DerivativeIndex,
 				) -> ::subxt::tx::Payload<types::RemoveDelegatorVote> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"remove_delegator_vote",
 						types::RemoveDelegatorVote { lst, poll_index, derivative_index },
 						[
@@ -49362,7 +49362,7 @@ pub mod api {
 					poll_index: types::kill_referendum::PollIndex,
 				) -> ::subxt::tx::Payload<types::KillReferendum> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"kill_referendum",
 						types::KillReferendum { lst, poll_index },
 						[
@@ -49379,7 +49379,7 @@ pub mod api {
 					derivative_index: types::add_delegator::DerivativeIndex,
 				) -> ::subxt::tx::Payload<types::AddDelegator> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"add_delegator",
 						types::AddDelegator { lst, derivative_index },
 						[
@@ -49397,7 +49397,7 @@ pub mod api {
 					info: types::set_referendum_status::Info,
 				) -> ::subxt::tx::Payload<types::SetReferendumStatus> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"set_referendum_status",
 						types::SetReferendumStatus { lst, poll_index, info },
 						[
@@ -49415,7 +49415,7 @@ pub mod api {
 					locking_period: types::set_vote_locking_period::LockingPeriod,
 				) -> ::subxt::tx::Payload<types::SetVoteLockingPeriod> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"set_vote_locking_period",
 						types::SetVoteLockingPeriod { lst, locking_period },
 						[
@@ -49433,7 +49433,7 @@ pub mod api {
 					undeciding_timeout: types::set_undeciding_timeout::UndecidingTimeout,
 				) -> ::subxt::tx::Payload<types::SetUndecidingTimeout> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"set_undeciding_timeout",
 						types::SetUndecidingTimeout { lst, undeciding_timeout },
 						[
@@ -49451,7 +49451,7 @@ pub mod api {
 					response: types::notify_vote::Response,
 				) -> ::subxt::tx::Payload<types::NotifyVote> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"notify_vote",
 						types::NotifyVote { query_id, response },
 						[
@@ -49468,7 +49468,7 @@ pub mod api {
 					response: types::notify_remove_delegator_vote::Response,
 				) -> ::subxt::tx::Payload<types::NotifyRemoveDelegatorVote> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"notify_remove_delegator_vote",
 						types::NotifyRemoveDelegatorVote { query_id, response },
 						[
@@ -49486,7 +49486,7 @@ pub mod api {
 					vote_cap_ratio: types::set_vote_cap_ratio::VoteCapRatio,
 				) -> ::subxt::tx::Payload<types::SetVoteCapRatio> {
 					::subxt::tx::Payload::new_static(
-						"lstVoting",
+						"LstVoting",
 						"set_vote_cap_ratio",
 						types::SetVoteCapRatio { lst, vote_cap_ratio },
 						[
@@ -49533,7 +49533,7 @@ pub mod api {
 					runtime_types::tangle_lst_voting::vote::AccountVote<::core::primitive::u128>;
 			}
 			impl ::subxt::events::StaticEvent for Voted {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "Voted";
 			}
 			#[derive(
@@ -49561,7 +49561,7 @@ pub mod api {
 				pub type PollIndex = ::core::primitive::u32;
 			}
 			impl ::subxt::events::StaticEvent for Unlocked {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "Unlocked";
 			}
 			#[derive(
@@ -49589,7 +49589,7 @@ pub mod api {
 				pub type DerivativeIndex = ::core::primitive::u16;
 			}
 			impl ::subxt::events::StaticEvent for DelegatorVoteRemoved {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "DelegatorVoteRemoved";
 			}
 			#[derive(
@@ -49615,7 +49615,7 @@ pub mod api {
 				pub type DerivativeIndex = ::core::primitive::u16;
 			}
 			impl ::subxt::events::StaticEvent for DelegatorAdded {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "DelegatorAdded";
 			}
 			#[derive(
@@ -49646,7 +49646,7 @@ pub mod api {
 				>;
 			}
 			impl ::subxt::events::StaticEvent for ReferendumInfoCreated {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "ReferendumInfoCreated";
 			}
 			#[derive(
@@ -49677,7 +49677,7 @@ pub mod api {
 				>;
 			}
 			impl ::subxt::events::StaticEvent for ReferendumInfoSet {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "ReferendumInfoSet";
 			}
 			#[derive(
@@ -49703,7 +49703,7 @@ pub mod api {
 				pub type LockingPeriod = ::core::primitive::u32;
 			}
 			impl ::subxt::events::StaticEvent for VoteLockingPeriodSet {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "VoteLockingPeriodSet";
 			}
 			#[derive(
@@ -49729,7 +49729,7 @@ pub mod api {
 				pub type UndecidingTimeout = ::core::primitive::u32;
 			}
 			impl ::subxt::events::StaticEvent for UndecidingTimeoutSet {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "UndecidingTimeoutSet";
 			}
 			#[derive(
@@ -49755,7 +49755,7 @@ pub mod api {
 				pub type PollIndex = ::core::primitive::u32;
 			}
 			impl ::subxt::events::StaticEvent for ReferendumKilled {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "ReferendumKilled";
 			}
 			#[derive(
@@ -49783,7 +49783,7 @@ pub mod api {
 				pub type Success = ::core::primitive::bool;
 			}
 			impl ::subxt::events::StaticEvent for VoteNotified {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "VoteNotified";
 			}
 			#[derive(
@@ -49811,7 +49811,7 @@ pub mod api {
 				pub type Success = ::core::primitive::bool;
 			}
 			impl ::subxt::events::StaticEvent for DelegatorVoteRemovedNotified {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "DelegatorVoteRemovedNotified";
 			}
 			#[derive(
@@ -49839,7 +49839,7 @@ pub mod api {
 				pub type Response = runtime_types::xcm::v3::Response;
 			}
 			impl ::subxt::events::StaticEvent for ResponseReceived {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "ResponseReceived";
 			}
 			#[derive(
@@ -49865,7 +49865,7 @@ pub mod api {
 				pub type VoteCapRatio = runtime_types::sp_arithmetic::per_things::Perbill;
 			}
 			impl ::subxt::events::StaticEvent for VoteCapRatioSet {
-				const PALLET: &'static str = "lstVoting";
+				const PALLET: &'static str = "LstVoting";
 				const EVENT: &'static str = "VoteCapRatioSet";
 			}
 		}
@@ -50012,7 +50012,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"ReferendumInfoFor",
 						vec![],
 						[
@@ -50034,7 +50034,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"ReferendumInfoFor",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50057,7 +50057,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"ReferendumInfoFor",
 						vec![
 							::subxt::storage::address::make_static_storage_map_key(_0.borrow()),
@@ -50082,7 +50082,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"VotingFor",
 						vec![],
 						[
@@ -50106,7 +50106,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"VotingFor",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50130,7 +50130,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"ClassLocksFor",
 						vec![],
 						[
@@ -50154,7 +50154,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"ClassLocksFor",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50174,7 +50174,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"PendingReferendumInfo",
 						vec![],
 						[
@@ -50196,7 +50196,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"PendingReferendumInfo",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50217,7 +50217,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"PendingVotingInfo",
 						vec![],
 						[
@@ -50239,7 +50239,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"PendingVotingInfo",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50260,7 +50260,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"PendingRemoveDelegatorVote",
 						vec![],
 						[
@@ -50282,7 +50282,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"PendingRemoveDelegatorVote",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50303,7 +50303,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"VoteLockingPeriod",
 						vec![],
 						[
@@ -50324,7 +50324,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"VoteLockingPeriod",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50344,7 +50344,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"UndecidingTimeout",
 						vec![],
 						[
@@ -50366,7 +50366,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"UndecidingTimeout",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50387,7 +50387,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"Delegators",
 						vec![],
 						[
@@ -50409,7 +50409,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"Delegators",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50430,7 +50430,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"VoteCapRatio",
 						vec![],
 						[
@@ -50451,7 +50451,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"VoteCapRatio",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50471,7 +50471,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"DelegatorVotes",
 						vec![],
 						[
@@ -50492,7 +50492,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"DelegatorVotes",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50514,7 +50514,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"DelegatorVotes",
 						vec![
 							::subxt::storage::address::make_static_storage_map_key(_0.borrow()),
@@ -50537,7 +50537,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"PendingDelegatorVotes",
 						vec![],
 						[
@@ -50558,7 +50558,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"PendingDelegatorVotes",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50580,7 +50580,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"PendingDelegatorVotes",
 						vec![
 							::subxt::storage::address::make_static_storage_map_key(_0.borrow()),
@@ -50603,7 +50603,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"ReferendumTimeout",
 						vec![],
 						[
@@ -50625,7 +50625,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"ReferendumTimeout",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50646,7 +50646,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"VoteDelegatorFor",
 						vec![],
 						[
@@ -50668,7 +50668,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"VoteDelegatorFor",
 						vec![::subxt::storage::address::make_static_storage_map_key(_0.borrow())],
 						[
@@ -50691,7 +50691,7 @@ pub mod api {
 					::subxt::storage::address::Yes,
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"VoteDelegatorFor",
 						vec![
 							::subxt::storage::address::make_static_storage_map_key(_0.borrow()),
@@ -50718,7 +50718,7 @@ pub mod api {
 					(),
 				> {
 					::subxt::storage::address::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"VoteDelegatorFor",
 						vec![
 							::subxt::storage::address::make_static_storage_map_key(_0.borrow()),
@@ -50745,7 +50745,7 @@ pub mod api {
 					runtime_types::polkadot_parachain_primitives::primitives::Id,
 				> {
 					::subxt::constants::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"ParachainId",
 						[
 							65u8, 93u8, 120u8, 165u8, 204u8, 81u8, 159u8, 163u8, 93u8, 135u8,
@@ -50757,7 +50757,7 @@ pub mod api {
 				#[doc = " The maximum number of concurrent votes an account may have."]
 				pub fn max_votes(&self) -> ::subxt::constants::Address<::core::primitive::u32> {
 					::subxt::constants::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"MaxVotes",
 						[
 							98u8, 252u8, 116u8, 72u8, 26u8, 180u8, 225u8, 83u8, 200u8, 157u8,
@@ -50769,7 +50769,7 @@ pub mod api {
 				}
 				pub fn query_timeout(&self) -> ::subxt::constants::Address<::core::primitive::u32> {
 					::subxt::constants::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"QueryTimeout",
 						[
 							98u8, 252u8, 116u8, 72u8, 26u8, 180u8, 225u8, 83u8, 200u8, 157u8,
@@ -50783,7 +50783,7 @@ pub mod api {
 					&self,
 				) -> ::subxt::constants::Address<::core::primitive::u32> {
 					::subxt::constants::Address::new_static(
-						"lstVoting",
+						"LstVoting",
 						"ReferendumCheckInterval",
 						[
 							98u8, 252u8, 116u8, 72u8, 26u8, 180u8, 225u8, 83u8, 200u8, 157u8,
@@ -62603,7 +62603,7 @@ pub mod api {
 				#[codec(index = 114)]
 				AssetRegistry(runtime_types::tangle_asset_registry::pallet::Call),
 				#[codec(index = 115)]
-				lstMinting(runtime_types::tangle_lst_minting::pallet::Call),
+				LstMinting(runtime_types::tangle_lst_minting::pallet::Call),
 				#[codec(index = 116)]
 				Slp(runtime_types::tangle_slp::pallet::Call),
 				#[codec(index = 117)]
@@ -62617,7 +62617,7 @@ pub mod api {
 				#[codec(index = 129)]
 				StablePool(runtime_types::tangle_stable_pool::pallet::Call),
 				#[codec(index = 130)]
-				lstVoting(runtime_types::tangle_lst_voting::pallet::Call),
+				LstVoting(runtime_types::tangle_lst_voting::pallet::Call),
 				#[codec(index = 132)]
 				Prices(runtime_types::pallet_prices::pallet::Call),
 				#[codec(index = 133)]
@@ -62718,7 +62718,7 @@ pub mod api {
 				#[codec(index = 114)]
 				AssetRegistry(runtime_types::tangle_asset_registry::pallet::Error),
 				#[codec(index = 115)]
-				lstMinting(runtime_types::tangle_lst_minting::pallet::Error),
+				LstMinting(runtime_types::tangle_lst_minting::pallet::Error),
 				#[codec(index = 116)]
 				Slp(runtime_types::tangle_slp::pallet::Error),
 				#[codec(index = 117)]
@@ -62734,7 +62734,7 @@ pub mod api {
 				#[codec(index = 129)]
 				StablePool(runtime_types::tangle_stable_pool::pallet::Error),
 				#[codec(index = 130)]
-				lstVoting(runtime_types::tangle_lst_voting::pallet::Error),
+				LstVoting(runtime_types::tangle_lst_voting::pallet::Error),
 				#[codec(index = 133)]
 				Oracle(runtime_types::orml_oracle::module::Error),
 				#[codec(index = 134)]
@@ -62833,7 +62833,7 @@ pub mod api {
 				#[codec(index = 114)]
 				AssetRegistry(runtime_types::tangle_asset_registry::pallet::Event),
 				#[codec(index = 115)]
-				lstMinting(runtime_types::tangle_lst_minting::pallet::Event),
+				LstMinting(runtime_types::tangle_lst_minting::pallet::Event),
 				#[codec(index = 116)]
 				Slp(runtime_types::tangle_slp::pallet::Event),
 				#[codec(index = 117)]
@@ -62847,7 +62847,7 @@ pub mod api {
 				#[codec(index = 128)]
 				StableAsset(runtime_types::tangle_stable_asset::pallet::Event),
 				#[codec(index = 130)]
-				lstVoting(runtime_types::tangle_lst_voting::pallet::Event),
+				LstVoting(runtime_types::tangle_lst_voting::pallet::Event),
 				#[codec(index = 132)]
 				Prices(runtime_types::pallet_prices::pallet::Event),
 				#[codec(index = 133)]
@@ -66030,7 +66030,7 @@ pub mod api {
 				pub enum Error {
 					#[codec(index = 0)]
 					#[doc = "Token not found in lst minting"]
-					TokenNotFoundInlstMinting,
+					TokenNotFoundInLstMinting,
 					#[codec(index = 1)]
 					#[doc = "Token not found in zenlink"]
 					TokenNotFoundInZenlink,

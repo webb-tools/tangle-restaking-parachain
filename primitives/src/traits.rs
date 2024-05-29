@@ -104,8 +104,8 @@ where
 	}
 }
 
-/// The interface to call lstMinting module functions.
-pub trait lstMintingOperator<CurrencyId, Balance, AccountId, TimeUnit> {
+/// The interface to call LstMinting module functions.
+pub trait LstMintingOperator<CurrencyId, Balance, AccountId, TimeUnit> {
 	/// Get the currency tokenpool amount.
 	fn get_token_pool(currency_id: CurrencyId) -> Balance;
 
@@ -309,7 +309,7 @@ pub trait FarmingInfo<Balance, CurrencyId> {
 	fn get_token_shares(pool_id: PoolId, currency_id: CurrencyId) -> Balance;
 }
 
-pub trait lstMintingInterface<AccountId, CurrencyId, Balance> {
+pub trait LstMintingInterface<AccountId, CurrencyId, Balance> {
 	fn mint(
 		exchanger: AccountId,
 		token_id: CurrencyId,
@@ -349,7 +349,7 @@ pub trait lstMintingInterface<AccountId, CurrencyId, Balance> {
 	fn get_manta_parachain_id() -> u32;
 }
 
-impl<AccountId, CurrencyId, Balance: Zero> lstMintingInterface<AccountId, CurrencyId, Balance>
+impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, CurrencyId, Balance>
 	for ()
 {
 	fn mint(

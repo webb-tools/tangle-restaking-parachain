@@ -46,10 +46,10 @@ use tangle_asset_registry::AssetMetadata;
 use tangle_parachain_staking::ParachainStakingInterface;
 use tangle_primitives::{
 	currency::{BNC, KSM, MANTA, MOVR, PHA},
-	lstMintingOperator,
 	traits::XcmDestWeightAndFeeHandler,
 	CurrencyId, CurrencyIdExt, CurrencyIdMapping, DerivativeAccountHandler, DerivativeIndex,
-	SlpHostingFeeProvider, SlpOperator, TimeUnit, XcmOperationType, ASTR, DOT, FIL, GLMR,
+	LstMintingOperator, SlpHostingFeeProvider, SlpOperator, TimeUnit, XcmOperationType, ASTR, DOT,
+	FIL, GLMR,
 };
 use tangle_stable_pool::traits::StablePoolHandler;
 pub use weights::WeightInfo;
@@ -116,8 +116,8 @@ pub mod pallet {
 		/// Set default weight.
 		type WeightInfo: WeightInfo;
 
-		/// The interface to call lstMinting module functions.
-		type lstMinting: lstMintingOperator<
+		/// The interface to call LstMinting module functions.
+		type LstMinting: LstMintingOperator<
 			CurrencyId,
 			BalanceOf<Self>,
 			AccountIdOf<Self>,
@@ -1169,7 +1169,7 @@ pub mod pallet {
 			// Ensure the amount is valid.
 			ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
 
-			T::lstMinting::increase_token_pool(currency_id, amount)?;
+			T::LstMinting::increase_token_pool(currency_id, amount)?;
 
 			// Deposit event.
 			Pallet::<T>::deposit_event(Event::PoolTokenIncreased { currency_id, amount });
@@ -1189,7 +1189,7 @@ pub mod pallet {
 			// Ensure the amount is valid.
 			ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
 
-			T::lstMinting::decrease_token_pool(currency_id, amount)?;
+			T::LstMinting::decrease_token_pool(currency_id, amount)?;
 
 			// Deposit event.
 			Pallet::<T>::deposit_event(Event::PoolTokenDecreased { currency_id, amount });
@@ -1218,14 +1218,14 @@ pub mod pallet {
 
 			ensure!(blocks_between >= interval, Error::<T>::TooFrequent);
 
-			let old_op = T::lstMinting::get_ongoing_time_unit(currency_id);
+			let old_op = T::LstMinting::get_ongoing_time_unit(currency_id);
 
 			if let Some(old) = old_op.clone() {
 				// enusre old TimeUnit < new TimeUnit
 				ensure!(old < time_unit, Error::<T>::InvalidTimeUnit);
 			}
 
-			T::lstMinting::update_ongoing_time_unit(currency_id, time_unit.clone())?;
+			T::LstMinting::update_ongoing_time_unit(currency_id, time_unit.clone())?;
 
 			// update LastTimeUpdatedOngoingTimeUnit storage
 			LastTimeUpdatedOngoingTimeUnit::<T>::insert(currency_id, current_block);
@@ -1250,7 +1250,7 @@ pub mod pallet {
 			Self::ensure_authorized(origin, currency_id)?;
 
 			// Get entrance_account and exit_account, as well as their currency balances.
-			let (entrance_account, exit_account) = T::lstMinting::get_entrance_and_exit_accounts();
+			let (entrance_account, exit_account) = T::LstMinting::get_entrance_and_exit_accounts();
 			let mut exit_account_balance =
 				T::MultiCurrency::free_balance(currency_id, &exit_account);
 
@@ -1259,9 +1259,9 @@ pub mod pallet {
 			}
 
 			// Get the currency due unlocking records
-			let time_unit = T::lstMinting::get_ongoing_time_unit(currency_id)
+			let time_unit = T::LstMinting::get_ongoing_time_unit(currency_id)
 				.ok_or(Error::<T>::TimeUnitNotExist)?;
-			let rs = T::lstMinting::get_unlock_records(currency_id, time_unit.clone());
+			let rs = T::LstMinting::get_unlock_records(currency_id, time_unit.clone());
 
 			let mut extra_weight = 0 as u64;
 
@@ -1275,7 +1275,7 @@ pub mod pallet {
 					}
 					// get idx record amount
 					let idx_record_amount_op =
-						T::lstMinting::get_token_unlock_ledger(currency_id, *idx);
+						T::LstMinting::get_token_unlock_ledger(currency_id, *idx);
 
 					if let Some((user_account, idx_record_amount, _unlock_era, redeem_type)) =
 						idx_record_amount_op
@@ -1306,7 +1306,7 @@ pub mod pallet {
 								let dest = MultiLocation {
 									parents: 1,
 									interior: X2(
-										Parachain(T::lstMinting::get_astar_parachain_id()),
+										Parachain(T::LstMinting::get_astar_parachain_id()),
 										AccountId32 {
 											network: None,
 											id: receiver.encode().try_into().unwrap(),
@@ -1325,7 +1325,7 @@ pub mod pallet {
 								let dest = MultiLocation {
 									parents: 1,
 									interior: X2(
-										Parachain(T::lstMinting::get_hydradx_parachain_id()),
+										Parachain(T::LstMinting::get_hydradx_parachain_id()),
 										AccountId32 {
 											network: None,
 											id: receiver.encode().try_into().unwrap(),
@@ -1344,7 +1344,7 @@ pub mod pallet {
 								let dest = MultiLocation {
 									parents: 1,
 									interior: X2(
-										Parachain(T::lstMinting::get_interlay_parachain_id()),
+										Parachain(T::LstMinting::get_interlay_parachain_id()),
 										AccountId32 {
 											network: None,
 											id: receiver.encode().try_into().unwrap(),
@@ -1363,7 +1363,7 @@ pub mod pallet {
 								let dest = MultiLocation {
 									parents: 1,
 									interior: X2(
-										Parachain(T::lstMinting::get_manta_parachain_id()),
+										Parachain(T::LstMinting::get_manta_parachain_id()),
 										AccountId32 {
 											network: None,
 											id: receiver.encode().try_into().unwrap(),
@@ -1382,7 +1382,7 @@ pub mod pallet {
 								let dest = MultiLocation {
 									parents: 1,
 									interior: X2(
-										Parachain(T::lstMinting::get_moonbeam_parachain_id()),
+										Parachain(T::LstMinting::get_moonbeam_parachain_id()),
 										AccountKey20 {
 											network: None,
 											key: receiver.to_fixed_bytes(),
@@ -1414,7 +1414,7 @@ pub mod pallet {
 							},
 						};
 						// Delete the corresponding unlocking record storage.
-						T::lstMinting::deduct_unlock_amount(currency_id, *idx, deduct_amount)?;
+						T::LstMinting::deduct_unlock_amount(currency_id, *idx, deduct_amount)?;
 
 						extra_weight =
 							T::OnRefund::on_refund(currency_id, user_account, deduct_amount);
@@ -1558,14 +1558,14 @@ pub mod pallet {
 			let (limit_num, max_permill) = Self::get_currency_tune_exchange_rate_limit(currency_id)
 				.ok_or(Error::<T>::TuneExchangeRateLimitNotSet)?;
 			// Get pool token value
-			let pool_token = T::lstMinting::get_token_pool(currency_id);
+			let pool_token = T::LstMinting::get_token_pool(currency_id);
 			// Calculate max increase allowed.
 			let max_to_increase = max_permill.mul_floor(pool_token);
 			ensure!(value <= max_to_increase, Error::<T>::GreaterThanMaximum);
 
 			// Ensure this tune is within limit.
 			// Get current TimeUnit.
-			let current_time_unit = T::lstMinting::get_ongoing_time_unit(currency_id)
+			let current_time_unit = T::LstMinting::get_ongoing_time_unit(currency_id)
 				.ok_or(Error::<T>::TimeUnitNotExist)?;
 			// If this is the first time.
 			if !CurrencyLatestTuneRecord::<T>::contains_key(currency_id) {

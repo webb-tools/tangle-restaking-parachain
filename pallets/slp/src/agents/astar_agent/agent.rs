@@ -35,7 +35,7 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
-use tangle_primitives::{lstMintingOperator, CurrencyId, XcmOperationType, ASTR_TOKEN_ID};
+use tangle_primitives::{CurrencyId, LstMintingOperator, XcmOperationType, ASTR_TOKEN_ID};
 use xcm::{
 	opaque::v3::{Junction::Parachain, Junctions::X1, MultiLocation},
 	v3::prelude::*,
@@ -428,7 +428,7 @@ impl<T: Config>
 
 		// Make sure the receiving account is the Exit_account from lst-minting module.
 		let to_account_id = Pallet::<T>::multilocation_to_account(to)?;
-		let (_, exit_account) = T::lstMinting::get_entrance_and_exit_accounts();
+		let (_, exit_account) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(to_account_id == exit_account, Error::<T>::InvalidAccount);
 
 		// Prepare parameter dest and beneficiary.
@@ -499,7 +499,7 @@ impl<T: Config>
 
 		// Make sure from account is the entrance account of lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
-		let (entrance_account, _) = T::lstMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
 
 		// transfer supplementary fee from treasury to the "from" account. Return the added up
@@ -794,7 +794,7 @@ impl<T: Config> AstarAgent<T> {
 		// Insert a delegator ledger update record into DelegatorLedgerXcmUpdateQueue<T>.
 		let unlock_time = match &update_operation {
 			Unlock => Pallet::<T>::get_unlocking_time_unit_from_current(false, currency_id)?,
-			Liquidize => T::lstMinting::get_ongoing_time_unit(currency_id),
+			Liquidize => T::LstMinting::get_ongoing_time_unit(currency_id),
 			_ => None,
 		};
 

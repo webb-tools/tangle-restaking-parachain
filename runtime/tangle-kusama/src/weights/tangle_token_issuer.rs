@@ -51,8 +51,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_token_issuer.
-pub struct tangleWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_token_issuer::WeightInfo for tangleWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_token_issuer::WeightInfo for TangleWeight<T> {
 	// Storage: TokenIssuer IssueWhiteList (r:1 w:1)
 	// Proof Skipped: TokenIssuer IssueWhiteList (max_values: None, max_size: None, mode: Measured)
 	fn add_to_issue_whitelist() -> Weight {

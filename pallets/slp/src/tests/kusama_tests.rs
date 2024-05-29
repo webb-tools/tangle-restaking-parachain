@@ -167,7 +167,7 @@ fn remove_delegator_works() {
 }
 
 /// ****************************************
-// Below is the lstMinting api testing *
+// Below is the LstMinting api testing *
 /// ****************************************
 
 #[test]
@@ -180,7 +180,7 @@ fn decrease_token_pool_works() {
 		assert_ok!(Slp::decrease_token_pool(RuntimeOrigin::signed(ALICE), KSM, 10));
 
 		// Check the value after decreasing
-		assert_eq!(lstMinting::token_pool(KSM), 90);
+		assert_eq!(LstMinting::token_pool(KSM), 90);
 	});
 }
 
@@ -206,7 +206,7 @@ fn update_ongoing_time_unit_works() {
 		));
 
 		// Check the value after updating.
-		assert_eq!(lstMinting::ongoing_time_unit(KSM), Some(TimeUnit::Era(9)));
+		assert_eq!(LstMinting::ongoing_time_unit(KSM), Some(TimeUnit::Era(9)));
 	});
 }
 
@@ -215,7 +215,7 @@ fn refund_currency_due_unbond_works() {
 	ExtBuilder::default().build().execute_with(|| {
 		// Preparations
 		// get entrance and exit accounts
-		let (entrance_acc, exit_acc) = lstMinting::get_entrance_and_exit_accounts();
+		let (entrance_acc, exit_acc) = LstMinting::get_entrance_and_exit_accounts();
 		// Set exit account balance to be 50.
 		assert_ok!(Tokens::set_balance(
 			RuntimeOrigin::root(),
@@ -493,7 +493,7 @@ fn charge_host_fee_and_tune_lst_exchange_rate_works() {
 		));
 
 		// Tokenpool should have been added 100.
-		let new_token_pool_amount = <Runtime as Config>::lstMinting::get_token_pool(KSM);
+		let new_token_pool_amount = <Runtime as Config>::LstMinting::get_token_pool(KSM);
 		assert_eq!(new_token_pool_amount, 200);
 
 		let tune_record = DelegatorLatestTuneRecord::<Runtime>::get(KSM, &subaccount_0_location);

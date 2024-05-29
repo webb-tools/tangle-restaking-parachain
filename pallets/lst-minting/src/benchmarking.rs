@@ -16,7 +16,7 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg(feature = "runtime-benchmarks")]
 
-use crate::{Pallet as lstMinting, *};
+use crate::{Pallet as LstMinting, *};
 use frame_benchmarking::v1::{benchmarks, whitelisted_caller, BenchmarkError};
 use frame_support::{assert_ok, sp_runtime::traits::UniqueSaturatedFrom};
 use frame_system::RawOrigin;
@@ -48,7 +48,7 @@ benchmarks! {
 	remove_support_rebond_token {
 		let origin = T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let token = CurrencyId::Token(TokenSymbol::KSM);
-		assert_ok!(lstMinting::<T>::add_support_rebond_token(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, token));
+		assert_ok!(LstMinting::<T>::add_support_rebond_token(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, token));
 	}: _<T::RuntimeOrigin>(origin, token)
 
 	set_fees {
@@ -90,13 +90,13 @@ benchmarks! {
 		let redeem_amount = BalanceOf::<T>::unique_saturated_from(1000000000u128);
 		let token_amount = BalanceOf::<T>::unique_saturated_from(10000000000u128);
 		const FEE: Permill = Permill::from_percent(50);
-		assert_ok!(lstMinting::<T>::set_fees(RawOrigin::Root.into(), FEE, FEE));
-		assert_ok!(lstMinting::<T>::set_unlock_duration(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM, TimeUnit::Era(1)));
-		// assert_ok!(lstMinting::<T>::increase_token_pool(KSM, token_amount));
-		assert_ok!(lstMinting::<T>::update_ongoing_time_unit(KSM, TimeUnit::Era(1)));
-		// assert_ok!(lstMinting::<T>::set_minimum_redeem(RawOrigin::Root.into(), VKSM, lst_amount));
+		assert_ok!(LstMinting::<T>::set_fees(RawOrigin::Root.into(), FEE, FEE));
+		assert_ok!(LstMinting::<T>::set_unlock_duration(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM, TimeUnit::Era(1)));
+		// assert_ok!(LstMinting::<T>::increase_token_pool(KSM, token_amount));
+		assert_ok!(LstMinting::<T>::update_ongoing_time_unit(KSM, TimeUnit::Era(1)));
+		// assert_ok!(LstMinting::<T>::set_minimum_redeem(RawOrigin::Root.into(), VKSM, lst_amount));
 		T::MultiCurrency::deposit(KSM, &caller, token_amount)?;
-		assert_ok!(lstMinting::<T>::mint(RawOrigin::Signed(caller.clone()).into(), KSM, token_amount,BoundedVec::default(), None));
+		assert_ok!(LstMinting::<T>::mint(RawOrigin::Signed(caller.clone()).into(), KSM, token_amount,BoundedVec::default(), None));
 	}: _(RawOrigin::Signed(caller.clone()), VKSM, redeem_amount)
 
 	rebond {
@@ -108,14 +108,14 @@ benchmarks! {
 		let mint_amount = BalanceOf::<T>::unique_saturated_from(2000000000000u128);
 		let token_amount = BalanceOf::<T>::unique_saturated_from(5000000000000u128);
 		const FEE: Permill = Permill::from_percent(50);
-		assert_ok!(lstMinting::<T>::set_fees(RawOrigin::Root.into(), FEE, FEE));
-		assert_ok!(lstMinting::<T>::set_unlock_duration(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM, TimeUnit::Era(1)));
-		assert_ok!(lstMinting::<T>::update_ongoing_time_unit(KSM, TimeUnit::Era(1)));
+		assert_ok!(LstMinting::<T>::set_fees(RawOrigin::Root.into(), FEE, FEE));
+		assert_ok!(LstMinting::<T>::set_unlock_duration(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM, TimeUnit::Era(1)));
+		assert_ok!(LstMinting::<T>::update_ongoing_time_unit(KSM, TimeUnit::Era(1)));
 		T::MultiCurrency::deposit(KSM, &caller, token_amount)?;
 		T::MultiCurrency::deposit(VKSM, &caller, redeem_amount)?;
-		assert_ok!(lstMinting::<T>::mint(RawOrigin::Signed(caller.clone()).into(), KSM, mint_amount,BoundedVec::default(), None));
-		assert_ok!(lstMinting::<T>::redeem(RawOrigin::Signed(caller.clone()).into(), VKSM, redeem_amount));
-		assert_ok!(lstMinting::<T>::add_support_rebond_token(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM));
+		assert_ok!(LstMinting::<T>::mint(RawOrigin::Signed(caller.clone()).into(), KSM, mint_amount,BoundedVec::default(), None));
+		assert_ok!(LstMinting::<T>::redeem(RawOrigin::Signed(caller.clone()).into(), VKSM, redeem_amount));
+		assert_ok!(LstMinting::<T>::add_support_rebond_token(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM));
 	}: _(RawOrigin::Signed(caller), KSM, rebond_amount)
 
 	rebond_by_unlock_id {
@@ -127,23 +127,23 @@ benchmarks! {
 		let mint_amount = BalanceOf::<T>::unique_saturated_from(2000000000000u128);
 		let token_amount = BalanceOf::<T>::unique_saturated_from(5000000000000u128);
 		const FEE: Permill = Permill::from_percent(50);
-		assert_ok!(lstMinting::<T>::set_fees(RawOrigin::Root.into(), FEE, FEE));
-		assert_ok!(lstMinting::<T>::set_unlock_duration(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM, TimeUnit::Era(1)));
-		assert_ok!(lstMinting::<T>::update_ongoing_time_unit(KSM, TimeUnit::Era(1)));
+		assert_ok!(LstMinting::<T>::set_fees(RawOrigin::Root.into(), FEE, FEE));
+		assert_ok!(LstMinting::<T>::set_unlock_duration(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM, TimeUnit::Era(1)));
+		assert_ok!(LstMinting::<T>::update_ongoing_time_unit(KSM, TimeUnit::Era(1)));
 		T::MultiCurrency::deposit(KSM, &caller, token_amount)?;
 		T::MultiCurrency::deposit(VKSM, &caller, redeem_amount)?;
-		assert_ok!(lstMinting::<T>::mint(RawOrigin::Signed(caller.clone()).into(), KSM, mint_amount,BoundedVec::default(), None));
-		assert_ok!(lstMinting::<T>::redeem(RawOrigin::Signed(caller.clone()).into(), VKSM, redeem_amount));
-		assert_ok!(lstMinting::<T>::add_support_rebond_token(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM));
+		assert_ok!(LstMinting::<T>::mint(RawOrigin::Signed(caller.clone()).into(), KSM, mint_amount,BoundedVec::default(), None));
+		assert_ok!(LstMinting::<T>::redeem(RawOrigin::Signed(caller.clone()).into(), VKSM, redeem_amount));
+		assert_ok!(LstMinting::<T>::add_support_rebond_token(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM));
 		let unlock_id:UnlockId = 0;
 	}: _(RawOrigin::Signed(caller), KSM, unlock_id)
 
 	on_initialize {
 		let block_num =BlockNumberFor::<T>::from(10u32);
-	}:{lstMinting::<T>::on_initialize(block_num);}
+	}:{LstMinting::<T>::on_initialize(block_num);}
 
 	impl_benchmark_test_suite!(
-	lstMinting,
+	LstMinting,
 	crate::mock::ExtBuilder::default().one_hundred_for_alice_n_bob().build(),
 	crate::mock::Runtime,
 );

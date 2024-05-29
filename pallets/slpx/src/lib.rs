@@ -46,7 +46,7 @@ use sp_std::{vec, vec::Vec};
 use tangle_asset_registry::AssetMetadata;
 use tangle_primitives::{
 	currency::{BNC, VFIL},
-	lstMintingInterface, CurrencyId, CurrencyIdMapping, RedeemType, SlpxOperator, TokenInfo,
+	CurrencyId, CurrencyIdMapping, LstMintingInterface, RedeemType, SlpxOperator, TokenInfo,
 };
 use xcm::{latest::prelude::*, v3::MultiLocation};
 use zenlink_protocol::AssetBalance;
@@ -92,8 +92,8 @@ pub mod pallet {
 
 		type DexOperator: ExportZenlink<Self::AccountId, AssetId>;
 
-		/// The interface to call lstMinting module functions.
-		type lstMintingInterface: lstMintingInterface<
+		/// The interface to call LstMinting module functions.
+		type LstMintingInterface: LstMintingInterface<
 			AccountIdOf<Self>,
 			CurrencyIdOf<Self>,
 			BalanceOf<Self>,
@@ -238,7 +238,7 @@ pub mod pallet {
 	#[pallet::error]
 	pub enum Error<T> {
 		/// Token not found in lst minting
-		TokenNotFoundInlstMinting,
+		TokenNotFoundInLstMinting,
 		/// Token not found in zenlink
 		TokenNotFoundInZenlink,
 		/// Contract Account already exists in the whitelist
@@ -332,9 +332,9 @@ pub mod pallet {
 				match configuration {
 					Some(mut configuration) => {
 						let currency_id = currency_list[0];
-						let token_amount = T::lstMintingInterface::get_token_pool(currency_id);
+						let token_amount = T::LstMintingInterface::get_token_pool(currency_id);
 						// It's impossible to go wrong.
-						let vcurrency_id = T::lstMintingInterface::lst_id(currency_id)
+						let vcurrency_id = T::LstMintingInterface::lst_id(currency_id)
 							.expect("Error convert vcurrency_id");
 						let lst_amount = T::MultiCurrency::total_issuance(vcurrency_id);
 
@@ -628,7 +628,7 @@ pub mod pallet {
 			// Check the validity of origin
 			T::ControlOrigin::ensure_origin(origin)?;
 			// Check in advance to avoid hook errors
-			T::lstMintingInterface::lst_id(currency_id).ok_or(Error::<T>::ErrorConvertlst)?;
+			T::LstMintingInterface::lst_id(currency_id).ok_or(Error::<T>::ErrorConvertlst)?;
 			let mut currency_list = CurrencyIdList::<T>::get();
 			match is_support {
 				true => {
@@ -753,7 +753,7 @@ impl<T: Config> Pallet<T> {
 	) -> DispatchResult {
 		let dest = MultiLocation {
 			parents: 1,
-			interior: X1(Parachain(T::lstMintingInterface::get_moonbeam_parachain_id())),
+			interior: X1(Parachain(T::LstMintingInterface::get_moonbeam_parachain_id())),
 		};
 
 		// Moonbeam Native Token
@@ -898,7 +898,7 @@ impl<T: Config> Pallet<T> {
 				let dest = MultiLocation {
 					parents: 1,
 					interior: X2(
-						Parachain(T::lstMintingInterface::get_astar_parachain_id()),
+						Parachain(T::LstMintingInterface::get_astar_parachain_id()),
 						AccountId32 { network: None, id: receiver.encode().try_into().unwrap() },
 					),
 				};
@@ -909,7 +909,7 @@ impl<T: Config> Pallet<T> {
 				let dest = MultiLocation {
 					parents: 1,
 					interior: X2(
-						Parachain(T::lstMintingInterface::get_hydradx_parachain_id()),
+						Parachain(T::LstMintingInterface::get_hydradx_parachain_id()),
 						AccountId32 { network: None, id: receiver.encode().try_into().unwrap() },
 					),
 				};
@@ -920,7 +920,7 @@ impl<T: Config> Pallet<T> {
 				let dest = MultiLocation {
 					parents: 1,
 					interior: X2(
-						Parachain(T::lstMintingInterface::get_interlay_parachain_id()),
+						Parachain(T::LstMintingInterface::get_interlay_parachain_id()),
 						AccountId32 { network: None, id: receiver.encode().try_into().unwrap() },
 					),
 				};
@@ -931,7 +931,7 @@ impl<T: Config> Pallet<T> {
 				let dest = MultiLocation {
 					parents: 1,
 					interior: X2(
-						Parachain(T::lstMintingInterface::get_manta_parachain_id()),
+						Parachain(T::LstMintingInterface::get_manta_parachain_id()),
 						AccountId32 { network: None, id: receiver.encode().try_into().unwrap() },
 					),
 				};
@@ -942,7 +942,7 @@ impl<T: Config> Pallet<T> {
 				let dest = MultiLocation {
 					parents: 1,
 					interior: X2(
-						Parachain(T::lstMintingInterface::get_moonbeam_parachain_id()),
+						Parachain(T::LstMintingInterface::get_moonbeam_parachain_id()),
 						AccountKey20 { network: None, key: receiver.to_fixed_bytes() },
 					),
 				};
@@ -991,7 +991,7 @@ impl<T: Config> Pallet<T> {
 			Self::charge_execution_fee(order.currency_id, &order.derivative_account).unwrap();
 		match order.order_type {
 			OrderType::Mint => {
-				T::lstMintingInterface::mint(
+				T::LstMintingInterface::mint(
 					order.derivative_account.clone(),
 					order.currency_id,
 					currency_amount,
@@ -999,7 +999,7 @@ impl<T: Config> Pallet<T> {
 					None,
 				)
 				.map_err(|_| Error::<T>::ArgumentsError)?;
-				let lst_id = T::lstMintingInterface::lst_id(order.currency_id)
+				let lst_id = T::LstMintingInterface::lst_id(order.currency_id)
 					.ok_or(Error::<T>::ArgumentsError)?;
 				let lst_amount = T::MultiCurrency::free_balance(lst_id, &order.derivative_account);
 
@@ -1023,7 +1023,7 @@ impl<T: Config> Pallet<T> {
 					TargetChain::Interlay(receiver) => RedeemType::Interlay(receiver),
 					TargetChain::Manta(receiver) => RedeemType::Manta(receiver),
 				};
-				T::lstMintingInterface::slpx_redeem(
+				T::LstMintingInterface::slpx_redeem(
 					order.derivative_account.clone(),
 					order.currency_id,
 					currency_amount,

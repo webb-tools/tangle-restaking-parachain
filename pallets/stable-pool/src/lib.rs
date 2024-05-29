@@ -34,7 +34,7 @@ use sp_core::U256;
 use sp_runtime::{Permill, SaturatedConversion};
 use sp_std::prelude::*;
 use tangle_primitives::{
-	lstMintingOperator, CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdRegister,
+	CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdRegister, LstMintingOperator,
 	TimeUnit,
 };
 pub use tangle_stable_asset::{
@@ -89,7 +89,7 @@ pub mod pallet {
 			BlockNumber = BlockNumberFor<Self>,
 		>;
 
-		type lstMinting: lstMintingOperator<
+		type LstMinting: LstMintingOperator<
 			AssetIdOf<Self>,
 			Self::Balance,
 			AccountIdOf<Self>,
@@ -360,7 +360,7 @@ impl<T: Config> Pallet<T> {
 				return Some((
 					token_in,
 					T::MultiCurrency::total_issuance(token_in).into(),
-					T::lstMinting::get_token_pool(token_out).into(),
+					T::LstMinting::get_token_pool(token_out).into(),
 					hardcap,
 				));
 			}
@@ -369,7 +369,7 @@ impl<T: Config> Pallet<T> {
 				return Some((
 					token_out,
 					T::MultiCurrency::total_issuance(token_out).into(),
-					T::lstMinting::get_token_pool(token_in).into(),
+					T::LstMinting::get_token_pool(token_in).into(),
 					hardcap,
 				));
 			}

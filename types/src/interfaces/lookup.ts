@@ -7779,7 +7779,7 @@ export default {
 	 **/
 	TangleSlpxError: {
 		_enum: [
-			'TokenNotFoundInlstMinting',
+			'TokenNotFoundInLstMinting',
 			'TokenNotFoundInZenlink',
 			'AccountIdAlreadyInWhitelist',
 			'AccountIdNotInWhitelist',

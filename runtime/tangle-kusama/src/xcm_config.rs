@@ -49,19 +49,19 @@ use polkadot_runtime_common::xcm_sender::NoPriceForMessageDelivery;
 use sp_core::bounded::BoundedVec;
 use tangle_currencies::BasicCurrencyAdapter;
 use tangle_runtime_common::currency_adapter::{
-	tangleDropAssets, DepositToAlternative, MultiCurrencyAdapter,
+	DepositToAlternative, MultiCurrencyAdapter, TangleDropAssets,
 };
 use xcm::v3::prelude::*;
 use xcm_builder::{Account32Hash, FrameTransactionalProcessor, TrailingSetTopicAsId};
 use xcm_executor::traits::Properties;
 
 /// tangle Asset Matcher
-pub struct tangleAssetMatcher<CurrencyId, CurrencyIdConvert>(
+pub struct TangleAssetMatcher<CurrencyId, CurrencyIdConvert>(
 	PhantomData<(CurrencyId, CurrencyIdConvert)>,
 );
 
 impl<CurrencyId, CurrencyIdConvert, Amount> MatchesFungible<Amount>
-	for tangleAssetMatcher<CurrencyId, CurrencyIdConvert>
+	for TangleAssetMatcher<CurrencyId, CurrencyIdConvert>
 where
 	CurrencyIdConvert: Convert<MultiLocation, Option<CurrencyId>>,
 	Amount: TryFrom<u128>,
@@ -97,7 +97,7 @@ fn native_currency_location(id: CurrencyId) -> MultiLocation {
 	MultiLocation::new(0, X1(Junction::from(BoundedVec::try_from(id.encode()).unwrap())))
 }
 
-impl<T: Get<ParaId>> Convert<MultiAsset, Option<CurrencyId>> for tangleCurrencyIdConvert<T> {
+impl<T: Get<ParaId>> Convert<MultiAsset, Option<CurrencyId>> for TangleCurrencyIdConvert<T> {
 	fn convert(asset: MultiAsset) -> Option<CurrencyId> {
 		if let MultiAsset { id: Concrete(id), fun: Fungible(_) } = asset {
 			Self::convert(id)
@@ -107,15 +107,15 @@ impl<T: Get<ParaId>> Convert<MultiAsset, Option<CurrencyId>> for tangleCurrencyI
 	}
 }
 
-pub struct tangleAccountIdToMultiLocation;
-impl Convert<AccountId, MultiLocation> for tangleAccountIdToMultiLocation {
+pub struct TangleAccountIdToMultiLocation;
+impl Convert<AccountId, MultiLocation> for TangleAccountIdToMultiLocation {
 	fn convert(account: AccountId) -> MultiLocation {
 		X1(AccountId32 { network: None, id: account.into() }).into()
 	}
 }
 
-pub struct tangleCurrencyIdConvert<T>(sp_std::marker::PhantomData<T>);
-impl<T: Get<ParaId>> Convert<CurrencyId, Option<MultiLocation>> for tangleCurrencyIdConvert<T> {
+pub struct TangleCurrencyIdConvert<T>(sp_std::marker::PhantomData<T>);
+impl<T: Get<ParaId>> Convert<CurrencyId, Option<MultiLocation>> for TangleCurrencyIdConvert<T> {
 	fn convert(id: CurrencyId) -> Option<MultiLocation> {
 		use CurrencyId::*;
 		use TokenSymbol::*;
@@ -171,7 +171,7 @@ impl<T: Get<ParaId>> Convert<CurrencyId, Option<MultiLocation>> for tangleCurren
 	}
 }
 
-impl<T: Get<ParaId>> Convert<MultiLocation, Option<CurrencyId>> for tangleCurrencyIdConvert<T> {
+impl<T: Get<ParaId>> Convert<MultiLocation, Option<CurrencyId>> for TangleCurrencyIdConvert<T> {
 	fn convert(location: MultiLocation) -> Option<CurrencyId> {
 		use CurrencyId::*;
 		use TokenSymbol::*;
@@ -375,15 +375,15 @@ pub type Barrier = TrailingSetTopicAsId<(
 	AllowTopLevelPaidExecutionDescendOriginFirst<Everything>,
 )>;
 
-pub type tangleAssetTransactor = MultiCurrencyAdapter<
+pub type TangleAssetTransactor = MultiCurrencyAdapter<
 	Currencies,
 	UnknownTokens,
-	tangleAssetMatcher<CurrencyId, tangleCurrencyIdConvert<SelfParaChainId>>,
+	TangleAssetMatcher<CurrencyId, TangleCurrencyIdConvert<SelfParaChainId>>,
 	AccountId,
 	LocationToAccountId,
 	CurrencyId,
-	tangleCurrencyIdConvert<SelfParaChainId>,
-	DepositToAlternative<tangleTreasuryAccount, Currencies, CurrencyId, AccountId, Balance>,
+	TangleCurrencyIdConvert<SelfParaChainId>,
+	DepositToAlternative<TangleTreasuryAccount, Currencies, CurrencyId, AccountId, Balance>,
 >;
 
 parameter_types! {
@@ -513,9 +513,9 @@ pub struct ToTreasury;
 impl TakeRevenue for ToTreasury {
 	fn take_revenue(revenue: MultiAsset) {
 		if let MultiAsset { id: Concrete(location), fun: Fungible(amount) } = revenue {
-			if let Some(currency_id) = tangleCurrencyIdConvert::<SelfParaChainId>::convert(location)
+			if let Some(currency_id) = TangleCurrencyIdConvert::<SelfParaChainId>::convert(location)
 			{
-				let _ = Currencies::deposit(currency_id, &tangleTreasuryAccount::get(), amount);
+				let _ = Currencies::deposit(currency_id, &TangleTreasuryAccount::get(), amount);
 			}
 		}
 	}
@@ -602,7 +602,7 @@ impl Contains<RuntimeCall> for SafeCallFilter {
 				| orml_tokens::Call::transfer_all { .. }
 				| orml_tokens::Call::transfer_keep_alive { .. },
 			)
-			| RuntimeCall::lstMinting(
+			| RuntimeCall::LstMinting(
 				tangle_lst_minting::Call::mint { .. }
 				| tangle_lst_minting::Call::rebond { .. }
 				| tangle_lst_minting::Call::rebond_by_unlock_id { .. }
@@ -635,8 +635,8 @@ impl Contains<RuntimeCall> for SafeCallFilter {
 pub struct XcmConfig;
 impl xcm_executor::Config for XcmConfig {
 	type AssetClaims = PolkadotXcm;
-	type AssetTransactor = tangleAssetTransactor;
-	type AssetTrap = tangleDropAssets<ToTreasury>;
+	type AssetTransactor = TangleAssetTransactor;
+	type AssetTrap = TangleDropAssets<ToTreasury>;
 	type Barrier = Barrier;
 	type RuntimeCall = RuntimeCall;
 	type IsReserve = MultiNativeAsset<RelativeReserveProvider>;
@@ -779,9 +779,9 @@ pub struct DustRemovalWhitelist;
 impl Contains<AccountId> for DustRemovalWhitelist {
 	fn contains(a: &AccountId) -> bool {
 		AccountIdConversion::<AccountId>::into_account_truncating(&TreasuryPalletId::get()).eq(a)
-			|| AccountIdConversion::<AccountId>::into_account_truncating(&tangleCrowdloanId::get())
+			|| AccountIdConversion::<AccountId>::into_account_truncating(&TangleCrowdloanId::get())
 				.eq(a) || AccountIdConversion::<AccountId>::into_account_truncating(
-			&tangleSalpLiteCrowdloanId::get(),
+			&TangleSalpLiteCrowdloanId::get(),
 		)
 		.eq(a) || AccountIdConversion::<AccountId>::into_account_truncating(
 			&LighteningRedeemPalletId::get(),
@@ -795,7 +795,7 @@ impl Contains<AccountId> for DustRemovalWhitelist {
 				&ParachainStakingPalletId::get(),
 			)
 			.eq(a) || AccountIdConversion::<AccountId>::into_account_truncating(
-			&tangleVsbondPalletId::get(),
+			&TangleVsbondPalletId::get(),
 		)
 		.eq(a) || AccountIdConversion::<AccountId>::into_account_truncating(
 			&SlpEntrancePalletId::get(),
@@ -818,14 +818,14 @@ impl Contains<AccountId> for DustRemovalWhitelist {
 }
 
 parameter_types! {
-	pub tangleTreasuryAccount: AccountId = TreasuryPalletId::get().into_account_truncating();
+	pub TangleTreasuryAccount: AccountId = TreasuryPalletId::get().into_account_truncating();
 	// gVLo8SqxQsm11cXpkFJnaqXhAd6qtxwi2DhxfUFE7pSiyoi
 	pub ZenklinkFeeAccount: AccountId = hex!["d2ca9ceb400cc68dcf58de4871bd261406958fd17338d2d82ad2592db62e6a2a"].into();
 }
 
 pub struct CurrencyHooks;
 impl MutationHooks<AccountId, CurrencyId, Balance> for CurrencyHooks {
-	type OnDust = orml_tokens::TransferDust<Runtime, tangleTreasuryAccount>;
+	type OnDust = orml_tokens::TransferDust<Runtime, TangleTreasuryAccount>;
 	type OnSlash = ();
 	type PreDeposit = ();
 	type PostDeposit = ();
@@ -866,8 +866,8 @@ impl orml_xtokens::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Balance = Balance;
 	type CurrencyId = CurrencyId;
-	type CurrencyIdConvert = tangleCurrencyIdConvert<ParachainInfo>;
-	type AccountIdToMultiLocation = tangleAccountIdToMultiLocation;
+	type CurrencyIdConvert = TangleCurrencyIdConvert<ParachainInfo>;
+	type AccountIdToMultiLocation = TangleAccountIdToMultiLocation;
 	type UniversalLocation = UniversalLocation;
 	type SelfLocation = SelfRelativeLocation;
 	#[cfg(feature = "runtime-benchmarks")]
@@ -923,7 +923,7 @@ impl tangle_xcm_interface::Config for Runtime {
 	type XcmExecutor = tangle_primitives::DoNothingExecuteXcm;
 	#[cfg(not(feature = "runtime-benchmarks"))]
 	type XcmExecutor = XcmExecutor<XcmConfig>;
-	type AccountIdToMultiLocation = tangleAccountIdToMultiLocation;
+	type AccountIdToMultiLocation = TangleAccountIdToMultiLocation;
 	type SalpHelper = DummySalpHelper;
 	type ParachainId = SelfParaChainId;
 	type CallBackTimeOut = ConstU32<10>;
