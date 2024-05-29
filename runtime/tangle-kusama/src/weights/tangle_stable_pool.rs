@@ -51,8 +51,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_stable_pool.
-pub struct tangleWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_stable_pool::WeightInfo for tangleWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_stable_pool::WeightInfo for TangleWeight<T> {
 	// Storage: StableAsset PoolCount (r:1 w:1)
 	// Proof Skipped: StableAsset PoolCount (max_values: Some(1), max_size: None, mode: Measured)
 	// Storage: AssetRegistry CurrencyMetadatas (r:1 w:1)

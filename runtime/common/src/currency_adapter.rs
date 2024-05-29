@@ -220,8 +220,8 @@ impl<
 	}
 }
 
-pub struct tangleDropAssets<T>(PhantomData<T>);
-impl<T> DropAssets for tangleDropAssets<T>
+pub struct TangleDropAssets<T>(PhantomData<T>);
+impl<T> DropAssets for TangleDropAssets<T>
 where
 	T: TakeRevenue,
 {

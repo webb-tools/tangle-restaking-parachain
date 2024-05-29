@@ -16,7 +16,7 @@ use crate::{mock::*, AssetIdOf, AtLeast64BitUnsignedOf, Error};
 use frame_support::{assert_noop, assert_ok, BoundedVec};
 use orml_traits::MultiCurrency;
 use sp_runtime::{traits::AccountIdConversion, Permill};
-use tangle_primitives::lstMintingOperator;
+use tangle_primitives::LstMintingOperator;
 use tangle_stable_asset::StableAssetPoolInfo;
 
 pub const BALANCE_OFF: u128 = 0;
@@ -82,8 +82,8 @@ fn create_movr_pool() -> (CurrencyId, CurrencyId, CurrencyId, u128) {
 }
 
 fn init() -> (CurrencyId, CurrencyId, CurrencyId, u128) {
-	assert_ok!(lstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
-	assert_ok!(lstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
+	assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
+	assert_ok!(LstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
 	let (coin0, coin1, pool_asset, swap_id) = create_pool();
 	System::set_block_number(2);
 	let amounts = vec![10000000u128, 20000000u128];
@@ -165,8 +165,8 @@ fn create_pool_successful() {
 #[test]
 fn mint_successful_equal_amounts() {
 	ExtBuilder::default().new_test_ext().build().execute_with(|| {
-		assert_ok!(lstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
-		assert_ok!(lstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
+		assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
+		assert_ok!(LstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
 		let (coin0, coin1, pool_asset, swap_id) = create_pool();
 		System::set_block_number(2);
 		assert_ok!(StablePool::edit_token_rate(
@@ -222,8 +222,8 @@ fn mint_successful_equal_amounts() {
 #[test]
 fn swap_successful() {
 	ExtBuilder::default().new_test_ext().build().execute_with(|| {
-		assert_ok!(lstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
-		assert_ok!(lstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
+		assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
+		assert_ok!(LstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
 		let (coin0, coin1, pool_asset, swap_id) = create_pool();
 		System::set_block_number(2);
 
@@ -264,8 +264,8 @@ fn get_swap_output_amount() {
 	ExtBuilder::default().new_test_ext().build().execute_with(|| {
 		env_logger::try_init().unwrap_or(());
 		System::set_block_number(2);
-		assert_ok!(lstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
-		assert_ok!(lstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
+		assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
+		assert_ok!(LstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
 
 		let (coin0, coin1, pool_asset, swap_id) = create_pool();
 		assert_ok!(StablePool::edit_token_rate(
@@ -349,8 +349,8 @@ fn get_swap_output_amount() {
 #[test]
 fn mint_swap_redeem1() {
 	ExtBuilder::default().new_test_ext().build().execute_with(|| {
-		assert_ok!(lstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
-		assert_ok!(lstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
+		assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
+		assert_ok!(LstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
 		assert_ok!(Tokens::set_balance(RuntimeOrigin::root(), 3, VDOT, 90_000_000, 0));
 
 		let (coin0, coin1, _pool_asset, swap_id) = create_pool();
@@ -381,8 +381,8 @@ fn mint_swap_redeem1() {
 #[test]
 fn mint_swap_redeem2() {
 	ExtBuilder::default().new_test_ext().build().execute_with(|| {
-		assert_ok!(lstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
-		assert_ok!(lstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
+		assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
+		assert_ok!(LstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
 		assert_ok!(Tokens::set_balance(RuntimeOrigin::root(), 3, VDOT, 90_000_000, 0));
 		let (coin0, coin1, pool_asset, swap_id) = create_pool2();
 		assert_ok!(StablePool::edit_token_rate(
@@ -444,8 +444,8 @@ fn mint_swap_redeem2() {
 #[test]
 fn mint_swap_redeem_for_precisions() {
 	ExtBuilder::default().new_test_ext().build().execute_with(|| {
-		assert_ok!(lstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
-		assert_ok!(lstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
+		assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(1), DOT, 0));
+		assert_ok!(LstMinting::mint(Some(3).into(), DOT, 100_000_000, BoundedVec::default(), None));
 		assert_ok!(Tokens::set_balance(RuntimeOrigin::root(), 3, VDOT, 90_000_000, 0));
 		let (coin0, coin1, _pool_asset, _swap_id) = create_pool2();
 		assert_ok!(StablePool::edit_token_rate(
@@ -857,7 +857,7 @@ fn config_lst_auto_refresh_should_work() {
 			)>>(),
 			vec![(coin0, (1, 1)), (coin1, (1, 1))]
 		);
-		assert_ok!(<Test as crate::Config>::lstMinting::increase_token_pool(DOT, 1000));
+		assert_ok!(<Test as crate::Config>::LstMinting::increase_token_pool(DOT, 1000));
 		assert_ok!(StablePool::on_swap(&3u128, 0, 0, 1, 5000000u128, 0));
 		assert_eq!(
 			tangle_stable_asset::TokenRateCaches::<Test>::iter_prefix(0).collect::<Vec<(
@@ -887,7 +887,7 @@ fn over_the_hardcap_should_not_work() {
 			vec![(coin0, (1, 1)), (coin1, (1, 1))]
 		));
 
-		assert_ok!(<Test as crate::Config>::lstMinting::increase_token_pool(DOT, 20_000_000));
+		assert_ok!(<Test as crate::Config>::LstMinting::increase_token_pool(DOT, 20_000_000));
 		assert_ok!(StablePool::on_swap(&3u128, 0, 0, 1, 5000000u128, 0));
 		assert_eq!(
 			tangle_stable_asset::TokenRateCaches::<Test>::iter_prefix(0).collect::<Vec<(
@@ -925,7 +925,7 @@ fn not_config_lst_auto_refresh_should_not_work() {
 			0,
 			vec![(coin0, (1, 1)), (coin1, (1, 1))]
 		));
-		assert_ok!(<Test as crate::Config>::lstMinting::increase_token_pool(DOT, 1000));
+		assert_ok!(<Test as crate::Config>::LstMinting::increase_token_pool(DOT, 1000));
 		assert_ok!(StablePool::on_swap(&3u128, 0, 0, 1, 5000000u128, 0));
 		assert_eq!(
 			tangle_stable_asset::TokenRateCaches::<Test>::iter_prefix(0).collect::<Vec<(
@@ -966,7 +966,7 @@ fn remove_lst_auto_refresh_should_work() {
 			VDOT,
 			Permill::from_percent(20)
 		));
-		assert_ok!(<Test as crate::Config>::lstMinting::increase_token_pool(DOT, 20_000_000));
+		assert_ok!(<Test as crate::Config>::LstMinting::increase_token_pool(DOT, 20_000_000));
 
 		assert_ok!(StablePool::remove_lst_auto_refresh(RuntimeOrigin::root(), VDOT));
 		assert_ok!(StablePool::on_swap(&3u128, 0, 0, 1, 5000000u128, 0));

@@ -82,7 +82,7 @@ construct_runtime!(
 	Currencies: tangle_currencies,
 	AssetRegistry: tangle_asset_registry,
 	Slp: tangle_slp,
-	lstMinting: tangle_lst_minting,
+	LstMinting: tangle_lst_minting,
 	ZenlinkProtocol: zenlink_protocol,
 	XTokens: orml_xtokens,
 	Slpx: slpx,
@@ -191,7 +191,7 @@ parameter_types! {
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 50;
 	pub tangleEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
 	pub tangleExitAccount: PalletId = PalletId(*b"bf/vtout");
-	pub tangleFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
+	pub TangleFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
 	pub const RelayCurrencyId: CurrencyId = KSM;
 }
 
@@ -214,7 +214,7 @@ impl tangle_lst_minting::Config for Test {
 	type MaximumUnlockIdOfTimeUnit = MaximumUnlockIdOfTimeUnit;
 	type EntranceAccount = tangleEntranceAccount;
 	type ExitAccount = tangleExitAccount;
-	type FeeAccount = tangleFeeAccount;
+	type FeeAccount = TangleFeeAccount;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Test>;
 	type CurrencyIdRegister = AssetIdMaps<Test>;
@@ -364,14 +364,14 @@ parameter_types! {
 	pub const MaxAssetsForTransfer: usize = 2;
 }
 
-pub struct tangleCurrencyIdConvert<T>(sp_std::marker::PhantomData<T>);
-impl<T: Get<ParaId>> Convert<CurrencyId, Option<MultiLocation>> for tangleCurrencyIdConvert<T> {
+pub struct TangleCurrencyIdConvert<T>(sp_std::marker::PhantomData<T>);
+impl<T: Get<ParaId>> Convert<CurrencyId, Option<MultiLocation>> for TangleCurrencyIdConvert<T> {
 	fn convert(id: CurrencyId) -> Option<MultiLocation> {
 		AssetIdMaps::<Test>::get_multi_location(id)
 	}
 }
 
-impl<T: Get<ParaId>> Convert<MultiLocation, Option<CurrencyId>> for tangleCurrencyIdConvert<T> {
+impl<T: Get<ParaId>> Convert<MultiLocation, Option<CurrencyId>> for TangleCurrencyIdConvert<T> {
 	fn convert(location: MultiLocation) -> Option<CurrencyId> {
 		AssetIdMaps::<Test>::get_currency_id(location)
 	}
@@ -383,7 +383,7 @@ impl orml_xtokens::Config for Test {
 	type RuntimeEvent = RuntimeEvent;
 	type Balance = Balance;
 	type CurrencyId = CurrencyId;
-	type CurrencyIdConvert = tangleCurrencyIdConvert<ParachainInfo>;
+	type CurrencyIdConvert = TangleCurrencyIdConvert<ParachainInfo>;
 	type AccountIdToMultiLocation = ();
 	type UniversalLocation = UniversalLocation;
 	type SelfLocation = SelfRelativeLocation;
@@ -485,7 +485,7 @@ impl tangle_slp::Config for Test {
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
 	type WeightInfo = ();
-	type lstMinting = lstMinting;
+	type LstMinting = LstMinting;
 	type tangleSlpx = Slpx;
 	type AccountConverter = SubAccountIndexMultiLocationConvertor;
 	type ParachainId = ParachainId;
@@ -500,7 +500,7 @@ impl tangle_slp::Config for Test {
 	type ChannelCommission = ();
 	type StablePoolHandler = ();
 	type AssetIdMaps = AssetIdMaps<Test>;
-	type TreasuryAccount = tangleFeeAccount;
+	type TreasuryAccount = TangleFeeAccount;
 }
 
 #[cfg(feature = "runtime-benchmarks")]
@@ -568,7 +568,7 @@ impl tangle_stable_pool::Config for Test {
 	type CurrencyId = CurrencyId;
 	type MultiCurrency = Tokens;
 	type StableAsset = StableAsset;
-	type lstMinting = lstMinting;
+	type LstMinting = LstMinting;
 	type CurrencyIdConversion = AssetIdMaps<Test>;
 	type CurrencyIdRegister = AssetIdMaps<Test>;
 }
@@ -654,12 +654,12 @@ impl slpx::Config for Test {
 	type ControlOrigin = EnsureRoot<AccountId>;
 	type MultiCurrency = Currencies;
 	type DexOperator = ZenlinkProtocol;
-	type lstMintingInterface = lstMinting;
+	type LstMintingInterface = LstMinting;
 	type StablePoolHandler = StablePool;
 	type XcmTransfer = XTokensMock;
 	type XcmSender = ();
 	type CurrencyIdConvert = AssetIdMaps<Test>;
-	type TreasuryAccount = tangleFeeAccount;
+	type TreasuryAccount = TangleFeeAccount;
 	type ParachainId = ParachainId;
 	type WeightInfo = ();
 }

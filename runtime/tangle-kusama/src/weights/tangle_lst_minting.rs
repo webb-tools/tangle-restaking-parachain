@@ -51,10 +51,10 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_lst_minting.
-pub struct tangleWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T> {
-	// Storage: lstMinting MinimumMint (r:1 w:1)
-	// Proof: lstMinting MinimumMint (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for TangleWeight<T> {
+	// Storage: LstMinting MinimumMint (r:1 w:1)
+	// Proof: LstMinting MinimumMint (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	// Storage: AssetRegistry CurrencyMetadatas (r:1 w:0)
 	// Proof Skipped: AssetRegistry CurrencyMetadatas (max_values: None, max_size: None, mode: Measured)
 	fn set_minimum_mint() -> Weight {
@@ -66,8 +66,8 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(2))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	// Storage: lstMinting MinimumRedeem (r:1 w:1)
-	// Proof: lstMinting MinimumRedeem (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting MinimumRedeem (r:1 w:1)
+	// Proof: LstMinting MinimumRedeem (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	fn set_minimum_redeem() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `180`
@@ -77,8 +77,8 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	// Storage: lstMinting UnlockDuration (r:1 w:1)
-	// Proof: lstMinting UnlockDuration (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	// Storage: LstMinting UnlockDuration (r:1 w:1)
+	// Proof: LstMinting UnlockDuration (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
 	fn set_unlock_duration() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `180`
@@ -88,8 +88,8 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	/// Storage: `lstMinting::UnlockingTotal` (r:1 w:1)
-	/// Proof: `lstMinting::UnlockingTotal` (`max_values`: None, `max_size`: Some(38), added: 2513, mode: `MaxEncodedLen`)
+	/// Storage: `LstMinting::UnlockingTotal` (r:1 w:1)
+	/// Proof: `LstMinting::UnlockingTotal` (`max_values`: None, `max_size`: Some(38), added: 2513, mode: `MaxEncodedLen`)
 	fn set_unlocking_total() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `180`
@@ -100,8 +100,8 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	/// Storage: `lstMinting::MinTimeUnit` (r:1 w:1)
-	/// Proof: `lstMinting::MinTimeUnit` (`max_values`: None, `max_size`: Some(27), added: 2502, mode: `MaxEncodedLen`)
+	/// Storage: `LstMinting::MinTimeUnit` (r:1 w:1)
+	/// Proof: `LstMinting::MinTimeUnit` (`max_values`: None, `max_size`: Some(27), added: 2502, mode: `MaxEncodedLen`)
 	fn set_min_time_unit() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `180`
@@ -112,8 +112,8 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	/// Storage: `lstMinting::OngoingTimeUnit` (r:1 w:1)
-	/// Proof: `lstMinting::OngoingTimeUnit` (`max_values`: None, `max_size`: Some(27), added: 2502, mode: `MaxEncodedLen`)
+	/// Storage: `LstMinting::OngoingTimeUnit` (r:1 w:1)
+	/// Proof: `LstMinting::OngoingTimeUnit` (`max_values`: None, `max_size`: Some(27), added: 2502, mode: `MaxEncodedLen`)
 	fn recreate_currency_ongoing_time_unit() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `180`
@@ -124,8 +124,8 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	// Storage: lstMinting TokenToRebond (r:1 w:1)
-	// Proof: lstMinting TokenToRebond (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenToRebond (r:1 w:1)
+	// Proof: LstMinting TokenToRebond (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	fn add_support_rebond_token() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `180`
@@ -135,8 +135,8 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	// Storage: lstMinting TokenToRebond (r:1 w:1)
-	// Proof: lstMinting TokenToRebond (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenToRebond (r:1 w:1)
+	// Proof: LstMinting TokenToRebond (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	fn remove_support_rebond_token() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `230`
@@ -146,8 +146,8 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	// Storage: lstMinting Fees (r:1 w:1)
-	// Proof: lstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
+	// Storage: LstMinting Fees (r:1 w:1)
+	// Proof: LstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
 	fn set_fees() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `180`
@@ -157,8 +157,8 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	// Storage: lstMinting HookIterationLimit (r:1 w:1)
-	// Proof: lstMinting HookIterationLimit (max_values: Some(1), max_size: Some(4), added: 499, mode: MaxEncodedLen)
+	// Storage: LstMinting HookIterationLimit (r:1 w:1)
+	// Proof: LstMinting HookIterationLimit (max_values: Some(1), max_size: Some(4), added: 499, mode: MaxEncodedLen)
 	fn set_hook_iteration_limit() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `180`
@@ -168,14 +168,14 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	// Storage: lstMinting MinimumMint (r:1 w:0)
-	// Proof: lstMinting MinimumMint (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting TokenPool (r:1 w:1)
-	// Proof: lstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting MinimumMint (r:1 w:0)
+	// Proof: LstMinting MinimumMint (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenPool (r:1 w:1)
+	// Proof: LstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	// Storage: Tokens TotalIssuance (r:1 w:1)
 	// Proof: Tokens TotalIssuance (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting Fees (r:1 w:0)
-	// Proof: lstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
+	// Storage: LstMinting Fees (r:1 w:0)
+	// Proof: LstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
 	// Storage: Tokens Accounts (r:3 w:3)
 	// Proof: Tokens Accounts (max_values: None, max_size: Some(118), added: 2593, mode: MaxEncodedLen)
 	// Storage: AssetRegistry CurrencyMetadatas (r:1 w:0)
@@ -191,36 +191,36 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(9))
 			.saturating_add(T::DbWeight::get().writes(6))
 	}
-	// Storage: lstMinting MinimumRedeem (r:1 w:0)
-	// Proof: lstMinting MinimumRedeem (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting MinimumRedeem (r:1 w:0)
+	// Proof: LstMinting MinimumRedeem (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	// Storage: Slp DelegationsOccupied (r:1 w:0)
 	// Proof Skipped: Slp DelegationsOccupied (max_values: None, max_size: None, mode: Measured)
-	// Storage: lstMinting Fees (r:1 w:0)
-	// Proof: lstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
+	// Storage: LstMinting Fees (r:1 w:0)
+	// Proof: LstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
 	// Storage: Tokens Accounts (r:2 w:2)
 	// Proof: Tokens Accounts (max_values: None, max_size: Some(118), added: 2593, mode: MaxEncodedLen)
 	// Storage: AssetRegistry CurrencyMetadatas (r:1 w:0)
 	// Proof Skipped: AssetRegistry CurrencyMetadatas (max_values: None, max_size: None, mode: Measured)
 	// Storage: System Account (r:1 w:1)
 	// Proof: System Account (max_values: None, max_size: Some(128), added: 2603, mode: MaxEncodedLen)
-	// Storage: lstMinting TokenPool (r:1 w:1)
-	// Proof: lstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenPool (r:1 w:1)
+	// Proof: LstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	// Storage: Tokens TotalIssuance (r:1 w:1)
 	// Proof: Tokens TotalIssuance (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting OngoingTimeUnit (r:1 w:0)
-	// Proof: lstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
-	// Storage: lstMinting UnlockDuration (r:1 w:0)
-	// Proof: lstMinting UnlockDuration (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
-	// Storage: lstMinting UnlockingTotal (r:1 w:1)
-	// Proof: lstMinting UnlockingTotal (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting TokenUnlockNextId (r:1 w:1)
-	// Proof: lstMinting TokenUnlockNextId (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
-	// Storage: lstMinting UserUnlockLedger (r:1 w:1)
-	// Proof: lstMinting UserUnlockLedger (max_values: None, max_size: Some(135), added: 2610, mode: MaxEncodedLen)
-	// Storage: lstMinting TimeUnitUnlockLedger (r:1 w:1)
-	// Proof: lstMinting TimeUnitUnlockLedger (max_values: None, max_size: Some(282), added: 2757, mode: MaxEncodedLen)
-	// Storage: lstMinting TokenUnlockLedger (r:0 w:1)
-	// Proof: lstMinting TokenUnlockLedger (max_values: None, max_size: Some(136), added: 2611, mode: MaxEncodedLen)
+	// Storage: LstMinting OngoingTimeUnit (r:1 w:0)
+	// Proof: LstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	// Storage: LstMinting UnlockDuration (r:1 w:0)
+	// Proof: LstMinting UnlockDuration (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	// Storage: LstMinting UnlockingTotal (r:1 w:1)
+	// Proof: LstMinting UnlockingTotal (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenUnlockNextId (r:1 w:1)
+	// Proof: LstMinting TokenUnlockNextId (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
+	// Storage: LstMinting UserUnlockLedger (r:1 w:1)
+	// Proof: LstMinting UserUnlockLedger (max_values: None, max_size: Some(135), added: 2610, mode: MaxEncodedLen)
+	// Storage: LstMinting TimeUnitUnlockLedger (r:1 w:1)
+	// Proof: LstMinting TimeUnitUnlockLedger (max_values: None, max_size: Some(282), added: 2757, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenUnlockLedger (r:0 w:1)
+	// Proof: LstMinting TokenUnlockLedger (max_values: None, max_size: Some(136), added: 2611, mode: MaxEncodedLen)
 	fn redeem() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `2187`
@@ -230,22 +230,22 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(15))
 			.saturating_add(T::DbWeight::get().writes(10))
 	}
-	// Storage: lstMinting TokenToRebond (r:1 w:1)
-	// Proof: lstMinting TokenToRebond (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting UserUnlockLedger (r:1 w:1)
-	// Proof: lstMinting UserUnlockLedger (max_values: None, max_size: Some(135), added: 2610, mode: MaxEncodedLen)
-	// Storage: lstMinting TokenUnlockLedger (r:1 w:1)
-	// Proof: lstMinting TokenUnlockLedger (max_values: None, max_size: Some(136), added: 2611, mode: MaxEncodedLen)
-	// Storage: lstMinting TimeUnitUnlockLedger (r:1 w:1)
-	// Proof: lstMinting TimeUnitUnlockLedger (max_values: None, max_size: Some(282), added: 2757, mode: MaxEncodedLen)
-	// Storage: lstMinting UnlockingTotal (r:1 w:1)
-	// Proof: lstMinting UnlockingTotal (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting TokenPool (r:1 w:1)
-	// Proof: lstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenToRebond (r:1 w:1)
+	// Proof: LstMinting TokenToRebond (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting UserUnlockLedger (r:1 w:1)
+	// Proof: LstMinting UserUnlockLedger (max_values: None, max_size: Some(135), added: 2610, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenUnlockLedger (r:1 w:1)
+	// Proof: LstMinting TokenUnlockLedger (max_values: None, max_size: Some(136), added: 2611, mode: MaxEncodedLen)
+	// Storage: LstMinting TimeUnitUnlockLedger (r:1 w:1)
+	// Proof: LstMinting TimeUnitUnlockLedger (max_values: None, max_size: Some(282), added: 2757, mode: MaxEncodedLen)
+	// Storage: LstMinting UnlockingTotal (r:1 w:1)
+	// Proof: LstMinting UnlockingTotal (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenPool (r:1 w:1)
+	// Proof: LstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	// Storage: Tokens TotalIssuance (r:1 w:1)
 	// Proof: Tokens TotalIssuance (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting Fees (r:1 w:0)
-	// Proof: lstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
+	// Storage: LstMinting Fees (r:1 w:0)
+	// Proof: LstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
 	// Storage: Tokens Accounts (r:3 w:3)
 	// Proof: Tokens Accounts (max_values: None, max_size: Some(118), added: 2593, mode: MaxEncodedLen)
 	// Storage: AssetRegistry CurrencyMetadatas (r:1 w:0)
@@ -259,22 +259,22 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(12))
 			.saturating_add(T::DbWeight::get().writes(10))
 	}
-	// Storage: lstMinting TokenToRebond (r:1 w:1)
-	// Proof: lstMinting TokenToRebond (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting TokenUnlockLedger (r:1 w:1)
-	// Proof: lstMinting TokenUnlockLedger (max_values: None, max_size: Some(136), added: 2611, mode: MaxEncodedLen)
-	// Storage: lstMinting TimeUnitUnlockLedger (r:1 w:1)
-	// Proof: lstMinting TimeUnitUnlockLedger (max_values: None, max_size: Some(282), added: 2757, mode: MaxEncodedLen)
-	// Storage: lstMinting UserUnlockLedger (r:1 w:1)
-	// Proof: lstMinting UserUnlockLedger (max_values: None, max_size: Some(135), added: 2610, mode: MaxEncodedLen)
-	// Storage: lstMinting UnlockingTotal (r:1 w:1)
-	// Proof: lstMinting UnlockingTotal (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting TokenPool (r:1 w:1)
-	// Proof: lstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenToRebond (r:1 w:1)
+	// Proof: LstMinting TokenToRebond (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenUnlockLedger (r:1 w:1)
+	// Proof: LstMinting TokenUnlockLedger (max_values: None, max_size: Some(136), added: 2611, mode: MaxEncodedLen)
+	// Storage: LstMinting TimeUnitUnlockLedger (r:1 w:1)
+	// Proof: LstMinting TimeUnitUnlockLedger (max_values: None, max_size: Some(282), added: 2757, mode: MaxEncodedLen)
+	// Storage: LstMinting UserUnlockLedger (r:1 w:1)
+	// Proof: LstMinting UserUnlockLedger (max_values: None, max_size: Some(135), added: 2610, mode: MaxEncodedLen)
+	// Storage: LstMinting UnlockingTotal (r:1 w:1)
+	// Proof: LstMinting UnlockingTotal (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	// Storage: LstMinting TokenPool (r:1 w:1)
+	// Proof: LstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	// Storage: Tokens TotalIssuance (r:1 w:1)
 	// Proof: Tokens TotalIssuance (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	// Storage: lstMinting Fees (r:1 w:0)
-	// Proof: lstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
+	// Storage: LstMinting Fees (r:1 w:0)
+	// Proof: LstMinting Fees (max_values: Some(1), max_size: Some(8), added: 503, mode: MaxEncodedLen)
 	// Storage: Tokens Accounts (r:3 w:3)
 	// Proof: Tokens Accounts (max_values: None, max_size: Some(118), added: 2593, mode: MaxEncodedLen)
 	// Storage: AssetRegistry CurrencyMetadatas (r:1 w:0)
@@ -288,8 +288,8 @@ impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for tangleWeight<T>
 			.saturating_add(T::DbWeight::get().reads(12))
 			.saturating_add(T::DbWeight::get().writes(10))
 	}
-	// Storage: lstMinting OngoingTimeUnit (r:1 w:0)
-	// Proof: lstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	// Storage: LstMinting OngoingTimeUnit (r:1 w:0)
+	// Proof: LstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
 	fn on_initialize() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `211`

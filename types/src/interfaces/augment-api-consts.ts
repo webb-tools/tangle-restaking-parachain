@@ -283,7 +283,7 @@ declare module '@polkadot/api-base/types/consts' {
 			 **/
 			[key: string]: Codec;
 		};
-		lstMinting: {
+		LstMinting: {
 			astarParachainId: u32 & AugmentedConst<ApiType>;
 			entranceAccount: FrameSupportPalletId & AugmentedConst<ApiType>;
 			exitAccount: FrameSupportPalletId & AugmentedConst<ApiType>;
@@ -303,7 +303,7 @@ declare module '@polkadot/api-base/types/consts' {
 			 **/
 			[key: string]: Codec;
 		};
-		lstVoting: {
+		LstVoting: {
 			/**
 			 * The maximum number of concurrent votes an account may have.
 			 **/

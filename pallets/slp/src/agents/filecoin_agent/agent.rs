@@ -30,7 +30,7 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
-use tangle_primitives::{lstMintingOperator, CurrencyId};
+use tangle_primitives::{CurrencyId, LstMintingOperator};
 use xcm::v3::prelude::*;
 
 /// StakingAgent implementation for Filecoin
@@ -383,7 +383,7 @@ impl<T: Config>
 	) -> Result<(), Error<T>> {
 		// "from" account must be entrance account
 		let from_account = Pallet::<T>::native_multilocation_to_account(from)?;
-		let (entrance_account, _) = T::lstMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account == entrance_account, Error::<T>::InvalidAccount);
 
 		// "to" account must be one of the validator(worker) accounts
@@ -430,7 +430,7 @@ impl<T: Config>
 		ensure!(validator_vec.contains(who), Error::<T>::ValidatorNotExist);
 
 		// Get current TimeUnit.
-		let current_time_unit = T::lstMinting::get_ongoing_time_unit(currency_id)
+		let current_time_unit = T::LstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 		// Get DelegatorLatestTuneRecord for the currencyId.
 		let latest_time_unit_op = DelegatorLatestTuneRecord::<T>::get(currency_id, &who);
@@ -452,11 +452,11 @@ impl<T: Config>
 
 		if amount_to_increase > Zero::zero() {
 			// Tune the lst exchange rate.
-			T::lstMinting::increase_token_pool(currency_id, amount_to_increase)
+			T::LstMinting::increase_token_pool(currency_id, amount_to_increase)
 				.map_err(|_| Error::<T>::IncreaseTokenPoolError)?;
 
 			// Deposit token to entrance account
-			let (entrance_account, _) = T::lstMinting::get_entrance_and_exit_accounts();
+			let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 			T::MultiCurrency::deposit(currency_id, &entrance_account, amount_to_increase)
 				.map_err(|_e| Error::<T>::MultiCurrencyError)?;
 

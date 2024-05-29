@@ -47,9 +47,9 @@ pub use pallet::*;
 use sp_core::U256;
 use sp_std::{vec, vec::Vec};
 use tangle_primitives::{
-	lstMintRedeemProvider, lstMintingInterface, lstMintingOperator, lstSupplyProvider, CurrencyId,
-	CurrencyIdConversion, CurrencyIdExt, CurrencyIdRegister, RedeemType, SlpOperator, SlpxOperator,
-	TimeUnit,
+	lstMintRedeemProvider, lstSupplyProvider, CurrencyId, CurrencyIdConversion, CurrencyIdExt,
+	CurrencyIdRegister, LstMintingInterface, LstMintingOperator, RedeemType, SlpOperator,
+	SlpxOperator, TimeUnit,
 };
 pub use traits::*;
 
@@ -1508,7 +1508,7 @@ pub mod pallet {
 	}
 }
 
-impl<T: Config> lstMintingOperator<CurrencyId, BalanceOf<T>, AccountIdOf<T>, TimeUnit>
+impl<T: Config> LstMintingOperator<CurrencyId, BalanceOf<T>, AccountIdOf<T>, TimeUnit>
 	for Pallet<T>
 {
 	fn get_token_pool(currency_id: CurrencyId) -> BalanceOf<T> {
@@ -1675,7 +1675,7 @@ impl<T: Config> lstMintingOperator<CurrencyId, BalanceOf<T>, AccountIdOf<T>, Tim
 	}
 }
 
-impl<T: Config> lstMintingInterface<AccountIdOf<T>, CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> {
+impl<T: Config> LstMintingInterface<AccountIdOf<T>, CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> {
 	fn mint(
 		exchanger: AccountIdOf<T>,
 		token_id: CurrencyIdOf<T>,

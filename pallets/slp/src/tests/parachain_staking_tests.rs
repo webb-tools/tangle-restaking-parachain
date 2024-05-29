@@ -277,7 +277,7 @@ fn parachain_staking_bond_to_liquidize_works() {
 		));
 		tangle_parachain_staking::Round::<Runtime>::set(RoundInfo::new(10000000, 0, 1));
 		assert_eq!(ParachainStaking::round(), RoundInfo::new(10000000, 0, 1));
-		assert_ok!(lstMinting::update_ongoing_time_unit(BNC, TimeUnit::Round(1000)));
+		assert_ok!(LstMinting::update_ongoing_time_unit(BNC, TimeUnit::Round(1000)));
 
 		// let delegation_scheduled_requests = ParachainStaking::delegation_scheduled_requests(BOB);
 		// log::debug!("test5{:?}", delegation_scheduled_requests);
@@ -1029,7 +1029,7 @@ fn charge_host_fee_and_tune_lst_exchange_rate_works() {
 		));
 
 		// check token pool, should be 1000 + 1000 = 2000
-		assert_eq!(<Runtime as Config>::lstMinting::get_token_pool(BNC), 2000);
+		assert_eq!(<Runtime as Config>::LstMinting::get_token_pool(BNC), 2000);
 		// check vBNC issuance, should be 1000 + 20% * 1000 = 1200
 		assert_eq!(Currencies::total_issuance(VBNC), 1200);
 	});

@@ -1470,7 +1470,7 @@ fn charge_host_fee_and_tune_lst_exchange_rate_works() {
 		));
 
 		// Tokenpool should have been added 100.
-		let new_token_pool_amount = <Runtime as Config>::lstMinting::get_token_pool(PHA);
+		let new_token_pool_amount = <Runtime as Config>::LstMinting::get_token_pool(PHA);
 		assert_eq!(new_token_pool_amount, 200);
 
 		// let tune_record = DelegatorLatestTuneRecord::<Runtime>::get(PHA,

@@ -43,7 +43,7 @@ use sp_std::prelude::*;
 use tangle_parachain_staking::ParachainStakingInterface;
 use tangle_primitives::{
 	currency::{GLMR, MANTA, MOVR},
-	lstMintingOperator, CurrencyId, XcmOperationType,
+	CurrencyId, LstMintingOperator, XcmOperationType,
 };
 use xcm::{
 	opaque::v3::{
@@ -1066,7 +1066,7 @@ impl<T: Config>
 		// Check if it is in the delegator set.
 		let collator = (*validator).ok_or(Error::<T>::ValidatorNotProvided)?;
 		let mut leaving = false;
-		let now = T::lstMinting::get_ongoing_time_unit(currency_id)
+		let now = T::LstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 
 		let ledger_option = DelegatorLedgers::<T>::get(currency_id, who);
@@ -1363,7 +1363,7 @@ impl<T: Config>
 		// Make sure the receiving account is the Exit_account from lst-minting module.
 		let to_account_id = Pallet::<T>::multilocation_to_account(&to)?;
 
-		let (_, exit_account) = T::lstMinting::get_entrance_and_exit_accounts();
+		let (_, exit_account) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(to_account_id == exit_account, Error::<T>::InvalidAccount);
 
 		if currency_id == BNC {
@@ -1437,7 +1437,7 @@ impl<T: Config>
 
 		// Make sure from account is the entrance account of lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(&from)?;
-		let (entrance_account, _) = T::lstMinting::get_entrance_and_exit_accounts();
+		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
 
 		if currency_id == BNC {
@@ -1481,7 +1481,7 @@ impl<T: Config>
 		ensure!(!token_amount.is_zero(), Error::<T>::AmountZero);
 
 		// Tune the lst exchange rate.
-		T::lstMinting::increase_token_pool(currency_id, token_amount)
+		T::LstMinting::increase_token_pool(currency_id, token_amount)
 			.map_err(|_| Error::<T>::IncreaseTokenPoolError)?;
 
 		Ok(())

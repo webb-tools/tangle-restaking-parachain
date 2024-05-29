@@ -183,8 +183,8 @@ impl WeightInfo for () {
 	/// Proof Skipped: XcmInterface XcmWeightAndFee (max_values: None, max_size: None, mode: Measured)
 	/// Storage: ParachainInfo ParachainId (r:1 w:0)
 	/// Proof: ParachainInfo ParachainId (max_values: Some(1), max_size: Some(4), added: 499, mode: MaxEncodedLen)
-	/// Storage: lstMinting OngoingTimeUnit (r:1 w:0)
-	/// Proof: lstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	/// Storage: LstMinting OngoingTimeUnit (r:1 w:0)
+	/// Proof: LstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
 	/// Storage: Slp CurrencyDelays (r:1 w:0)
 	/// Proof Skipped: Slp CurrencyDelays (max_values: None, max_size: None, mode: Measured)
 	/// Storage: Slp DelegatorLedgerXcmUpdateQueue (r:0 w:1)
@@ -210,8 +210,8 @@ impl WeightInfo for () {
 	/// Proof Skipped: XcmInterface XcmWeightAndFee (max_values: None, max_size: None, mode: Measured)
 	/// Storage: ParachainInfo ParachainId (r:1 w:0)
 	/// Proof: ParachainInfo ParachainId (max_values: Some(1), max_size: Some(4), added: 499, mode: MaxEncodedLen)
-	/// Storage: lstMinting OngoingTimeUnit (r:1 w:0)
-	/// Proof: lstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	/// Storage: LstMinting OngoingTimeUnit (r:1 w:0)
+	/// Proof: LstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
 	/// Storage: Slp CurrencyDelays (r:1 w:0)
 	/// Proof Skipped: Slp CurrencyDelays (max_values: None, max_size: None, mode: Measured)
 	/// Storage: Slp DelegatorLedgerXcmUpdateQueue (r:0 w:1)
@@ -353,8 +353,8 @@ impl WeightInfo for () {
 	/// Proof Skipped: XcmInterface XcmWeightAndFee (max_values: None, max_size: None, mode: Measured)
 	/// Storage: ParachainInfo ParachainId (r:1 w:0)
 	/// Proof: ParachainInfo ParachainId (max_values: Some(1), max_size: Some(4), added: 499, mode: MaxEncodedLen)
-	/// Storage: lstMinting OngoingTimeUnit (r:1 w:0)
-	/// Proof: lstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	/// Storage: LstMinting OngoingTimeUnit (r:1 w:0)
+	/// Proof: LstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
 	/// Storage: Slp DelegatorLedgerXcmUpdateQueue (r:0 w:1)
 	/// Proof Skipped: Slp DelegatorLedgerXcmUpdateQueue (max_values: None, max_size: None, mode: Measured)
 	/// Storage: PolkadotXcm Queries (r:0 w:1)
@@ -378,8 +378,8 @@ impl WeightInfo for () {
 	/// Proof: ParachainInfo ParachainId (max_values: Some(1), max_size: Some(4), added: 499, mode: MaxEncodedLen)
 	/// Storage: Slp DelegatorLedgers (r:1 w:0)
 	/// Proof Skipped: Slp DelegatorLedgers (max_values: None, max_size: None, mode: Measured)
-	/// Storage: lstMinting OngoingTimeUnit (r:1 w:0)
-	/// Proof: lstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	/// Storage: LstMinting OngoingTimeUnit (r:1 w:0)
+	/// Proof: LstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
 	/// Storage: Slp CurrencyDelays (r:1 w:0)
 	/// Proof Skipped: Slp CurrencyDelays (max_values: None, max_size: None, mode: Measured)
 	/// Storage: Slp DelegatorLedgerXcmUpdateQueue (r:0 w:1)
@@ -442,8 +442,8 @@ impl WeightInfo for () {
 			.saturating_add(RocksDbWeight::get().reads(5_u64))
 			.saturating_add(RocksDbWeight::get().writes(2_u64))
 	}
-	/// Storage: lstMinting TokenPool (r:1 w:1)
-	/// Proof: lstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	/// Storage: LstMinting TokenPool (r:1 w:1)
+	/// Proof: LstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	fn increase_token_pool() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `180`
@@ -453,8 +453,8 @@ impl WeightInfo for () {
 			.saturating_add(RocksDbWeight::get().reads(1_u64))
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
-	/// Storage: lstMinting TokenPool (r:1 w:1)
-	/// Proof: lstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	/// Storage: LstMinting TokenPool (r:1 w:1)
+	/// Proof: LstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	fn decrease_token_pool() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `230`
@@ -468,8 +468,8 @@ impl WeightInfo for () {
 	/// Proof Skipped: Slp OngoingTimeUnitUpdateInterval (max_values: None, max_size: None, mode: Measured)
 	/// Storage: Slp LastTimeUpdatedOngoingTimeUnit (r:1 w:1)
 	/// Proof Skipped: Slp LastTimeUpdatedOngoingTimeUnit (max_values: None, max_size: None, mode: Measured)
-	/// Storage: lstMinting OngoingTimeUnit (r:1 w:1)
-	/// Proof: lstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	/// Storage: LstMinting OngoingTimeUnit (r:1 w:1)
+	/// Proof: LstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
 	fn update_ongoing_time_unit() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `277`
@@ -481,10 +481,10 @@ impl WeightInfo for () {
 	}
 	/// Storage: Tokens Accounts (r:2 w:2)
 	/// Proof: Tokens Accounts (max_values: None, max_size: Some(118), added: 2593, mode: MaxEncodedLen)
-	/// Storage: lstMinting OngoingTimeUnit (r:1 w:0)
-	/// Proof: lstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
-	/// Storage: lstMinting TimeUnitUnlockLedger (r:1 w:0)
-	/// Proof: lstMinting TimeUnitUnlockLedger (max_values: None, max_size: Some(282), added: 2757, mode: MaxEncodedLen)
+	/// Storage: LstMinting OngoingTimeUnit (r:1 w:0)
+	/// Proof: LstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	/// Storage: LstMinting TimeUnitUnlockLedger (r:1 w:0)
+	/// Proof: LstMinting TimeUnitUnlockLedger (max_values: None, max_size: Some(282), added: 2757, mode: MaxEncodedLen)
 	/// Storage: AssetRegistry CurrencyMetadatas (r:1 w:0)
 	/// Proof Skipped: AssetRegistry CurrencyMetadatas (max_values: None, max_size: None, mode: Measured)
 	/// Storage: System Account (r:2 w:2)
@@ -514,10 +514,10 @@ impl WeightInfo for () {
 	}
 	/// Storage: Slp CurrencyTuneExchangeRateLimit (r:1 w:0)
 	/// Proof Skipped: Slp CurrencyTuneExchangeRateLimit (max_values: None, max_size: None, mode: Measured)
-	/// Storage: lstMinting TokenPool (r:1 w:1)
-	/// Proof: lstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
-	/// Storage: lstMinting OngoingTimeUnit (r:1 w:0)
-	/// Proof: lstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
+	/// Storage: LstMinting TokenPool (r:1 w:1)
+	/// Proof: LstMinting TokenPool (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
+	/// Storage: LstMinting OngoingTimeUnit (r:1 w:0)
+	/// Proof: LstMinting OngoingTimeUnit (max_values: None, max_size: Some(27), added: 2502, mode: MaxEncodedLen)
 	/// Storage: Slp CurrencyLatestTuneRecord (r:1 w:1)
 	/// Proof Skipped: Slp CurrencyLatestTuneRecord (max_values: None, max_size: None, mode: Measured)
 	/// Storage: Slp HostingFees (r:1 w:0)
