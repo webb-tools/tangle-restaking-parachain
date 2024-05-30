@@ -26,7 +26,14 @@ You can get started quickly by using the provided `Dockerfile.testnet` file to l
 
 ```bash
 docker build -f Dockerfile.testnet -t tangle-restaking-parachain .
-docker run -it tangle-restaking-parachain
+
+# Run the Docker container with the ports published to the host.
+docker run -it \
+  -p 30334:30334 -p 9933:9933 -p 9615:9615 \
+  -p 30335:30335 -p 9934:9934 -p 9616:9616 \
+  -p 30336:30336 -p 9935:9935 -p 9617:9617 \
+  -p 30337:30337 -p 9936:9936 -p 9618:9618 \
+  tangle-restaking-parachain
 ```
 
 Alternatively, follow the instructions below to install `zombienet` and `polkadot` binaries on your local machine.

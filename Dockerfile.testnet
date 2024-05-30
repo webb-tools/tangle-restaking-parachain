@@ -49,14 +49,6 @@ COPY . ./parachain
 RUN cd parachain \
 	&& cargo b -rp tangle-cli --features with-tangle-kusama-runtime
 
-# Expose node ports.
-EXPOSE 43677
-EXPOSE 33443
-
-# Expose Prometheus ports for metrics.
-EXPOSE 44107
-EXPOSE 43831
-
 # Set the working directory to the parachain directory.
 WORKDIR /app/parachain
 
