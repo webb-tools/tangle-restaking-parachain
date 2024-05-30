@@ -90,6 +90,7 @@ futures = { workspace = true, features = ["compat"] }
 # Runtimes
 tangle-runtime-common = { workspace = true }
 tangle-kusama-runtime = { workspace = true, optional = true }
+tangle-polkadot-runtime = { workspace = true, optional = true }
 tangle-primitives = { workspace = true }
 tangle-rpc = { workspace = true }
 
@@ -106,6 +107,7 @@ default = [ "std" ]
 std = []
 runtime-benchmarks = [
 	"tangle-kusama-runtime/runtime-benchmarks",
+	"tangle-polkadot-runtime/runtime-benchmarks",
 	"polkadot-service/runtime-benchmarks",
 	"polkadot-cli/runtime-benchmarks",
 ]
@@ -117,15 +119,17 @@ with-tangle-kusama-runtime = [
 	"tangle-kusama-runtime",
 ]
 with-tangle-polkadot-runtime = [
+	"tangle-polkadot-runtime",
 ]
 with-all-runtime = [
 	"with-tangle-runtime",
 ]
 try-runtime = [
 	"tangle-kusama-runtime/try-runtime",
+	"tangle-polkadot-runtime/try-runtime",
 	"polkadot-service/try-runtime"
 ]
 fast-runtime = [
-	"tangle-kusama-runtime/fast-runtime",
+	"tangle-polkadot-runtime/fast-runtime",
 ]
 

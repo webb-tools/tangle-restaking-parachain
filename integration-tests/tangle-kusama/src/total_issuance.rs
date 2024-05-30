@@ -15,7 +15,7 @@
 
 use frame_support::{assert_ok, traits::Currency};
 use integration_tests_common::{
-	tangleKusama, tangleKusamaAlice, tangleKusamaBob, tangleKusamaTreasury,
+	TangleKusama, TangleKusamaAlice, TangleKusamaBob, TangleKusamaTreasury,
 };
 use tangle_kusama_runtime::{
 	constants::currency::{BNCS, MILLIBNC},
@@ -25,21 +25,21 @@ use xcm_emulator::TestExt;
 
 #[test]
 fn remove_dust_account_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(Balances::minimum_balance(), 10 * MILLIBNC);
 
 		assert_eq!(Balances::total_issuance(), 8_000_0000 * BNCS);
 
 		assert_ok!(Balances::transfer_allow_death(
-			RuntimeOrigin::signed(tangleKusamaAlice::get()),
-			tangleKusamaBob::get().into(),
-			Balances::free_balance(&tangleKusamaAlice::get()) - MILLIBNC
+			RuntimeOrigin::signed(TangleKusamaAlice::get()),
+			TangleKusamaBob::get().into(),
+			Balances::free_balance(&TangleKusamaAlice::get()) - MILLIBNC
 		));
 
 		// As expected dust balance is removed.
-		assert_eq!(Balances::free_balance(&tangleKusamaAlice::get()), 0);
+		assert_eq!(Balances::free_balance(&TangleKusamaAlice::get()), 0);
 		assert_eq!(
-			Balances::free_balance(&tangleKusamaTreasury::get()),
+			Balances::free_balance(&TangleKusamaTreasury::get()),
 			1_000_0000 * BNCS + MILLIBNC
 		);
 

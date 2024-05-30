@@ -128,7 +128,7 @@ decl_test_parachains! {
 		}
 	},
 	// Kusama Parachains
-	pub struct tangleKusama {
+	pub struct TangleKusama {
 		genesis = tangle_kusama::genesis(),
 		on_init = {
 			tangle_kusama_runtime::AuraExt::on_initialize(1);
@@ -202,7 +202,7 @@ decl_test_networks! {
 	pub struct KusamaMockNet {
 		relay_chain = Kusama,
 		parachains = vec![
-			tangleKusama,
+			TangleKusama,
 			AssetHubKusama,
 			BridgeHubKusama,
 		],
@@ -226,9 +226,9 @@ impl_hrmp_channels_helpers_for_relay_chain!(Kusama);
 // impl_accounts_helpers_for_parachain!(tanglePolkadot);
 // impl_assert_events_helpers_for_parachain!(tanglePolkadot);
 
-// tangleKusama implementation
-impl_accounts_helpers_for_parachain!(tangleKusama);
-impl_assert_events_helpers_for_parachain!(tangleKusama);
+// TangleKusama implementation
+impl_accounts_helpers_for_parachain!(TangleKusama);
+impl_assert_events_helpers_for_parachain!(TangleKusama);
 
 // AssetHubPolkadot implementation
 impl_accounts_helpers_for_parachain!(AssetHubPolkadot);
@@ -241,5 +241,5 @@ impl_assets_helpers_for_parachain!(AssetHubKusama, Kusama);
 impl_assert_events_helpers_for_parachain!(AssetHubKusama);
 
 impl_test_accounts_helpers_for_chain! {
-	Polkadot, Kusama, tangleKusama
+	Polkadot, Kusama, TangleKusama
 }

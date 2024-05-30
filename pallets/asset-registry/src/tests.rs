@@ -230,7 +230,7 @@ fn register_lst_metadata_should_work() {
 			0
 		));
 
-		assert_eq!(CurrencyMetadatas::<Runtime>::get(CurrencyId::lst2(0)), Some(v_metadata.clone()))
+		assert_eq!(CurrencyMetadatas::<Runtime>::get(CurrencyId::Lst2(0)), Some(v_metadata.clone()))
 	})
 }
 

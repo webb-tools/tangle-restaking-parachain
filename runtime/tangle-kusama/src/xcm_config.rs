@@ -227,7 +227,7 @@ impl<T: Get<ParaId>> Convert<MultiLocation, Option<CurrencyId>> for TangleCurren
 					let key = &data[..length as usize];
 					if let Ok(currency_id) = CurrencyId::decode(&mut &key[..]) {
 						match currency_id {
-							Native(ASG) | Native(BNC) | lst(KSM) | VSToken(KSM) | Token(ZLK) => {
+							Native(ASG) | Native(BNC) | Lst(KSM) | VSToken(KSM) | Token(ZLK) => {
 								Some(currency_id)
 							},
 							_ => None,
@@ -391,7 +391,7 @@ parameter_types! {
 	pub VksmPerSecond: (AssetId, u128,u128) = (
 		MultiLocation::new(
 			0,
-			X1(Junction::from(BoundedVec::try_from(CurrencyId::lst(TokenSymbol::KSM).encode()).unwrap())),
+			X1(Junction::from(BoundedVec::try_from(CurrencyId::Lst(TokenSymbol::KSM).encode()).unwrap())),
 		).into(),
 		ksm_per_second::<Runtime>(),
 		0
@@ -761,10 +761,10 @@ parameter_type_with_key! {
 			&CurrencyId::VSBond(TokenSymbol::DOT, ..) => 1 * cent::<Runtime>(PolkadotCurrencyId::get()),
 			&CurrencyId::LPToken(..) => 1 * micro::<Runtime>(NativeCurrencyId::get()),
 			&CurrencyId::StableLpToken(..) => 10 * millicent::<Runtime>(NativeCurrencyId::get()),
-			&CurrencyId::lst(TokenSymbol::KSM) => 10 * millicent::<Runtime>(RelayCurrencyId::get()),  // 0.0001 vKSM
+			&CurrencyId::Lst(TokenSymbol::KSM) => 10 * millicent::<Runtime>(RelayCurrencyId::get()),  // 0.0001 vKSM
 			&CurrencyId::Token(TokenSymbol::RMRK) => 1 * micro::<Runtime>(CurrencyId::Token(TokenSymbol::RMRK)),
 			&CurrencyId::Token(TokenSymbol::MOVR) => 1 * micro::<Runtime>(CurrencyId::Token(TokenSymbol::MOVR)),	// MOVR has a decimals of 10e18
-			&CurrencyId::lst(TokenSymbol::MOVR) => 1 * micro::<Runtime>(CurrencyId::Token(TokenSymbol::MOVR)),	// MOVR has a decimals of 10e18
+			&CurrencyId::Lst(TokenSymbol::MOVR) => 1 * micro::<Runtime>(CurrencyId::Token(TokenSymbol::MOVR)),	// MOVR has a decimals of 10e18
 			CurrencyId::ForeignAsset(foreign_asset_id) => {
 				AssetIdMaps::<Runtime>::get_asset_metadata(AssetIds::ForeignAssetId(*foreign_asset_id)).
 					map_or(Balance::max_value(), |metatata| metatata.minimal_balance)

@@ -171,7 +171,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -197,7 +197,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -228,7 +228,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -931,7 +931,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -957,7 +957,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -983,7 +983,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1009,7 +1009,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1044,7 +1044,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1073,7 +1073,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1099,7 +1099,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1125,7 +1125,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1154,7 +1154,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1180,7 +1180,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1206,7 +1206,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1233,7 +1233,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1278,7 +1278,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1304,7 +1304,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1331,7 +1331,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1397,7 +1397,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1432,7 +1432,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1458,7 +1458,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1485,7 +1485,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1512,7 +1512,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1606,7 +1606,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -1635,7 +1635,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2331,7 +2331,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2360,7 +2360,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2575,7 +2575,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2605,7 +2605,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2636,7 +2636,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2666,7 +2666,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2696,7 +2696,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2729,7 +2729,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2770,7 +2770,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2800,7 +2800,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2830,7 +2830,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2864,7 +2864,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2893,7 +2893,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2919,7 +2919,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2948,7 +2948,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -2974,7 +2974,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3004,7 +3004,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3030,7 +3030,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3059,7 +3059,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3088,7 +3088,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3117,7 +3117,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3172,7 +3172,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3267,7 +3267,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3293,7 +3293,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3559,7 +3559,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3588,7 +3588,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3629,7 +3629,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3660,7 +3660,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3690,7 +3690,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3719,7 +3719,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -3869,7 +3869,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }
@@ -4314,7 +4314,7 @@ declare module '@polkadot/api-base/types/storage' {
 						| { LPToken: any }
 						| { ForeignAsset: any }
 						| { Token2: any }
-						| { lst2: any }
+						| { Lst2: any }
 						| { VSToken2: any }
 						| { VSBond2: any }
 						| { StableLpToken: any }

@@ -18,7 +18,7 @@ use frame_support::{
 	assert_ok,
 	dispatch::{GetDispatchInfo, RawOrigin},
 };
-use integration_tests_common::{tangleKusama, Kusama, KusamaAlice};
+use integration_tests_common::{Kusama, KusamaAlice, TangleKusama};
 use pallet_conviction_voting::{AccountVote, Vote};
 use parity_scale_codec::Encode;
 use tangle_kusama_runtime::{Runtime, RuntimeCall, RuntimeEvent, System};
@@ -57,7 +57,7 @@ fn relaychain_transact_works() {
 
 		assert_ok!(Balances::force_set_balance(
 			RuntimeOrigin::root(),
-			Kusama::sovereign_account_id_of_child_para(tangleKusama::para_id()).into(),
+			Kusama::sovereign_account_id_of_child_para(TangleKusama::para_id()).into(),
 			100_000_000_000_000u128
 		));
 
@@ -71,7 +71,7 @@ fn relaychain_transact_works() {
 		)));
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		let notify_vote_call_weight = notify_vote_call.get_dispatch_info().weight;
 		let query_id = pallet_xcm::Pallet::<Runtime>::new_notify_query(
 			MultiLocation::parent(),
@@ -119,7 +119,7 @@ fn relaychain_transact_works() {
 		)));
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		System::events().iter().for_each(|r| println!("tangle >>> {:?}", r.event));
 		assert!(System::events().iter().any(|r| matches!(
 			r.event,

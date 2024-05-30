@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use integration_tests_common::tangleKusama;
+use integration_tests_common::TangleKusama;
 use parity_scale_codec::Encode;
 use sp_runtime::BoundedVec;
 use tangle_primitives::{CurrencyId, TokenSymbol};
@@ -22,7 +22,7 @@ use xcm_emulator::TestExt;
 
 #[test]
 fn dollar_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		let id = CurrencyId::Token(TokenSymbol::KSM);
 		assert_eq!(
 			Junction::from(BoundedVec::try_from(id.encode()).unwrap()),

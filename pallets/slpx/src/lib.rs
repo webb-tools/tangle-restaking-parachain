@@ -57,7 +57,7 @@ mod types;
 pub mod weights;
 pub use weights::WeightInfo;
 
-const tangle_KUSAMA_PARA_ID: u32 = 2001;
+const TANGLE_KUSAMA_PARA_ID: u32 = 2001;
 
 #[cfg(test)]
 mod mock;
@@ -364,7 +364,7 @@ pub mod pallet {
 							});
 
 							let mut target_fee_currency_id = GLMR;
-							if T::ParachainId::get() == Id::from(tangle_KUSAMA_PARA_ID) {
+							if T::ParachainId::get() == Id::from(TANGLE_KUSAMA_PARA_ID) {
 								target_fee_currency_id = MOVR;
 							}
 

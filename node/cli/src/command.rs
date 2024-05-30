@@ -97,7 +97,7 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
 					feature = "with-tangle-polkadot-runtime",
 					feature = "with-tangle-runtime"
 				)))]
-				return Err(service::tangle_POLKADOT_RUNTIME_NOT_AVAILABLE.into());
+				return Err(service::TANGLE_POLKADOT_RUNTIME_NOT_AVAILABLE.into());
 			} else if path.to_str().map(|s| s.contains("tangle")) == Some(true) {
 				#[cfg(any(
 					feature = "with-tangle-kusama-runtime",
@@ -110,7 +110,7 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
 					feature = "with-tangle-kusama-runtime",
 					feature = "with-tangle-runtime"
 				)))]
-				return Err(service::tangle_KUSAMA_RUNTIME_NOT_AVAILABLE.into());
+				return Err(service::TANGLE_KUSAMA_RUNTIME_NOT_AVAILABLE.into());
 			} else {
 				return Err(service::UNKNOWN_RUNTIME.into());
 			}
@@ -199,17 +199,17 @@ macro_rules! with_runtime_or_err {
 			$( $code )*
 
 			#[cfg(not(any(feature = "with-tangle-kusama-runtime",feature = "with-tangle-runtime")))]
-			return Err(service::tangle_KUSAMA_RUNTIME_NOT_AVAILABLE.into());
+			return Err(service::TANGLE_KUSAMA_RUNTIME_NOT_AVAILABLE.into());
 		} else if $chain_spec.is_tangle_polkadot() {
 			#[cfg(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime"))]
 			#[allow(unused_imports)]
-			use service::collator_polkadot::{tangle_polkadot_runtime::{Block, RuntimeApi},tanglePolkadotExecutor as Executor,start_node,new_partial};
+			use service::collator_polkadot::{tangle_polkadot_runtime::{Block, RuntimeApi},TanglePolkadotExecutor as Executor,start_node,new_partial};
 
 			#[cfg(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime"))]
 			$( $code )*
 
 			#[cfg(not(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime")))]
-			return Err(service::tangle_POLKADOT_RUNTIME_NOT_AVAILABLE.into());
+			return Err(service::TANGLE_POLKADOT_RUNTIME_NOT_AVAILABLE.into());
 		} else {
 			return Err(service::UNKNOWN_RUNTIME.into());
 		}

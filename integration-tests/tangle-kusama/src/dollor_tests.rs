@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use integration_tests_common::tangleKusama;
+use integration_tests_common::TangleKusama;
 use tangle_kusama_runtime::Runtime;
 use tangle_primitives::{CurrencyId, TokenSymbol::*};
 use tangle_runtime_common::{cent, dollar, micro, microcent, milli, millicent};
@@ -25,7 +25,7 @@ const DOT_DECIMALS: u128 = 10_000_000_000;
 
 #[test]
 fn dollar_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(dollar::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12);
 		assert_eq!(dollar::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12);
 		assert_eq!(dollar::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12);
@@ -42,7 +42,7 @@ fn dollar_should_work() {
 
 #[test]
 fn milli_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(milli::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12 / 1000);
 		assert_eq!(milli::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12 / 1000);
 		assert_eq!(milli::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12 / 1000);
@@ -59,7 +59,7 @@ fn milli_should_work() {
 
 #[test]
 fn micro_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(micro::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12 / 1_000_000);
 		assert_eq!(micro::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12 / 1_000_000);
 		assert_eq!(micro::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12 / 1_000_000);
@@ -76,7 +76,7 @@ fn micro_should_work() {
 
 #[test]
 fn cent_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(cent::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12 / 100);
 		assert_eq!(cent::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12 / 100);
 		assert_eq!(cent::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12 / 100);
@@ -93,7 +93,7 @@ fn cent_should_work() {
 
 #[test]
 fn millicent_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(millicent::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12 / 100_000);
 		assert_eq!(millicent::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12 / 100_000);
 		assert_eq!(millicent::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12 / 100_000);
@@ -110,7 +110,7 @@ fn millicent_should_work() {
 
 #[test]
 fn microcent_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(microcent::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12 / 100_000_000);
 		assert_eq!(microcent::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12 / 100_000_000);
 		assert_eq!(microcent::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12 / 100_000_000);

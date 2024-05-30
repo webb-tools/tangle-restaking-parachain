@@ -25,8 +25,7 @@ use tangle_polkadot_runtime::{
 	constants::currency::DOLLARS, AccountId, AssetRegistryConfig, Balance, BalancesConfig,
 	BlockNumber, CollatorSelectionConfig, CouncilMembershipConfig, IndicesConfig,
 	OracleMembershipConfig, ParachainInfoConfig, PolkadotXcmConfig, RuntimeGenesisConfig,
-	SS58Prefix, SalpConfig, SessionConfig, SystemConfig, TechnicalMembershipConfig, TokensConfig,
-	VestingConfig, WASM_BINARY,
+	SS58Prefix, SessionConfig, SystemConfig, TechnicalMembershipConfig, TokensConfig, WASM_BINARY,
 };
 use tangle_primitives::{CurrencyId, CurrencyId::*, TokenInfo, TokenSymbol, DOT_TOKEN_ID};
 use tangle_runtime_common::AuraId;
@@ -129,7 +128,6 @@ pub fn tangle_polkadot_genesis(
 		aura: Default::default(),
 		aura_ext: Default::default(),
 		parachain_system: Default::default(),
-		vesting: VestingConfig { vesting: vestings },
 		tokens: TokensConfig { balances: tokens },
 		asset_registry: AssetRegistryConfig {
 			currency: asset_registry.0,
@@ -138,7 +136,6 @@ pub fn tangle_polkadot_genesis(
 			phantom: Default::default(),
 		},
 		polkadot_xcm: PolkadotXcmConfig { safe_xcm_version: Some(2), _config: Default::default() },
-		salp: SalpConfig { initial_multisig_account: Some(salp_multisig_key) },
 		lst_voting: Default::default(),
 		transaction_payment: Default::default(),
 		zenlink_protocol: Default::default(),
@@ -239,7 +236,7 @@ fn local_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 			Some((String::from("Polkadot DOT"), String::from("DOT"), 10u8)),
 		),
 	];
-	let vcurrency = vec![VSToken2(DOT_TOKEN_ID), lst(TokenSymbol::BNC), lst2(DOT_TOKEN_ID)];
+	let vcurrency = vec![VSToken2(DOT_TOKEN_ID), Lst(TokenSymbol::BNC), Lst2(DOT_TOKEN_ID)];
 
 	tangle_polkadot_genesis(
 		vec![
