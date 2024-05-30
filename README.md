@@ -76,6 +76,10 @@ polkadot --version
 ### 3. Launch Polkadot and the parachain
 
 ```bash
+# Make sure you are in the parachain directory.
+cd <path-to-tangle-parachain>
+
+# Start the parachain.
 zombienet --provider native spawn ./scripts/zombienet.toml
 ```
 
