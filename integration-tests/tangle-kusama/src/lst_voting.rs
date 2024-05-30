@@ -19,7 +19,7 @@ use frame_support::{
 	traits::{schedule::DispatchTime, StorePreimage},
 	weights::Weight,
 };
-use integration_tests_common::{TangleKusama, TangleKusamaAlice, Kusama, KusamaAlice};
+use integration_tests_common::{Kusama, KusamaAlice, TangleKusama, TangleKusamaAlice};
 use pallet_conviction_voting::Vote;
 use sp_runtime::Perbill;
 use tangle_kusama_runtime::{

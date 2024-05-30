@@ -25,8 +25,7 @@ use tangle_polkadot_runtime::{
 	constants::currency::DOLLARS, AccountId, AssetRegistryConfig, Balance, BalancesConfig,
 	BlockNumber, CollatorSelectionConfig, CouncilMembershipConfig, IndicesConfig,
 	OracleMembershipConfig, ParachainInfoConfig, PolkadotXcmConfig, RuntimeGenesisConfig,
-	SS58Prefix, SessionConfig, SystemConfig, TechnicalMembershipConfig, TokensConfig,
-	WASM_BINARY,
+	SS58Prefix, SessionConfig, SystemConfig, TechnicalMembershipConfig, TokensConfig, WASM_BINARY,
 };
 use tangle_primitives::{CurrencyId, CurrencyId::*, TokenInfo, TokenSymbol, DOT_TOKEN_ID};
 use tangle_runtime_common::AuraId;

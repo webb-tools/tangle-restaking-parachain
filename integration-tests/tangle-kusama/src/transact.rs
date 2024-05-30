@@ -18,7 +18,7 @@ use frame_support::{
 	assert_ok,
 	dispatch::{GetDispatchInfo, RawOrigin},
 };
-use integration_tests_common::{TangleKusama, Kusama, KusamaAlice};
+use integration_tests_common::{Kusama, KusamaAlice, TangleKusama};
 use pallet_conviction_voting::{AccountVote, Vote};
 use parity_scale_codec::Encode;
 use tangle_kusama_runtime::{Runtime, RuntimeCall, RuntimeEvent, System};

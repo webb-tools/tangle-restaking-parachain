@@ -16,7 +16,7 @@
 //! Cross-chain transfer tests within Kusama network.
 
 use frame_support::{assert_ok, BoundedVec};
-use integration_tests_common::{impls::AccountId, TangleKusama, Kusama};
+use integration_tests_common::{impls::AccountId, Kusama, TangleKusama};
 use orml_traits::MultiCurrency;
 use sp_runtime::Permill;
 use tangle_kusama_runtime::{
