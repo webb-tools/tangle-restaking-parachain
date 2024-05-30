@@ -310,12 +310,12 @@ impl pallet_utility::Config for Runtime {
 
 parameter_types! {
 	// One storage item; key size 32, value size 8; .
-	pub ProxyDepositBase: Balance = deposit::<Runtime>(1, 8);
+	pub ProxyDepositBase: Balance = deposit(1, 8);
 	// Additional storage item size of 33 bytes.
-	pub ProxyDepositFactor: Balance = deposit::<Runtime>(0, 33);
+	pub ProxyDepositFactor: Balance = deposit(0, 33);
 	pub const MaxProxies: u16 = 32;
-	pub AnnouncementDepositBase: Balance = deposit::<Runtime>(1, 8);
-	pub AnnouncementDepositFactor: Balance = deposit::<Runtime>(0, 66);
+	pub AnnouncementDepositBase: Balance = deposit(1, 8);
+	pub AnnouncementDepositFactor: Balance = deposit(0, 66);
 	pub const MaxPending: u16 = 32;
 }
 
@@ -433,8 +433,8 @@ impl pallet_proxy::Config for Runtime {
 
 parameter_types! {
 	pub const PreimageMaxSize: u32 = 4096 * 1024;
-	pub PreimageBaseDeposit: Balance = deposit::<Runtime>(2, 64);
-	pub PreimageByteDeposit: Balance = deposit::<Runtime>(0, 1);
+	pub PreimageBaseDeposit: Balance = deposit(2, 64);
+	pub PreimageByteDeposit: Balance = deposit(0, 1);
 	pub const PreimageHoldReason: RuntimeHoldReason = RuntimeHoldReason::Preimage(pallet_preimage::HoldReason::Preimage);
 }
 
@@ -473,9 +473,9 @@ impl pallet_scheduler::Config for Runtime {
 
 parameter_types! {
 	// One storage item; key size is 32; value is size 4+4+16+32 bytes = 56 bytes.
-	pub DepositBase: Balance = deposit::<Runtime>(1, 88);
+	pub DepositBase: Balance = deposit(1, 88);
 	// Additional storage item size of 32 bytes.
-	pub DepositFactor: Balance = deposit::<Runtime>(0, 32);
+	pub DepositFactor: Balance = deposit(0, 32);
 	pub const MaxSignatories: u16 = 100;
 }
 
@@ -491,9 +491,9 @@ impl pallet_multisig::Config for Runtime {
 
 parameter_types! {
 	// Minimum 4 CENTS/byte
-	pub BasicDeposit: Balance = deposit::<Runtime>(1, 258);
-	pub FieldDeposit: Balance = deposit::<Runtime>(0, 66);
-	pub SubAccountDeposit: Balance = deposit::<Runtime>(1, 53);
+	pub BasicDeposit: Balance = deposit(1, 258);
+	pub FieldDeposit: Balance = deposit(0, 66);
+	pub SubAccountDeposit: Balance = deposit(1, 53);
 	pub const MaxSubAccounts: u32 = 100;
 	pub const MaxAdditionalFields: u32 = 100;
 	pub const MaxRegistrars: u32 = 20;
@@ -516,7 +516,7 @@ impl pallet_identity::Config for Runtime {
 }
 
 parameter_types! {
-	pub IndexDeposit: Balance = 1 * BNCS;
+	pub const IndexDeposit: Balance = 10 * DOLLARS;
 }
 
 impl pallet_indices::Config for Runtime {
@@ -625,15 +625,15 @@ impl pallet_membership::Config<pallet_membership::Instance2> for Runtime {
 }
 
 parameter_types! {
-	pub CandidacyBond: Balance = 10_000 * BNCS;
+	pub const CandidacyBond: Balance = 10_000 * DOLLARS;
 	// 1 storage item created, key size is 32 bytes, value size is 16+16.
-	pub VotingBondBase: Balance = deposit::<Runtime>(1, 64);
+	pub const VotingBondBase: Balance = deposit(1, 64);
 	// additional data per vote is 32 bytes (account id).
-	pub VotingBondFactor: Balance = deposit::<Runtime>(0, 32);
+	pub const VotingBondFactor: Balance = deposit(0, 32);
 	/// Daily council elections
-	pub const TermDuration: BlockNumber = 24 * HOURS;
+	pub const TermDuration: BlockNumber = 7 * DAYS;
 	pub const DesiredMembers: u32 = 3;
-	pub const DesiredRunnersUp: u32 = 7;
+	pub const DesiredRunnersUp: u32 = 20;
 	pub const PhragmenElectionPalletId: LockIdentifier = *b"phrelect";
 	pub const MaxVoters: u32 = 512;
 	 pub const MaxVotesPerVoter: u32 = 16;
@@ -663,7 +663,6 @@ impl pallet_elections_phragmen::Config for Runtime {
 	type MaxVotesPerVoter = MaxVotesPerVoter;
 	type WeightInfo = pallet_elections_phragmen::weights::SubstrateWeight<Runtime>;
 }
-
 parameter_types! {
 	pub const LaunchPeriod: BlockNumber = 7 * DAYS;
 	pub const VotingPeriod: BlockNumber = 7 * DAYS;
@@ -922,9 +921,9 @@ impl pallet_session::Config for Runtime {
 	type SessionHandler = <SessionKeys as sp_runtime::traits::OpaqueKeys>::KeyTypeIdProviders;
 	type SessionManager = CollatorSelection;
 	type ShouldEndSession = pallet_session::PeriodicSessions<Period, Offset>;
-	type ValidatorId = pallet_collator_selection::IdentityCollator;
+	type ValidatorId = <Self as frame_system::Config>::AccountId;
 	// we don't have stash and controller, thus we don't need the convert as well.
-	type ValidatorIdOf = ConvertInto;
+	type ValidatorIdOf = pallet_collator_selection::IdentityCollator;
 	type WeightInfo = pallet_session::weights::SubstrateWeight<Runtime>;
 }
 
