@@ -47,8 +47,8 @@ pub use pallet::*;
 use sp_core::U256;
 use sp_std::{vec, vec::Vec};
 use tangle_primitives::{
-	lstMintRedeemProvider, lstSupplyProvider, CurrencyId, CurrencyIdConversion, CurrencyIdExt,
-	CurrencyIdRegister, LstMintingInterface, LstMintingOperator, RedeemType, SlpOperator,
+	CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdRegister, LstMintRedeemProvider,
+	LstMintingInterface, LstMintingOperator, LstSupplyProvider, RedeemType, SlpOperator,
 	SlpxOperator, TimeUnit,
 };
 pub use traits::*;
@@ -129,15 +129,15 @@ pub mod pallet {
 		#[pallet::constant]
 		type MantaParachainId: Get<u32>;
 
-		type tangleSlp: SlpOperator<CurrencyId>;
+		type TangleSlp: SlpOperator<CurrencyId>;
 
-		type tangleSlpx: SlpxOperator<BalanceOf<Self>>;
+		type TangleSlpx: SlpxOperator<BalanceOf<Self>>;
 
 		type CurrencyIdConversion: CurrencyIdConversion<CurrencyId>;
 
 		type CurrencyIdRegister: CurrencyIdRegister<CurrencyId>;
 
-		type ChannelCommission: lstMintRedeemProvider<CurrencyId, BalanceOf<Self>>;
+		type ChannelCommission: LstMintRedeemProvider<CurrencyId, BalanceOf<Self>>;
 
 		/// Set default weight.
 		type WeightInfo: WeightInfo;
@@ -1068,7 +1068,7 @@ pub mod pallet {
 						if token_id == FIL {
 							let assets = vec![
 								(token_id, unlock_amount),
-								(BNC, T::tangleSlpx::get_moonbeam_transfer_to_fee()),
+								(BNC, T::TangleSlpx::get_moonbeam_transfer_to_fee()),
 							];
 
 							T::XcmTransfer::transfer_multicurrencies(
@@ -1321,7 +1321,7 @@ pub mod pallet {
 			ensure!(lst_amount >= MinimumRedeem::<T>::get(lst_id), Error::<T>::BelowMinimumRedeem);
 
 			ensure!(
-				!T::tangleSlp::all_delegation_requests_occupied(token_id),
+				!T::TangleSlp::all_delegation_requests_occupied(token_id),
 				Error::<T>::CanNotRedeem,
 			);
 
@@ -1752,7 +1752,7 @@ impl<T: Config> LstMintingInterface<AccountIdOf<T>, CurrencyIdOf<T>, BalanceOf<T
 	}
 }
 
-impl<T: Config> lstSupplyProvider<CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> {
+impl<T: Config> LstSupplyProvider<CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> {
 	fn get_lst_supply(lst: CurrencyIdOf<T>) -> Option<BalanceOf<T>> {
 		if CurrencyId::is_lst(&lst) {
 			Some(T::MultiCurrency::total_issuance(lst))

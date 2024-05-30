@@ -54,7 +54,7 @@ use sp_runtime::{
 use sp_std::prelude::*;
 use tangle_primitives::{
 	currency::{VDOT, VKSM},
-	traits::{lstSupplyProvider, DerivativeAccountHandler, XcmDestWeightAndFeeHandler},
+	traits::{DerivativeAccountHandler, LstSupplyProvider, XcmDestWeightAndFeeHandler},
 	CurrencyId, DerivativeIndex, XcmOperationType,
 };
 pub use weights::WeightInfo;
@@ -115,7 +115,7 @@ pub mod pallet {
 
 		type RelaychainBlockNumberProvider: BlockNumberProvider<BlockNumber = BlockNumberFor<Self>>;
 
-		type lstSupplyProvider: lstSupplyProvider<CurrencyIdOf<Self>, BalanceOf<Self>>;
+		type LstSupplyProvider: LstSupplyProvider<CurrencyIdOf<Self>, BalanceOf<Self>>;
 
 		#[pallet::constant]
 		type ParachainId: Get<ParaId>;
@@ -206,7 +206,7 @@ pub mod pallet {
 		/// XCM execution Failure
 		XcmFailure,
 		/// The given currency is not supported.
-		lstNotSupport,
+		LstNotSupport,
 		/// Derivative index occupied.
 		DerivativeIndexOccupied,
 		/// Another vote is pending.
@@ -1067,7 +1067,7 @@ pub mod pallet {
 		}
 
 		fn ensure_lst(lst: &CurrencyIdOf<T>) -> Result<(), DispatchError> {
-			ensure!([VKSM, VDOT].contains(lst), Error::<T>::lstNotSupport);
+			ensure!([VKSM, VDOT].contains(lst), Error::<T>::LstNotSupport);
 			Ok(())
 		}
 
@@ -1171,9 +1171,9 @@ pub mod pallet {
 			vote: AccountVote<BalanceOf<T>>,
 		) -> Result<AccountVote<BalanceOf<T>>, DispatchError> {
 			let token = CurrencyId::to_token(&lst).map_err(|_| Error::<T>::NoData)?;
-			let lst_supply = T::lstSupplyProvider::get_lst_supply(lst).ok_or(Error::<T>::NoData)?;
+			let lst_supply = T::LstSupplyProvider::get_lst_supply(lst).ok_or(Error::<T>::NoData)?;
 			let token_supply =
-				T::lstSupplyProvider::get_token_supply(token).ok_or(Error::<T>::NoData)?;
+				T::LstSupplyProvider::get_token_supply(token).ok_or(Error::<T>::NoData)?;
 			let mut new_vote = vote;
 			new_vote
 				.checked_mul(token_supply)
@@ -1185,7 +1185,7 @@ pub mod pallet {
 		pub(crate) fn vote_cap(lst: CurrencyIdOf<T>) -> Result<BalanceOf<T>, DispatchError> {
 			let token = CurrencyId::to_token(&lst).map_err(|_| Error::<T>::NoData)?;
 			let token_supply =
-				T::lstSupplyProvider::get_token_supply(token).ok_or(Error::<T>::NoData)?;
+				T::LstSupplyProvider::get_token_supply(token).ok_or(Error::<T>::NoData)?;
 			let vote_cap_ratio = VoteCapRatio::<T>::get(lst);
 
 			Ok(vote_cap_ratio * token_supply)

@@ -243,10 +243,10 @@ pub mod pallet {
 
 			for &currency in self.vcurrency.iter() {
 				match currency {
-					CurrencyId::lst(symbol) => {
+					CurrencyId::Lst(symbol) => {
 						AssetIdMaps::<T>::register_lst_metadata(symbol).expect("lst register");
 					},
-					CurrencyId::lst2(token_id) => {
+					CurrencyId::Lst2(token_id) => {
 						AssetIdMaps::<T>::register_lst2_metadata(token_id).expect("lst register");
 					},
 					CurrencyId::VSToken(symbol) => {
@@ -334,7 +334,7 @@ pub mod pallet {
 			if let Some(token_metadata) = CurrencyMetadatas::<T>::get(CurrencyId::Token2(token_id))
 			{
 				let lst_metadata = Self::convert_to_lst_metadata(token_metadata);
-				Self::do_register_metadata(CurrencyId::lst2(token_id), &lst_metadata)?;
+				Self::do_register_metadata(CurrencyId::Lst2(token_id), &lst_metadata)?;
 
 				return Ok(());
 			} else {
@@ -613,11 +613,11 @@ impl<T: Config> CurrencyIdConversion<CurrencyId> for AssetIdMaps<T> {
 			CurrencyId::VSBond(TokenSymbol::BNC, 2001, 13, 20) => {
 				Ok(CurrencyId::Token(TokenSymbol::KSM))
 			},
-			CurrencyId::lst(TokenSymbol::BNC) => Ok(CurrencyId::Native(TokenSymbol::BNC)),
-			CurrencyId::lst(token_symbol)
+			CurrencyId::Lst(TokenSymbol::BNC) => Ok(CurrencyId::Native(TokenSymbol::BNC)),
+			CurrencyId::Lst(token_symbol)
 			| CurrencyId::VSToken(token_symbol)
 			| CurrencyId::VSBond(token_symbol, ..) => Ok(CurrencyId::Token(token_symbol)),
-			CurrencyId::lst2(token_id)
+			CurrencyId::Lst2(token_id)
 			| CurrencyId::VSToken2(token_id)
 			| CurrencyId::VSBond2(token_id, ..) => Ok(CurrencyId::Token2(token_id)),
 			_ => Err(()),
@@ -627,9 +627,9 @@ impl<T: Config> CurrencyIdConversion<CurrencyId> for AssetIdMaps<T> {
 	fn convert_to_lst(currency_id: CurrencyId) -> Result<CurrencyId, ()> {
 		match currency_id {
 			CurrencyId::Token(token_symbol) | CurrencyId::Native(token_symbol) => {
-				Ok(CurrencyId::lst(token_symbol))
+				Ok(CurrencyId::Lst(token_symbol))
 			},
-			CurrencyId::Token2(token_id) => Ok(CurrencyId::lst2(token_id)),
+			CurrencyId::Token2(token_id) => Ok(CurrencyId::Lst2(token_id)),
 			_ => Err(()),
 		}
 	}
@@ -671,7 +671,7 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 	}
 
 	fn check_lst_registered(token_symbol: TokenSymbol) -> bool {
-		CurrencyMetadatas::<T>::get(CurrencyId::lst(token_symbol)).is_some()
+		CurrencyMetadatas::<T>::get(CurrencyId::Lst(token_symbol)).is_some()
 	}
 
 	fn check_vstoken_registered(token_symbol: TokenSymbol) -> bool {
@@ -696,13 +696,13 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 	fn register_lst_metadata(token_symbol: TokenSymbol) -> sp_runtime::DispatchResult {
 		if let Some(token_metadata) = CurrencyMetadatas::<T>::get(CurrencyId::Token(token_symbol)) {
 			let lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
-			Pallet::<T>::do_register_metadata(CurrencyId::lst(token_symbol), &lst_metadata)?;
+			Pallet::<T>::do_register_metadata(CurrencyId::Lst(token_symbol), &lst_metadata)?;
 			return Ok(());
 		} else if let Some(token_metadata) =
 			CurrencyMetadatas::<T>::get(CurrencyId::Native(token_symbol))
 		{
 			let lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
-			Pallet::<T>::do_register_metadata(CurrencyId::lst(token_symbol), &lst_metadata)?;
+			Pallet::<T>::do_register_metadata(CurrencyId::Lst(token_symbol), &lst_metadata)?;
 			return Ok(());
 		} else {
 			return Err(Error::<T>::CurrencyIdNotExists.into());
@@ -763,7 +763,7 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 	}
 
 	fn check_lst2_registered(token_id: TokenId) -> bool {
-		CurrencyMetadatas::<T>::get(CurrencyId::lst2(token_id)).is_some()
+		CurrencyMetadatas::<T>::get(CurrencyId::Lst2(token_id)).is_some()
 	}
 
 	fn check_vstoken2_registered(token_id: TokenId) -> bool {
@@ -783,7 +783,7 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 	fn register_lst2_metadata(token_id: TokenId) -> DispatchResult {
 		if let Some(token_metadata) = CurrencyMetadatas::<T>::get(CurrencyId::Token2(token_id)) {
 			let lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
-			Pallet::<T>::do_register_metadata(CurrencyId::lst2(token_id), &lst_metadata)?;
+			Pallet::<T>::do_register_metadata(CurrencyId::Lst2(token_id), &lst_metadata)?;
 
 			return Ok(());
 		} else {

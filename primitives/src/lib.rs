@@ -60,7 +60,7 @@ pub type AccountIndex = u32;
 pub type AssetId = u32;
 
 /// lst Mint type
-pub type lstMintPrice = u128;
+pub type LstMintPrice = u128;
 
 /// Balance of an account.
 pub type Balance = u128;

@@ -124,7 +124,7 @@ pub mod pallet {
 			TimeUnit,
 		>;
 
-		type tangleSlpx: SlpxOperator<BalanceOf<Self>>;
+		type TangleSlpx: SlpxOperator<BalanceOf<Self>>;
 
 		/// xtokens xcm transfer interface
 		type XcmTransfer: XcmTransfer<AccountIdOf<Self>, BalanceOf<Self>, CurrencyIdOf<Self>>;
@@ -1392,7 +1392,7 @@ pub mod pallet {
 								if currency_id == FIL {
 									let assets = vec![
 										(currency_id, deduct_amount),
-										(BNC, T::tangleSlpx::get_moonbeam_transfer_to_fee()),
+										(BNC, T::TangleSlpx::get_moonbeam_transfer_to_fee()),
 									];
 
 									T::XcmTransfer::transfer_multicurrencies(

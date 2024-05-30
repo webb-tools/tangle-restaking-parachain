@@ -239,7 +239,7 @@ fn local_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 			Some((String::from("Polkadot DOT"), String::from("DOT"), 10u8)),
 		),
 	];
-	let vcurrency = vec![VSToken2(DOT_TOKEN_ID), lst(TokenSymbol::BNC), lst2(DOT_TOKEN_ID)];
+	let vcurrency = vec![VSToken2(DOT_TOKEN_ID), lst(TokenSymbol::BNC), Lst2(DOT_TOKEN_ID)];
 
 	tangle_polkadot_genesis(
 		vec![

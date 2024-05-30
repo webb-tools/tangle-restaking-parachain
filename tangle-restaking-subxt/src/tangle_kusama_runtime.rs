@@ -63275,7 +63275,7 @@ pub mod api {
 					XcmFailure,
 					#[codec(index = 1)]
 					#[doc = "The given currency is not supported."]
-					lstNotSupport,
+					LstNotSupport,
 					#[codec(index = 2)]
 					#[doc = "Derivative index occupied."]
 					DerivativeIndexOccupied,
@@ -64303,7 +64303,7 @@ pub mod api {
 					#[codec(index = 8)]
 					Token2(::core::primitive::u8),
 					#[codec(index = 9)]
-					lst2(::core::primitive::u8),
+					Lst2(::core::primitive::u8),
 					#[codec(index = 10)]
 					VSToken2(::core::primitive::u8),
 					#[codec(index = 11)]

@@ -27,7 +27,7 @@ use tangle_kusama_runtime::{
 };
 use tangle_lst_voting::{AccountVote, TallyOf};
 use tangle_primitives::{
-	currency::VKSM, lstSupplyProvider, Balance, CurrencyId, XcmOperationType as XcmOperation, KSM,
+	currency::VKSM, Balance, CurrencyId, LstSupplyProvider, XcmOperationType as XcmOperation, KSM,
 };
 use tangle_slp::{Ledger, MinimumsMaximums, SubstrateLedger};
 use xcm::v3::Parent;
@@ -84,11 +84,11 @@ fn vote_works() {
 			None
 		));
 		assert_eq!(
-			<Runtime as tangle_lst_voting::Config>::lstSupplyProvider::get_token_supply(KSM),
+			<Runtime as tangle_lst_voting::Config>::LstSupplyProvider::get_token_supply(KSM),
 			Some(1_000_000_000_000)
 		);
 		assert_eq!(
-			<Runtime as tangle_lst_voting::Config>::lstSupplyProvider::get_lst_supply(VKSM),
+			<Runtime as tangle_lst_voting::Config>::LstSupplyProvider::get_lst_supply(VKSM),
 			Some(1_000_000_000_000)
 		);
 		let token = CurrencyId::to_token(&lst).unwrap();

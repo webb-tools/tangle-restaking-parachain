@@ -94,7 +94,7 @@ orml_traits::parameter_type_with_key! {
 		match currency_id {
 			&CurrencyId::Native(TokenSymbol::BNC) => 10 * milli::<Test>(NativeCurrencyId::get()),   // 0.01 BNC
 			&CurrencyId::Token(TokenSymbol::KSM) => 0,
-			&CurrencyId::lst(TokenSymbol::KSM) => 0,
+			&CurrencyId::Lst(TokenSymbol::KSM) => 0,
 			&DOT => 0,
 			&VDOT => 0,
 			&VBNC => 0,
@@ -301,7 +301,7 @@ impl tangle_lst_minting::Config for Test {
 	type EntranceAccount = tangleEntranceAccount;
 	type ExitAccount = tangleExitAccount;
 	type FeeAccount = One;
-	type tangleSlp = Slp;
+	type TangleSlp = Slp;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Test>;
 	type CurrencyIdRegister = AssetIdMaps<Test>;
@@ -310,7 +310,7 @@ impl tangle_lst_minting::Config for Test {
 	type XcmTransfer = XTokens;
 	type AstarParachainId = ConstU32<2007>;
 	type MoonbeamParachainId = ConstU32<2023>;
-	type tangleSlpx = SlpxInterface;
+	type TangleSlpx = SlpxInterface;
 	type HydradxParachainId = ConstU32<2034>;
 	type MantaParachainId = ConstU32<2104>;
 	type InterlayParachainId = ConstU32<2032>;

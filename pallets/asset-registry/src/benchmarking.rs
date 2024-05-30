@@ -136,7 +136,7 @@ benchmarks! {
 	}: {call.dispatch_bypass_filter(origin)?}
 	verify {
 		assert_eq!(
-			CurrencyMetadatas::<T>::get(CurrencyId::lst2(0)),
+			CurrencyMetadatas::<T>::get(CurrencyId::Lst2(0)),
 			Some(v_metadata.clone())
 		)
 	}

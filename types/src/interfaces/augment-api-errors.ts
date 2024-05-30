@@ -656,7 +656,7 @@ declare module '@polkadot/api-base/types/errors' {
 			/**
 			 * The given currency is not supported.
 			 **/
-			lstNotSupport: AugmentedError<ApiType>;
+			LstNotSupport: AugmentedError<ApiType>;
 			/**
 			 * Maximum number of votes reached.
 			 **/

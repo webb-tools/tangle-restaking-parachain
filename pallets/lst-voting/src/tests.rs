@@ -367,7 +367,7 @@ fn errors_with_vote_works() {
 
 		assert_noop!(
 			LstVoting::vote(RuntimeOrigin::signed(1), VBNC, 0, aye(10, 0)),
-			Error::<Runtime>::lstNotSupport
+			Error::<Runtime>::LstNotSupport
 		);
 		assert_noop!(
 			LstVoting::vote(RuntimeOrigin::signed(1), lst, 3, aye(11, 0)),

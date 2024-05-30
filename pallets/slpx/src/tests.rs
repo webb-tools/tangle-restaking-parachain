@@ -185,9 +185,9 @@ fn test_get_default_fee() {
 			Slpx::get_default_fee(CurrencyId::Token(TokenSymbol::MOVR)),
 			10_000_000_000_000_000u128
 		);
-		assert_eq!(Slpx::get_default_fee(CurrencyId::lst(TokenSymbol::KSM)), 10_000_000_000u128);
+		assert_eq!(Slpx::get_default_fee(CurrencyId::Lst(TokenSymbol::KSM)), 10_000_000_000u128);
 		assert_eq!(
-			Slpx::get_default_fee(CurrencyId::lst(TokenSymbol::MOVR)),
+			Slpx::get_default_fee(CurrencyId::Lst(TokenSymbol::MOVR)),
 			10_000_000_000_000_000u128
 		);
 	});

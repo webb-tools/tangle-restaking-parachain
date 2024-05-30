@@ -498,14 +498,14 @@ pub trait DerivativeAccountHandler<CurrencyId, Balance> {
 	fn add_delegator(token: CurrencyId, index: DerivativeIndex, who: xcm::v3::MultiLocation);
 }
 
-pub trait lstSupplyProvider<CurrencyId, Balance> {
+pub trait LstSupplyProvider<CurrencyId, Balance> {
 	fn get_lst_supply(lst: CurrencyId) -> Option<Balance>;
 
 	fn get_token_supply(token: CurrencyId) -> Option<Balance>;
 }
 
 // traits for pallet channel-commission
-pub trait lstMintRedeemProvider<CurrencyId, Balance> {
+pub trait LstMintRedeemProvider<CurrencyId, Balance> {
 	// record the mint amount of lst
 	fn record_mint_amount(
 		channel_id: Option<u32>,
@@ -516,7 +516,7 @@ pub trait lstMintRedeemProvider<CurrencyId, Balance> {
 	fn record_redeem_amount(lst: CurrencyId, amount: Balance) -> Result<(), DispatchError>;
 }
 
-impl<CurrencyId, Balance> lstMintRedeemProvider<CurrencyId, Balance> for () {
+impl<CurrencyId, Balance> LstMintRedeemProvider<CurrencyId, Balance> for () {
 	fn record_mint_amount(
 		_channel_id: Option<u32>,
 		_lst: CurrencyId,
