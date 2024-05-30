@@ -55,9 +55,9 @@ type HostFunctions =
 	(sp_io::SubstrateHostFunctions, frame_benchmarking::benchmarking::HostFunctions);
 
 #[cfg(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime"))]
-pub struct tanglePolkadotExecutor;
+pub struct TanglePolkadotExecutor;
 #[cfg(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime"))]
-impl sc_executor::NativeExecutionDispatch for tanglePolkadotExecutor {
+impl sc_executor::NativeExecutionDispatch for TanglePolkadotExecutor {
 	type ExtendHostFunctions = frame_benchmarking::benchmarking::HostFunctions;
 
 	fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {

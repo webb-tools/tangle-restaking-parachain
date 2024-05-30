@@ -84,7 +84,7 @@ benchmarks! {
 
 	redeem {
 		let caller: T::AccountId = whitelisted_caller();
-		const VKSM: CurrencyId = CurrencyId::lst(TokenSymbol::KSM);
+		const VKSM: CurrencyId = CurrencyId::Lst(TokenSymbol::KSM);
 		const KSM: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 		let lst_amount = BalanceOf::<T>::unique_saturated_from(90u128);
 		let redeem_amount = BalanceOf::<T>::unique_saturated_from(1000000000u128);
@@ -101,7 +101,7 @@ benchmarks! {
 
 	rebond {
 		let caller: T::AccountId = whitelisted_caller();
-		const VKSM: CurrencyId = CurrencyId::lst(TokenSymbol::KSM);
+		const VKSM: CurrencyId = CurrencyId::Lst(TokenSymbol::KSM);
 		const KSM: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 		let rebond_amount = BalanceOf::<T>::unique_saturated_from(100000000000u128);
 		let redeem_amount = BalanceOf::<T>::unique_saturated_from(1000000000000u128);
@@ -120,7 +120,7 @@ benchmarks! {
 
 	rebond_by_unlock_id {
 		let caller: T::AccountId = whitelisted_caller();
-		const VKSM: CurrencyId = CurrencyId::lst(TokenSymbol::KSM);
+		const VKSM: CurrencyId = CurrencyId::Lst(TokenSymbol::KSM);
 		const KSM: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 		let rebond_amount = BalanceOf::<T>::unique_saturated_from(100000000000u128);
 		let redeem_amount = BalanceOf::<T>::unique_saturated_from(1000000000000u128);

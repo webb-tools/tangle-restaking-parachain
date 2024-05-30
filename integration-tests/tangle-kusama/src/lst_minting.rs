@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use frame_support::{assert_ok, dispatch::RawOrigin};
-use integration_tests_common::{tangleKusama, tangleKusamaAlice};
+use integration_tests_common::{TangleKusama, TangleKusamaAlice};
 use sp_runtime::{traits::AccountIdConversion, BoundedVec, Permill};
 use tangle_asset_registry::AssetIdMaps;
 use tangle_kusama_runtime::{
@@ -25,7 +25,7 @@ use xcm_emulator::TestExt;
 
 #[test]
 fn set_unlock_duration_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(
 			LstMinting::set_unlock_duration(RawOrigin::Root.into(), KSM, TimeUnit::Era(28),)
 		);
@@ -35,7 +35,7 @@ fn set_unlock_duration_should_work() {
 
 #[test]
 fn set_minimum_mint_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(LstMinting::set_minimum_mint(RawOrigin::Root.into(), KSM, 50_000_000_000,));
 		assert_eq!(LstMinting::minimum_mint(KSM), 50_000_000_000);
 		assert_eq!(AssetIdMaps::<Runtime>::check_lst_registered(TokenSymbol::KSM), true);
@@ -45,7 +45,7 @@ fn set_minimum_mint_should_work() {
 
 #[test]
 fn set_minimum_redeem_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(LstMinting::set_minimum_redeem(RawOrigin::Root.into(), KSM, 10_000,));
 		assert_eq!(LstMinting::minimum_redeem(KSM), 10_000);
 	});
@@ -53,7 +53,7 @@ fn set_minimum_redeem_should_work() {
 
 #[test]
 fn add_support_rebond_token_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(LstMinting::token_to_rebond(KSM), None);
 		assert_ok!(LstMinting::add_support_rebond_token(RawOrigin::Root.into(), KSM,));
 		assert_eq!(LstMinting::token_to_rebond(KSM), Some(0));
@@ -62,7 +62,7 @@ fn add_support_rebond_token_should_work() {
 
 #[test]
 fn remove_support_rebond_token_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(LstMinting::token_to_rebond(KSM), None);
 		assert_ok!(LstMinting::add_support_rebond_token(RawOrigin::Root.into(), KSM,));
 		assert_eq!(LstMinting::token_to_rebond(KSM), Some(0));
@@ -73,7 +73,7 @@ fn remove_support_rebond_token_should_work() {
 
 #[test]
 fn set_fees_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(LstMinting::set_fees(
 			RawOrigin::Root.into(),
 			Permill::from_perthousand(0),
@@ -89,7 +89,7 @@ fn set_fees_should_work() {
 
 #[test]
 fn set_hook_iteration_limit_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(LstMinting::set_hook_iteration_limit(RawOrigin::Root.into(), 10));
 		assert_eq!(LstMinting::hook_iteration_limit(), 10);
 	});
@@ -97,7 +97,7 @@ fn set_hook_iteration_limit_should_work() {
 
 #[test]
 fn set_unlocking_total_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(LstMinting::set_unlocking_total(RawOrigin::Root.into(), KSM, 10_000_000_000,));
 		assert_eq!(LstMinting::unlocking_total(KSM), 10_000_000_000);
 	});
@@ -105,7 +105,7 @@ fn set_unlocking_total_should_work() {
 
 #[test]
 fn set_min_time_unit_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(
 			LstMinting::set_min_time_unit(RawOrigin::Root.into(), KSM, TimeUnit::Era(4362),)
 		);
@@ -115,7 +115,7 @@ fn set_min_time_unit_should_work() {
 
 #[test]
 fn mint_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(LstMinting::token_pool(KSM), 0);
 		assert_eq!(Currencies::total_issuance(VKSM), 0);
 		assert_eq!(
@@ -124,7 +124,7 @@ fn mint_should_work() {
 		);
 
 		assert_ok!(LstMinting::mint(
-			RawOrigin::Signed(tangleKusamaAlice::get()).into(),
+			RawOrigin::Signed(TangleKusamaAlice::get()).into(),
 			KSM,
 			5_000_000_000_000,
 			BoundedVec::default(),
@@ -133,7 +133,7 @@ fn mint_should_work() {
 
 		//check balance
 		let entrance_account = SlpEntrancePalletId::get().into_account_truncating();
-		assert_eq!(Currencies::free_balance(VKSM, &tangleKusamaAlice::get()), 5_000_000_000_000);
+		assert_eq!(Currencies::free_balance(VKSM, &TangleKusamaAlice::get()), 5_000_000_000_000);
 		assert_eq!(Currencies::free_balance(KSM, &entrance_account), 5_000_000_000_000);
 		assert_eq!(LstMinting::token_pool(KSM), 5_000_000_000_000);
 	});
@@ -141,7 +141,7 @@ fn mint_should_work() {
 
 #[test]
 fn redeem_should_work() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		pub const FEE: Permill = Permill::from_percent(2);
 		assert_ok!(LstMinting::set_fees(RawOrigin::Root.into(), FEE, FEE));
 		assert_ok!(LstMinting::set_unlock_duration(RawOrigin::Root.into(), KSM, TimeUnit::Era(1)));
@@ -152,7 +152,7 @@ fn redeem_should_work() {
 			2 * 1_000_000_000_000
 		));
 		assert_ok!(LstMinting::mint(
-			RawOrigin::Signed(tangleKusamaAlice::get()).into(),
+			RawOrigin::Signed(TangleKusamaAlice::get()).into(),
 			KSM,
 			5 * 1_000_000_000_000,
 			BoundedVec::default(),
@@ -161,7 +161,7 @@ fn redeem_should_work() {
 		assert_eq!(LstMinting::token_pool(KSM), 5 * 1_000_000_000_000 - 5 * 20_000_000_000); // 1000 + 980 - 98 - 196
 
 		assert_ok!(LstMinting::redeem(
-			RawOrigin::Signed(tangleKusamaAlice::get()).into(),
+			RawOrigin::Signed(TangleKusamaAlice::get()).into(),
 			VKSM,
 			1 * 1_000_000_000_000
 		));

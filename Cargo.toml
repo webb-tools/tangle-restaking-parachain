@@ -27,6 +27,7 @@ members = [
 	"pallets/stable-pool",
 	"pallets/prices",
 	"runtime/tangle-kusama",
+	"runtime/tangle-polkadot",
 	"tangle-restaking-subxt",
 ]
 resolver = "2"
@@ -39,6 +40,7 @@ tangle-rpc              = { path = "node/rpc" }
 
 # tangle Runtime
 tangle-kusama-runtime   = { path = "runtime/tangle-kusama" }
+tangle-polkadot-runtime   = { path = "runtime/tangle-polkadot" }
 
 # tangle Wasm
 tangle-asset-registry               = { path = "pallets/asset-registry", default-features = false }

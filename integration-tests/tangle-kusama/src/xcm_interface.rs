@@ -23,8 +23,8 @@ use tangle_kusama_runtime::{
 use tangle_primitives::{CurrencyId, XcmOperationType as XcmOperation};
 use frame_support::{assert_ok, traits::Currency};
 use integration_tests_common::{
-	impls::Outcome::Complete, AssetHubKusama, AssetHubKusamaAlice, tangleKusama,
-	tangleKusamaAlice,
+	impls::Outcome::Complete, AssetHubKusama, AssetHubKusamaAlice, TangleKusama,
+	TangleKusamaAlice,
 };
 use polkadot_parachain_primitives::primitives::Sibling;
 use sp_runtime::{traits::AccountIdConversion, MultiAddress};
@@ -38,7 +38,7 @@ const USDT: u128 = 1_000_000;
 
 #[test]
 fn cross_usdt() {
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		let metadata = AssetMetadata {
 			name: b"USDT".to_vec(),
 			symbol: b"USDT".to_vec(),
@@ -104,8 +104,8 @@ fn cross_usdt() {
 
 		assert_ok!(pallet_xcm::Pallet::<Runtime>::limited_reserve_transfer_assets(
 			RuntimeOrigin::signed(AssetHubKusamaAlice::get()),
-			bx!(AssetHubKusama::sibling_location_of(tangleKusama::para_id()).into()),
-			bx!(AccountId32 { network: None, id: tangleKusamaAlice::get().into() }.into()),
+			bx!(AssetHubKusama::sibling_location_of(TangleKusama::para_id()).into()),
+			bx!(AccountId32 { network: None, id: TangleKusamaAlice::get().into() }.into()),
 			Box::new(VersionedMultiAssets::V3(assets)),
 			0,
 			WeightLimit::Unlimited,
@@ -126,7 +126,7 @@ fn cross_usdt() {
 		System::reset_events();
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		System::events().iter().for_each(|r| println!("tangle >>> {:?}", r.event));
 		assert!(System::events().iter().any(|r| matches!(
 			&r.event,
@@ -148,10 +148,10 @@ fn cross_usdt() {
 		// Alice transfers 5 statemine asset to Bob
 		// TODO: Failed to process XCMP-XCM message, caused by Barrier
 		// assert_ok!(XcmInterface::transfer_statemine_assets(
-		// 	RuntimeOrigin::signed(tangleKusamaAlice::get()),
+		// 	RuntimeOrigin::signed(TangleKusamaAlice::get()),
 		// 	5 * USDT,
 		// 	1984,
-		// 	Some(tangleKusamaBob::get())
+		// 	Some(TangleKusamaBob::get())
 		// ));
 	});
 

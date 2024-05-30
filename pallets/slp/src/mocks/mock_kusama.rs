@@ -277,8 +277,8 @@ impl tangle_lst_minting::Config for Runtime {
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;
 	type CurrencyIdRegister = AssetIdMaps<Runtime>;
-	type tangleSlp = Slp;
-	type tangleSlpx = SlpxInterface;
+	type TangleSlp = Slp;
+	type TangleSlpx = SlpxInterface;
 	type WeightInfo = ();
 	type OnRedeemSuccess = ();
 	type XcmTransfer = XTokens;
@@ -540,7 +540,7 @@ impl Config for Runtime {
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
 	type WeightInfo = ();
 	type LstMinting = LstMinting;
-	type tangleSlpx = SlpxInterface;
+	type TangleSlpx = SlpxInterface;
 	type AccountConverter = SubAccountIndexMultiLocationConvertor;
 	type ParachainId = ParachainId;
 	type SubstrateResponseManager = SubstrateResponseManager;

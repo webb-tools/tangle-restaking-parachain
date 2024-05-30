@@ -220,7 +220,7 @@ orml_traits::parameter_type_with_key! {
 		match currency_id {
 			&CurrencyId::Native(TokenSymbol::BNC) => 0,
 			&CurrencyId::Token(TokenSymbol::KSM) => 0,
-			&CurrencyId::lst(TokenSymbol::KSM) => 0,
+			&CurrencyId::Lst(TokenSymbol::KSM) => 0,
 			&DOT => 0,
 			&VDOT => 0,
 			&VBNC => 0,

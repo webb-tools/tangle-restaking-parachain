@@ -34,9 +34,8 @@ use sp_runtime::{
 };
 use tangle_primitives::{
 	currency::{KSM, VBNC, VKSM},
-	lstSupplyProvider,
 	traits::XcmDestWeightAndFeeHandler,
-	CurrencyId, DoNothingRouter, TokenSymbol, XcmOperationType,
+	CurrencyId, DoNothingRouter, LstSupplyProvider, TokenSymbol, XcmOperationType,
 };
 use xcm::prelude::*;
 use xcm_builder::{FixedWeightBounds, FrameTransactionalProcessor};
@@ -325,7 +324,7 @@ impl SimplelstSupplyProvider {
 	}
 }
 
-impl lstSupplyProvider<CurrencyId, Balance> for SimplelstSupplyProvider {
+impl LstSupplyProvider<CurrencyId, Balance> for SimplelstSupplyProvider {
 	fn get_lst_supply(_: CurrencyId) -> Option<Balance> {
 		Some(lstSupply::get())
 	}
@@ -345,7 +344,7 @@ impl lst_voting::Config for Runtime {
 	type XcmDestWeightAndFee = XcmDestWeightAndFee;
 	type DerivativeAccount = DerivativeAccount;
 	type RelaychainBlockNumberProvider = RelaychainDataProvider;
-	type lstSupplyProvider = SimplelstSupplyProvider;
+	type LstSupplyProvider = SimplelstSupplyProvider;
 	type MaxVotes = ConstU32<256>;
 	type ParachainId = ParachainId;
 	type QueryTimeout = QueryTimeout;

@@ -16,7 +16,7 @@
 //! Cross-chain transfer tests within Kusama network.
 
 use frame_support::{assert_ok, BoundedVec};
-use integration_tests_common::{impls::AccountId, tangleKusama, Kusama};
+use integration_tests_common::{impls::AccountId, Kusama, TangleKusama};
 use orml_traits::MultiCurrency;
 use sp_runtime::Permill;
 use tangle_kusama_runtime::{
@@ -95,7 +95,7 @@ fn slp_setup() {
 		kusama_runtime::System::reset_events();
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Balances::force_set_balance(
 			RuntimeOrigin::root(),
 			sp_runtime::MultiAddress::Id(AccountId::from(tangle_TREASURY_ACCOUNT)),
@@ -110,7 +110,7 @@ fn slp_setup() {
 		));
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// set operate origin to be ALICE for vksm
 		assert_ok!(Slp::set_operate_origin(
 			RuntimeOrigin::root(),
@@ -314,7 +314,7 @@ fn cross_ksm_to_tangle(to: [u8; 32], amount: u128) {
 fn lst_minting() {
 	sp_io::TestExternalities::default().execute_with(|| {
 		slp_setup();
-		tangleKusama::execute_with(|| {
+		TangleKusama::execute_with(|| {
 			assert_eq!(Currencies::free_balance(VKSM, &AccountId::from(ALICE)), 0);
 			assert_eq!(
 				Currencies::free_balance(KSM, &AccountId::from(ALICE)),
@@ -349,7 +349,7 @@ fn transfer_to() {
 		);
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// Bond 50 ksm for sub-account index 0
 		assert_ok!(LstMinting::mint(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
@@ -391,7 +391,7 @@ fn transfer_back() {
 		);
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// Bond 50 ksm for sub-account index 0
 		assert_eq!(Currencies::free_balance(KSM, &AccountId::from(EXIT_ACCOUNT)), 0);
 
@@ -412,7 +412,7 @@ fn transfer_back() {
 		);
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(Currencies::free_balance(KSM, &AccountId::from(EXIT_ACCOUNT)), 49999919630000);
 	});
 }
@@ -422,7 +422,7 @@ fn bond_works() {
 	sp_io::TestExternalities::default().execute_with(|| {
 		slp_setup();
 
-		tangleKusama::execute_with(|| {
+		TangleKusama::execute_with(|| {
 			// Bond 50 ksm for sub-account index 0
 			assert_ok!(Slp::bond(
 				RuntimeOrigin::signed(AccountId::from(ALICE)),
@@ -447,11 +447,11 @@ fn bond_works() {
 			);
 		});
 
-		tangleKusama::execute_with(|| {
-			type RuntimeEvent = <tangleKusama as Chain>::RuntimeEvent;
+		TangleKusama::execute_with(|| {
+			type RuntimeEvent = <TangleKusama as Chain>::RuntimeEvent;
 			// Bond 50 ksm and auto confirm
 			assert_expected_events!(
-				tangleKusama,
+				TangleKusama,
 				vec![
 					// Amount to reserve transfer is transferred to System Parachain's Sovereign account
 					RuntimeEvent::Slp(tangle_slp::Event::DelegatorLedgerQueryResponseConfirmed {..}) => { },
@@ -475,7 +475,7 @@ fn bond_extra_works() {
 	sp_io::TestExternalities::default().execute_with(|| {
 		slp_setup();
 
-		tangleKusama::execute_with(|| {
+		TangleKusama::execute_with(|| {
 			assert_ok!(Slp::bond(
 				RuntimeOrigin::signed(AccountId::from(ALICE)),
 				RelayCurrencyId::get(),
@@ -485,7 +485,7 @@ fn bond_extra_works() {
 				None,
 			));
 		});
-		tangleKusama::execute_with(|| {
+		TangleKusama::execute_with(|| {
 			// Bond_extra 20 ksm for sub-account index 0
 			assert_ok!(Slp::bond_extra(
 				RuntimeOrigin::signed(AccountId::from(ALICE)),
@@ -510,11 +510,11 @@ fn bond_extra_works() {
 			);
 		});
 
-		tangleKusama::execute_with(|| {
-			type RuntimeEvent = <tangleKusama as Chain>::RuntimeEvent;
+		TangleKusama::execute_with(|| {
+			type RuntimeEvent = <TangleKusama as Chain>::RuntimeEvent;
 			// Bond 20 ksm and auto confirm
 			assert_expected_events!(
-				tangleKusama,
+				TangleKusama,
 				vec![
 					RuntimeEvent::Slp(tangle_slp::Event::DelegatorLedgerQueryResponseConfirmed {..}) => { },
 				]
@@ -536,7 +536,7 @@ fn bond_extra_works() {
 fn unbond_works() {
 	slp_setup();
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::bond(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -549,7 +549,7 @@ fn unbond_works() {
 
 	Kusama::execute_with(|| {});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::unbond(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -573,10 +573,10 @@ fn unbond_works() {
 		);
 	});
 
-	tangleKusama::execute_with(|| {
-		type RuntimeEvent = <tangleKusama as Chain>::RuntimeEvent;
+	TangleKusama::execute_with(|| {
+		type RuntimeEvent = <TangleKusama as Chain>::RuntimeEvent;
 		assert_expected_events!(
-			tangleKusama,
+			TangleKusama,
 			vec![
 				// Amount to reserve transfer is transferred to System Parachain's Sovereign account
 				RuntimeEvent::Slp(tangle_slp::Event::DelegatorLedgerQueryResponseConfirmed {..}) => { },
@@ -601,7 +601,7 @@ fn unbond_works() {
 fn unbond_all_works() {
 	slp_setup();
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// Unbond 0.5 ksm, 0.5 ksm left.
 		assert_ok!(Slp::bond(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
@@ -615,7 +615,7 @@ fn unbond_all_works() {
 
 	Kusama::execute_with(|| {});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::unbond_all(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -637,7 +637,7 @@ fn unbond_all_works() {
 		);
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// Bond 70 ksm and auto confirm
 		assert_eq!(
 			Slp::get_delegator_ledger(RelayCurrencyId::get(), KSM_DELEGATOR_0_MULTILOCATION),
@@ -658,7 +658,7 @@ fn unbond_all_works() {
 fn rebond_works() {
 	slp_setup();
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::bond(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -673,7 +673,7 @@ fn rebond_works() {
 		// TODO: Assert events;
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::unbond(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -688,7 +688,7 @@ fn rebond_works() {
 		// TODO: Assert events;
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// rebond 0.5 ksm.
 		assert_ok!(Slp::rebond(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
@@ -714,7 +714,7 @@ fn rebond_works() {
 		);
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// Bond 70 ksm and auto confirm
 		assert_eq!(
 			Slp::get_delegator_ledger(RelayCurrencyId::get(), KSM_DELEGATOR_0_MULTILOCATION),
@@ -742,7 +742,7 @@ fn delegate_works() {
 			System::reset_events();
 		});
 
-		tangleKusama::execute_with(|| {
+		TangleKusama::execute_with(|| {
 			// Unbond 0.5 ksm, 0.5 ksm left.
 			assert_ok!(LstMinting::mint(
 				RuntimeOrigin::signed(AccountId::from(ALICE)),
@@ -764,7 +764,7 @@ fn delegate_works() {
 
 		Kusama::execute_with(|| {});
 
-		tangleKusama::execute_with(|| {
+		TangleKusama::execute_with(|| {
 			// delegate
 			assert_ok!(Slp::delegate(
 				RuntimeOrigin::signed(AccountId::from(ALICE)),
@@ -785,7 +785,7 @@ fn delegate_works() {
 fn undelegate_works() {
 	slp_setup();
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::bond(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -800,7 +800,7 @@ fn undelegate_works() {
 		// TODO: Assert events;
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::delegate(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -814,7 +814,7 @@ fn undelegate_works() {
 		// TODO: Assert events;
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// Undelegate validator 0. Only validator 1 left.
 		assert_ok!(Slp::undelegate(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
@@ -834,7 +834,7 @@ fn undelegate_works() {
 fn redelegate_works() {
 	slp_setup();
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::bond(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -845,7 +845,7 @@ fn redelegate_works() {
 		));
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::delegate(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -859,7 +859,7 @@ fn redelegate_works() {
 		// TODO: Assert events;
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// Undelegate validator 0. Only validator 1 left.
 		assert_ok!(Slp::undelegate(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
@@ -874,7 +874,7 @@ fn redelegate_works() {
 		// TODO: Assert events;
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::redelegate(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -892,7 +892,7 @@ fn redelegate_works() {
 #[test]
 fn payout_works() {
 	slp_setup();
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// Bond 1 ksm for sub-account index 0
 		assert_ok!(Slp::payout(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
@@ -909,7 +909,7 @@ fn payout_works() {
 fn liquidize_works() {
 	slp_setup();
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::bond(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -924,7 +924,7 @@ fn liquidize_works() {
 		// TODO: Assert events;
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::delegate(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -938,7 +938,7 @@ fn liquidize_works() {
 		// TODO: Assert events;
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::unbond(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -953,7 +953,7 @@ fn liquidize_works() {
 		// TODO: Assert events;
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		// Bond 70 ksm and auto confirm
 		assert_eq!(
 			Slp::get_delegator_ledger(RelayCurrencyId::get(), KSM_DELEGATOR_0_MULTILOCATION),
@@ -969,7 +969,7 @@ fn liquidize_works() {
 		);
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_ok!(Slp::liquidize(
 			RuntimeOrigin::signed(AccountId::from(ALICE)),
 			RelayCurrencyId::get(),
@@ -985,7 +985,7 @@ fn liquidize_works() {
 		Kusama::assert_ump_queue_processed(true, Some(ParaId::new(2001)), None);
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		assert_eq!(
 			Slp::get_delegator_ledger(RelayCurrencyId::get(), KSM_DELEGATOR_0_MULTILOCATION),
 			Some(Ledger::Substrate(SubstrateLedger {
@@ -1003,7 +1003,7 @@ fn chill_works() {
 	sp_io::TestExternalities::default().execute_with(|| {
 		slp_setup();
 
-		tangleKusama::execute_with(|| {
+		TangleKusama::execute_with(|| {
 			assert_ok!(Slp::bond(
 				RuntimeOrigin::signed(AccountId::from(ALICE)),
 				RelayCurrencyId::get(),
@@ -1014,7 +1014,7 @@ fn chill_works() {
 			));
 		});
 
-		tangleKusama::execute_with(|| {
+		TangleKusama::execute_with(|| {
 			assert_ok!(Slp::delegate(
 				RuntimeOrigin::signed(AccountId::from(ALICE)),
 				RelayCurrencyId::get(),
@@ -1033,7 +1033,7 @@ fn chill_works() {
 			);
 		});
 
-		tangleKusama::execute_with(|| {
+		TangleKusama::execute_with(|| {
 			assert_ok!(Slp::chill(
 				RuntimeOrigin::signed(AccountId::from(ALICE)),
 				RelayCurrencyId::get(),
@@ -1058,7 +1058,7 @@ fn supplement_fee_reserve_works() {
 			);
 		});
 
-		tangleKusama::execute_with(|| {
+		TangleKusama::execute_with(|| {
 			assert_ok!(Slp::supplement_fee_reserve(
 				RuntimeOrigin::root(),
 				RelayCurrencyId::get(),

@@ -2999,7 +2999,7 @@ export default {
 			LPToken: '(TanglePrimitivesCurrencyTokenSymbol,u8,TanglePrimitivesCurrencyTokenSymbol,u8)',
 			ForeignAsset: 'u32',
 			Token2: 'u8',
-			lst2: 'u8',
+			Lst2: 'u8',
 			VSToken2: 'u8',
 			VSBond2: '(u8,u32,u32,u32)',
 			StableLpToken: 'u32',
@@ -7928,7 +7928,7 @@ export default {
 	TangleLstVotingError: {
 		_enum: [
 			'XcmFailure',
-			'lstNotSupport',
+			'LstNotSupport',
 			'DerivativeIndexOccupied',
 			'PendingVote',
 			'PendingUpdateReferendumStatus',

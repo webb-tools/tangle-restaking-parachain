@@ -19,7 +19,7 @@ use frame_support::{
 	traits::{schedule::DispatchTime, StorePreimage},
 	weights::Weight,
 };
-use integration_tests_common::{tangleKusama, tangleKusamaAlice, Kusama, KusamaAlice};
+use integration_tests_common::{Kusama, KusamaAlice, TangleKusama, TangleKusamaAlice};
 use pallet_conviction_voting::Vote;
 use sp_runtime::Perbill;
 use tangle_kusama_runtime::{
@@ -27,7 +27,7 @@ use tangle_kusama_runtime::{
 };
 use tangle_lst_voting::{AccountVote, TallyOf};
 use tangle_primitives::{
-	currency::VKSM, lstSupplyProvider, Balance, CurrencyId, XcmOperationType as XcmOperation, KSM,
+	currency::VKSM, Balance, CurrencyId, LstSupplyProvider, XcmOperationType as XcmOperation, KSM,
 };
 use tangle_slp::{Ledger, MinimumsMaximums, SubstrateLedger};
 use xcm::v3::Parent;
@@ -43,20 +43,20 @@ fn vote_works() {
 
 		assert_ok!(Balances::force_set_balance(
 			RuntimeOrigin::root(),
-			Kusama::sovereign_account_id_of_child_para(tangleKusama::para_id()).into(),
+			Kusama::sovereign_account_id_of_child_para(TangleKusama::para_id()).into(),
 			1_000_000_000_000_000u128
 		));
 		assert_ok!(Balances::force_set_balance(
 			RuntimeOrigin::root(),
 			Utility::derivative_account_id(
-				Kusama::sovereign_account_id_of_child_para(tangleKusama::para_id()).into(),
+				Kusama::sovereign_account_id_of_child_para(TangleKusama::para_id()).into(),
 				5
 			)
 			.into(),
 			1_000_000_000_000_000u128
 		));
 		assert_ok!(Referenda::submit(
-			RuntimeOrigin::signed(tangleKusamaAlice::get()),
+			RuntimeOrigin::signed(TangleKusamaAlice::get()),
 			Box::new(RawOrigin::Root.into()),
 			set_balance_proposal_bounded(1),
 			DispatchTime::At(10),
@@ -73,22 +73,22 @@ fn vote_works() {
 		System::reset_events();
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		use tangle_kusama_runtime::{LstMinting, LstVoting, RuntimeEvent, RuntimeOrigin, System};
 
 		assert_ok!(LstMinting::mint(
-			RuntimeOrigin::signed(tangleKusamaAlice::get()),
+			RuntimeOrigin::signed(TangleKusamaAlice::get()),
 			KSM,
 			1_000_000_000_000,
 			Default::default(),
 			None
 		));
 		assert_eq!(
-			<Runtime as tangle_lst_voting::Config>::lstSupplyProvider::get_token_supply(KSM),
+			<Runtime as tangle_lst_voting::Config>::LstSupplyProvider::get_token_supply(KSM),
 			Some(1_000_000_000_000)
 		);
 		assert_eq!(
-			<Runtime as tangle_lst_voting::Config>::lstSupplyProvider::get_lst_supply(VKSM),
+			<Runtime as tangle_lst_voting::Config>::LstSupplyProvider::get_lst_supply(VKSM),
 			Some(1_000_000_000_000)
 		);
 		let token = CurrencyId::to_token(&lst).unwrap();
@@ -142,7 +142,7 @@ fn vote_works() {
 		assert_ok!(LstVoting::set_undeciding_timeout(RuntimeOrigin::root(), lst, 100));
 
 		assert_ok!(LstVoting::vote(
-			RuntimeOrigin::signed(tangleKusamaAlice::get()),
+			RuntimeOrigin::signed(TangleKusamaAlice::get()),
 			lst,
 			poll_index,
 			aye(1_000_000_000_000u128, 5)
@@ -182,12 +182,12 @@ fn vote_works() {
 		System::reset_events();
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		use tangle_kusama_runtime::{LstVoting, RuntimeEvent, System};
 
 		System::events()
 			.iter()
-			.for_each(|r| log::debug!("tangleKusama >>> {:?}", r.event));
+			.for_each(|r| log::debug!("TangleKusama >>> {:?}", r.event));
 		assert!(System::events().iter().any(|r| matches!(
 			r.event,
 			RuntimeEvent::LstVoting(tangle_lst_voting::Event::VoteNotified {
@@ -203,7 +203,7 @@ fn vote_works() {
 			tangle_lst_voting::ReferendumInfoOf::<Runtime>::Completed(1),
 		));
 		assert_ok!(LstVoting::remove_delegator_vote(
-			RuntimeOrigin::signed(tangleKusamaAlice::get()),
+			RuntimeOrigin::signed(TangleKusamaAlice::get()),
 			VKSM,
 			0,
 			5,
@@ -226,12 +226,12 @@ fn vote_works() {
 		)));
 	});
 
-	tangleKusama::execute_with(|| {
+	TangleKusama::execute_with(|| {
 		use tangle_kusama_runtime::{RuntimeEvent, System};
 
 		System::events()
 			.iter()
-			.for_each(|r| log::debug!("tangleKusama >>> {:?}", r.event));
+			.for_each(|r| log::debug!("TangleKusama >>> {:?}", r.event));
 		assert!(System::events().iter().any(|r| matches!(
 			r.event,
 			RuntimeEvent::LstVoting(tangle_lst_voting::Event::DelegatorVoteRemovedNotified {
