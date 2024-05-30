@@ -15193,6 +15193,7 @@ dependencies = [
  "substrate-prometheus-endpoint",
  "tangle-kusama-runtime",
  "tangle-parachain-staking",
+ "tangle-polkadot-runtime",
  "tangle-primitives",
  "tangle-rpc",
  "tangle-runtime-common",

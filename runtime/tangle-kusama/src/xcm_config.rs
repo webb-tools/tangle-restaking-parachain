@@ -227,7 +227,7 @@ impl<T: Get<ParaId>> Convert<MultiLocation, Option<CurrencyId>> for TangleCurren
 					let key = &data[..length as usize];
 					if let Ok(currency_id) = CurrencyId::decode(&mut &key[..]) {
 						match currency_id {
-							Native(ASG) | Native(BNC) | lst(KSM) | VSToken(KSM) | Token(ZLK) => {
+							Native(ASG) | Native(BNC) | Lst(KSM) | VSToken(KSM) | Token(ZLK) => {
 								Some(currency_id)
 							},
 							_ => None,

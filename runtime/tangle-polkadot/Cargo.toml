@@ -120,7 +120,7 @@ tangle-stable-pool = { workspace = true }
 tangle-stable-pool-rpc-runtime-api = { workspace = true }
 tangle-token-issuer = { workspace = true }
 tangle-lst-minting = { workspace = true }
-tangle-lst-voting = { workspace = true, features = [ "kusama" ] }
+tangle-lst-voting = { workspace = true, features = [ "polkadot" ] }
 tangle-xcm-interface = { workspace = true }
 tangle-parachain-staking = { workspace = true }
 pallet-prices = { workspace = true }
