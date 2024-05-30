@@ -1,0 +1,57 @@
+# Use Arch Linux as the base image.
+FROM archlinux:latest
+
+# Update the system and install necessary packages.
+RUN pacman -Syu --noconfirm \
+	&& pacman -S --noconfirm base-devel nodejs npm git curl protobuf clang llvm
+
+# Install Rust.
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# Set environment variables for Rust to ensure it's in the path.
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Verify the installation.
+RUN rustc --version \
+	&& cargo --version \
+	&& node --version \
+	&& npm --version \
+	&& git --version \
+	&& curl --version
+
+# Set environment variables.
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=C.UTF-8
+
+# Create a working directory.
+WORKDIR /app
+
+# Install zombienet CLI.
+RUN curl -L -o /usr/local/bin/zombienet https://github.com/paritytech/zombienet/releases/download/v1.3.105/zombienet-linux-x64 \
+	&& chmod +x /usr/local/bin/zombienet
+
+# Install Polkadot binaries used by the zombienet CLI.
+RUN curl -L -o /usr/local/bin/polkadot https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.12.0/polkadot \
+	&& curl -L -o /usr/local/bin/polkadot-execute-worker https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.12.0/polkadot-execute-worker \
+	&& curl -L -o /usr/local/bin/polkadot-prepare-worker https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.12.0/polkadot-prepare-worker \
+	&& curl -L -o /usr/local/bin/polkadot-parachain https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.12.0/polkadot-parachain \
+	# Make the binaries executable.
+	&& chmod +x /usr/local/bin/polkadot /usr/local/bin/polkadot-execute-worker /usr/local/bin/polkadot-prepare-worker /usr/local/bin/polkadot-parachain
+
+
+# Verify that the Polkadot binary is available.
+RUN polkadot --version
+
+# Copy Parachain repository's contents to the container.
+COPY . ./parachain
+
+# Build the parachain.
+RUN cd parachain \
+	&& cargo b -rp tangle-cli --features with-tangle-kusama-runtime
+
+# Set the working directory to the parachain directory.
+WORKDIR /app/parachain
+
+# Set the run default command to execute the zombienet CLI and
+# spawn the parachain.
+CMD ["zombienet", "--provider", "native", "spawn", "./scripts/zombienet.toml"]

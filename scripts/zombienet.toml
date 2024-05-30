@@ -2,16 +2,22 @@
 timeout = 1000
 
 [relaychain]
-default_command = "../polkadot-sdk/target/release/polkadot"
+default_command = "polkadot"
 chain = "rococo-local"
 
-    [[relaychain.nodes]]
-    name = "Alice"
-    validator = true
+[[relaychain.nodes]]
+name = "Alice"
+validator = true
+ws_port = 30334
+rpc_port = 9933
+prometheus_port = 9615
 
-    [[relaychain.nodes]]
-    name = "Bob"
-    validator = true
+[[relaychain.nodes]]
+name = "Bob"
+validator = true
+ws_port = 30335
+rpc_port = 9934
+prometheus_port = 9616
 
 [[parachains]]
 id = 1000
@@ -21,12 +27,18 @@ cumulus_based = true
 add_to_genesis = true
 register_para = true
 
-    [[parachains.collators]]
-    name = "Alice"
-    command = "./target/release/tangle"
-    collator = true
+[[parachains.collators]]
+name = "Alice"
+command = "./target/release/tangle"
+collator = true
+ws_port = 30336
+rpc_port = 9935
+prometheus_port = 9617
 
-    [[parachains.collators]]
-    name = "Bob"
-    command = "./target/release/tangle"
-    collator = true
+[[parachains.collators]]
+name = "Bob"
+command = "./target/release/tangle"
+collator = true
+ws_port = 30337
+rpc_port = 9936
+prometheus_port = 9618
