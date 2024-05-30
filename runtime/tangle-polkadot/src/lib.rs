@@ -1143,7 +1143,7 @@ impl tangle_slp::Config for Runtime {
 	type ControlOrigin = EitherOfDiverse<TechAdminOrCouncil, LiquidStaking>;
 	type WeightInfo = weights::tangle_slp::TangleWeight<Runtime>;
 	type LstMinting = LstMinting;
-	type tangleSlpx = Slpx;
+	type TangleSlpx = Slpx;
 	type AccountConverter = SubAccountIndexMultiLocationConvertor;
 	type ParachainId = SelfParaChainId;
 	type SubstrateResponseManager = SubstrateResponseManager;
@@ -1182,7 +1182,7 @@ impl tangle_lst_voting::Config for Runtime {
 	type XcmDestWeightAndFee = XcmInterface;
 	type DerivativeAccount = DerivativeAccountProvider<Runtime, DerivativeAccountTokenFilter>;
 	type RelaychainBlockNumberProvider = RelaychainDataProvider<Runtime>;
-	type lstSupplyProvider = LstMinting;
+	type LstSupplyProvider = LstMinting;
 	type ParachainId = SelfParaChainId;
 	type MaxVotes = ConstU32<256>;
 	type QueryTimeout = QueryTimeout;
@@ -1306,8 +1306,8 @@ impl tangle_lst_minting::Config for Runtime {
 	type EntranceAccount = SlpEntrancePalletId;
 	type ExitAccount = SlpExitPalletId;
 	type FeeAccount = TangleFeeAccount;
-	type tangleSlp = Slp;
-	type tangleSlpx = Slpx;
+	type TangleSlp = Slp;
+	type TangleSlpx = Slpx;
 	type WeightInfo = weights::tangle_lst_minting::TangleWeight<Runtime>;
 	type OnRedeemSuccess = OnRedeemSuccess;
 	type RelayChainToken = RelayCurrencyId;
