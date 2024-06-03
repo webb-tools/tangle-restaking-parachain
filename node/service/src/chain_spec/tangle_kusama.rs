@@ -88,7 +88,7 @@ fn tangle_kusama_properties() -> Properties {
 	let mut token_decimals: Vec<u32> = vec![];
 	[
 		// native token
-		Native(BNC),
+		Native(TNT),
 		// stable token
 		Stable(KUSD),
 		// token
@@ -292,7 +292,7 @@ fn local_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 				),
 				(
 					x.clone(),
-					CurrencyId::VSBond(TokenSymbol::BNC, 2001, 13, 20),
+					CurrencyId::VSBond(TokenSymbol::TNT, 2001, 13, 20),
 					ENDOWMENT() * 4_000_000,
 				),
 			]
@@ -307,7 +307,7 @@ fn local_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 
 	// Token
 	let currency = vec![
-		(Native(BNC), DOLLARS / 100, None),
+		(Native(TNT), DOLLARS / 100, None),
 		(Stable(KUSD), DOLLARS / 10_000, None),
 		(Token(KSM), DOLLARS / 10_000, None),
 		(Token(ZLK), DOLLARS / 1000_000, None),
@@ -316,12 +316,12 @@ fn local_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 		(Token(PHA), 4 * DOLLARS / 100, None),
 		(Token(MOVR), DOLLARS / 1000_000, None),
 	];
-	let vcurrency = vec![VSToken(KSM), lst(BNC), lst(KSM), lst(MOVR)];
+	let vcurrency = vec![VSToken(KSM), lst(TNT), lst(KSM), lst(MOVR)];
 
 	// vsBond
 	let vsbond = vec![
 		// Token, ParaId, first_slot, last_slot
-		(Native(BNC), 2001u32, 13u32, 20u32),
+		(Native(TNT), 2001u32, 13u32, 20u32),
 		(Token(KSM), 2011, 19, 26),
 		(Token(KSM), 2085, 15, 22),
 		(Token(KSM), 2087, 17, 24),

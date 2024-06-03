@@ -45344,7 +45344,7 @@ pub mod api {
 						],
 					)
 				}
-				#[doc = " XCM fee for transferring to Moonbeam(BNC)"]
+				#[doc = " XCM fee for transferring to Moonbeam(TNT)"]
 				pub fn transfer_to_fee_iter(
 					&self,
 				) -> ::subxt::storage::address::Address<
@@ -45366,7 +45366,7 @@ pub mod api {
 						],
 					)
 				}
-				#[doc = " XCM fee for transferring to Moonbeam(BNC)"]
+				#[doc = " XCM fee for transferring to Moonbeam(TNT)"]
 				pub fn transfer_to_fee(
 					&self,
 					_0: impl ::std::borrow::Borrow<types::transfer_to_fee::Param0>,
@@ -64337,7 +64337,7 @@ pub mod api {
 					#[codec(index = 0)]
 					ASG,
 					#[codec(index = 1)]
-					BNC,
+					TNT,
 					#[codec(index = 2)]
 					KUSD,
 					#[codec(index = 3)]

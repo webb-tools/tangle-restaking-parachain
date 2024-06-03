@@ -127,7 +127,7 @@ fn test_execution_fee_work() {
 fn test_zenlink() {
 	sp_io::TestExternalities::default().execute_with(|| {
 		assert_ok!(Currencies::deposit(
-			CurrencyId::Native(TokenSymbol::BNC),
+			CurrencyId::Native(TokenSymbol::TNT),
 			&ALICE,
 			50 * 1_000_000_000
 		));
@@ -138,7 +138,7 @@ fn test_zenlink() {
 		));
 
 		let bnc_token: AssetId =
-			AssetId::try_convert_from(CurrencyId::Native(TokenSymbol::BNC), 2001).unwrap();
+			AssetId::try_convert_from(CurrencyId::Native(TokenSymbol::TNT), 2001).unwrap();
 		let ksm_token: AssetId =
 			AssetId::try_convert_from(CurrencyId::Token(TokenSymbol::KSM), 2001).unwrap();
 
@@ -154,7 +154,7 @@ fn test_zenlink() {
 			100
 		));
 		assert_eq!(
-			Currencies::free_balance(CurrencyId::Native(TokenSymbol::BNC), &ALICE),
+			Currencies::free_balance(CurrencyId::Native(TokenSymbol::TNT), &ALICE),
 			30u128 * 1_000_000_000
 		);
 		assert_eq!(
@@ -163,8 +163,8 @@ fn test_zenlink() {
 		);
 
 		let path = vec![bnc_token, ksm_token];
-		let balance = Currencies::free_balance(CurrencyId::Native(TokenSymbol::BNC), &ALICE);
-		let minimum_balance = Currencies::minimum_balance(CurrencyId::Native(TokenSymbol::BNC));
+		let balance = Currencies::free_balance(CurrencyId::Native(TokenSymbol::TNT), &ALICE);
+		let minimum_balance = Currencies::minimum_balance(CurrencyId::Native(TokenSymbol::TNT));
 		assert_ok!(ZenlinkProtocol::swap_exact_assets_for_assets(
 			RawOrigin::Signed(ALICE).into(),
 			balance - minimum_balance,
@@ -179,7 +179,7 @@ fn test_zenlink() {
 #[test]
 fn test_get_default_fee() {
 	sp_io::TestExternalities::default().execute_with(|| {
-		assert_eq!(Slpx::get_default_fee(BNC), 10_000_000_000u128);
+		assert_eq!(Slpx::get_default_fee(TNT), 10_000_000_000u128);
 		assert_eq!(Slpx::get_default_fee(CurrencyId::Token(TokenSymbol::KSM)), 10_000_000_000u128);
 		assert_eq!(
 			Slpx::get_default_fee(CurrencyId::Token(TokenSymbol::MOVR)),
@@ -197,7 +197,7 @@ fn test_get_default_fee() {
 fn test_ed() {
 	sp_io::TestExternalities::default().execute_with(|| {
 		assert_ok!(Currencies::deposit(
-			CurrencyId::Native(TokenSymbol::BNC),
+			CurrencyId::Native(TokenSymbol::TNT),
 			&ALICE,
 			50 * 1_000_000_000
 		));
@@ -208,7 +208,7 @@ fn test_ed() {
 		));
 
 		assert_eq!(
-			Currencies::free_balance(CurrencyId::Native(TokenSymbol::BNC), &ALICE),
+			Currencies::free_balance(CurrencyId::Native(TokenSymbol::TNT), &ALICE),
 			50 * 1_000_000_000
 		);
 		assert_eq!(
@@ -219,7 +219,7 @@ fn test_ed() {
 		assert_ok!(Currencies::transfer(
 			RawOrigin::Signed(ALICE).into(),
 			BOB,
-			CurrencyId::Native(TokenSymbol::BNC),
+			CurrencyId::Native(TokenSymbol::TNT),
 			50 * 1_000_000_000
 		));
 		assert_ok!(Currencies::transfer(
@@ -248,33 +248,33 @@ fn test_selector() {
 fn test_ethereum_call() {
 	sp_io::TestExternalities::default().execute_with(|| {
 		// b"setTokenAmount(bytes2,uint256,bytes2,uint256)"
-		assert_eq!("9a41b9240001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b00000000000000000000000000000000000000000000000000000000000001c8", hex::encode(Slpx::encode_ethereum_call(BNC, 123u128, 456u128)));
+		assert_eq!("9a41b9240001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b00000000000000000000000000000000000000000000000000000000000001c8", hex::encode(Slpx::encode_ethereum_call(TNT, 123u128, 456u128)));
 
-		println!("{:?}", hex::encode(Slpx::encode_ethereum_call(BNC, 123u128, 456u128)));
+		println!("{:?}", hex::encode(Slpx::encode_ethereum_call(TNT, 123u128, 456u128)));
 		let addr: [u8; 20] = hex!["ae0daa9bfc50f03ce23d30c796709a58470b5f42"];
 		let r = EthereumXcmTransaction::V2(EthereumXcmTransactionV2 {
 			gas_limit: U256::from(720000),
 			action: TransactionAction::Call(H160::from(addr)),
 			value: U256::zero(),
-			input: Slpx::encode_ethereum_call(BNC, 123u128, 456u128).try_into().unwrap(),
+			input: Slpx::encode_ethereum_call(TNT, 123u128, 456u128).try_into().unwrap(),
 			access_list: None,
 		});
 		let call = MoonbeamCall::EthereumXcm(EthereumXcmCall::Transact(r));
 		println!("{}", hex::encode(call.encode()));
-		assert_eq!("6d000180fc0a000000000000000000000000000000000000000000000000000000000000ae0daa9bfc50f03ce23d30c796709a58470b5f42000000000000000000000000000000000000000000000000000000000000000091019a41b9240001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b00000000000000000000000000000000000000000000000000000000000001c800", hex::encode(Slpx::encode_transact_call(H160::from(addr), BNC, 123u128, 456u128)));
+		assert_eq!("6d000180fc0a000000000000000000000000000000000000000000000000000000000000ae0daa9bfc50f03ce23d30c796709a58470b5f42000000000000000000000000000000000000000000000000000000000000000091019a41b9240001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b00000000000000000000000000000000000000000000000000000000000001c800", hex::encode(Slpx::encode_transact_call(H160::from(addr), TNT, 123u128, 456u128)));
 	})
 }
 
 #[test]
 fn test_set_currency_ethereum_call_switch() {
 	sp_io::TestExternalities::default().execute_with(|| {
-		assert_ok!(Slpx::set_currency_ethereum_call_switch(RuntimeOrigin::root(), BNC, true));
-		assert_eq!(Slpx::currency_id_list().to_vec(), vec![BNC]);
+		assert_ok!(Slpx::set_currency_ethereum_call_switch(RuntimeOrigin::root(), TNT, true));
+		assert_eq!(Slpx::currency_id_list().to_vec(), vec![TNT]);
 
 		assert_ok!(Slpx::set_currency_ethereum_call_switch(RuntimeOrigin::root(), KSM, true));
-		assert_eq!(Slpx::currency_id_list().to_vec(), vec![BNC, KSM]);
+		assert_eq!(Slpx::currency_id_list().to_vec(), vec![TNT, KSM]);
 
-		assert_ok!(Slpx::set_currency_ethereum_call_switch(RuntimeOrigin::root(), BNC, false));
+		assert_ok!(Slpx::set_currency_ethereum_call_switch(RuntimeOrigin::root(), TNT, false));
 		assert_eq!(Slpx::currency_id_list().to_vec(), vec![KSM]);
 	})
 }
@@ -325,13 +325,13 @@ fn test_set_ethereum_call_configration() {
 #[test]
 fn test_set_currency_to_support_xcm_fee() {
 	sp_io::TestExternalities::default().execute_with(|| {
-		assert_ok!(Slpx::set_currency_support_xcm_fee(RuntimeOrigin::root(), BNC, true));
-		assert_eq!(Slpx::support_xcm_fee_list().to_vec(), vec![BNC]);
+		assert_ok!(Slpx::set_currency_support_xcm_fee(RuntimeOrigin::root(), TNT, true));
+		assert_eq!(Slpx::support_xcm_fee_list().to_vec(), vec![TNT]);
 
 		assert_ok!(Slpx::set_currency_support_xcm_fee(RuntimeOrigin::root(), KSM, true));
-		assert_eq!(Slpx::support_xcm_fee_list().to_vec(), vec![BNC, KSM]);
+		assert_eq!(Slpx::support_xcm_fee_list().to_vec(), vec![TNT, KSM]);
 
-		assert_ok!(Slpx::set_currency_support_xcm_fee(RuntimeOrigin::root(), BNC, false));
+		assert_ok!(Slpx::set_currency_support_xcm_fee(RuntimeOrigin::root(), TNT, false));
 		assert_eq!(Slpx::support_xcm_fee_list().to_vec(), vec![KSM]);
 	})
 }

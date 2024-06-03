@@ -215,7 +215,7 @@ impl Contains<RuntimeCall> for BaseFilter {
 }
 
 parameter_types! {
-	pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
+	pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::TNT);
 	pub const RelayCurrencyId: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 	pub const StableCurrencyId: CurrencyId = CurrencyId::Stable(TokenSymbol::KUSD);
 	pub SelfParaId: u32 = ParachainInfo::parachain_id().into();
@@ -1091,7 +1091,7 @@ pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLoca
 			}),
 		),
 		// tangle Kusama Native token
-		CurrencyId::Native(TokenSymbol::BNC) => MultiLocation::new(
+		CurrencyId::Native(TokenSymbol::TNT) => MultiLocation::new(
 			0,
 			X1(AccountId32 {
 				network: None,

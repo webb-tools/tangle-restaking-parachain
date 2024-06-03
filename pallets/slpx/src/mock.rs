@@ -40,7 +40,7 @@ use sp_runtime::{
 use sp_std::vec;
 use tangle_asset_registry::AssetIdMaps;
 pub use tangle_primitives::{
-	CurrencyId, CurrencyIdMapping, DoNothingExecuteXcm, SlpxOperator, TokenSymbol, BNC, KSM,
+	CurrencyId, CurrencyIdMapping, DoNothingExecuteXcm, SlpxOperator, TokenSymbol, KSM, TNT,
 };
 use tangle_slp::{QueryId, QueryResponseManager};
 pub use xcm::latest::prelude::*;
@@ -147,7 +147,7 @@ impl pallet_balances::Config for Test {
 }
 
 parameter_types! {
-	pub const GetNativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
+	pub const GetNativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::TNT);
 }
 
 pub type AdaptedBasicCurrency =
@@ -164,7 +164,7 @@ impl tangle_currencies::Config for Test {
 parameter_type_with_key! {
 	pub ExistentialDeposits: |currency_id: CurrencyId| -> u128 {
 		match currency_id {
-			&BNC => 10 * 1_000_000_000,
+			&TNT => 10 * 1_000_000_000,
 			&KSM => 10 * 1_000_000_000,
 			_=> 10 * 1_000_000_000
 		}
@@ -575,7 +575,7 @@ impl tangle_stable_pool::Config for Test {
 
 // Pallet slpx configuration
 parameter_types! {
-	pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
+	pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::TNT);
 }
 
 pub struct XTokensMock;

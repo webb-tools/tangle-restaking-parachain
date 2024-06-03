@@ -17,13 +17,13 @@ use crate::*;
 use frame_support::traits::OnRuntimeUpgrade;
 #[cfg(feature = "try-runtime")]
 use sp_runtime::TryRuntimeError;
-use tangle_primitives::currency::{ASTR, BNC, DOT, GLMR, KSM, MANTA, MOVR};
+use tangle_primitives::currency::{ASTR, DOT, GLMR, KSM, MANTA, MOVR, TNT};
 
 pub struct TangleKusamaAddCurrencyToSupportXcmFee<T>(sp_std::marker::PhantomData<T>);
 impl<T: Config> OnRuntimeUpgrade for TangleKusamaAddCurrencyToSupportXcmFee<T> {
 	fn on_runtime_upgrade() -> Weight {
 		//migrate the value type of SupportXcmFeeList
-		let currency_list = BoundedVec::try_from(vec![BNC, MOVR, KSM]).unwrap();
+		let currency_list = BoundedVec::try_from(vec![TNT, MOVR, KSM]).unwrap();
 		SupportXcmFeeList::<T>::put(currency_list);
 		Weight::from(T::DbWeight::get().reads_writes(1 as u64 + 1, 2 as u64 + 1))
 	}
@@ -49,7 +49,7 @@ pub struct TanglePolkadotAddCurrencyToSupportXcmFee<T>(sp_std::marker::PhantomDa
 impl<T: Config> OnRuntimeUpgrade for TanglePolkadotAddCurrencyToSupportXcmFee<T> {
 	fn on_runtime_upgrade() -> Weight {
 		//migrate the value type of SupportXcmFeeList
-		let currency_list = BoundedVec::try_from(vec![BNC, GLMR, DOT, ASTR, MANTA]).unwrap();
+		let currency_list = BoundedVec::try_from(vec![TNT, GLMR, DOT, ASTR, MANTA]).unwrap();
 		SupportXcmFeeList::<T>::put(currency_list);
 		Weight::from(T::DbWeight::get().reads_writes(1 as u64 + 1, 2 as u64 + 1))
 	}

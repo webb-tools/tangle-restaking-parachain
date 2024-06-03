@@ -45,7 +45,7 @@ use sp_runtime::{
 use sp_std::{vec, vec::Vec};
 use tangle_asset_registry::AssetMetadata;
 use tangle_primitives::{
-	currency::{BNC, VFIL},
+	currency::{TNT, VFIL},
 	CurrencyId, CurrencyIdMapping, LstMintingInterface, RedeemType, SlpxOperator, TokenInfo,
 };
 use xcm::{latest::prelude::*, v3::MultiLocation};
@@ -276,7 +276,7 @@ pub mod pallet {
 	pub type ExecutionFee<T: Config> =
 		StorageMap<_, Blake2_128Concat, CurrencyId, BalanceOf<T>, OptionQuery>;
 
-	/// XCM fee for transferring to Moonbeam(BNC)
+	/// XCM fee for transferring to Moonbeam(TNT)
 	#[pallet::storage]
 	#[pallet::getter(fn transfer_to_fee)]
 	pub type TransferToFee<T: Config> =
@@ -493,9 +493,9 @@ pub mod pallet {
 
 			if lst_id == VFIL {
 				let fee_amount = Self::transfer_to_fee(SupportChain::Moonbeam)
-					.unwrap_or_else(|| Self::get_default_fee(BNC));
+					.unwrap_or_else(|| Self::get_default_fee(TNT));
 				T::MultiCurrency::transfer(
-					BNC,
+					TNT,
 					&evm_contract_account_id,
 					&derivative_account,
 					fee_amount,
@@ -950,9 +950,9 @@ impl<T: Config> Pallet<T> {
 					T::XcmTransfer::transfer(caller, currency_id, amount, dest, Unlimited)?;
 				} else {
 					let fee_amount = Self::transfer_to_fee(SupportChain::Moonbeam)
-						.unwrap_or_else(|| Self::get_default_fee(BNC));
-					T::MultiCurrency::transfer(BNC, evm_contract_account_id, &caller, fee_amount)?;
-					let assets = vec![(currency_id, amount), (BNC, fee_amount)];
+						.unwrap_or_else(|| Self::get_default_fee(TNT));
+					T::MultiCurrency::transfer(TNT, evm_contract_account_id, &caller, fee_amount)?;
+					let assets = vec![(currency_id, amount), (TNT, fee_amount)];
 
 					T::XcmTransfer::transfer_multicurrencies(caller, assets, 1, dest, Unlimited)?;
 				}
@@ -1039,6 +1039,6 @@ impl<T: Config> Pallet<T> {
 // Functions to be called by other pallets.
 impl<T: Config> SlpxOperator<BalanceOf<T>> for Pallet<T> {
 	fn get_moonbeam_transfer_to_fee() -> BalanceOf<T> {
-		Self::transfer_to_fee(SupportChain::Moonbeam).unwrap_or_else(|| Self::get_default_fee(BNC))
+		Self::transfer_to_fee(SupportChain::Moonbeam).unwrap_or_else(|| Self::get_default_fee(TNT))
 	}
 }

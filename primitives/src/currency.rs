@@ -33,8 +33,8 @@ use crate::{
 
 pub const MOVR: CurrencyId = CurrencyId::Token(TokenSymbol::MOVR);
 pub const VMOVR: CurrencyId = CurrencyId::Lst(TokenSymbol::MOVR);
-pub const BNC: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
-pub const VBNC: CurrencyId = CurrencyId::Lst(TokenSymbol::BNC);
+pub const TNT: CurrencyId = CurrencyId::Native(TokenSymbol::TNT);
+pub const VTNT: CurrencyId = CurrencyId::Lst(TokenSymbol::TNT);
 pub const KSM: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 pub const VKSM: CurrencyId = CurrencyId::Lst(TokenSymbol::KSM);
 pub const VSKSM: CurrencyId = CurrencyId::VSToken(TokenSymbol::KSM);
@@ -58,7 +58,7 @@ pub const VFIL: CurrencyId = CurrencyId::Lst2(FIL_TOKEN_ID);
 pub const MANTA_TOKEN_ID: u8 = 8u8;
 pub const MANTA: CurrencyId = CurrencyId::Token2(MANTA_TOKEN_ID);
 pub const VMANTA: CurrencyId = CurrencyId::Lst2(MANTA_TOKEN_ID);
-pub const VSBOND_BNC_2001_0_8: CurrencyId = CurrencyId::VSBond(TokenSymbol::BNC, 2001, 0, 8);
+pub const VSBOND_BNC_2001_0_8: CurrencyId = CurrencyId::VSBond(TokenSymbol::TNT, 2001, 0, 8);
 
 pub const LDOT: CurrencyId = CurrencyId::Lend(0);
 pub const LKSM: CurrencyId = CurrencyId::Lend(1);
@@ -237,7 +237,7 @@ create_currency_id! {
 	#[repr(u8)]
 	pub enum TokenSymbol {
 		ASG("Asgard", 12) = 0,
-		BNC("tangle", 12) = 1,
+		TNT("tangle", 12) = 1,
 		KUSD("Karura Dollar", 12) = 2,
 		DOT("Polkadot", 10) = 3,
 		KSM("Kusama", 12) = 4,
@@ -252,7 +252,7 @@ create_currency_id! {
 
 impl Default for TokenSymbol {
 	fn default() -> Self {
-		Self::BNC
+		Self::TNT
 	}
 }
 
@@ -319,7 +319,7 @@ impl CurrencyId {
 
 		let vsbond_fixed = match vsbond_origin {
 			Self::VSBond(TokenSymbol::KSM, 2001, 13, 20) => {
-				Self::VSBond(TokenSymbol::BNC, 2001, 13, 20)
+				Self::VSBond(TokenSymbol::TNT, 2001, 13, 20)
 			},
 			_ => vsbond_origin,
 		};
@@ -329,7 +329,7 @@ impl CurrencyId {
 
 	pub fn to_token(&self) -> Result<Self, ()> {
 		match self {
-			Self::Lst(TokenSymbol::BNC) => Ok(Self::Native(TokenSymbol::BNC)),
+			Self::Lst(TokenSymbol::TNT) => Ok(Self::Native(TokenSymbol::TNT)),
 			Self::Lst(symbol) => Ok(Self::Token(*symbol)),
 			Self::Lst2(id) => Ok(Self::Token2(*id)),
 			_ => Err(()),
@@ -340,7 +340,7 @@ impl CurrencyId {
 		match self {
 			Self::Token(symbol) => Ok(Self::Lst(*symbol)),
 			Self::Token2(id) => Ok(Self::Lst2(*id)),
-			Self::Native(TokenSymbol::BNC) => Ok(Self::Lst(TokenSymbol::BNC)),
+			Self::Native(TokenSymbol::TNT) => Ok(Self::Lst(TokenSymbol::TNT)),
 			_ => Err(()),
 		}
 	}

@@ -3011,7 +3011,7 @@ export default {
 	 * Lookup257: tangle_primitives::currency::TokenSymbol
 	 **/
 	TanglePrimitivesCurrencyTokenSymbol: {
-		_enum: ['ASG', 'BNC', 'KUSD', 'DOT', 'KSM', 'ETH', 'KAR', 'ZLK', 'PHA', 'RMRK', 'MOVR'],
+		_enum: ['ASG', 'TNT', 'KUSD', 'DOT', 'KSM', 'ETH', 'KAR', 'ZLK', 'PHA', 'RMRK', 'MOVR'],
 	},
 	/**
 	 * Lookup258: xcm::VersionedMultiAsset

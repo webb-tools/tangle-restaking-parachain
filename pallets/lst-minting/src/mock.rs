@@ -39,7 +39,7 @@ use sp_runtime::{
 };
 use tangle_asset_registry::AssetIdMaps;
 use tangle_primitives::{
-	currency::{BNC, DOT, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR},
+	currency::{DOT, FIL, KSM, MOVR, TNT, VFIL, VKSM, VMOVR, VTNT},
 	CurrencyId, CurrencyIdMapping, SlpxOperator, TokenSymbol,
 };
 use tangle_runtime_common::{micro, milli};
@@ -106,7 +106,7 @@ impl frame_system::Config for Runtime {
 }
 
 parameter_types! {
-	pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
+	pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::TNT);
 }
 
 pub type AdaptedBasicCurrency =
@@ -121,7 +121,7 @@ impl tangle_currencies::Config for Runtime {
 
 parameter_types! {
 	pub const ExistentialDeposit: Balance = 1;
-	// pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
+	// pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::TNT);
 	// pub const RelayCurrencyId: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 	pub const StableCurrencyId: CurrencyId = CurrencyId::Stable(TokenSymbol::KUSD);
 	// pub SelfParaId: u32 = ParachainInfo::parachain_id().into();
@@ -153,14 +153,14 @@ orml_traits::parameter_type_with_key! {
 			"{:?}",currency_id
 		);
 		match currency_id {
-			&BNC => 10 * milli::<Runtime>(NativeCurrencyId::get()),   // 0.01 BNC
+			&TNT => 10 * milli::<Runtime>(NativeCurrencyId::get()),   // 0.01 TNT
 			&KSM => 0,
 			&VKSM => 0,
 			&FIL => 0,
 			&VFIL => 0,
 			&MOVR => 1 * micro::<Runtime>(MOVR),	// MOVR has a decimals of 10e18
 			&VMOVR => 1 * micro::<Runtime>(MOVR),	// MOVR has a decimals of 10e18
-			&VBNC => 10 * milli::<Runtime>(NativeCurrencyId::get()),  // 0.01 BNC
+			&VTNT => 10 * milli::<Runtime>(NativeCurrencyId::get()),  // 0.01 TNT
 			_ => AssetIdMaps::<Runtime>::get_currency_metadata(*currency_id)
 				.map_or(Balance::max_value(), |metatata| metatata.minimal_balance)
 		}
@@ -453,8 +453,8 @@ impl ExtBuilder {
 
 	pub fn one_hundred_for_alice_n_bob(self) -> Self {
 		self.balances(vec![
-			(ALICE, BNC, 1000000000000000000000),
-			(BOB, BNC, 1000000000000),
+			(ALICE, TNT, 1000000000000000000000),
+			(BOB, TNT, 1000000000000),
 			(BOB, VKSM, 1000),
 			(BOB, KSM, 1000000000000),
 			(BOB, MOVR, 1000000000000000000000),
@@ -472,7 +472,7 @@ impl ExtBuilder {
 				.endowed_accounts
 				.clone()
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id == BNC)
+				.filter(|(_, currency_id, _)| *currency_id == TNT)
 				.map(|(account_id, _, initial_balance)| (account_id, initial_balance))
 				.collect::<Vec<_>>(),
 		}
@@ -483,7 +483,7 @@ impl ExtBuilder {
 			balances: self
 				.endowed_accounts
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id != BNC)
+				.filter(|(_, currency_id, _)| *currency_id != TNT)
 				.collect::<Vec<_>>(),
 		}
 		.assimilate_storage(&mut t)
@@ -493,7 +493,7 @@ impl ExtBuilder {
 			currency: vec![
 				(DOT, 100_000_000, None),
 				(KSM, 10_000_000, None),
-				(BNC, 10_000_000, None),
+				(TNT, 10_000_000, None),
 				(FIL, 10_000_000, None),
 			],
 			vcurrency: vec![],

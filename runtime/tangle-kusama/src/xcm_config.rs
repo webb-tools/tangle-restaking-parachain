@@ -126,7 +126,7 @@ impl<T: Get<ParaId>> Convert<CurrencyId, Option<MultiLocation>> for TangleCurren
 
 		match id {
 			Token(KSM) => Some(MultiLocation::parent()),
-			Native(ASG) | Native(BNC) | VSToken(KSM) | Token(ZLK) => {
+			Native(ASG) | Native(TNT) | VSToken(KSM) | Token(ZLK) => {
 				Some(native_currency_location(id))
 			},
 			// Karura currencyId types
@@ -227,7 +227,7 @@ impl<T: Get<ParaId>> Convert<MultiLocation, Option<CurrencyId>> for TangleCurren
 					let key = &data[..length as usize];
 					if let Ok(currency_id) = CurrencyId::decode(&mut &key[..]) {
 						match currency_id {
-							Native(ASG) | Native(BNC) | Lst(KSM) | VSToken(KSM) | Token(ZLK) => {
+							Native(ASG) | Native(TNT) | Lst(KSM) | VSToken(KSM) | Token(ZLK) => {
 								Some(currency_id)
 							},
 							_ => None,
@@ -418,7 +418,7 @@ parameter_types! {
 			1,
 			X2(Parachain(SelfParaId::get()), Junction::from(BoundedVec::try_from(NativeCurrencyId::get().encode()).unwrap()))
 		).into(),
-		// BNC:KSM = 80:1
+		// TNT:KSM = 80:1
 		ksm_per_second::<Runtime>() * 80,
 		0
 	);
@@ -427,7 +427,7 @@ parameter_types! {
 			0,
 			X1(Junction::from(BoundedVec::try_from(NativeCurrencyId::get().encode()).unwrap()))
 		).into(),
-		// BNC:KSM = 80:1
+		// TNT:KSM = 80:1
 		ksm_per_second::<Runtime>() * 80,
 		0
 	);
@@ -747,7 +747,7 @@ impl tangle_currencies::Config for Runtime {
 parameter_type_with_key! {
 	pub ExistentialDeposits: |currency_id: CurrencyId| -> Balance {
 		match currency_id {
-			&CurrencyId::Native(TokenSymbol::BNC) => 10 * milli::<Runtime>(NativeCurrencyId::get()),   // 0.01 BNC
+			&CurrencyId::Native(TokenSymbol::TNT) => 10 * milli::<Runtime>(NativeCurrencyId::get()),   // 0.01 TNT
 			&CurrencyId::Stable(TokenSymbol::KUSD) => 10 * millicent::<Runtime>(StableCurrencyId::get()),
 			&CurrencyId::Token(TokenSymbol::KSM) => 10 * millicent::<Runtime>(RelayCurrencyId::get()),  // 0.0001 KSM
 			&CurrencyId::Token(TokenSymbol::KAR) => 10 * millicent::<Runtime>(CurrencyId::Token(TokenSymbol::KAR)),
@@ -756,7 +756,7 @@ parameter_type_with_key! {
 			&CurrencyId::Token(TokenSymbol::PHA) => 4 * cent::<Runtime>(CurrencyId::Token(TokenSymbol::PHA)),	// 0.04 PHA, PHA has a decimals of 10e12.
 			&CurrencyId::VSToken(TokenSymbol::KSM) => 10 * millicent::<Runtime>(RelayCurrencyId::get()),
 			&CurrencyId::VSToken(TokenSymbol::DOT) => 1 * cent::<Runtime>(PolkadotCurrencyId::get()),
-			&CurrencyId::VSBond(TokenSymbol::BNC, ..) => 10 * millicent::<Runtime>(NativeCurrencyId::get()),
+			&CurrencyId::VSBond(TokenSymbol::TNT, ..) => 10 * millicent::<Runtime>(NativeCurrencyId::get()),
 			&CurrencyId::VSBond(TokenSymbol::KSM, ..) => 10 * millicent::<Runtime>(RelayCurrencyId::get()),
 			&CurrencyId::VSBond(TokenSymbol::DOT, ..) => 1 * cent::<Runtime>(PolkadotCurrencyId::get()),
 			&CurrencyId::LPToken(..) => 1 * micro::<Runtime>(NativeCurrencyId::get()),

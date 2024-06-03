@@ -68,7 +68,7 @@ pub mod pallet {
 	use super::*;
 	use frame_support::pallet_prelude::DispatchResultWithPostInfo;
 	use orml_traits::XcmTransfer;
-	use tangle_primitives::{currency::BNC, FIL};
+	use tangle_primitives::{currency::TNT, FIL};
 	use xcm::{prelude::*, v3::MultiLocation};
 
 	#[pallet::pallet]
@@ -1068,7 +1068,7 @@ pub mod pallet {
 						if token_id == FIL {
 							let assets = vec![
 								(token_id, unlock_amount),
-								(BNC, T::TangleSlpx::get_moonbeam_transfer_to_fee()),
+								(TNT, T::TangleSlpx::get_moonbeam_transfer_to_fee()),
 							];
 
 							T::XcmTransfer::transfer_multicurrencies(

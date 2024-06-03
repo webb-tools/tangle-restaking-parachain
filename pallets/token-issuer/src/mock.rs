@@ -25,7 +25,7 @@ use sp_runtime::{
 	AccountId32, BuildStorage,
 };
 use tangle_primitives::{
-	currency::{BNC, DOT, KSM, VDOT},
+	currency::{DOT, KSM, TNT, VDOT},
 	CurrencyId, TokenSymbol,
 };
 
@@ -193,9 +193,9 @@ impl ExtBuilder {
 
 	pub fn one_hundred_for_alice_n_bob(self) -> Self {
 		self.balances(vec![
-			(ALICE, BNC, 100),
-			(BOB, BNC, 100),
-			(CHARLIE, BNC, 100),
+			(ALICE, TNT, 100),
+			(BOB, TNT, 100),
+			(CHARLIE, TNT, 100),
 			(ALICE, DOT, 100),
 			(ALICE, VDOT, 400),
 			(BOB, DOT, 100),
@@ -218,7 +218,7 @@ impl ExtBuilder {
 				.endowed_accounts
 				.clone()
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id == BNC)
+				.filter(|(_, currency_id, _)| *currency_id == TNT)
 				.map(|(account_id, _, initial_balance)| (account_id, initial_balance))
 				.collect::<Vec<_>>(),
 		}
@@ -229,7 +229,7 @@ impl ExtBuilder {
 			balances: self
 				.endowed_accounts
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id != BNC)
+				.filter(|(_, currency_id, _)| *currency_id != TNT)
 				.collect::<Vec<_>>(),
 		}
 		.assimilate_storage(&mut t)
