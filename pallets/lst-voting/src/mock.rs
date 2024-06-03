@@ -33,7 +33,7 @@ use sp_runtime::{
 	BuildStorage, Perbill,
 };
 use tangle_primitives::{
-	currency::{KSM, VBNC, VKSM},
+	currency::{KSM, VKSM, VTNT},
 	traits::XcmDestWeightAndFeeHandler,
 	CurrencyId, DoNothingRouter, LstSupplyProvider, TokenSymbol, XcmOperationType,
 };
@@ -95,7 +95,7 @@ impl frame_system::Config for Runtime {
 }
 
 parameter_types! {
-	pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
+	pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::TNT);
 }
 
 pub type AdaptedBasicCurrency =
@@ -133,7 +133,7 @@ orml_traits::parameter_type_with_key! {
 	pub ExistentialDeposits: |currency_id: CurrencyId| -> Balance {
 		match currency_id {
 			&KSM => 0,
-			&VBNC => 0,
+			&VTNT => 0,
 			&VKSM => 0,
 			_ => 0,
 		}

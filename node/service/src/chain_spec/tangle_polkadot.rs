@@ -51,7 +51,7 @@ fn tangle_polkadot_properties() -> Properties {
 	let mut token_decimals: Vec<u32> = vec![];
 	[
 		// native token
-		CurrencyId::Native(TokenSymbol::BNC),
+		CurrencyId::Native(TokenSymbol::TNT),
 	]
 	.iter()
 	.for_each(|token| {
@@ -229,14 +229,14 @@ fn local_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 	let salp_multisig: AccountId =
 		hex!["49daa32c7287890f38b7e1a8cd2961723d36d20baa0bf3b82e0c4bdda93b1c0a"].into();
 	let currency = vec![
-		(Native(TokenSymbol::BNC), DOLLARS / 100, None),
+		(Native(TokenSymbol::TNT), DOLLARS / 100, None),
 		(
 			Token2(DOT_TOKEN_ID),
 			DOLLARS / 1000_000,
 			Some((String::from("Polkadot DOT"), String::from("DOT"), 10u8)),
 		),
 	];
-	let vcurrency = vec![VSToken2(DOT_TOKEN_ID), Lst(TokenSymbol::BNC), Lst2(DOT_TOKEN_ID)];
+	let vcurrency = vec![VSToken2(DOT_TOKEN_ID), Lst(TokenSymbol::TNT), Lst2(DOT_TOKEN_ID)];
 
 	tangle_polkadot_genesis(
 		vec![

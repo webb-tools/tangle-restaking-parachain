@@ -34,8 +34,8 @@ pub mod currency {
 	pub const MICROBNC: Balance = 1_000_000;
 
 	pub fn deposit<Runtime: Config>(items: u32, bytes: u32) -> Balance {
-		items as Balance * 15 * cent::<Runtime>(CurrencyId::Native(TokenSymbol::BNC))
-			+ (bytes as Balance) * 6 * cent::<Runtime>(CurrencyId::Native(TokenSymbol::BNC))
+		items as Balance * 15 * cent::<Runtime>(CurrencyId::Native(TokenSymbol::TNT))
+			+ (bytes as Balance) * 6 * cent::<Runtime>(CurrencyId::Native(TokenSymbol::TNT))
 	}
 
 	pub struct WeightToFee;
@@ -55,11 +55,11 @@ pub mod currency {
 	}
 
 	fn base_tx_fee<Runtime: tangle_asset_registry::Config>() -> Balance {
-		milli::<Runtime>(CurrencyId::Native(TokenSymbol::BNC)) / 3
+		milli::<Runtime>(CurrencyId::Native(TokenSymbol::TNT)) / 3
 	}
 
 	fn xcm_base_tx_fee<Runtime: tangle_asset_registry::Config>() -> Balance {
-		cent::<Runtime>(CurrencyId::Native(TokenSymbol::BNC)) / 10
+		cent::<Runtime>(CurrencyId::Native(TokenSymbol::TNT)) / 10
 	}
 
 	pub fn ksm_per_second<Runtime: tangle_asset_registry::Config>() -> u128 {

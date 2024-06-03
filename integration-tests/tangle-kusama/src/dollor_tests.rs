@@ -27,7 +27,7 @@ const DOT_DECIMALS: u128 = 10_000_000_000;
 fn dollar_should_work() {
 	TangleKusama::execute_with(|| {
 		assert_eq!(dollar::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12);
-		assert_eq!(dollar::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12);
+		assert_eq!(dollar::<Runtime>(CurrencyId::Token(TNT)), DECIMAL_12);
 		assert_eq!(dollar::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12);
 		assert_eq!(dollar::<Runtime>(CurrencyId::Token(DOT)), DOT_DECIMALS);
 		assert_eq!(dollar::<Runtime>(CurrencyId::Token(KSM)), DECIMAL_12);
@@ -44,7 +44,7 @@ fn dollar_should_work() {
 fn milli_should_work() {
 	TangleKusama::execute_with(|| {
 		assert_eq!(milli::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12 / 1000);
-		assert_eq!(milli::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12 / 1000);
+		assert_eq!(milli::<Runtime>(CurrencyId::Token(TNT)), DECIMAL_12 / 1000);
 		assert_eq!(milli::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12 / 1000);
 		assert_eq!(milli::<Runtime>(CurrencyId::Token(DOT)), DOT_DECIMALS / 1000);
 		assert_eq!(milli::<Runtime>(CurrencyId::Token(KSM)), DECIMAL_12 / 1000);
@@ -61,7 +61,7 @@ fn milli_should_work() {
 fn micro_should_work() {
 	TangleKusama::execute_with(|| {
 		assert_eq!(micro::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12 / 1_000_000);
-		assert_eq!(micro::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12 / 1_000_000);
+		assert_eq!(micro::<Runtime>(CurrencyId::Token(TNT)), DECIMAL_12 / 1_000_000);
 		assert_eq!(micro::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12 / 1_000_000);
 		assert_eq!(micro::<Runtime>(CurrencyId::Token(DOT)), DOT_DECIMALS / 1_000_000);
 		assert_eq!(micro::<Runtime>(CurrencyId::Token(KSM)), DECIMAL_12 / 1_000_000);
@@ -78,7 +78,7 @@ fn micro_should_work() {
 fn cent_should_work() {
 	TangleKusama::execute_with(|| {
 		assert_eq!(cent::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12 / 100);
-		assert_eq!(cent::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12 / 100);
+		assert_eq!(cent::<Runtime>(CurrencyId::Token(TNT)), DECIMAL_12 / 100);
 		assert_eq!(cent::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12 / 100);
 		assert_eq!(cent::<Runtime>(CurrencyId::Token(DOT)), DOT_DECIMALS / 100);
 		assert_eq!(cent::<Runtime>(CurrencyId::Token(KSM)), DECIMAL_12 / 100);
@@ -95,7 +95,7 @@ fn cent_should_work() {
 fn millicent_should_work() {
 	TangleKusama::execute_with(|| {
 		assert_eq!(millicent::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12 / 100_000);
-		assert_eq!(millicent::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12 / 100_000);
+		assert_eq!(millicent::<Runtime>(CurrencyId::Token(TNT)), DECIMAL_12 / 100_000);
 		assert_eq!(millicent::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12 / 100_000);
 		assert_eq!(millicent::<Runtime>(CurrencyId::Token(DOT)), DOT_DECIMALS / 100_000);
 		assert_eq!(millicent::<Runtime>(CurrencyId::Token(KSM)), DECIMAL_12 / 100_000);
@@ -112,7 +112,7 @@ fn millicent_should_work() {
 fn microcent_should_work() {
 	TangleKusama::execute_with(|| {
 		assert_eq!(microcent::<Runtime>(CurrencyId::Token(ASG)), DECIMAL_12 / 100_000_000);
-		assert_eq!(microcent::<Runtime>(CurrencyId::Token(BNC)), DECIMAL_12 / 100_000_000);
+		assert_eq!(microcent::<Runtime>(CurrencyId::Token(TNT)), DECIMAL_12 / 100_000_000);
 		assert_eq!(microcent::<Runtime>(CurrencyId::Token(KUSD)), DECIMAL_12 / 100_000_000);
 		assert_eq!(microcent::<Runtime>(CurrencyId::Token(DOT)), DOT_DECIMALS / 100_000_000);
 		assert_eq!(microcent::<Runtime>(CurrencyId::Token(KSM)), DECIMAL_12 / 100_000_000);

@@ -20,7 +20,7 @@ use frame_support::{assert_noop, assert_ok, PalletId};
 use orml_traits::MultiCurrency;
 use sp_runtime::{traits::AccountIdConversion, MultiAddress};
 use tangle_primitives::{
-	currency::{BNC, KSM, VKSM},
+	currency::{KSM, TNT, VKSM},
 	RedeemType,
 };
 
@@ -82,7 +82,7 @@ fn supplement_fee_reserve_works() {
 		let alice_location = Pallet::<Runtime>::account_32_to_local_location(alice_32).unwrap();
 		assert_ok!(Slp::set_fee_source(
 			RuntimeOrigin::signed(ALICE),
-			BNC,
+			TNT,
 			Some((alice_location, 10))
 		));
 
@@ -95,17 +95,17 @@ fn supplement_fee_reserve_works() {
 		assert_noop!(
 			Slp::supplement_fee_reserve(
 				RuntimeOrigin::signed(ALICE),
-				BNC,
+				TNT,
 				Box::new(alice_location)
 			),
 			Error::<Runtime>::DestAccountNotValid
 		);
 
-		assert_ok!(Slp::set_operate_origin(RuntimeOrigin::signed(ALICE), BNC, Some(BOB)));
+		assert_ok!(Slp::set_operate_origin(RuntimeOrigin::signed(ALICE), TNT, Some(BOB)));
 
 		assert_ok!(Slp::supplement_fee_reserve(
 			RuntimeOrigin::signed(ALICE),
-			BNC,
+			TNT,
 			Box::new(bob_location)
 		));
 

@@ -27,7 +27,7 @@ use frame_support::{
 };
 use pallet_conviction_voting::Vote;
 use pallet_xcm::Origin as XcmOrigin;
-use tangle_primitives::currency::{VBNC, VKSM};
+use tangle_primitives::currency::{VKSM, VTNT};
 
 fn aye(amount: Balance, conviction: u8) -> AccountVote<Balance> {
 	let vote = Vote { aye: true, conviction: conviction.try_into().unwrap() };
@@ -366,7 +366,7 @@ fn errors_with_vote_works() {
 		let lst = VKSM;
 
 		assert_noop!(
-			LstVoting::vote(RuntimeOrigin::signed(1), VBNC, 0, aye(10, 0)),
+			LstVoting::vote(RuntimeOrigin::signed(1), VTNT, 0, aye(10, 0)),
 			Error::<Runtime>::LstNotSupport
 		);
 		assert_noop!(

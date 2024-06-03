@@ -719,8 +719,8 @@ fn redeem_multi() {
 #[test]
 fn bnc_add_liquidity_should_work() {
 	ExtBuilder::default().new_test_ext().build().execute_with(|| {
-		let coin0 = BNC;
-		let coin1 = VBNC;
+		let coin0 = TNT;
+		let coin1 = VTNT;
 		let pool_asset = CurrencyId::BLP(0);
 
 		assert_ok!(<Test as crate::Config>::MultiCurrency::deposit(
@@ -753,7 +753,7 @@ fn bnc_add_liquidity_should_work() {
 		assert_ok!(StablePool::edit_token_rate(
 			RuntimeOrigin::root(),
 			0,
-			vec![(BNC, (1, 1)), (VBNC, (10, 11))]
+			vec![(TNT, (1, 1)), (VTNT, (10, 11))]
 		));
 		assert_eq!(Tokens::free_balance(pool_asset, &6), 0);
 		assert_ok!(StablePool::add_liquidity(RuntimeOrigin::signed(6).into(), 0, amounts, 0));
@@ -768,7 +768,7 @@ fn edit_token_rate() {
 			StablePool::edit_token_rate(
 				RuntimeOrigin::root(),
 				0,
-				vec![(BNC, (1, 1)), (VBNC, (10, 11))]
+				vec![(TNT, (1, 1)), (VTNT, (10, 11))]
 			),
 			tangle_stable_asset::Error::<Test>::ArgumentsError
 		);
@@ -776,23 +776,23 @@ fn edit_token_rate() {
 		assert_ok!(StablePool::edit_token_rate(
 			RuntimeOrigin::root(),
 			0,
-			vec![(BNC, (1, 1)), (VBNC, (10, 11))]
+			vec![(TNT, (1, 1)), (VTNT, (10, 11))]
 		));
 		assert_eq!(
 			tangle_stable_asset::TokenRateCaches::<Test>::iter_prefix(0).collect::<Vec<(
 				AssetIdOf<Test>,
 				(AtLeast64BitUnsignedOf<Test>, AtLeast64BitUnsignedOf<Test>),
 			)>>(),
-			vec![(VBNC, (10, 11)), (BNC, (1, 1))]
+			vec![(VTNT, (10, 11)), (TNT, (1, 1))]
 		);
 
-		assert_ok!(StablePool::edit_token_rate(RuntimeOrigin::root(), 0, vec![(VBNC, (10, 12))]));
+		assert_ok!(StablePool::edit_token_rate(RuntimeOrigin::root(), 0, vec![(VTNT, (10, 12))]));
 		assert_eq!(
 			tangle_stable_asset::TokenRateCaches::<Test>::iter_prefix(0).collect::<Vec<(
 				AssetIdOf<Test>,
 				(AtLeast64BitUnsignedOf<Test>, AtLeast64BitUnsignedOf<Test>),
 			)>>(),
-			vec![(VBNC, (10, 12)), (BNC, (1, 1))]
+			vec![(VTNT, (10, 12)), (TNT, (1, 1))]
 		);
 
 		assert_ok!(StablePool::edit_token_rate(RuntimeOrigin::root(), 0, vec![]));
@@ -803,13 +803,13 @@ fn edit_token_rate() {
 			)>>(),
 			vec![]
 		);
-		assert_ok!(StablePool::edit_token_rate(RuntimeOrigin::root(), 0, vec![(VBNC, (10, 12))]));
+		assert_ok!(StablePool::edit_token_rate(RuntimeOrigin::root(), 0, vec![(VTNT, (10, 12))]));
 		assert_eq!(
 			tangle_stable_asset::TokenRateCaches::<Test>::iter_prefix(0).collect::<Vec<(
 				AssetIdOf<Test>,
 				(AtLeast64BitUnsignedOf<Test>, AtLeast64BitUnsignedOf<Test>),
 			)>>(),
-			vec![(VBNC, (10, 12))]
+			vec![(VTNT, (10, 12))]
 		);
 	});
 }

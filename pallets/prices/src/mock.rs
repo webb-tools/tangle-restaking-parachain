@@ -183,7 +183,7 @@ impl pallet_assets::Config for Test {
 
 parameter_types! {
 	pub const RelayCurrency: CurrencyId = DOT;
-	pub const NativeCurrencyId: CurrencyId = BNC;
+	pub const NativeCurrencyId: CurrencyId = TNT;
 }
 
 impl crate::Config for Test {
@@ -218,12 +218,12 @@ impl tangle_asset_registry::Config for Test {
 orml_traits::parameter_type_with_key! {
 	pub ExistentialDeposits: |currency_id: CurrencyId| -> Balance {
 		match currency_id {
-			&CurrencyId::Native(TokenSymbol::BNC) => 0,
+			&CurrencyId::Native(TokenSymbol::TNT) => 0,
 			&CurrencyId::Token(TokenSymbol::KSM) => 0,
 			&CurrencyId::Lst(TokenSymbol::KSM) => 0,
 			&DOT => 0,
 			&VDOT => 0,
-			&VBNC => 0,
+			&VTNT => 0,
 			&CurrencyId::BLP(_) => 0,
 			_ => 0
 		}
@@ -264,7 +264,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 	tangle_asset_registry::GenesisConfig::<Test> {
 		currency: vec![
 			(CurrencyId::Token(TokenSymbol::KSM), 1, None),
-			(CurrencyId::Native(TokenSymbol::BNC), 1, None),
+			(CurrencyId::Native(TokenSymbol::TNT), 1, None),
 			(DOT, 1, Some(("_".to_string(), "_".to_string(), 10))),
 			(ASTR, 1, None),
 			(GLMR, 1, None),
@@ -289,7 +289,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 		balances: endowed_accounts
 			.clone()
 			.into_iter()
-			.filter(|(_, currency_id, _)| *currency_id != BNC)
+			.filter(|(_, currency_id, _)| *currency_id != TNT)
 			.collect::<Vec<_>>(),
 	}
 	.assimilate_storage(&mut t)

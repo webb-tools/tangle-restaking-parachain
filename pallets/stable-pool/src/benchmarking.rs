@@ -20,8 +20,8 @@ use frame_support::assert_ok;
 use frame_system::RawOrigin;
 use sp_std::vec;
 pub use tangle_primitives::{
-	AccountId, Balance, CurrencyId, CurrencyIdMapping, SlpOperator, SlpxOperator, TokenSymbol, BNC,
-	DOT, DOT_TOKEN_ID, GLMR, KSM, VDOT,
+	AccountId, Balance, CurrencyId, CurrencyIdMapping, SlpOperator, SlpxOperator, TokenSymbol, DOT,
+	DOT_TOKEN_ID, GLMR, KSM, TNT, VDOT,
 };
 
 benchmarks! {
@@ -42,7 +42,7 @@ benchmarks! {
 
 	edit_token_rate {
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
+		let coin0 = TNT;
 		let coin1 = KSM;
 		assert_ok!(
 			StablePool::<T>::create_pool(
@@ -61,7 +61,7 @@ benchmarks! {
 
 	config_lst_auto_refresh {
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
+		let coin0 = TNT;
 		let coin1 = KSM;
 		assert_ok!(
 			StablePool::<T>::create_pool(
@@ -80,7 +80,7 @@ benchmarks! {
 
 	remove_lst_auto_refresh {
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
+		let coin0 = TNT;
 		let coin1 = KSM;
 		assert_ok!(
 			StablePool::<T>::create_pool(
@@ -101,10 +101,10 @@ benchmarks! {
 	add_liquidity {
 		let test_account: T::AccountId = whitelisted_caller();
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
+		let coin0 = TNT;
 		let coin1 = KSM;
 		T::MultiCurrency::deposit(
-			BNC.into(),
+			TNT.into(),
 			&fee_account,
 			<T as tangle_stable_asset::Config>::Balance::from(100_000_000_000u128.into())
 		)?;
@@ -125,16 +125,16 @@ benchmarks! {
 		fee_account.clone(),
 		fee_account.clone(),
 		1000000000000000000u128.into()));
-		assert_ok!(StablePool::<T>::edit_token_rate(RawOrigin::Root.into(), 0, vec![(BNC.into(), (9u128.into(), 10u128.into())), (KSM.into(), (1u128.into(), 1u128.into()))]));
+		assert_ok!(StablePool::<T>::edit_token_rate(RawOrigin::Root.into(), 0, vec![(TNT.into(), (9u128.into(), 10u128.into())), (KSM.into(), (1u128.into(), 1u128.into()))]));
 		}: _(RawOrigin::Signed(fee_account), 0, amounts, <T as tangle_stable_asset::Config>::Balance::zero())
 
 	swap {
 		let test_account: T::AccountId = whitelisted_caller();
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
-		let coin1 = BNC;
+		let coin0 = TNT;
+		let coin1 = TNT;
 		T::MultiCurrency::deposit(
-			BNC.into(),
+			TNT.into(),
 			&fee_account,
 			<T as tangle_stable_asset::Config>::Balance::from(1000_000_000_000u128.into())
 		)?;
@@ -150,17 +150,17 @@ benchmarks! {
 		fee_account.clone(),
 		fee_account.clone(),
 		1000000000000000000u128.into()));
-		assert_ok!(StablePool::<T>::edit_token_rate(RawOrigin::Root.into(), 0, vec![(BNC.into(), (9u128.into(), 10u128.into()))]));
+		assert_ok!(StablePool::<T>::edit_token_rate(RawOrigin::Root.into(), 0, vec![(TNT.into(), (9u128.into(), 10u128.into()))]));
 		assert_ok!(StablePool::<T>::add_liquidity(RawOrigin::Signed(fee_account.clone()).into(), 0, amounts, <T as tangle_stable_asset::Config>::Balance::zero()));
 	}: _(RawOrigin::Signed(fee_account), 0, 0, 1, <T as tangle_stable_asset::Config>::Balance::from(50_000_000_000u128.into()), <T as tangle_stable_asset::Config>::Balance::zero())
 
 	redeem_proportion {
 		let test_account: T::AccountId = whitelisted_caller();
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
-		let coin1 = BNC;
+		let coin0 = TNT;
+		let coin1 = TNT;
 		T::MultiCurrency::deposit(
-			BNC.into(),
+			TNT.into(),
 			&fee_account,
 			<T as tangle_stable_asset::Config>::Balance::from(1000_000_000_000u128.into())
 		)?;
@@ -176,7 +176,7 @@ benchmarks! {
 		fee_account.clone(),
 		fee_account.clone(),
 		1000000000000u128.into()));
-		assert_ok!(StablePool::<T>::edit_token_rate(RawOrigin::Root.into(), 0, vec![(BNC.into(), (9u128.into(), 10u128.into()))]));
+		assert_ok!(StablePool::<T>::edit_token_rate(RawOrigin::Root.into(), 0, vec![(TNT.into(), (9u128.into(), 10u128.into()))]));
 		assert_ok!(StablePool::<T>::add_liquidity(RawOrigin::Signed(fee_account.clone()).into(), 0, amounts, <T as tangle_stable_asset::Config>::Balance::zero()));
 		// assert_ok!(StablePool::<T>::swap(RawOrigin::Signed(fee_account.clone()).into(), 0, 0, 1, <T as tangle_stable_asset::Config>::Balance::from(50_000_000_000u128.into()), <T as tangle_stable_asset::Config>::Balance::zero()));
 	}: _(RawOrigin::Signed(fee_account), 0, <T as tangle_stable_asset::Config>::Balance::from(5_000_000u128.into()), vec![<T as tangle_stable_asset::Config>::Balance::zero(), <T as tangle_stable_asset::Config>::Balance::zero()])
@@ -184,10 +184,10 @@ benchmarks! {
 	redeem_single {
 		let test_account: T::AccountId = whitelisted_caller();
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
-		let coin1 = BNC;
+		let coin0 = TNT;
+		let coin1 = TNT;
 		T::MultiCurrency::deposit(
-			BNC.into(),
+			TNT.into(),
 			&fee_account,
 			<T as tangle_stable_asset::Config>::Balance::from(1000_000_000_000u128.into())
 		)?;
@@ -203,17 +203,17 @@ benchmarks! {
 		fee_account.clone(),
 		fee_account.clone(),
 		1000000000000u128.into()));
-		assert_ok!(StablePool::<T>::edit_token_rate(RawOrigin::Root.into(), 0, vec![(BNC.into(), (9u128.into(), 10u128.into()))]));
+		assert_ok!(StablePool::<T>::edit_token_rate(RawOrigin::Root.into(), 0, vec![(TNT.into(), (9u128.into(), 10u128.into()))]));
 		assert_ok!(StablePool::<T>::add_liquidity(RawOrigin::Signed(fee_account.clone()).into(), 0, amounts, <T as tangle_stable_asset::Config>::Balance::zero()));
 	}: _(RawOrigin::Signed(fee_account), 0, <T as tangle_stable_asset::Config>::Balance::from(5_000_000u128.into()), 0, <T as tangle_stable_asset::Config>::Balance::zero(), 2)
 
 	redeem_multi {
 		let test_account: T::AccountId = whitelisted_caller();
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
-		let coin1 = BNC;
+		let coin0 = TNT;
+		let coin1 = TNT;
 		T::MultiCurrency::deposit(
-			BNC.into(),
+			TNT.into(),
 			&fee_account,
 			<T as tangle_stable_asset::Config>::Balance::from(1000_000_000_000u128.into())
 		)?;
@@ -229,7 +229,7 @@ benchmarks! {
 		fee_account.clone(),
 		fee_account.clone(),
 		1000000000000u128.into()));
-		assert_ok!(StablePool::<T>::edit_token_rate(RawOrigin::Root.into(), 0, vec![(BNC.into(), (9u128.into(), 10u128.into()))]));
+		assert_ok!(StablePool::<T>::edit_token_rate(RawOrigin::Root.into(), 0, vec![(TNT.into(), (9u128.into(), 10u128.into()))]));
 		assert_ok!(StablePool::<T>::add_liquidity(RawOrigin::Signed(fee_account.clone()).into(), 0, amounts, <T as tangle_stable_asset::Config>::Balance::zero()));
 		let redeem_amounts = vec![<T as tangle_stable_asset::Config>::Balance::from(90_000_000u128.into()), <T as tangle_stable_asset::Config>::Balance::from(90_000_000u128.into())];
 	}: _(RawOrigin::Signed(fee_account), 0, redeem_amounts, <T as tangle_stable_asset::Config>::Balance::from(200_000_000_000u128.into()))
@@ -237,8 +237,8 @@ benchmarks! {
 	modify_a {
 		let test_account: T::AccountId = whitelisted_caller();
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
-		let coin1 = BNC;
+		let coin0 = TNT;
+		let coin1 = TNT;
 		assert_ok!(StablePool::<T>::create_pool(
 			RawOrigin::Root.into(),
 			vec![coin0.into(), coin1.into()],
@@ -255,8 +255,8 @@ benchmarks! {
 	modify_fees {
 		let test_account: T::AccountId = whitelisted_caller();
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
-		let coin1 = BNC;
+		let coin0 = TNT;
+		let coin1 = TNT;
 		assert_ok!(StablePool::<T>::create_pool(
 			RawOrigin::Root.into(),
 			vec![coin0.into(), coin1.into()],
@@ -273,8 +273,8 @@ benchmarks! {
 	modify_recipients {
 		let test_account: T::AccountId = whitelisted_caller();
 		let fee_account: T::AccountId = account("seed",1,1);
-		let coin0 = BNC;
-		let coin1 = BNC;
+		let coin0 = TNT;
+		let coin1 = TNT;
 		assert_ok!(StablePool::<T>::create_pool(
 			RawOrigin::Root.into(),
 			vec![coin0.into(), coin1.into()],

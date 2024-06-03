@@ -127,7 +127,7 @@ impl<T: Get<ParaId>> Convert<CurrencyId, Option<MultiLocation>> for TangleCurren
 
 		match id {
 			Token2(DOT_TOKEN_ID) => Some(MultiLocation::parent()),
-			Native(BNC) => Some(native_currency_location(id)),
+			Native(TNT) => Some(native_currency_location(id)),
 			// Moonbeam Native token
 			Token2(GLMR_TOKEN_ID) => Some(MultiLocation::new(
 				1,
@@ -168,7 +168,7 @@ impl<T: Get<ParaId>> Convert<MultiLocation, Option<CurrencyId>> for TangleCurren
 					let key = &data[..length as usize];
 					if let Ok(currency_id) = CurrencyId::decode(&mut &key[..]) {
 						match currency_id {
-							Native(BNC) => Some(currency_id),
+							Native(TNT) => Some(currency_id),
 							_ => None,
 						}
 					} else {
@@ -183,7 +183,7 @@ impl<T: Get<ParaId>> Convert<MultiLocation, Option<CurrencyId>> for TangleCurren
 					let key = &data[..length as usize];
 					if let Ok(currency_id) = CurrencyId::decode(&mut &key[..]) {
 						match currency_id {
-							Native(BNC) => Some(currency_id),
+							Native(TNT) => Some(currency_id),
 							_ => None,
 						}
 					} else {
@@ -347,7 +347,7 @@ parameter_types! {
 			1,
 			X2(Parachain(SelfParaId::get()), Junction::from(BoundedVec::try_from(NativeCurrencyId::get().encode()).unwrap())),
 		).into(),
-		// BNC:DOT = 80:1
+		// TNT:DOT = 80:1
 		dot_per_second::<Runtime>() * 80,
 		0
 	);
@@ -356,7 +356,7 @@ parameter_types! {
 			0,
 			X1(Junction::from(BoundedVec::try_from(NativeCurrencyId::get().encode()).unwrap()))
 		).into(),
-		// BNC:DOT = 80:1
+		// TNT:DOT = 80:1
 		dot_per_second::<Runtime>() * 80,
 	0
 	);
@@ -615,7 +615,7 @@ impl tangle_currencies::Config for Runtime {
 parameter_type_with_key! {
 	pub ExistentialDeposits: |currency_id: CurrencyId| -> Balance {
 		match currency_id {
-			&CurrencyId::Native(TokenSymbol::BNC) => 10 * milli::<Runtime>(NativeCurrencyId::get()),   // 0.01 BNC
+			&CurrencyId::Native(TokenSymbol::TNT) => 10 * milli::<Runtime>(NativeCurrencyId::get()),   // 0.01 TNT
 			&CurrencyId::Token2(DOT_TOKEN_ID) => 1_000_000,  // DOT
 			&CurrencyId::LPToken(..) => 1 * micro::<Runtime>(NativeCurrencyId::get()),
 			CurrencyId::ForeignAsset(foreign_asset_id) => {
