@@ -1,4 +1,4 @@
-<a href="https://tangle.finance"><img align="center" src="./assets/Tangle Banner 4.png" alt="tangle Banner"/></a>
+<a href="https://tangle.finance"><img align="center" src="./assets/Tangle%20%20Banner.png" alt="tangle Banner"/></a>
 
 <h1 align="left">Tangle Parachain</a></h1>
 
