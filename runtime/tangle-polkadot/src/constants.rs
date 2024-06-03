@@ -60,15 +60,15 @@ pub mod currency {
 	}
 
 	fn base_tx_fee<Runtime: tangle_asset_registry::Config>() -> Balance {
-		milli::<Runtime>(CurrencyId::Native(TokenSymbol::BNC)) / 3
+		milli::<Runtime>(CurrencyId::Native(TokenSymbol::TNT)) / 3
 	}
 
 	fn xcm_base_tx_fee<Runtime: tangle_asset_registry::Config>() -> Balance {
-		cent::<Runtime>(CurrencyId::Native(TokenSymbol::BNC)) / 10
+		cent::<Runtime>(CurrencyId::Native(TokenSymbol::TNT)) / 10
 	}
 
 	// 1 KSM = 10 DOT
-	// DOT precision is 1/100 of KSM and BNC
+	// DOT precision is 1/100 of KSM and TNT
 	pub fn dot_per_second<Runtime: tangle_asset_registry::Config>() -> u128 {
 		let base_weight = Balance::from(ExtrinsicBaseWeight::get().ref_time());
 		let base_tx_per_second = (WEIGHT_REF_TIME_PER_SECOND as u128) / base_weight;

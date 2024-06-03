@@ -19,53 +19,53 @@
 
 use crate::{mock::*, *};
 use frame_support::{assert_noop, assert_ok, sp_runtime::Permill, BoundedVec};
-use tangle_primitives::currency::{BNC, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR};
+use tangle_primitives::currency::{FIL, KSM, MOVR, TNT, VFIL, VKSM, VMOVR, VTNT};
 
 #[test]
 fn mint_bnc() {
 	ExtBuilder::default().one_hundred_for_alice_n_bob().build().execute_with(|| {
 		assert_ok!(LstMinting::mint(
 			Some(BOB).into(),
-			BNC,
+			TNT,
 			95000000000,
 			BoundedVec::default(),
 			None
 		));
 		assert_ok!(LstMinting::set_unlock_duration(
 			RuntimeOrigin::signed(ALICE),
-			BNC,
+			TNT,
 			TimeUnit::Era(1)
 		));
-		assert_ok!(LstMinting::increase_token_pool(BNC, 70000000000));
-		// assert_eq!(LstMinting::token_pool(BNC), 70000000000);
-		assert_ok!(LstMinting::update_ongoing_time_unit(BNC, TimeUnit::Era(1)));
-		assert_eq!(Tokens::free_balance(VBNC, &BOB), 95000000000);
-		assert_ok!(LstMinting::redeem(Some(BOB).into(), VBNC, 20000000000));
+		assert_ok!(LstMinting::increase_token_pool(TNT, 70000000000));
+		// assert_eq!(LstMinting::token_pool(TNT), 70000000000);
+		assert_ok!(LstMinting::update_ongoing_time_unit(TNT, TimeUnit::Era(1)));
+		assert_eq!(Tokens::free_balance(VTNT, &BOB), 95000000000);
+		assert_ok!(LstMinting::redeem(Some(BOB).into(), VTNT, 20000000000));
 	});
 }
 
 #[test]
 fn redeem_bnc() {
 	ExtBuilder::default().one_hundred_for_alice_n_bob().build().execute_with(|| {
-		// AssetIdMaps::<Runtime>::register_lst_metadata(TokenSymbol::BNC)
+		// AssetIdMaps::<Runtime>::register_lst_metadata(TokenSymbol::TNT)
 		// 	.expect("lst register");
-		assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(ALICE), BNC, 0));
+		assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(ALICE), TNT, 0));
 		assert_ok!(LstMinting::mint(
 			Some(BOB).into(),
-			BNC,
+			TNT,
 			100000000000,
 			BoundedVec::default(),
 			None
 		));
 		assert_ok!(LstMinting::set_unlock_duration(
 			RuntimeOrigin::signed(ALICE),
-			BNC,
+			TNT,
 			TimeUnit::Era(1)
 		));
-		assert_ok!(LstMinting::increase_token_pool(BNC, 70000000000));
-		assert_ok!(LstMinting::update_ongoing_time_unit(BNC, TimeUnit::Era(1)));
-		assert_eq!(Tokens::free_balance(VBNC, &BOB), 100000000000);
-		assert_ok!(LstMinting::redeem(Some(BOB).into(), VBNC, 20000000000));
+		assert_ok!(LstMinting::increase_token_pool(TNT, 70000000000));
+		assert_ok!(LstMinting::update_ongoing_time_unit(TNT, TimeUnit::Era(1)));
+		assert_eq!(Tokens::free_balance(VTNT, &BOB), 100000000000);
+		assert_ok!(LstMinting::redeem(Some(BOB).into(), VTNT, 20000000000));
 	});
 }
 

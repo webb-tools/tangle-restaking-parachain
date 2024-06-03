@@ -186,7 +186,7 @@ fn register_token_metadata_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
 			name: b"tangle Native Coin".to_vec(),
-			symbol: b"BNC".to_vec(),
+			symbol: b"TNT".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
 		};
@@ -205,13 +205,13 @@ fn register_lst_metadata_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
 			name: b"tangle Native Coin".to_vec(),
-			symbol: b"BNC".to_vec(),
+			symbol: b"TNT".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
 		};
 		let v_metadata = AssetMetadata {
-			name: b"Voucher BNC".to_vec(),
-			symbol: b"vBNC".to_vec(),
+			name: b"Voucher TNT".to_vec(),
+			symbol: b"vTNT".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
 		};
@@ -313,7 +313,7 @@ fn register_multilocation_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
 			name: b"tangle Native Coin".to_vec(),
-			symbol: b"BNC".to_vec(),
+			symbol: b"TNT".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
 		};
@@ -376,7 +376,7 @@ fn force_set_multilocation_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
 			name: b"tangle Native Coin".to_vec(),
-			symbol: b"BNC".to_vec(),
+			symbol: b"TNT".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
 		};

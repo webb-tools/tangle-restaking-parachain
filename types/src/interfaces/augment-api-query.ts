@@ -3193,7 +3193,7 @@ declare module '@polkadot/api-base/types/storage' {
 			> &
 				QueryableStorageEntry<ApiType, []>;
 			/**
-			 * XCM fee for transferring to Moonbeam(BNC)
+			 * XCM fee for transferring to Moonbeam(TNT)
 			 **/
 			transferToFee: AugmentedQuery<
 				ApiType,

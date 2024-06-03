@@ -40,7 +40,7 @@ use sp_runtime::{
 use sp_std::{boxed::Box, vec::Vec};
 use tangle_asset_registry::AssetIdMaps;
 use tangle_primitives::{
-	currency::{BNC, KSM},
+	currency::{KSM, TNT},
 	Amount, Balance, CurrencyId, SlpxOperator, TokenSymbol, XcmOperationType,
 };
 use xcm::v3::{prelude::*, Weight};
@@ -72,7 +72,7 @@ construct_runtime!(
 );
 
 parameter_types! {
-	pub const NativeCurrencyId: CurrencyId = BNC;
+	pub const NativeCurrencyId: CurrencyId = TNT;
 	pub const RelayCurrencyId: CurrencyId = KSM;
 }
 
@@ -335,7 +335,7 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 				}),
 			),
 			// tangle Kusama Native token
-			CurrencyId::Native(TokenSymbol::BNC) => MultiLocation::new(
+			CurrencyId::Native(TokenSymbol::TNT) => MultiLocation::new(
 				0,
 				X1(Junction::AccountId32 {
 					network: None,
@@ -428,7 +428,7 @@ impl Convert<CurrencyId, Option<MultiLocation>> for TangleCurrencyIdConvert {
 		match id {
 			Token(MOVR) => Some(MultiLocation::new(1, X2(Parachain(2023), PalletInstance(10)))),
 			Token(KSM) => Some(MultiLocation::parent()),
-			Native(BNC) => Some(MultiLocation::new(
+			Native(TNT) => Some(MultiLocation::new(
 				0,
 				X1(Junction::from(BoundedVec::try_from("0x0001".encode()).unwrap())),
 			)),
@@ -582,10 +582,10 @@ impl ExtBuilder {
 		let entrance_account = AccountId::new(entrance_account_id_32);
 		self.balances(vec![
 			(pool_account.clone(), KSM, 100_000_000_000_000),
-			(ALICE, BNC, 100_000_000_000_000),
-			(BOB, BNC, 100_000_000_000_000),
-			(CHARLIE, BNC, 100_000_000_000_000),
-			(entrance_account, BNC, 100_000_000_000_000),
+			(ALICE, TNT, 100_000_000_000_000),
+			(BOB, TNT, 100_000_000_000_000),
+			(CHARLIE, TNT, 100_000_000_000_000),
+			(entrance_account, TNT, 100_000_000_000_000),
 		])
 	}
 
@@ -597,7 +597,7 @@ impl ExtBuilder {
 				.endowed_accounts
 				.clone()
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id == BNC)
+				.filter(|(_, currency_id, _)| *currency_id == TNT)
 				.map(|(account_id, _, initial_balance)| (account_id, initial_balance))
 				.collect::<Vec<_>>(),
 		}
@@ -608,7 +608,7 @@ impl ExtBuilder {
 			balances: self
 				.endowed_accounts
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id != BNC)
+				.filter(|(_, currency_id, _)| *currency_id != TNT)
 				.collect::<Vec<_>>(),
 		}
 		.assimilate_storage(&mut t)

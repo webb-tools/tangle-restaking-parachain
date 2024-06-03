@@ -29,7 +29,7 @@ use tangle_asset_registry::AssetIdMaps;
 pub use tangle_primitives::{
 	currency::{MOVR, VMOVR},
 	AccountId, Balance, CurrencyId, CurrencyIdMapping, SlpOperator, SlpxOperator, TokenSymbol,
-	ASTR, BNC, DOT, DOT_TOKEN_ID, GLMR, VBNC, VDOT,
+	ASTR, DOT, DOT_TOKEN_ID, GLMR, TNT, VDOT, VTNT,
 };
 use tangle_runtime_common::milli;
 use xcm::{
@@ -84,7 +84,7 @@ impl frame_system::Config for Test {
 }
 
 parameter_types! {
-	pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
+	pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::TNT);
 }
 
 orml_traits::parameter_type_with_key! {
@@ -92,12 +92,12 @@ orml_traits::parameter_type_with_key! {
 		env_logger::try_init().unwrap_or(());
 
 		match currency_id {
-			&CurrencyId::Native(TokenSymbol::BNC) => 10 * milli::<Test>(NativeCurrencyId::get()),   // 0.01 BNC
+			&CurrencyId::Native(TokenSymbol::TNT) => 10 * milli::<Test>(NativeCurrencyId::get()),   // 0.01 TNT
 			&CurrencyId::Token(TokenSymbol::KSM) => 0,
 			&CurrencyId::Lst(TokenSymbol::KSM) => 0,
 			&DOT => 0,
 			&VDOT => 0,
-			&VBNC => 0,
+			&VTNT => 0,
 			&CurrencyId::BLP(_) => 0,
 			_ => tangle_asset_registry::AssetIdMaps::<Test>::get_currency_metadata(*currency_id)
 				.map_or(Balance::max_value(), |metatata| metatata.minimal_balance)
@@ -119,7 +119,7 @@ impl orml_tokens::Config for Test {
 }
 
 parameter_types! {
-	pub const GetNativeCurrencyId: CurrencyId = BNC;
+	pub const GetNativeCurrencyId: CurrencyId = TNT;
 }
 
 pub type BlockNumber = u64;
@@ -202,7 +202,7 @@ impl orml_xtokens::Config for Test {
 
 parameter_types! {
 	pub const ExistentialDeposit: Balance = 1;
-	// pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
+	// pub const NativeCurrencyId: CurrencyId = CurrencyId::Native(TokenSymbol::TNT);
 	// pub const RelayCurrencyId: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 	pub const StableCurrencyId: CurrencyId = CurrencyId::Stable(TokenSymbol::KUSD);
 	// pub SelfParaId: u32 = ParachainInfo::parachain_id().into();
@@ -384,14 +384,14 @@ impl ExtBuilder {
 
 	pub fn new_test_ext(self) -> Self {
 		self.balances(vec![
-			(0, BNC, unit(1000)),
+			(0, TNT, unit(1000)),
 			(0, MOVR, million_unit(1_000_000)),
 			(0, VMOVR, million_unit(1_000_000)),
-			(1, BNC, 1_000_000_000_000),
+			(1, TNT, 1_000_000_000_000),
 			(1, DOT, 100_000_000_000_000),
 			(3, DOT, 200_000_000),
 			(4, DOT, 100_000_000),
-			(6, BNC, 100_000_000_000_000),
+			(6, TNT, 100_000_000_000_000),
 		])
 	}
 
@@ -403,7 +403,7 @@ impl ExtBuilder {
 			currency: vec![
 				// (CurrencyId::Token(TokenSymbol::DOT), 100_000_000, None),
 				(CurrencyId::Token(TokenSymbol::KSM), 10_000_000, None),
-				(CurrencyId::Native(TokenSymbol::BNC), 10_000_000, None),
+				(CurrencyId::Native(TokenSymbol::TNT), 10_000_000, None),
 				(DOT, 1_000_000, None),
 				(ASTR, 10_000_000, None),
 				(GLMR, 10_000_000, None),
@@ -422,7 +422,7 @@ impl ExtBuilder {
 				.endowed_accounts
 				.clone()
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id == BNC)
+				.filter(|(_, currency_id, _)| *currency_id == TNT)
 				.map(|(account_id, _, initial_balance)| (account_id, initial_balance))
 				.collect::<Vec<_>>(),
 		}
@@ -434,7 +434,7 @@ impl ExtBuilder {
 				.endowed_accounts
 				.clone()
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id != BNC)
+				.filter(|(_, currency_id, _)| *currency_id != TNT)
 				.collect::<Vec<_>>(),
 		}
 		.assimilate_storage(&mut t)
