@@ -31,14 +31,10 @@ register_para = true
 name = "Alice"
 command = "./target/release/tangle"
 collator = true
-ws_port = 30336
 rpc_port = 9935
-prometheus_port = 9617
 
 [[parachains.collators]]
 name = "Bob"
 command = "./target/release/tangle"
 collator = true
-ws_port = 30337
 rpc_port = 9936
-prometheus_port = 9618
