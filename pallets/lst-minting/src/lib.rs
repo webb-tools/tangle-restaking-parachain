@@ -363,12 +363,11 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			token_id: CurrencyIdOf<T>,
 			token_amount: BalanceOf<T>,
-			remark: BoundedVec<u8, ConstU32<32>>,
-			channel_id: Option<u32>,
+			validator: Option<T::AccountId>,
 		) -> DispatchResult {
 			// Check origin
 			let exchanger = ensure_signed(origin)?;
-			Self::mint_inner(exchanger, token_id, token_amount, remark, channel_id).map(|_| ())
+			Self::mint_inner(exchanger, token_id, token_amount, Default::default(), None).map(|_| ())
 		}
 
 		#[pallet::call_index(1)]

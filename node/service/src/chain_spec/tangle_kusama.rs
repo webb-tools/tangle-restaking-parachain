@@ -316,7 +316,7 @@ fn local_config_genesis(id: ParaId) -> RuntimeGenesisConfig {
 		(Token(PHA), 4 * DOLLARS / 100, None),
 		(Token(MOVR), DOLLARS / 1000_000, None),
 	];
-	let vcurrency = vec![VSToken(KSM), lst(TNT), lst(KSM), lst(MOVR)];
+	let vcurrency = vec![VSToken(KSM), Lst(TNT), Lst(KSM), Lst(MOVR)];
 
 	// vsBond
 	let vsbond = vec![
