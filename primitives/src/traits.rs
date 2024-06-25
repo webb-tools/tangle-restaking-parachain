@@ -315,7 +315,8 @@ pub trait LstMintingInterface<AccountId, CurrencyId, Balance> {
 		token_id: CurrencyId,
 		token_amount: Balance,
 		remark: BoundedVec<u8, ConstU32<32>>,
-		channel_id: Option<u32>,
+		channel_id: u32,
+		validators: Vec<AccountId>
 	) -> Result<Balance, DispatchError>;
 	fn redeem(
 		exchanger: AccountId,
@@ -357,7 +358,8 @@ impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, Curren
 		_token_id: CurrencyId,
 		_token_amount: Balance,
 		_remark: BoundedVec<u8, ConstU32<32>>,
-		_channel_id: Option<u32>,
+		_channel_id: u32,
+		_validators: Vec<AccountId>
 	) -> Result<Balance, DispatchError> {
 		Ok(Zero::zero())
 	}

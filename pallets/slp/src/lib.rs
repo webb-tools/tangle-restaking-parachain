@@ -711,6 +711,7 @@ pub mod pallet {
 	#[pallet::getter(fn get_supplement_fee_account_wihtelist)]
 	pub type SupplementFeeAccountWhitelist<T> =
 		StorageMap<_, Blake2_128Concat, CurrencyId, Vec<(MultiLocation, Hash<T>)>>;
+		
 
 	#[pallet::pallet]
 	#[pallet::without_storage_info]

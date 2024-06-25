@@ -29,7 +29,8 @@ pub mod migration;
 pub mod traits;
 pub mod weights;
 pub use weights::WeightInfo;
-
+use orml_traits::arithmetic::One;
+use frame_support::traits::fungibles::Create;
 use frame_support::{
 	pallet_prelude::*,
 	sp_runtime::{
@@ -59,6 +60,10 @@ pub type CurrencyIdOf<T> = <<T as Config>::MultiCurrency as MultiCurrency<
 	<T as frame_system::Config>::AccountId,
 >>::CurrencyId;
 
+pub type AssetIdOf<T> = <<T as Config>::AssetsHandler as frame_support::traits::fungibles::Inspect<
+	<T as frame_system::Config>::AccountId,
+>>::AssetId;
+
 pub type BalanceOf<T> = <<T as Config>::MultiCurrency as MultiCurrency<AccountIdOf<T>>>::Balance;
 
 pub type UnlockId = u32;
@@ -70,8 +75,10 @@ pub mod pallet {
 	use orml_traits::XcmTransfer;
 	use tangle_primitives::{currency::TNT, FIL};
 	use xcm::{prelude::*, v3::MultiLocation};
+	use frame_support::traits::fungibles;
 
 	#[pallet::pallet]
+	#[pallet::without_storage_info]
 	pub struct Pallet<T>(_);
 
 	#[pallet::config]
@@ -138,6 +145,8 @@ pub mod pallet {
 		type CurrencyIdRegister: CurrencyIdRegister<CurrencyId>;
 
 		type ChannelCommission: LstMintRedeemProvider<CurrencyId, BalanceOf<Self>>;
+
+		type AssetsHandler: fungibles::Inspect<Self::AccountId> + fungibles::Create<Self::AccountId>;
 
 		/// Set default weight.
 		type WeightInfo: WeightInfo;
@@ -248,6 +257,7 @@ pub mod pallet {
 		TooManyRedeems,
 		CanNotRedeem,
 		CanNotRebond,
+		InvalidValidator
 	}
 
 	#[pallet::storage]
@@ -336,6 +346,19 @@ pub mod pallet {
 	#[pallet::getter(fn hook_iteration_limit)]
 	pub type HookIterationLimit<T: Config> = StorageValue<_, u32, ValueQuery>;
 
+	#[pallet::storage]
+	#[pallet::getter(fn validator_whitelist)]
+	pub type ValidatorWhitelist<T: Config> = StorageMap<_, Blake2_128Concat, u32, Vec<T::AccountId>>;
+
+	#[pallet::storage]
+	#[pallet::getter(fn validator_assets)]
+	pub type ValidatorAssets<T: Config> = StorageMap<_, Blake2_128Concat, Vec<T::AccountId>, AssetIdOf<T>>;
+
+	#[pallet::storage]
+	#[pallet::getter(fn next_asset_id)]
+	pub type NextAssetId<T: Config> = StorageValue<_, AssetIdOf<T>>;
+
+
 	#[pallet::hooks]
 	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		fn on_initialize(_n: BlockNumberFor<T>) -> Weight {
@@ -363,11 +386,12 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			token_id: CurrencyIdOf<T>,
 			token_amount: BalanceOf<T>,
-			validator: Option<T::AccountId>,
+			channel_id: u32,
+			validator: Vec<T::AccountId>,
 		) -> DispatchResult {
 			// Check origin
 			let exchanger = ensure_signed(origin)?;
-			Self::mint_inner(exchanger, token_id, token_amount, Default::default(), None).map(|_| ())
+			Self::mint_inner(exchanger, token_id, token_amount, Default::default(), channel_id, validator).map(|_| ())
 		}
 
 		#[pallet::call_index(1)]
@@ -1272,41 +1296,74 @@ pub mod pallet {
 			Ok(())
 		}
 
-		#[transactional]
-		pub fn mint_inner(
-			exchanger: AccountIdOf<T>,
-			token_id: CurrencyIdOf<T>,
-			token_amount: BalanceOf<T>,
-			remark: BoundedVec<u8, ConstU32<32>>,
-			channel_id: Option<u32>,
-		) -> Result<BalanceOf<T>, DispatchError> {
-			ensure!(token_amount >= MinimumMint::<T>::get(token_id), Error::<T>::BelowMinimumMint);
+	    #[transactional]
+    pub fn mint_inner(
+        exchanger: AccountIdOf<T>,
+        token_id: CurrencyIdOf<T>,
+        token_amount: BalanceOf<T>,
+        remark: BoundedVec<u8, ConstU32<32>>,
+        channel_id: u32,
+        validators: Vec<T::AccountId>,
+    ) -> Result<BalanceOf<T>, DispatchError> {
+        ensure!(token_amount >= MinimumMint::<T>::get(token_id), Error::<T>::BelowMinimumMint);
 
-			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id)
-				.map_err(|_| Error::<T>::NotSupportTokenType)?;
-			let (token_amount_excluding_fee, lst_amount, fee) =
-				Self::mint_without_tranfer(&exchanger, lst_id, token_id, token_amount)?;
-			// Transfer the user's token to EntranceAccount.
-			T::MultiCurrency::transfer(
-				token_id,
-				&exchanger,
-				&T::EntranceAccount::get().into_account_truncating(),
-				token_amount_excluding_fee,
-			)?;
+        for validator in &validators {
+			// TODO : Handle error
+            ensure!(ValidatorWhitelist::<T>::get(channel_id).unwrap().contains(validator), Error::<T>::InvalidValidator);
+        }
 
-			// record the minting information for ChannelCommission module
-			T::ChannelCommission::record_mint_amount(channel_id, lst_id, lst_amount)?;
+        let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id)
+            .map_err(|_| Error::<T>::NotSupportTokenType)?;
 
-			Self::deposit_event(Event::Minted {
-				address: exchanger,
-				token_id,
-				token_amount,
-				lst_amount,
-				fee,
-				remark,
-			});
-			Ok(lst_amount.into())
-		}
+        let (token_amount_excluding_fee, lst_amount, fee) =
+            Self::mint_without_tranfer(&exchanger, lst_id, token_id, token_amount)?;
+
+        T::MultiCurrency::transfer(
+            token_id,
+            &exchanger,
+            &T::EntranceAccount::get().into_account_truncating(),
+            token_amount_excluding_fee,
+        )?;
+
+        T::ChannelCommission::record_mint_amount(Some(channel_id), lst_id, lst_amount)?;
+
+        let asset_id = Self::create_new_token(validators.clone())?;
+
+        ValidatorAssets::<T>::insert(&validators, asset_id);
+
+        Self::deposit_event(Event::Minted {
+            address: exchanger,
+            token_id,
+            token_amount,
+            lst_amount,
+            fee,
+            remark,
+        });
+
+        Ok(lst_amount.into())
+    }
+
+    fn create_new_token(validators: Vec<T::AccountId>) -> Result<AssetIdOf<T>, DispatchError> {
+        // Get the next asset ID and increment the counter
+        let asset_id = NextAssetId::<T>::get().unwrap();
+        // NextAssetId::<T>::mutate(|id| {
+		// 	let inc : AssetIdOf<T> = 1_u32.into();
+		// 	id = Some(id.unwrap() + inc);
+		// });
+
+        // Get the pallet account
+        let pallet_account : T::AccountId = T::EntranceAccount::get().into_account_truncating();
+
+        // Create a new asset using the AssetHandler
+        T::AssetsHandler::create(
+            asset_id.clone(),
+            pallet_account.clone(),
+            true, // is_sufficient
+            1_u32.into(), // min_balance
+        )?;
+
+        Ok(asset_id)
+    }
 
 		#[transactional]
 		pub fn redeem_inner(
@@ -1680,9 +1737,10 @@ impl<T: Config> LstMintingInterface<AccountIdOf<T>, CurrencyIdOf<T>, BalanceOf<T
 		token_id: CurrencyIdOf<T>,
 		token_amount: BalanceOf<T>,
 		remark: BoundedVec<u8, ConstU32<32>>,
-		channel_id: Option<u32>,
+		channel_id: u32,
+		validator: Vec<T::AccountId>,
 	) -> Result<BalanceOf<T>, DispatchError> {
-		Self::mint_inner(exchanger, token_id, token_amount, remark, channel_id)
+		Self::mint_inner(exchanger, token_id, token_amount, remark, channel_id, validator)
 	}
 
 	fn redeem(
