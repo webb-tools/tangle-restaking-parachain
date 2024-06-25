@@ -14844,6 +14844,7 @@ dependencies = [
  "orml-tokens",
  "orml-traits",
  "orml-xtokens",
+ "pallet-assets",
  "pallet-balances",
  "pallet-collective",
  "pallet-xcm",
