@@ -28,6 +28,7 @@ mod benchmarking;
 pub mod migration;
 pub mod traits;
 pub mod weights;
+pub mod agents;
 pub use weights::WeightInfo;
 use orml_traits::arithmetic::One;
 use frame_support::traits::fungibles::Create;
@@ -1346,6 +1347,8 @@ pub mod pallet {
     fn create_new_token(validators: Vec<T::AccountId>) -> Result<AssetIdOf<T>, DispatchError> {
         // Get the next asset ID and increment the counter
         let asset_id = NextAssetId::<T>::get().unwrap();
+
+		// TODO : Fix inc
         // NextAssetId::<T>::mutate(|id| {
 		// 	let inc : AssetIdOf<T> = 1_u32.into();
 		// 	id = Some(id.unwrap() + inc);
