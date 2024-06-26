@@ -83,29 +83,25 @@ impl<T: Config>
 		&self,
 		who: &MultiLocation,
 		amount: BalanceOf<T>,
-		validator: &Option<MultiLocation>,
+		validators: Vec<MultiLocation>,
 		currency_id: CurrencyId,
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
-		let contract_multilocation = validator.ok_or(Error::<T>::ValidatorNotProvided)?;
 		let mins_maxs = MinimumsAndMaximums::<T>::get(currency_id).ok_or(Error::<T>::NotExist)?;
 		// Check if the amount exceeds the minimum requirement.
 		ensure!(amount >= mins_maxs.bond_extra_minimum, Error::<T>::LowerThanMinimum);
-
-		// check if the validator is in the white list.
-		let validator_list =
-			Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
-		validator_list
-			.iter()
-			.position(|va| va == &contract_multilocation)
-			.ok_or(Error::<T>::ValidatorNotExist)?;
-
+	
+		// Check if the validators are in the white list.
+		let validator_list = Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		for validator in &validators {
+			validator_list.iter().position(|va| va == validator).ok_or(Error::<T>::ValidatorNotExist)?;
+		}
+	
 		if DelegatorLedgers::<T>::get(currency_id, who).is_none() {
 			// Check if the amount exceeds the minimum requirement. The first bond requires 500 ASTR
 			ensure!(amount >= mins_maxs.delegator_bonded_minimum, Error::<T>::LowerThanMinimum);
-
+	
 			// Create a new delegator ledger
-			// The real bonded amount will be updated by services once the xcm transaction succeeds.
 			let ledger = SubstrateLedger::<BalanceOf<T>> {
 				account: *who,
 				total: Zero::zero(),
@@ -113,32 +109,31 @@ impl<T: Config>
 				unlocking: vec![],
 			};
 			let sub_ledger = Ledger::<BalanceOf<T>>::Substrate(ledger);
-
+	
 			DelegatorLedgers::<T>::insert(currency_id, who, sub_ledger);
 		}
-
-		// Get the contract_h160
-		let contract_h160 = Pallet::<T>::multilocation_to_h160_account(&contract_multilocation)?;
-		let smart_contract = SmartContract::<T::AccountId>::Evm(contract_h160);
-
-		// Construct xcm message.
-		let call = AstarCall::Staking(AstarDappsStakingCall::<T>::Stake(smart_contract, amount));
-
-		// Wrap the xcm message as it is sent from a subaccount of the parachain account, and
-		// send it out.
+	
+		// Get the contract_h160 for each validator
+		let mut calls = vec![];
+		for validator in validators {
+			let contract_h160 = Pallet::<T>::multilocation_to_h160_account(&validator)?;
+			let smart_contract = SmartContract::<T::AccountId>::Evm(contract_h160);
+			calls.push(AstarCall::Staking(AstarDappsStakingCall::<T>::Stake(smart_contract.clone(), amount)).encode());
+		}
+	
+		// Wrap the xcm messages as they are sent from a subaccount of the parachain account, and send them out.
 		let (query_id, timeout, fee, xcm_message) =
 			Pallet::<T>::construct_xcm_as_subaccount_with_query_id(
 				XcmOperationType::Bond,
-				call.encode(),
+				calls.concat(),
 				who,
 				currency_id,
 				weight_and_fee,
 			)?;
-
-		// withdraw this xcm fee from treasury. If treasury doesn't have this money, stop the
-		// process.
+	
+		// Withdraw this xcm fee from treasury. If treasury doesn't have this money, stop the process.
 		Pallet::<T>::burn_fee_from_source_account(fee, currency_id)?;
-
+	
 		// Insert a delegator ledger update record into DelegatorLedgerXcmUpdateQueue<T>.
 		Self::insert_delegator_ledger_update_entry(
 			who,
@@ -148,11 +143,11 @@ impl<T: Config>
 			timeout,
 			currency_id,
 		)?;
-
+	
 		// Send out the xcm message.
 		let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
 		send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
-
+	
 		Ok(query_id)
 	}
 
@@ -161,30 +156,56 @@ impl<T: Config>
 		&self,
 		who: &MultiLocation,
 		amount: BalanceOf<T>,
-		validator: &Option<MultiLocation>,
+		validators: Vec<MultiLocation>,
 		currency_id: CurrencyId,
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
-		let call = match validator {
-			Some(_) => AstarCall::Staking(AstarDappsStakingCall::<T>::Unlock(amount)).encode(),
-			None => AstarCall::Staking(AstarDappsStakingCall::<T>::Lock(amount)).encode(),
-		};
-
-		// Wrap the xcm message as it is sent from a subaccount of the parachain account, and
-		// send it out.
-		let fee = Pallet::<T>::construct_xcm_and_send_as_subaccount_without_query_id(
-			XcmOperationType::Payout,
-			call,
-			who,
-			currency_id,
-			weight_and_fee,
-		)?;
-
-		// withdraw this xcm fee from treasury. If treasury doesn't have this money, stop the
-		// process.
+		let mins_maxs = MinimumsAndMaximums::<T>::get(currency_id).ok_or(Error::<T>::NotExist)?;
+		// Check if the amount exceeds the minimum requirement.
+		ensure!(amount >= mins_maxs.bond_extra_minimum, Error::<T>::LowerThanMinimum);
+	
+		// Check if the validators are in the white list.
+		let validator_list = Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		for validator in &validators {
+			validator_list.iter().position(|va| va == validator).ok_or(Error::<T>::ValidatorNotExist)?;
+		}
+	
+		// Get the contract_h160 for each validator
+		let mut calls = vec![];
+		for validator in validators {
+			let contract_h160 = Pallet::<T>::multilocation_to_h160_account(&validator)?;
+			let smart_contract = SmartContract::<T::AccountId>::Evm(contract_h160);
+			calls.push(AstarCall::Staking(AstarDappsStakingCall::<T>::Stake(smart_contract.clone(), amount)).encode());
+		}
+	
+		// Wrap the xcm messages as they are sent from a subaccount of the parachain account, and send them out.
+		let (query_id, timeout, fee, xcm_message) =
+			Pallet::<T>::construct_xcm_as_subaccount_with_query_id(
+				XcmOperationType::BondExtra,
+				calls.concat(),
+				who,
+				currency_id,
+				weight_and_fee,
+			)?;
+	
+		// Withdraw this xcm fee from treasury. If treasury doesn't have this money, stop the process.
 		Pallet::<T>::burn_fee_from_source_account(fee, currency_id)?;
-
-		Ok(Zero::zero())
+	
+		// Insert a delegator ledger update record into DelegatorLedgerXcmUpdateQueue<T>.
+		Self::insert_delegator_ledger_update_entry(
+			who,
+			SubstrateLedgerUpdateOperation::Bond,
+			amount,
+			query_id,
+			timeout,
+			currency_id,
+		)?;
+	
+		// Send out the xcm message.
+		let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
+		send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+	
+		Ok(query_id)
 	}
 
 	/// Decrease bonding amount to a delegator.
