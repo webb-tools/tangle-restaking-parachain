@@ -83,7 +83,7 @@ impl<T: Config>
 		&self,
 		who: &MultiLocation,
 		amount: BalanceOf<T>,
-		share_price: &Option<MultiLocation>,
+		validators: Vec<MultiLocation>,
 		currency_id: CurrencyId,
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
@@ -101,11 +101,20 @@ impl<T: Config>
 		let mins_maxs = MinimumsAndMaximums::<T>::get(currency_id).ok_or(Error::<T>::NotExist)?;
 		ensure!(amount >= mins_maxs.delegator_bonded_minimum, Error::<T>::LowerThanMinimum);
 
-		// Ensure the bond doesn't exceeds delegator_active_staking_maximum
+		// Ensure the bond doesn't exceed delegator_active_staking_maximum
 		ensure!(
 			amount <= mins_maxs.delegator_active_staking_maximum,
 			Error::<T>::ExceedActiveMaximum
 		);
+
+		// Check if the validators are in the whitelist.
+		let validator_list = Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		for validator in &validators {
+			validator_list.iter().position(|va| va == validator).ok_or(Error::<T>::ValidatorNotExist)?;
+		}
+
+		// Ensure there is only one validator for Phala.
+		ensure!(validators.len() == 1, Error::<T>::VectorTooLong);
 
 		// Construct xcm message.
 		let wrap_call = PhalaCall::PhalaWrappedBalances(WrappedBalancesCall::<T>::Wrap(amount));
@@ -142,7 +151,7 @@ impl<T: Config>
 				weight_and_fee,
 			)?;
 
-		// withdraw this xcm fee from treasury. If treasury doesn't have this money, stop the
+		// Withdraw this xcm fee from treasury. If treasury doesn't have this money, stop the
 		// process.
 		Pallet::<T>::burn_fee_from_source_account(fee, currency_id)?;
 
@@ -167,6 +176,17 @@ impl<T: Config>
 			currency_id,
 		)?;
 
+		// Set the validator for this delegator
+		let validators_list = BoundedVec::try_from(validators.clone()).map_err(|_| Error::<T>::FailToConvert)?;
+		ValidatorsByDelegator::<T>::insert(currency_id, *who, validators_list.clone());
+
+		// Deposit event
+		Pallet::<T>::deposit_event(Event::ValidatorsByDelegatorSet {
+			currency_id,
+			validators_list: validators_list.to_vec(),
+			delegator_id: *who,
+		});
+
 		// Send out the xcm message.
 		let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
 		send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
@@ -179,11 +199,11 @@ impl<T: Config>
 		&self,
 		who: &MultiLocation,
 		amount: BalanceOf<T>,
-		share_price: &Option<MultiLocation>,
+		validators: Vec<MultiLocation>,
 		currency_id: CurrencyId,
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
-		Self::bond(self, who, amount, share_price, currency_id, weight_and_fee)
+		Self::bond(self, who, amount, validators, currency_id, weight_and_fee)
 	}
 
 	/// Decrease bonding amount to a delegator. In Phala context, it corresponds to `withdraw`

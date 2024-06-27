@@ -88,20 +88,20 @@ impl<T: Config>
 	) -> Result<QueryId, Error<T>> {
 		// Check if it is bonded already.
 		ensure!(!DelegatorLedgers::<T>::contains_key(currency_id, who), Error::<T>::AlreadyBonded);
-	
+
 		// Check if the amount exceeds the minimum requirement.
 		let mins_maxs = MinimumsAndMaximums::<T>::get(currency_id).ok_or(Error::<T>::NotExist)?;
 		ensure!(amount >= mins_maxs.delegator_bonded_minimum, Error::<T>::LowerThanMinimum);
-	
+
 		// Ensure the bond doesn't exceed delegator_active_staking_maximum
 		ensure!(
 			amount <= mins_maxs.delegator_active_staking_maximum,
 			Error::<T>::ExceedActiveMaximum
 		);
-	
+
 		// Remove duplicates from validators list
 		let dedup_validators = Pallet::<T>::remove_validators_duplicates(currency_id, &validators)?;
-	
+
 		// Convert vec of multilocations into accounts.
 		let mut accounts = vec![];
 		for multilocation_account in dedup_validators.iter() {
@@ -109,7 +109,7 @@ impl<T: Config>
 			let unlookup_account = T::Lookup::unlookup(account);
 			accounts.push(unlookup_account);
 		}
-	
+
 		// Construct xcm message.
 		let call = match currency_id {
 			KSM => KusamaCall::Staking(StakingCall::<T>::Bond(
@@ -130,7 +130,7 @@ impl<T: Config>
 			.collect(),
 			_ => Err(Error::<T>::NotSupportedCurrencyId)?,
 		};
-	
+
 		// Wrap the xcm message as it is sent from a subaccount of the parachain account, and
 		// send it out.
 		let (query_id, timeout, fee, xcm_message) =
@@ -141,11 +141,11 @@ impl<T: Config>
 				currency_id,
 				weight_and_fee,
 			)?;
-	
+
 		// Withdraw this xcm fee from treasury. If treasury doesn't have this money, stop the
 		// process.
 		Pallet::<T>::burn_fee_from_source_account(fee, currency_id)?;
-	
+
 		// Create a new delegator ledger
 		// The real bonded amount will be updated by services once the xcm transaction succeeds.
 		let ledger = SubstrateLedger::<BalanceOf<T>> {
@@ -155,9 +155,9 @@ impl<T: Config>
 			unlocking: vec![],
 		};
 		let sub_ledger = Ledger::<BalanceOf<T>>::Substrate(ledger);
-	
+
 		DelegatorLedgers::<T>::insert(currency_id, who, sub_ledger);
-	
+
 		// Insert a delegator ledger update record into DelegatorLedgerXcmUpdateQueue<T>.
 		Self::insert_delegator_ledger_update_entry(
 			who,
@@ -167,13 +167,13 @@ impl<T: Config>
 			timeout,
 			currency_id,
 		)?;
-	
+
 		// Send out the xcm message.
-		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
-	
+		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+			.map_err(|_e| Error::<T>::XcmFailure)?;
+
 		Ok(query_id)
 	}
-	
 
 	fn bond_extra(
 		&self,
@@ -186,16 +186,16 @@ impl<T: Config>
 		// Check if it is bonded already.
 		let ledger =
 			DelegatorLedgers::<T>::get(currency_id, who).ok_or(Error::<T>::DelegatorNotBonded)?;
-	
+
 		// Check if the amount exceeds the minimum requirement.
 		let mins_maxs = MinimumsAndMaximums::<T>::get(currency_id).ok_or(Error::<T>::NotExist)?;
 		ensure!(amount >= mins_maxs.bond_extra_minimum, Error::<T>::LowerThanMinimum);
-	
+
 		// Check if the new_add_amount + active_staking_amount doesn't exceed
 		// delegator_active_staking_maximum
 		if let Ledger::Substrate(substrate_ledger) = ledger {
 			let active = substrate_ledger.active;
-	
+
 			let total = amount.checked_add(&active).ok_or(Error::<T>::OverFlow)?;
 			ensure!(
 				total <= mins_maxs.delegator_active_staking_maximum,
@@ -204,10 +204,10 @@ impl<T: Config>
 		} else {
 			Err(Error::<T>::Unexpected)?;
 		}
-	
+
 		// Remove duplicates from validators list
 		let dedup_validators = Pallet::<T>::remove_validators_duplicates(currency_id, &validators)?;
-	
+
 		// Convert vec of multilocations into accounts.
 		let mut accounts = vec![];
 		for multilocation_account in dedup_validators.iter() {
@@ -215,7 +215,7 @@ impl<T: Config>
 			let unlookup_account = T::Lookup::unlookup(account);
 			accounts.push(unlookup_account);
 		}
-	
+
 		// Construct xcm message..
 		let call = match currency_id {
 			KSM => KusamaCall::Staking(StakingCall::<T>::BondExtra(amount))
@@ -230,7 +230,7 @@ impl<T: Config>
 				.collect(),
 			_ => Err(Error::NotSupportedCurrencyId)?,
 		};
-	
+
 		// Wrap the xcm message as it is sent from a subaccount of the parachain account, and
 		// send it out.
 		let (query_id, timeout, fee, xcm_message) =
@@ -241,11 +241,11 @@ impl<T: Config>
 				currency_id,
 				weight_and_fee,
 			)?;
-	
+
 		// Withdraw this xcm fee from treasury. If treasury doesn't have this money, stop the
 		// process.
 		Pallet::<T>::burn_fee_from_source_account(fee, currency_id)?;
-	
+
 		// Insert a delegator ledger update record into DelegatorLedgerXcmUpdateQueue<T>.
 		Self::insert_delegator_ledger_update_entry(
 			who,
@@ -255,10 +255,11 @@ impl<T: Config>
 			timeout,
 			currency_id,
 		)?;
-	
+
 		// Send out the xcm message.
-		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
-	
+		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+			.map_err(|_e| Error::<T>::XcmFailure)?;
+
 		Ok(query_id)
 	}
 
