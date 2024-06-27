@@ -74,89 +74,117 @@ impl<T: Config>
 		&self,
 		who: &MultiLocation,
 		amount: BalanceOf<T>,
-		_validator: &Option<MultiLocation>,
+		validators: Vec<MultiLocation>,
 		currency_id: CurrencyId,
-		_weight_and_fee: Option<(Weight, BalanceOf<T>)>,
+		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
 		// Check if it is bonded already.
 		ensure!(!DelegatorLedgers::<T>::contains_key(currency_id, who), Error::<T>::AlreadyBonded);
-
+	
 		// Check if the amount exceeds the minimum requirement.
 		let mins_maxs = MinimumsAndMaximums::<T>::get(currency_id).ok_or(Error::<T>::NotExist)?;
 		ensure!(amount >= mins_maxs.delegator_bonded_minimum, Error::<T>::LowerThanMinimum);
-
+	
 		// Ensure the bond doesn't exceeds delegator_active_staking_maximum
 		ensure!(
 			amount <= mins_maxs.delegator_active_staking_maximum,
 			Error::<T>::ExceedActiveMaximum
 		);
-
-		// Check if the delegator(miner) has bonded an worker.
-		let miners = ValidatorsByDelegator::<T>::get(currency_id, who)
-			.ok_or(Error::<T>::ValidatorNotBonded)?;
-		ensure!(miners.len() == 1, Error::<T>::VectorTooLong);
-
+	
+		// Check if the validators are in the whitelist.
+		let validator_list = Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		for validator in &validators {
+			validator_list.iter().position(|va| va == validator).ok_or(Error::<T>::ValidatorNotExist)?;
+		}
+	
+		// Ensure there is only one validator for Filecoin.
+		ensure!(validators.len() == 1, Error::<T>::VectorTooLong);
+	
 		// Create a new delegator ledger
 		let ledger = FilecoinLedger::<BalanceOf<T>> { account: *who, initial_pledge: amount };
 		let filecoin_ledger = Ledger::<BalanceOf<T>>::Filecoin(ledger);
-
+	
 		DelegatorLedgers::<T>::insert(currency_id, who, filecoin_ledger);
+	
+		// Set the validator for this delegator
+		let validators_list = BoundedVec::try_from(validators.clone()).map_err(|_| Error::<T>::FailToConvert)?;
+		ValidatorsByDelegator::<T>::insert(currency_id, *who, validators_list.clone());
+	
+		// Deposit event
+		Pallet::<T>::deposit_event(Event::ValidatorsByDelegatorSet {
+			currency_id,
+			validators_list: validators_list.to_vec(),
+			delegator_id: *who,
+		});
+	
 		let query_id = Zero::zero();
-
 		Ok(query_id)
 	}
 
-	/// Bond extra amount to a delegator.
-	/// Since Filecoin will bond after the real staking happens, it just needs to update the ledger.
 	fn bond_extra(
 		&self,
 		who: &MultiLocation,
 		amount: BalanceOf<T>,
-		_validator: &Option<MultiLocation>,
+		validators: Vec<MultiLocation>,
 		currency_id: CurrencyId,
-		_weight_and_fee: Option<(Weight, BalanceOf<T>)>,
+		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
 		// Check if it is bonded already.
-		let ledger =
-			DelegatorLedgers::<T>::get(currency_id, who).ok_or(Error::<T>::DelegatorNotBonded)?;
-
+		let ledger = DelegatorLedgers::<T>::get(currency_id, who).ok_or(Error::<T>::DelegatorNotBonded)?;
+	
 		// Check if the amount exceeds the minimum requirement.
 		let mins_maxs = MinimumsAndMaximums::<T>::get(currency_id).ok_or(Error::<T>::NotExist)?;
 		ensure!(amount >= mins_maxs.bond_extra_minimum, Error::<T>::LowerThanMinimum);
-
+	
+		// Check if the validators are in the whitelist.
+		let validator_list = Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		for validator in &validators {
+			validator_list.iter().position(|va| va == validator).ok_or(Error::<T>::ValidatorNotExist)?;
+		}
+	
+		// Ensure there is only one validator for Filecoin.
+		ensure!(validators.len() == 1, Error::<T>::VectorTooLong);
+	
 		if let Ledger::Filecoin(filecoin_ledger) = ledger {
 			let initial_pledge = filecoin_ledger.initial_pledge;
-
+	
 			let total = amount.checked_add(&initial_pledge).ok_or(Error::<T>::OverFlow)?;
 			ensure!(
 				total <= mins_maxs.delegator_active_staking_maximum,
 				Error::<T>::ExceedActiveMaximum
 			);
-
-			// update delegator ledger
-			DelegatorLedgers::<T>::mutate(
-				currency_id,
-				who,
-				|old_ledger| -> Result<(), Error<T>> {
-					if let Some(Ledger::Filecoin(ref mut old_fil_ledger)) = old_ledger {
-						old_fil_ledger.initial_pledge = old_fil_ledger
-							.initial_pledge
-							.checked_add(&amount)
-							.ok_or(Error::<T>::OverFlow)?;
-						Ok(())
-					} else {
-						Err(Error::<T>::Unexpected)?
-					}
-				},
-			)?;
+	
+			// Update delegator ledger
+			DelegatorLedgers::<T>::mutate(currency_id, who, |old_ledger| -> Result<(), Error<T>> {
+				if let Some(Ledger::Filecoin(ref mut old_fil_ledger)) = old_ledger {
+					old_fil_ledger.initial_pledge = old_fil_ledger
+						.initial_pledge
+						.checked_add(&amount)
+						.ok_or(Error::<T>::OverFlow)?;
+					Ok(())
+				} else {
+					Err(Error::<T>::Unexpected)?
+				}
+			})?;
 		} else {
 			Err(Error::<T>::Unexpected)?;
 		}
-
+	
+		// Set the validator for this delegator
+		let validators_list = BoundedVec::try_from(validators.clone()).map_err(|_| Error::<T>::FailToConvert)?;
+		ValidatorsByDelegator::<T>::insert(currency_id, *who, validators_list.clone());
+	
+		// Deposit event
+		Pallet::<T>::deposit_event(Event::ValidatorsByDelegatorSet {
+			currency_id,
+			validators_list: validators_list.to_vec(),
+			delegator_id: *who,
+		});
+	
 		let query_id = Zero::zero();
 		Ok(query_id)
 	}
-
+	
 	/// Decrease bonding amount to a delegator.
 	fn unbond(
 		&self,
