@@ -30,6 +30,7 @@ pub mod migration;
 pub mod traits;
 pub mod weights;
 use frame_support::traits::fungibles::Create;
+use frame_support::traits::non_fungibles;
 use frame_support::{
 	pallet_prelude::*,
 	sp_runtime::{
@@ -149,6 +150,8 @@ pub mod pallet {
 		type ChannelCommission: LstMintRedeemProvider<CurrencyId, BalanceOf<Self>>;
 
 		type AssetsHandler: fungibles::Inspect<Self::AccountId> + fungibles::Create<Self::AccountId>;
+
+		type NftsHandler: non_fungibles::Inspect<Self::AccountId> + fungibles::Create<Self::AccountId>;
 
 		/// Set default weight.
 		type WeightInfo: WeightInfo;
@@ -1513,6 +1516,9 @@ pub mod pallet {
 				Ok(())
 			})?;
 
+			// Mint and send NFT to the redeemer
+			let nft_id = T::NftsHandler::mint(&exchanger, token_id, lst_amount)?;
+
 			let extra_weight = T::OnRedeemSuccess::on_redeemed(
 				exchanger.clone(),
 				token_id,
@@ -1531,8 +1537,13 @@ pub mod pallet {
 				fee: redeem_fee,
 				unlock_id: next_id,
 			});
+			Self::deposit_event(Event::NFTMinted {
+				address: exchanger,
+				nft_id,
+			});
 			Ok(Some(T::WeightInfo::redeem() + extra_weight).into())
 		}
+
 
 		pub fn token_to_lst_inner(
 			token_id: CurrencyIdOf<T>,
