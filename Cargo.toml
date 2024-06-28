@@ -70,24 +70,24 @@ pallet-traits                        = { path = "pallets/traits", default-featur
 tangle-channel-commission			 = { path = "pallets/channel-commission", default-features = false }
 
 # Zenlink
-merkle-distributor             = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.3.0", default-features = false }
-zenlink-protocol               = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.3.0", default-features = false }
-zenlink-protocol-rpc           = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.3.0" }
-zenlink-protocol-runtime-api   = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.3.0", default-features = false }
-zenlink-stable-amm             = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.3.0", default-features = false }
-zenlink-stable-amm-rpc         = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.3.0" }
-zenlink-stable-amm-runtime-api = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.3.0", default-features = false }
-zenlink-swap-router            = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.3.0", default-features = false }
+merkle-distributor             = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
+zenlink-protocol               = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
+zenlink-protocol-rpc           = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0" }
+zenlink-protocol-runtime-api   = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
+zenlink-stable-amm             = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
+zenlink-stable-amm-rpc         = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0" }
+zenlink-stable-amm-runtime-api = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
+zenlink-swap-router            = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
 
 # Orml
-orml-tokens         = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.3.0", default-features = false }
-orml-traits         = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.3.0", default-features = false }
-orml-unknown-tokens = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.3.0", default-features = false }
-orml-utilities      = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.3.0", default-features = false }
-orml-xcm            = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.3.0", default-features = false }
-orml-xcm-support    = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.3.0", default-features = false }
-orml-xtokens        = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.3.0", default-features = false }
-orml-oracle         = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.3.0", default-features = false }
+orml-tokens         = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-traits         = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-unknown-tokens = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-utilities      = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-xcm            = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-xcm-support    = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-xtokens        = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-oracle         = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
 
 # polkadot-sdk (wasm)
 cumulus-client-collator                    = { version = "0.4.0", default-features = false }
