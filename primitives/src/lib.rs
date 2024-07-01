@@ -27,20 +27,20 @@ use sp_runtime::{
 };
 use xcm::v3::prelude::*;
 
-pub mod currency;
-mod salp;
-pub mod traits;
-pub use salp::*;
+// pub mod currency;
+// mod salp;
+// pub mod traits;
+// pub use salp::*;
 
 #[cfg(test)]
 mod tests;
 
 pub use crate::{
-	currency::{
-		AssetIds, CurrencyId, ForeignAssetId, TokenId, TokenSymbol, ASTR, ASTR_TOKEN_ID, DOT,
-		DOT_TOKEN_ID, DOT_U, FIL, GLMR, GLMR_TOKEN_ID, KSM, MANTA, TNT, VDOT, VKSM, VSKSM, VTNT,
-	},
-	traits::*,
+	// currency::{
+	// 	AssetIds, CurrencyId, ForeignAssetId, TokenId, TokenSymbol, ASTR, ASTR_TOKEN_ID, DOT,
+	// 	DOT_TOKEN_ID, DOT_U, FIL, GLMR, GLMR_TOKEN_ID, KSM, MANTA, TNT, VDOT, VKSM, VSKSM, VTNT,
+	// },
+	//traits::*,
 };
 
 /// An index to a block.
@@ -336,16 +336,16 @@ pub enum XcmOperationType {
 	SupplementaryFee,
 }
 
-pub struct ExtraFeeInfo {
-	pub extra_fee_name: ExtraFeeName,
-	pub extra_fee_currency: CurrencyId,
-}
+// pub struct ExtraFeeInfo {
+// 	pub extra_fee_name: ExtraFeeName,
+// 	pub extra_fee_currency: CurrencyId,
+// }
 
-impl Default for ExtraFeeInfo {
-	fn default() -> Self {
-		Self {
-			extra_fee_name: ExtraFeeName::NoExtraFee,
-			extra_fee_currency: CurrencyId::Native(TokenSymbol::TNT),
-		}
-	}
-}
+// impl Default for ExtraFeeInfo {
+// 	fn default() -> Self {
+// 		Self {
+// 			extra_fee_name: ExtraFeeName::NoExtraFee,
+// 			extra_fee_currency: CurrencyId::Native(TokenSymbol::TNT),
+// 		}
+// 	}
+// }

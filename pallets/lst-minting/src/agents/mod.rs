@@ -23,10 +23,10 @@ mod common;
 mod polkadot_agent;
 mod utils;
 
-// pub use astar_agent::*;
-// pub use filecoin_agent::*;
-// pub use parachain_staking_agent::*;
-// pub use phala_agent::*;
+pub use astar_agent::*;
+pub use filecoin_agent::*;
+pub use parachain_staking_agent::*;
+pub use phala_agent::*;
 
 pub use common::*;
 pub use polkadot_agent::*;

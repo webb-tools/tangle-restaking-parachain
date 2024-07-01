@@ -25,9 +25,9 @@ mod tests;
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
 
-pub mod agents;
+// pub mod agents;
 pub mod migration;
-pub mod traits;
+// pub mod traits;
 pub mod weights;
 use frame_support::traits::fungibles::Create;
 use frame_support::traits::non_fungibles;
