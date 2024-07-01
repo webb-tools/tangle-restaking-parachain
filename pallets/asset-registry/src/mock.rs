@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -17,13 +20,12 @@
 
 #![cfg(test)]
 
+use tangle_primitives::{AccountId, Balance};
 use frame_support::{
-	construct_runtime, ord_parameter_types, pallet_prelude::ConstU32, parameter_types,
-	traits::Everything,
+	construct_runtime, derive_impl, ord_parameter_types, pallet_prelude::ConstU32, parameter_types,
 };
 use frame_system::EnsureSignedBy;
 use sp_runtime::BuildStorage;
-use tangle_primitives::{AccountId, Balance};
 
 use crate as asset_registry;
 
@@ -31,36 +33,19 @@ parameter_types!(
 	pub const BlockHashCount: u32 = 250;
 );
 
+#[derive_impl(frame_system::config_preludes::TestDefaultConfig as frame_system::DefaultConfig)]
 impl frame_system::Config for Runtime {
-	type BaseCallFilter = Everything;
-	type RuntimeOrigin = RuntimeOrigin;
-	type Nonce = u32;
-	type Block = Block;
-	type RuntimeCall = RuntimeCall;
-	type Hash = sp_runtime::testing::H256;
-	type Hashing = sp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
-	type Lookup = sp_runtime::traits::IdentityLookup<Self::AccountId>;
-	type RuntimeEvent = RuntimeEvent;
-	type BlockHashCount = BlockHashCount;
-	type BlockWeights = ();
-	type BlockLength = ();
-	type DbWeight = ();
-	type Version = ();
-	type PalletInfo = PalletInfo;
 	type AccountData = pallet_balances::AccountData<Balance>;
-	type OnNewAccount = ();
-	type OnKilledAccount = ();
-	type SystemWeightInfo = ();
-	type SS58Prefix = ();
-	type OnSetCode = ();
-	type MaxConsumers = frame_support::traits::ConstU32<16>;
+	type Block = Block;
+	type Lookup = sp_runtime::traits::IdentityLookup<Self::AccountId>;
 }
 
 parameter_types! {
 	pub const ExistentialDeposit: u64 = 1;
 	pub const MaxReserves: u32 = 50;
 }
+
 impl pallet_balances::Config for Runtime {
 	type Balance = Balance;
 	type DustRemoval = ();
@@ -74,7 +59,6 @@ impl pallet_balances::Config for Runtime {
 	type RuntimeHoldReason = RuntimeHoldReason;
 	type RuntimeFreezeReason = RuntimeFreezeReason;
 	type FreezeIdentifier = ();
-	type MaxHolds = ConstU32<0>;
 	type MaxFreezes = ConstU32<0>;
 }
 
