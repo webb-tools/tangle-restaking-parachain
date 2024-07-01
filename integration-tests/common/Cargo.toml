@@ -9,7 +9,6 @@ paste = { workspace = true }
 
 # Substrate
 sc-consensus-grandpa = { workspace = true }
-sp-authority-discovery = { workspace = true }
 sp-runtime = { workspace = true }
 frame-support = { workspace = true }
 sp-core = { workspace = true }

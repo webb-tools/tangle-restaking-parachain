@@ -12,9 +12,9 @@ parity-scale-codec = { workspace = true, features = ["derive"] }
 scale-info = { workspace = true, features = ["derive"] }
 log = { workspace = true }
 frame-support = { workspace = true }
-frame-system = { workspace = true }
+# frame-system = { workspace = true }
 frame-benchmarking = { workspace = true, optional = true }
-tangle-primitives = { workspace = true }
+# tangle-primitives = { workspace = true }
 orml-traits = { workspace = true }
 sp-std = { workspace = true }
 hex-literal = { workspace = true }
@@ -49,13 +49,14 @@ std = [
 	"parity-scale-codec/std",
 	"scale-info/std",
 	"frame-support/std",
-	"frame-system/std",
+	# "frame-system/std",
 	"frame-benchmarking/std",
-	"tangle-primitives/std",
+	# "tangle-primitives/std",
 	"orml-traits/std",
 	"tangle-asset-registry/std",
 	"tangle-runtime-common/std",
-	"pallet-assets/std"
+	"pallet-assets/std",
+	"polkadot-parachain-primitives/std"
 ]
 
 runtime-benchmarks = [
