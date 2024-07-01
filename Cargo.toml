@@ -16,15 +16,10 @@ members = [
 	"primitives",
 	"pallets/asset-registry",
 	"pallets/currencies",
-	"pallets/token-issuer",
 	"pallets/xcm-interface",
-	"pallets/slp",
 	"pallets/lst-minting",
 	"pallets/lst-voting",
 	"pallets/parachain-staking",
-	"pallets/stable-pool",
-	"pallets/prices",
-	"runtime/tangle-kusama",
 	"runtime/tangle-polkadot",
 	"tangle-restaking-subxt",
 ]
@@ -71,38 +66,10 @@ syn = { version = "1.0" }
 hex = { version = "0.4.3", default-features = false }
 paste = "1.0.6"
 slices = "0.2.0"
-byteorder = { version = "1", default-features = false }
-schnorrkel = { version = "0.11.4", default-features = false }
-snowbridge-milagro-bls = { git = "https://github.com/Snowfork/milagro_bls", default-features = false, rev = "43a5d480ed6e3b83de4cf54888680d51604199e6" }
-primitive-types = { version = "0.12.2", default-features = false, features = ["scale-info", "serde_no_std"] }
 fixed = {version = "1.23.0", default-features = false }
 
 tangle-testnet-runtime = { package = "tangle-testnet-runtime", path = "runtime/testnet" }
 tangle-runtime = { package = "tangle-runtime", path = "runtime/mainnet" }
-
-# Tangle Dependencies
-pallet-airdrop-claims = { path = "pallets/claims", default-features = false }
-pallet-jobs = { path = "pallets/jobs", default-features = false }
-pallet-roles = { path = "pallets/roles", default-features = false }
-pallet-dkg = { path = "pallets/dkg", default-features = false }
-pallet-zksaas = { path = "pallets/zksaas", default-features = false }
-pallet-jobs-rpc-runtime-api = { path = "pallets/jobs/rpc/runtime-api", default-features = false }
-pallet-jobs-rpc = { path = "pallets/jobs/rpc" }
-pallet-multi-asset-delegation = { path = "pallets/multi-asset-delegation", default-features = false }
-
-k256 = { version = "0.13.0", default-features = false }
-p256 = { version = "0.13.0", default-features = false }
-ecdsa-core = { package = "ecdsa", version = "0.16.9", default-features = false }
-starknet-crypto = { version = "0.6.1", default-features = false, features = ["signature-display","alloc"] }
-frost-core = { path = "pallets/dkg/frost", default-features = false }
-frost-ed25519 = { path = "pallets/dkg/frost/frost-ed25519", default-features = false }
-frost-ed448 = { path = "pallets/dkg/frost/frost-ed448", default-features = false }
-frost-ristretto255 = { path = "pallets/dkg/frost/frost-ristretto255", default-features = false }
-frost-secp256k1 = { path = "pallets/dkg/frost/frost-secp256k1", default-features = false }
-frost-p256 = { path = "pallets/dkg/frost/frost-p256", default-features = false }
-frost-p384 = { path = "pallets/dkg/frost/frost-p384", default-features = false }
-frost-redjubjub = { path = "pallets/dkg/frost/frost-redjubjub", default-features = false }
-frost-taproot = { path = "pallets/dkg/frost/frost-taproot", default-features = false }
 
 # Substrate dependencies
 sp-api = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
@@ -219,7 +186,14 @@ pallet-multisig = { git = "https://github.com/paritytech/polkadot-sdk", branch =
 pallet-identity = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
 pallet-vesting = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
 pallet-proxy = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
+pallet-aura = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
+pallet-collator-selection = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
+pallet-conviction-voting = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
+pallet-membership = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
 sp-state-machine = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
+pallet-xcm = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
+polkadot-runtime-common = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
+parachain-info = { package = "staging-parachain-info", git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
 
 # Cumulus
 cumulus-client-cli = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0", default-features = false }
@@ -249,16 +223,6 @@ pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/polkadot
 sc-transaction-pool-api = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
 sc-consensus-manual-seal = { git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.7.0" }
 
-# Tangle dependencies
-tangle-primitives = { path = "primitives", default-features = false }
-tangle-crypto-primitives = { path = "primitives/crypto", default-features = false }
-pallet-staking = { path = "pallets/staking", default-features = false }
-pallet-staking-reward-curve = { path = "pallets/staking/reward-curve", default-features = false }
-primitives-ext = { path = "primitives/ext", default-features = false }
-evm-tracing-events = { path = "primitives/rpc/evm-tracing-events", default-features = false }
-rpc-primitives-debug = { path = "primitives/rpc/debug", default-features = false }
-rpc-primitives-txpool = { path = "primitives/rpc/txpool", default-features = false }
-
 # Polkadot XCM
 xcm-executor = { package = "staging-xcm-executor", git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.7.0", default-features = false }
 xcm-builder = { package = "staging-xcm-builder", git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.7.0", default-features = false }
@@ -266,5 +230,35 @@ xcm = { package = "staging-xcm", git = "https://github.com/paritytech/polkadot-s
 polkadot-parachain-primitives = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.7.0", default-features = false }
 
 # tangle Runtime
-tangle-kusama-runtime   = { path = "runtime/tangle-kusama" }
+tangle-runtime-common   = { path = "runtime/common" }
 tangle-polkadot-runtime   = { path = "runtime/tangle-polkadot" }
+
+# tangle pallets
+tangle-asset-registry = { path = "pallets/asset-registry", default-features = false }
+tangle-currencies = { path = "pallets/currencies", default-features = false }
+tangle-lst-minting = { path = "pallets/lst-minting", default-features = false }
+tangle-lst-voting = { path = "pallets/lst-voting", default-features = false }
+tangle-xcm-interface = { path = "pallets/xcm-interface", default-features = false }
+tangle-parachain-staking = { path = "pallets/parachain-staking", default-features = false }
+tangle-primitives = { path = "primitives", default-features = false }
+
+# orml deps
+orml-tokens= { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-traits= { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-unknown-tokens = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-utilities      = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-xcm   = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-xcm-support    = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-xtokens        = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-oracle= { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+
+# Other
+bstringify   = { version = "0.1.2" }
+env_logger   = { version = "0.10.2" }
+ethabi       = { version = "18.0.0", default-features = false }
+ethereum     = { version = "0.14.0", default-features = false, features = ["with-codec"] }
+num-bigint   = { version = "0.4.6", default-features = false }
+num-traits   = { version = "0.2.19", default-features = false }
+strum        = { version = "0.26.3", default-features = false, features = ["derive"] }
+strum_macros = { version = "0.26.2" }
+tiny-keccak  = { version = "2.0", features = ["fips202"] }

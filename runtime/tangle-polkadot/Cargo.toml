@@ -26,7 +26,6 @@ frame-system = { workspace = true }
 frame-system-benchmarking = { workspace = true, optional = true }
 frame-system-rpc-runtime-api = { workspace = true }
 frame-try-runtime = { workspace = true, optional = true }
-pallet-asset-rate = { workspace = true }
 pallet-aura = { workspace = true }
 pallet-authorship = { workspace = true }
 pallet-balances = { workspace = true }
@@ -41,17 +40,13 @@ pallet-membership = { workspace = true }
 pallet-multisig = { workspace = true }
 pallet-preimage = { workspace = true }
 pallet-proxy = { workspace = true }
-pallet-ranked-collective = { workspace = true }
-pallet-referenda = { workspace = true }
 pallet-scheduler = { workspace = true }
 pallet-session = { workspace = true }
 pallet-timestamp = { workspace = true }
-pallet-tips = { workspace = true }
 pallet-transaction-payment = { workspace = true }
 pallet-transaction-payment-rpc-runtime-api = { workspace = true }
 pallet-treasury = { workspace = true }
 pallet-utility = { workspace = true }
-pallet-whitelist = { workspace = true }
 sp-api = { workspace = true }
 sp-arithmetic = { workspace = true }
 sp-block-builder = { workspace = true }
@@ -98,32 +93,15 @@ orml-xcm-support = { workspace = true }
 orml-xtokens = { workspace = true }
 orml-oracle = { workspace = true }
 
-# zenlink
-merkle-distributor = { workspace = true }
-zenlink-protocol = { workspace = true }
-zenlink-protocol-runtime-api = { workspace = true }
-zenlink-stable-amm = { workspace = true }
-zenlink-stable-amm-runtime-api = { workspace = true }
-zenlink-swap-router = { workspace = true }
-
-# Nuts Finance
-tangle-stable-asset = { workspace = true }
-
 # tangle
 tangle-asset-registry = { workspace = true }
 tangle-currencies = { workspace = true }
 tangle-primitives = { workspace = true }
 tangle-runtime-common = { workspace = true }
-tangle-slp = { workspace = true }
-tangle-slpx = { workspace = true }
-tangle-stable-pool = { workspace = true }
-tangle-stable-pool-rpc-runtime-api = { workspace = true }
-tangle-token-issuer = { workspace = true }
 tangle-lst-minting = { workspace = true }
 tangle-lst-voting = { workspace = true, features = [ "polkadot" ] }
 tangle-xcm-interface = { workspace = true }
 tangle-parachain-staking = { workspace = true }
-pallet-prices = { workspace = true }
 
 [build-dependencies]
 substrate-wasm-builder = { workspace = true, optional = true }
@@ -157,17 +135,13 @@ std = [
 	"pallet-multisig/std",
 	"pallet-preimage/std",
 	"pallet-proxy/std",
-	"pallet-ranked-collective/std",
-	"pallet-referenda/std",
 	"pallet-scheduler/std",
 	"pallet-session/std",
 	"pallet-timestamp/std",
-	"pallet-tips/std",
 	"pallet-transaction-payment-rpc-runtime-api/std",
 	"pallet-transaction-payment/std",
 	"pallet-treasury/std",
 	"pallet-utility/std",
-	"pallet-whitelist/std",
 	"sp-api/std",
 	"sp-arithmetic/std",
 	"sp-block-builder/std",
@@ -209,26 +183,12 @@ std = [
 	"orml-xcm/std",
 	"orml-xtokens/std",
 
-	"zenlink-protocol/std",
-	"zenlink-protocol-runtime-api/std",
-	"zenlink-stable-amm/std",
-	"zenlink-stable-amm-runtime-api/std",
-	"zenlink-swap-router/std",
-	"merkle-distributor/std",
-
 	"tangle-primitives/std",
 	"tangle-asset-registry/std",
 	"tangle-currencies/std",
 	"tangle-runtime-common/std",
-	"tangle-slp/std",
-	"tangle-slpx/std",
-	"tangle-stable-pool-rpc-runtime-api/std",
-	"tangle-stable-pool/std",
-	"tangle-token-issuer/std",
 	"tangle-lst-minting/std",
 	"tangle-lst-voting/std",
-	"pallet-prices/std",
-	"tangle-stable-asset/std",
 	"tangle-parachain-staking/std",
 	"tangle-xcm-interface/std",
 	"substrate-wasm-builder"
@@ -240,32 +200,23 @@ runtime-benchmarks = [
 	"frame-system-benchmarking/runtime-benchmarks",
 	"frame-support/runtime-benchmarks",
 	"frame-system/runtime-benchmarks",
-	"pallet-asset-rate/runtime-benchmarks",
 	"pallet-balances/runtime-benchmarks",
 	"pallet-bounties/runtime-benchmarks",
 	"pallet-collective/runtime-benchmarks",
 	"pallet-conviction-voting/runtime-benchmarks",
 	"pallet-indices/runtime-benchmarks",
-	"pallet-ranked-collective/runtime-benchmarks",
-	"pallet-referenda/runtime-benchmarks",
 	"pallet-scheduler/runtime-benchmarks",
 	"pallet-timestamp/runtime-benchmarks",
 	"pallet-treasury/runtime-benchmarks",
 	"pallet-utility/runtime-benchmarks",
 	"pallet-xcm/runtime-benchmarks",
-	"pallet-tips/runtime-benchmarks",
 	"pallet-elections-phragmen/runtime-benchmarks",
-	"pallet-whitelist/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
 	"xcm-builder/runtime-benchmarks",
-	"tangle-token-issuer/runtime-benchmarks",
 	"tangle-lst-minting/runtime-benchmarks",
-	"tangle-slp/runtime-benchmarks",
 	"tangle-asset-registry/runtime-benchmarks",
 	"tangle-parachain-staking/runtime-benchmarks",
 	"sp-api/disable-logging",
-	"tangle-slpx/runtime-benchmarks",
-	"tangle-stable-pool/runtime-benchmarks",
 	"tangle-lst-voting/runtime-benchmarks",
 ]
 
@@ -300,32 +251,18 @@ try-runtime = [
 	"pallet-proxy/try-runtime",
 	"pallet-multisig/try-runtime",
 	"pallet-identity/try-runtime",
-	"pallet-ranked-collective/try-runtime",
-	"pallet-referenda/try-runtime",
 	"pallet-treasury/try-runtime",
 	"pallet-bounties/try-runtime",
-	"pallet-tips/try-runtime",
 	"pallet-preimage/try-runtime",
-	"pallet-whitelist/try-runtime",
 	"orml-xtokens/try-runtime",
 	"orml-tokens/try-runtime",
 	"tangle-currencies/try-runtime",
 	"orml-unknown-tokens/try-runtime",
 	"orml-xcm/try-runtime",
 	"orml-oracle/try-runtime",
-	"zenlink-protocol/try-runtime",
-	"merkle-distributor/try-runtime",
-	"zenlink-stable-amm/try-runtime",
-	"zenlink-swap-router/try-runtime",
-	"tangle-token-issuer/try-runtime",
 	"tangle-asset-registry/try-runtime",
 	"tangle-lst-minting/try-runtime",
-	"tangle-slp/try-runtime",
 	"tangle-xcm-interface/try-runtime",
-	"tangle-slpx/try-runtime",
-	"tangle-stable-asset/try-runtime",
-	"tangle-stable-pool/try-runtime",
-	"pallet-prices/try-runtime",
 	"tangle-lst-voting/try-runtime",
 ]
 
