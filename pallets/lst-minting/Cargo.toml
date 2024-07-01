@@ -39,7 +39,6 @@ xcm-executor = { workspace = true }
 xcm-builder = { workspace = true }
 pallet-xcm = { workspace = true }
 xcm = { workspace = true }
-tangle-slp = { workspace = true }
 tangle-asset-registry = { workspace = true }
 tangle-runtime-common = { workspace = true }
 env_logger = { workspace = true }
@@ -54,7 +53,6 @@ std = [
 	"frame-benchmarking/std",
 	"tangle-primitives/std",
 	"orml-traits/std",
-	"tangle-slp/std",
 	"tangle-asset-registry/std",
 	"tangle-runtime-common/std",
 	"pallet-assets/std"
