@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -14,18 +17,18 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::*;
+use tangle_primitives::{CurrencyId, BNC};
 use frame_support::traits::{Get, OnRuntimeUpgrade};
 #[cfg(feature = "try-runtime")]
 use sp_runtime::TryRuntimeError;
-use tangle_primitives::{CurrencyId, TNT};
-use xcm::prelude::{GeneralKey, X1};
+use xcm::v3::prelude::{GeneralKey, X1};
 
 const LOG_TARGET: &str = "asset-registry::migration";
 
 pub fn update_blp_metadata<T: Config>(pool_count: u32) -> Weight {
 	for pool_id in 0..pool_count {
 		if let Some(old_metadata) = CurrencyMetadatas::<T>::get(CurrencyId::BLP(pool_id)) {
-			let name = scale_info::prelude::format!("tangle Stable Pool Token {}", pool_id)
+			let name = scale_info::prelude::format!("Bifrost Stable Pool Token {}", pool_id)
 				.as_bytes()
 				.to_vec();
 			let symbol = scale_info::prelude::format!("BLP{}", pool_id).as_bytes().to_vec();
@@ -39,7 +42,7 @@ pub fn update_blp_metadata<T: Config>(pool_count: u32) -> Weight {
 	T::DbWeight::get().reads(pool_count.into()) + T::DbWeight::get().writes(pool_count.into())
 }
 
-const BNC_LOCATION: MultiLocation = MultiLocation {
+const BNC_LOCATION: xcm::v3::Location = xcm::v3::Location {
 	parents: 0,
 	interior: X1(GeneralKey {
 		length: 2,
@@ -53,20 +56,20 @@ const BNC_LOCATION: MultiLocation = MultiLocation {
 pub struct InsertBNCMetadata<T>(PhantomData<T>);
 impl<T: Config> OnRuntimeUpgrade for InsertBNCMetadata<T> {
 	fn on_runtime_upgrade() -> Weight {
-		log::info!(target: LOG_TARGET, "Start to insert TNT Metadata...");
+		log::info!(target: LOG_TARGET, "Start to insert BNC Metadata...");
 		CurrencyMetadatas::<T>::insert(
-			TNT,
+			BNC,
 			&AssetMetadata {
-				name: b"tangle Native Token".to_vec(),
-				symbol: b"TNT".to_vec(),
+				name: b"Bifrost Native Token".to_vec(),
+				symbol: b"BNC".to_vec(),
 				decimals: 12,
 				minimal_balance: BalanceOf::<T>::unique_saturated_from(10_000_000_000u128),
 			},
 		);
 
-		CurrencyIdToLocations::<T>::insert(TNT, BNC_LOCATION);
+		CurrencyIdToLocations::<T>::insert(BNC, BNC_LOCATION);
 
-		LocationToCurrencyIds::<T>::insert(BNC_LOCATION, TNT);
+		LocationToCurrencyIds::<T>::insert(BNC_LOCATION, BNC);
 
 		Weight::from(T::DbWeight::get().reads_writes(3 as u64 + 1, 3 as u64 + 1))
 	}
@@ -80,12 +83,12 @@ impl<T: Config> OnRuntimeUpgrade for InsertBNCMetadata<T> {
 
 	#[cfg(feature = "try-runtime")]
 	fn post_upgrade(_cnt: Vec<u8>) -> Result<(), TryRuntimeError> {
-		let metadata = CurrencyMetadatas::<T>::get(TNT);
+		let metadata = CurrencyMetadatas::<T>::get(BNC);
 		assert_eq!(
 			metadata,
 			Some(AssetMetadata {
-				name: b"tangle Native Token".to_vec(),
-				symbol: b"TNT".to_vec(),
+				name: b"Bifrost Native Token".to_vec(),
+				symbol: b"BNC".to_vec(),
 				decimals: 12,
 				minimal_balance: BalanceOf::<T>::unique_saturated_from(10_000_000_000u128),
 			})
@@ -96,7 +99,7 @@ impl<T: Config> OnRuntimeUpgrade for InsertBNCMetadata<T> {
 			metadata
 		);
 
-		let location = CurrencyIdToLocations::<T>::get(TNT);
+		let location = CurrencyIdToLocations::<T>::get(BNC);
 		assert_eq!(location, Some(BNC_LOCATION));
 
 		log::info!(
@@ -106,7 +109,7 @@ impl<T: Config> OnRuntimeUpgrade for InsertBNCMetadata<T> {
 		);
 
 		let currency = LocationToCurrencyIds::<T>::get(BNC_LOCATION);
-		assert_eq!(currency, Some(TNT));
+		assert_eq!(currency, Some(BNC));
 		log::info!(
 			target: LOG_TARGET,
 			"InsertBNCMetadata post-migrate storage: {:?}",
