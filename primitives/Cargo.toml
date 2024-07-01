@@ -1,6 +1,7 @@
 [package]
 name = "tangle-primitives"
 version = "0.8.0"
+authors = ["Edwin Wang <lark930@gmail.com>"]
 edition = "2021"
 
 [dependencies]
@@ -14,6 +15,9 @@ sp-core = { workspace = true }
 sp-runtime = { workspace = true }
 sp-std = { workspace = true }
 xcm = { workspace = true }
+xcm-executor = { workspace = true }
+
+zenlink-protocol = { workspace = true }
 orml-oracle = { workspace = true }
 
 [features]
@@ -29,6 +33,8 @@ std = [
 	"sp-std/std",
 
 	"xcm/std",
+
+	"zenlink-protocol/std",
 	"orml-oracle/std",
 ]
 

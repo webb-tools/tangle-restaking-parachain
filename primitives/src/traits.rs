@@ -1,4 +1,7 @@
-// This file is part of Tangle.
+// This file is part of tangle.
+
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -40,7 +43,7 @@ pub trait TokenInfo {
 /// Extension trait for CurrencyId
 pub trait CurrencyIdExt {
 	type TokenSymbol;
-	fn is_lst(&self) -> bool;
+	fn is_vtoken(&self) -> bool;
 	fn is_token(&self) -> bool;
 	fn is_vstoken(&self) -> bool;
 	fn is_vsbond(&self) -> bool;
@@ -104,15 +107,15 @@ where
 	}
 }
 
-/// The interface to call LstMinting module functions.
-pub trait LstMintingOperator<CurrencyId, Balance, AccountId, TimeUnit> {
+/// The interface to call VtokenMinting module functions.
+pub trait VtokenMintingOperator<CurrencyId, Balance, AccountId, TimeUnit> {
 	/// Get the currency tokenpool amount.
 	fn get_token_pool(currency_id: CurrencyId) -> Balance;
 
-	/// Increase the token amount for the storage "token_pool" in the lstMining module.
+	/// Increase the token amount for the storage "token_pool" in the VtokenMining module.
 	fn increase_token_pool(currency_id: CurrencyId, token_amount: Balance) -> DispatchResult;
 
-	/// Decrease the token amount for the storage "token_pool" in the lstMining module.
+	/// Decrease the token amount for the storage "token_pool" in the VtokenMining module.
 	fn decrease_token_pool(currency_id: CurrencyId, token_amount: Balance) -> DispatchResult;
 
 	/// Update the ongoing era for a CurrencyId.
@@ -149,12 +152,12 @@ pub trait LstMintingOperator<CurrencyId, Balance, AccountId, TimeUnit> {
 	fn get_manta_parachain_id() -> u32;
 }
 
-/// Trait for lst-Minting module to check whether accept redeeming or not.
+/// Trait for Vtoken-Minting module to check whether accept redeeming or not.
 pub trait SlpOperator<CurrencyId> {
 	fn all_delegation_requests_occupied(currency_id: CurrencyId) -> bool;
 }
 
-/// Trait for lst-Minting module to check whether accept redeeming or not.
+/// Trait for Vtoken-Minting module to check whether accept redeeming or not.
 pub trait SlpxOperator<Balance> {
 	fn get_moonbeam_transfer_to_fee() -> Balance;
 }
@@ -165,15 +168,17 @@ pub trait CurrencyIdMapping<CurrencyId, MultiLocation, AssetMetadata> {
 	fn get_asset_metadata(asset_ids: AssetIds) -> Option<AssetMetadata>;
 	/// Returns the AssetMetadata associated with a given `CurrencyId`.
 	fn get_currency_metadata(currency_id: CurrencyId) -> Option<AssetMetadata>;
-	/// Returns the MultiLocation associated with a given CurrencyId.
-	fn get_multi_location(currency_id: CurrencyId) -> Option<MultiLocation>;
-	/// Returns the CurrencyId associated with a given MultiLocation.
-	fn get_currency_id(multi_location: MultiLocation) -> Option<CurrencyId>;
+	/// Returns the Location associated with a given CurrencyId.
+	fn get_location(currency_id: CurrencyId) -> Option<xcm::v4::Location>;
+	/// Returns the CurrencyId associated with a given Location.
+	fn get_currency_id(multi_location: xcm::v4::Location) -> Option<CurrencyId>;
+	/// Returns all currencies in currencyMetadata.
+	fn get_all_currency() -> Vec<CurrencyId>;
 }
 
 pub trait CurrencyIdConversion<CurrencyId> {
 	fn convert_to_token(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
-	fn convert_to_lst(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
+	fn convert_to_vtoken(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
 	fn convert_to_vstoken(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
 	fn convert_to_vsbond(
 		currency_id: CurrencyId,
@@ -185,7 +190,7 @@ pub trait CurrencyIdConversion<CurrencyId> {
 
 pub trait CurrencyIdRegister<CurrencyId> {
 	fn check_token_registered(token_symbol: TokenSymbol) -> bool;
-	fn check_lst_registered(token_symbol: TokenSymbol) -> bool;
+	fn check_vtoken_registered(token_symbol: TokenSymbol) -> bool;
 	fn check_vstoken_registered(token_symbol: TokenSymbol) -> bool;
 	fn check_vsbond_registered(
 		token_symbol: TokenSymbol,
@@ -193,7 +198,7 @@ pub trait CurrencyIdRegister<CurrencyId> {
 		first_slot: crate::LeasePeriod,
 		last_slot: crate::LeasePeriod,
 	) -> bool;
-	fn register_lst_metadata(token_symbol: TokenSymbol) -> DispatchResult;
+	fn register_vtoken_metadata(token_symbol: TokenSymbol) -> DispatchResult;
 	fn register_vstoken_metadata(token_symbol: TokenSymbol) -> DispatchResult;
 	fn register_vsbond_metadata(
 		token_symbol: TokenSymbol,
@@ -202,7 +207,7 @@ pub trait CurrencyIdRegister<CurrencyId> {
 		last_slot: crate::LeasePeriod,
 	) -> DispatchResult;
 	fn check_token2_registered(token_id: TokenId) -> bool;
-	fn check_lst2_registered(token_id: TokenId) -> bool;
+	fn check_vtoken2_registered(token_id: TokenId) -> bool;
 	fn check_vstoken2_registered(token_id: TokenId) -> bool;
 	fn check_vsbond2_registered(
 		token_id: TokenId,
@@ -210,7 +215,7 @@ pub trait CurrencyIdRegister<CurrencyId> {
 		first_slot: crate::LeasePeriod,
 		last_slot: crate::LeasePeriod,
 	) -> bool;
-	fn register_lst2_metadata(token_id: TokenId) -> DispatchResult;
+	fn register_vtoken2_metadata(token_id: TokenId) -> DispatchResult;
 	fn register_vstoken2_metadata(token_id: TokenId) -> DispatchResult;
 	fn register_vsbond2_metadata(
 		token_id: TokenId,
@@ -226,7 +231,7 @@ impl<CurrencyId> CurrencyIdRegister<CurrencyId> for () {
 		false
 	}
 
-	fn check_lst_registered(_token_symbol: TokenSymbol) -> bool {
+	fn check_vtoken_registered(_token_symbol: TokenSymbol) -> bool {
 		false
 	}
 
@@ -243,7 +248,7 @@ impl<CurrencyId> CurrencyIdRegister<CurrencyId> for () {
 		false
 	}
 
-	fn register_lst_metadata(_token_symbol: TokenSymbol) -> DispatchResult {
+	fn register_vtoken_metadata(_token_symbol: TokenSymbol) -> DispatchResult {
 		Ok(())
 	}
 
@@ -264,7 +269,7 @@ impl<CurrencyId> CurrencyIdRegister<CurrencyId> for () {
 		false
 	}
 
-	fn check_lst2_registered(_token_id: TokenId) -> bool {
+	fn check_vtoken2_registered(_token_id: TokenId) -> bool {
 		false
 	}
 
@@ -281,7 +286,7 @@ impl<CurrencyId> CurrencyIdRegister<CurrencyId> for () {
 		false
 	}
 
-	fn register_lst2_metadata(_token_id: TokenId) -> DispatchResult {
+	fn register_vtoken2_metadata(_token_id: TokenId) -> DispatchResult {
 		Ok(())
 	}
 
@@ -309,40 +314,39 @@ pub trait FarmingInfo<Balance, CurrencyId> {
 	fn get_token_shares(pool_id: PoolId, currency_id: CurrencyId) -> Balance;
 }
 
-pub trait LstMintingInterface<AccountId, CurrencyId, Balance> {
+pub trait VtokenMintingInterface<AccountId, CurrencyId, Balance> {
 	fn mint(
 		exchanger: AccountId,
 		token_id: CurrencyId,
 		token_amount: Balance,
 		remark: BoundedVec<u8, ConstU32<32>>,
-		channel_id: u32,
-		validators: Vec<AccountId>
+		channel_id: Option<u32>,
 	) -> Result<Balance, DispatchError>;
 	fn redeem(
 		exchanger: AccountId,
-		lst_id: CurrencyId,
-		lst_amount: Balance,
+		vtoken_id: CurrencyId,
+		vtoken_amount: Balance,
 	) -> DispatchResultWithPostInfo;
 	fn slpx_redeem(
 		exchanger: AccountId,
-		lst_id: CurrencyId,
-		lst_amount: Balance,
+		vtoken_id: CurrencyId,
+		vtoken_amount: Balance,
 		redeem: RedeemType<AccountId>,
 	) -> DispatchResultWithPostInfo;
-	fn token_to_lst(
+	fn token_to_vtoken(
 		token_id: CurrencyId,
-		lst_id: CurrencyId,
+		vtoken_id: CurrencyId,
 		token_amount: Balance,
 	) -> Result<Balance, DispatchError>;
-	fn lst_to_token(
+	fn vtoken_to_token(
 		token_id: CurrencyId,
-		lst_id: CurrencyId,
-		lst_amount: Balance,
+		vtoken_id: CurrencyId,
+		vtoken_amount: Balance,
 	) -> Result<Balance, DispatchError>;
-	fn lst_id(token_id: CurrencyId) -> Option<CurrencyId>;
-	fn token_id(lst_id: CurrencyId) -> Option<CurrencyId>;
+	fn vtoken_id(token_id: CurrencyId) -> Option<CurrencyId>;
+	fn token_id(vtoken_id: CurrencyId) -> Option<CurrencyId>;
 	fn get_token_pool(currency_id: CurrencyId) -> Balance;
-	fn get_minimums_redeem(lst_id: CurrencyId) -> Balance;
+	fn get_minimums_redeem(vtoken_id: CurrencyId) -> Balance;
 	fn get_astar_parachain_id() -> u32;
 	fn get_moonbeam_parachain_id() -> u32;
 	fn get_hydradx_parachain_id() -> u32;
@@ -350,7 +354,7 @@ pub trait LstMintingInterface<AccountId, CurrencyId, Balance> {
 	fn get_manta_parachain_id() -> u32;
 }
 
-impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, CurrencyId, Balance>
+impl<AccountId, CurrencyId, Balance: Zero> VtokenMintingInterface<AccountId, CurrencyId, Balance>
 	for ()
 {
 	fn mint(
@@ -358,50 +362,49 @@ impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, Curren
 		_token_id: CurrencyId,
 		_token_amount: Balance,
 		_remark: BoundedVec<u8, ConstU32<32>>,
-		_channel_id: u32,
-		_validators: Vec<AccountId>
+		_channel_id: Option<u32>,
 	) -> Result<Balance, DispatchError> {
 		Ok(Zero::zero())
 	}
 
 	fn redeem(
 		_exchanger: AccountId,
-		_lst_id: CurrencyId,
-		_lst_amount: Balance,
+		_vtoken_id: CurrencyId,
+		_vtoken_amount: Balance,
 	) -> DispatchResultWithPostInfo {
 		Ok(().into())
 	}
 
 	fn slpx_redeem(
 		_exchanger: AccountId,
-		_lst_id: CurrencyId,
-		_lst_amount: Balance,
+		_vtoken_id: CurrencyId,
+		_vtoken_amount: Balance,
 		_redeem_type: RedeemType<AccountId>,
 	) -> DispatchResultWithPostInfo {
 		Ok(().into())
 	}
 
-	fn token_to_lst(
+	fn token_to_vtoken(
 		_token_id: CurrencyId,
-		_lst_id: CurrencyId,
+		_vtoken_id: CurrencyId,
 		_token_amount: Balance,
 	) -> Result<Balance, DispatchError> {
 		Ok(Zero::zero())
 	}
 
-	fn lst_to_token(
+	fn vtoken_to_token(
 		_token_id: CurrencyId,
-		_lst_id: CurrencyId,
-		_lst_amount: Balance,
+		_vtoken_id: CurrencyId,
+		_vtoken_amount: Balance,
 	) -> Result<Balance, DispatchError> {
 		Ok(Zero::zero())
 	}
 
-	fn lst_id(_token_id: CurrencyId) -> Option<CurrencyId> {
+	fn vtoken_id(_token_id: CurrencyId) -> Option<CurrencyId> {
 		None
 	}
 
-	fn token_id(_lst_id: CurrencyId) -> Option<CurrencyId> {
+	fn token_id(_vtoken_id: CurrencyId) -> Option<CurrencyId> {
 		None
 	}
 
@@ -409,7 +412,7 @@ impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, Curren
 		Zero::zero()
 	}
 
-	fn get_minimums_redeem(_lst_id: CurrencyId) -> Balance {
+	fn get_minimums_redeem(_vtoken_id: CurrencyId) -> Balance {
 		Zero::zero()
 	}
 
@@ -500,34 +503,34 @@ pub trait DerivativeAccountHandler<CurrencyId, Balance> {
 	fn add_delegator(token: CurrencyId, index: DerivativeIndex, who: xcm::v3::MultiLocation);
 }
 
-pub trait LstSupplyProvider<CurrencyId, Balance> {
-	fn get_lst_supply(lst: CurrencyId) -> Option<Balance>;
+pub trait VTokenSupplyProvider<CurrencyId, Balance> {
+	fn get_vtoken_supply(vtoken: CurrencyId) -> Option<Balance>;
 
 	fn get_token_supply(token: CurrencyId) -> Option<Balance>;
 }
 
 // traits for pallet channel-commission
-pub trait LstMintRedeemProvider<CurrencyId, Balance> {
-	// record the mint amount of lst
+pub trait VTokenMintRedeemProvider<CurrencyId, Balance> {
+	// record the mint amount of vtoken
 	fn record_mint_amount(
 		channel_id: Option<u32>,
-		lst: CurrencyId,
+		vtoken: CurrencyId,
 		amount: Balance,
 	) -> Result<(), DispatchError>;
-	// record the redeem amount of lst
-	fn record_redeem_amount(lst: CurrencyId, amount: Balance) -> Result<(), DispatchError>;
+	// record the redeem amount of vtoken
+	fn record_redeem_amount(vtoken: CurrencyId, amount: Balance) -> Result<(), DispatchError>;
 }
 
-impl<CurrencyId, Balance> LstMintRedeemProvider<CurrencyId, Balance> for () {
+impl<CurrencyId, Balance> VTokenMintRedeemProvider<CurrencyId, Balance> for () {
 	fn record_mint_amount(
 		_channel_id: Option<u32>,
-		_lst: CurrencyId,
+		_vtoken: CurrencyId,
 		_amount: Balance,
 	) -> Result<(), DispatchError> {
 		Ok(())
 	}
 
-	fn record_redeem_amount(_lst: CurrencyId, _amount: Balance) -> Result<(), DispatchError> {
+	fn record_redeem_amount(_vtoken: CurrencyId, _amount: Balance) -> Result<(), DispatchError> {
 		Ok(())
 	}
 }
