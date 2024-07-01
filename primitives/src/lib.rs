@@ -1,4 +1,7 @@
-// This file is part of Tangle.
+// This file is part of tangle.
+
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,22 +28,23 @@ use sp_runtime::{
 	traits::{BlakeTwo256, IdentifyAccount, Verify},
 	FixedU128, MultiSignature, OpaqueExtrinsic, Permill,
 };
-use xcm::v3::prelude::*;
+use xcm::v4::{prelude::*, Asset, Location};
+use xcm_executor::traits::{AssetTransferError, TransferType, XcmAssetTransfers};
 
-// pub mod currency;
-// mod salp;
-// pub mod traits;
-// pub use salp::*;
+pub mod currency;
+mod salp;
+pub mod traits;
+pub use salp::*;
 
 #[cfg(test)]
 mod tests;
 
 pub use crate::{
-	// currency::{
-	// 	AssetIds, CurrencyId, ForeignAssetId, TokenId, TokenSymbol, ASTR, ASTR_TOKEN_ID, DOT,
-	// 	DOT_TOKEN_ID, DOT_U, FIL, GLMR, GLMR_TOKEN_ID, KSM, MANTA, TNT, VDOT, VKSM, VSKSM, VTNT,
-	// },
-	//traits::*,
+	currency::{
+		AssetIds, CurrencyId, ForeignAssetId, TokenId, TokenSymbol, ASTR, ASTR_TOKEN_ID, BNC, DOT,
+		DOT_TOKEN_ID, DOT_U, FIL, GLMR, GLMR_TOKEN_ID, KSM, MANTA, VBNC, VDOT, VKSM, VSKSM,
+	},
+	traits::*,
 };
 
 /// An index to a block.
@@ -59,8 +63,8 @@ pub type AccountIndex = u32;
 /// An index to an asset
 pub type AssetId = u32;
 
-/// lst Mint type
-pub type LstMintPrice = u128;
+/// Vtoken Mint type
+pub type VtokenMintPrice = u128;
 
 /// Balance of an account.
 pub type Balance = u128;
@@ -157,12 +161,12 @@ pub type TimeStampedPrice = orml_oracle::TimestampedValue<Price, Moment>;
 pub enum ExtraFeeName {
 	SalpContribute,
 	StatemineTransfer,
-	Votelst,
+	VoteVtoken,
 	VoteRemoveDelegatorVote,
 	NoExtraFee,
 }
 
-// For lst-minting and slp modules
+// For vtoken-minting and slp modules
 #[derive(Encode, Decode, Clone, RuntimeDebug, Eq, TypeInfo, MaxEncodedLen)]
 pub enum TimeUnit {
 	// Kusama staking time unit
@@ -222,7 +226,7 @@ impl PartialOrd for TimeUnit {
 	}
 }
 
-// For lst-minting
+// For vtoken-minting
 #[derive(
 	PartialEq, Eq, Clone, Encode, Decode, MaxEncodedLen, RuntimeDebug, scale_info::TypeInfo,
 )]
@@ -250,8 +254,8 @@ impl<AccountId> Default for RedeemType<AccountId> {
 pub struct DoNothingRouter;
 impl SendXcm for DoNothingRouter {
 	type Ticket = ();
-	fn validate(_dest: &mut Option<MultiLocation>, _msg: &mut Option<Xcm<()>>) -> SendResult<()> {
-		Ok(((), MultiAssets::new()))
+	fn validate(_dest: &mut Option<Location>, _msg: &mut Option<Xcm<()>>) -> SendResult<()> {
+		Ok(((), Assets::new()))
 	}
 	fn deliver(_: ()) -> Result<XcmHash, SendError> {
 		Ok([0; 32])
@@ -274,35 +278,26 @@ impl<Call> ExecuteXcm<Call> for DoNothingExecuteXcm {
 	}
 
 	fn execute(
-		_origin: impl Into<MultiLocation>,
+		_origin: impl Into<Location>,
 		_pre: Self::Prepared,
 		_hash: &mut XcmHash,
 		_weight_credit: Weight,
 	) -> Outcome {
-		Outcome::Complete(Weight::default())
+		Outcome::Complete { used: Weight::default() }
 	}
 
-	fn execute_xcm(
-		_origin: impl Into<MultiLocation>,
-		_message: Xcm<Call>,
-		_hash: XcmHash,
-		_weight_limit: Weight,
-	) -> Outcome {
-		Outcome::Complete(Weight::default())
-	}
-
-	fn execute_xcm_in_credit(
-		_origin: impl Into<MultiLocation>,
-		_message: Xcm<Call>,
-		_hash: XcmHash,
-		_weight_limit: Weight,
-		_weight_credit: Weight,
-	) -> Outcome {
-		Outcome::Complete(Weight::default())
-	}
-
-	fn charge_fees(_location: impl Into<MultiLocation>, _fees: MultiAssets) -> XcmResult {
+	fn charge_fees(_location: impl Into<Location>, _fees: Assets) -> XcmResult {
 		Ok(())
+	}
+}
+
+impl XcmAssetTransfers for DoNothingExecuteXcm {
+	type IsReserve = ();
+	type IsTeleporter = ();
+	type AssetTransactor = ();
+
+	fn determine_for(_asset: &Asset, _dest: &Location) -> Result<TransferType, AssetTransferError> {
+		Ok(TransferType::DestinationReserve)
 	}
 }
 
@@ -329,23 +324,23 @@ pub enum XcmOperationType {
 	XtokensTransferBack,
 	ExecuteLeave,
 	ConvertAsset,
-	// LstVoting operations
+	// VtokenVoting operations
 	Vote,
 	RemoveVote,
 	Any,
 	SupplementaryFee,
 }
 
-// pub struct ExtraFeeInfo {
-// 	pub extra_fee_name: ExtraFeeName,
-// 	pub extra_fee_currency: CurrencyId,
-// }
+pub struct ExtraFeeInfo {
+	pub extra_fee_name: ExtraFeeName,
+	pub extra_fee_currency: CurrencyId,
+}
 
-// impl Default for ExtraFeeInfo {
-// 	fn default() -> Self {
-// 		Self {
-// 			extra_fee_name: ExtraFeeName::NoExtraFee,
-// 			extra_fee_currency: CurrencyId::Native(TokenSymbol::TNT),
-// 		}
-// 	}
-// }
+impl Default for ExtraFeeInfo {
+	fn default() -> Self {
+		Self {
+			extra_fee_name: ExtraFeeName::NoExtraFee,
+			extra_fee_currency: CurrencyId::Native(TokenSymbol::BNC),
+		}
+	}
+}
