@@ -34,7 +34,6 @@ xcm-emulator = { workspace = true }
 
 # Local
 integration-tests-common = { path = "../common", default-features = false }
-tangle-lst-voting = { workspace = true }
 tangle-primitives = { workspace = true }
 tangle-asset-registry = { workspace = true }
 tangle-kusama-runtime = { workspace = true }

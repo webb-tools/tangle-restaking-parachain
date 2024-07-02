@@ -1,7 +1,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use num_bigint::{BigUint, ToBigUint};
 use tangle_primitives::{CurrencyId, PriceDetail};
+use num_bigint::{BigUint, ToBigUint};
 
 pub mod lend_market;
 pub use lend_market::*;

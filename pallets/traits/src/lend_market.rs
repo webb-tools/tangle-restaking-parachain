@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use tangle_primitives::{Rate, Ratio};
 use parity_scale_codec::{Decode, Encode};
 use scale_info::TypeInfo;
 use sp_runtime::{DispatchError, FixedU128, RuntimeDebug};
 use sp_std::prelude::*;
-use tangle_primitives::{Rate, Ratio};
 
 pub trait LendMarket<CurrencyId, AccountId, Balance> {
 	fn do_mint(

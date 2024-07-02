@@ -18,7 +18,6 @@ members = [
 	"pallets/currencies",
 	"pallets/xcm-interface",
 	"pallets/lst-minting",
-	"pallets/lst-voting",
 	"pallets/parachain-staking",
 	"runtime/tangle-polkadot",
 	"tangle-restaking-subxt",
@@ -230,14 +229,13 @@ xcm = { package = "staging-xcm", git = "https://github.com/paritytech/polkadot-s
 polkadot-parachain-primitives = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.7.0", default-features = false }
 
 # tangle Runtime
-tangle-runtime-common   = { path = "runtime/common" }
-tangle-polkadot-runtime   = { path = "runtime/tangle-polkadot" }
+tangle-runtime-common = { path = "runtime/common" }
+tangle-polkadot-runtime = { path = "runtime/tangle-polkadot" }
 
 # tangle pallets
 tangle-asset-registry = { path = "pallets/asset-registry", default-features = false }
 tangle-currencies = { path = "pallets/currencies", default-features = false }
 tangle-lst-minting = { path = "pallets/lst-minting", default-features = false }
-tangle-lst-voting = { path = "pallets/lst-voting", default-features = false }
 tangle-xcm-interface = { path = "pallets/xcm-interface", default-features = false }
 tangle-parachain-staking = { path = "pallets/parachain-staking", default-features = false }
 tangle-primitives = { path = "primitives", default-features = false }
@@ -246,22 +244,24 @@ tangle-primitives = { path = "primitives", default-features = false }
 orml-tokens= { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
 orml-traits= { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
 orml-unknown-tokens = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
-orml-utilities      = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
-orml-xcm   = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
-orml-xcm-support    = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
-orml-xtokens        = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-utilities    = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-xcm = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-xcm-support  = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-xtokens      = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
 orml-oracle= { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
 
 # Other
-bstringify   = { version = "0.1.2" }
-env_logger   = { version = "0.10.2" }
-ethabi       = { version = "18.0.0", default-features = false }
-ethereum     = { version = "0.14.0", default-features = false, features = ["with-codec"] }
-num-bigint   = { version = "0.4.6", default-features = false }
-num-traits   = { version = "0.2.19", default-features = false }
-strum        = { version = "0.26.3", default-features = false, features = ["derive"] }
+bstringify = { version = "0.1.2" }
+env_logger = { version = "0.10.2" }
+ethabi     = { version = "18.0.0", default-features = false }
+ethereum   = { version = "0.14.0", default-features = false, features = ["with-codec"] }
+num-bigint = { version = "0.4.6", default-features = false }
+num-traits = { version = "0.2.19", default-features = false }
+strum      = { version = "0.26.3", default-features = false, features = ["derive"] }
 strum_macros = { version = "0.26.2" }
 tiny-keccak  = { version = "2.0", features = ["fips202"] }
+substrate-fixed = { git = "https://github.com/encointer/substrate-fixed", default-features = false }
+
 
 # Zenlink
 merkle-distributor = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
