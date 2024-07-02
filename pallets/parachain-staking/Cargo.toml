@@ -18,6 +18,7 @@ scale-info = { workspace = true, features = ["derive", "decode"] }
 sp-runtime = { workspace = true }
 sp-std = { workspace = true }
 sp-staking = { workspace = true }
+substrate-fixed = { workspace = true }
 pallet-authorship = { workspace = true }
 pallet-session = { workspace = true }
 
@@ -39,6 +40,7 @@ std = [
 	"sp-runtime/std",
 	"sp-std/std",
 	"sp-staking/std",
+	"substrate-fixed/std",
 	"serde/std",
 	"pallet-authorship/std",
 	"pallet-session/std",

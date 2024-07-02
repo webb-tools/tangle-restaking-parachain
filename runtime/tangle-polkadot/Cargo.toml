@@ -99,7 +99,6 @@ tangle-currencies = { workspace = true }
 tangle-primitives = { workspace = true }
 tangle-runtime-common = { workspace = true }
 tangle-lst-minting = { workspace = true }
-tangle-lst-voting = { workspace = true, features = [ "polkadot" ] }
 tangle-xcm-interface = { workspace = true }
 tangle-parachain-staking = { workspace = true }
 
@@ -188,7 +187,6 @@ std = [
 	"tangle-currencies/std",
 	"tangle-runtime-common/std",
 	"tangle-lst-minting/std",
-	"tangle-lst-voting/std",
 	"tangle-parachain-staking/std",
 	"tangle-xcm-interface/std",
 	"substrate-wasm-builder"
@@ -217,7 +215,6 @@ runtime-benchmarks = [
 	"tangle-asset-registry/runtime-benchmarks",
 	"tangle-parachain-staking/runtime-benchmarks",
 	"sp-api/disable-logging",
-	"tangle-lst-voting/runtime-benchmarks",
 ]
 
 try-runtime = [
@@ -263,7 +260,6 @@ try-runtime = [
 	"tangle-asset-registry/try-runtime",
 	"tangle-lst-minting/try-runtime",
 	"tangle-xcm-interface/try-runtime",
-	"tangle-lst-voting/try-runtime",
 ]
 
 # When enabled, the runtime API will not be build.

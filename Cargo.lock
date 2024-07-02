@@ -13995,6 +13995,17 @@ version = "11.0.0"
 source = "git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.7.0#851c824dc7a8e7e6db2d0c9fb29d232f2f45198a"
 
 [[package]]
+name = "substrate-fixed"
+version = "0.5.9"
+source = "git+https://github.com/encointer/substrate-fixed#879c58bcc6fd676a74315dcd38b598f28708b0b5"
+dependencies = [
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "substrate-typenum",
+]
+
+[[package]]
 name = "substrate-frame-rpc-system"
 version = "28.0.0"
 source = "git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.7.0#851c824dc7a8e7e6db2d0c9fb29d232f2f45198a"
@@ -14053,6 +14064,16 @@ dependencies = [
  "sp-state-machine 0.35.0",
  "sp-trie 29.0.0",
  "trie-db",
+]
+
+[[package]]
+name = "substrate-typenum"
+version = "1.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f0f0091e93c2c75b233ae39424c52cb8a662c0811fb68add149e20e5d7e8a788"
+dependencies = [
+ "parity-scale-codec",
+ "scale-info",
 ]
 
 [[package]]
@@ -14330,34 +14351,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tangle-lst-voting"
-version = "0.8.0"
-dependencies = [
- "assert_matches",
- "cumulus-primitives-core 0.7.0",
- "frame-benchmarking 28.0.0",
- "frame-support 28.0.0",
- "frame-system 28.0.0",
- "log",
- "orml-tokens",
- "orml-traits",
- "pallet-balances 28.0.0",
- "pallet-conviction-voting",
- "pallet-xcm 7.0.0",
- "parity-scale-codec",
- "scale-info",
- "sp-core 28.0.0",
- "sp-io 30.0.0",
- "sp-runtime 31.0.1",
- "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.7.0)",
- "staging-xcm 7.0.0",
- "staging-xcm-builder 7.0.0",
- "staging-xcm-executor 7.0.0",
- "tangle-currencies",
- "tangle-primitives",
-]
-
-[[package]]
 name = "tangle-parachain-node"
 version = "0.1.0"
 dependencies = [
@@ -14435,6 +14428,7 @@ dependencies = [
  "sp-runtime 31.0.1",
  "sp-staking 26.0.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.7.0)",
+ "substrate-fixed",
 ]
 
 [[package]]
@@ -14521,7 +14515,6 @@ dependencies = [
  "tangle-asset-registry",
  "tangle-currencies",
  "tangle-lst-minting",
- "tangle-lst-voting",
  "tangle-parachain-staking",
  "tangle-primitives",
  "tangle-runtime-common",
