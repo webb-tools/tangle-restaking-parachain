@@ -311,7 +311,7 @@ fn cross_ksm_to_tangle(to: [u8; 32], amount: u128) {
 }
 
 #[test]
-fn lst_minting() {
+fn Lst_minting() {
 	sp_io::TestExternalities::default().execute_with(|| {
 		slp_setup();
 		TangleKusama::execute_with(|| {

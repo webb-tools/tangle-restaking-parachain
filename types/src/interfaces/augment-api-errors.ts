@@ -1419,7 +1419,7 @@ declare module '@polkadot/api-base/types/errors' {
 			 * ArgumentsError
 			 **/
 			ArgumentsError: AugmentedError<ApiType>;
-			ErrorConvertlst: AugmentedError<ApiType>;
+			ErrorConvertLst: AugmentedError<ApiType>;
 			ErrorDelivering: AugmentedError<ApiType>;
 			ErrorValidating: AugmentedError<ApiType>;
 			/**
@@ -1435,7 +1435,7 @@ declare module '@polkadot/api-base/types/errors' {
 			 **/
 			NotSetExecutionFee: AugmentedError<ApiType>;
 			/**
-			 * Token not found in lst minting
+			 * Token not found in Lst minting
 			 **/
 			TokenNotFoundInLstMinting: AugmentedError<ApiType>;
 			/**

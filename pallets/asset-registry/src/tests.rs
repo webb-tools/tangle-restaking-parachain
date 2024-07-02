@@ -175,7 +175,7 @@ fn register_token_metadata_should_work() {
 }
 
 #[test]
-fn register_vtoken_metadata_should_work() {
+fn register_Lst_metadata_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
 			name: b"Bifrost Native Coin".to_vec(),
@@ -190,7 +190,7 @@ fn register_vtoken_metadata_should_work() {
 			minimal_balance: 0,
 		};
 		assert_noop!(
-			AssetRegistry::register_vtoken_metadata(
+			AssetRegistry::register_Lst_metadata(
 				RuntimeOrigin::signed(CouncilAccount::get()),
 				1
 			),
@@ -202,13 +202,13 @@ fn register_vtoken_metadata_should_work() {
 			Box::new(metadata.clone())
 		));
 
-		assert_ok!(AssetRegistry::register_vtoken_metadata(
+		assert_ok!(AssetRegistry::register_Lst_metadata(
 			RuntimeOrigin::signed(CouncilAccount::get()),
 			0
 		));
 
 		assert_eq!(
-			CurrencyMetadatas::<Runtime>::get(CurrencyId::VToken2(0)),
+			CurrencyMetadatas::<Runtime>::get(CurrencyId::Lst2(0)),
 			Some(v_metadata.clone())
 		)
 	})
@@ -230,7 +230,7 @@ fn register_vstoken_metadata_should_work() {
 			minimal_balance: 0,
 		};
 		assert_noop!(
-			AssetRegistry::register_vtoken_metadata(
+			AssetRegistry::register_Lst_metadata(
 				RuntimeOrigin::signed(CouncilAccount::get()),
 				1
 			),
@@ -267,7 +267,7 @@ fn register_vsbond_metadata_should_work() {
 		let v_metadata =
 			AssetMetadata { name: name.clone(), symbol: name, decimals: 12, minimal_balance: 0 };
 		assert_noop!(
-			AssetRegistry::register_vtoken_metadata(
+			AssetRegistry::register_Lst_metadata(
 				RuntimeOrigin::signed(CouncilAccount::get()),
 				1
 			),

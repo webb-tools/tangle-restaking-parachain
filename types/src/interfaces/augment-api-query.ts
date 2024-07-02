@@ -163,7 +163,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -189,7 +189,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -220,7 +220,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -923,7 +923,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -949,7 +949,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -975,7 +975,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1001,7 +1001,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1036,7 +1036,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg2:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1065,7 +1065,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1091,7 +1091,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1117,7 +1117,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg1:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1146,7 +1146,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1172,7 +1172,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1198,7 +1198,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1225,7 +1225,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg2:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1270,7 +1270,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1296,7 +1296,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg1:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1323,7 +1323,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg1:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1389,7 +1389,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg1:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1424,7 +1424,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1450,7 +1450,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1477,7 +1477,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg2:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1504,7 +1504,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1598,7 +1598,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg2:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1627,7 +1627,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2323,7 +2323,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2352,7 +2352,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2567,7 +2567,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2597,7 +2597,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2628,7 +2628,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2658,7 +2658,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2688,7 +2688,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg1:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2721,7 +2721,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg1:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2762,7 +2762,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2792,7 +2792,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg1:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2822,7 +2822,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg1:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2856,7 +2856,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2885,7 +2885,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2911,7 +2911,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2940,7 +2940,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2966,7 +2966,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2996,7 +2996,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3022,7 +3022,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3051,7 +3051,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3080,7 +3080,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3109,7 +3109,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg1:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3164,7 +3164,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3259,7 +3259,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg2:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3285,7 +3285,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3551,7 +3551,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3580,7 +3580,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3621,7 +3621,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg2:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3652,7 +3652,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg2:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3682,7 +3682,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg2:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3711,7 +3711,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3861,7 +3861,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg1:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4306,7 +4306,7 @@ declare module '@polkadot/api-base/types/storage' {
 					arg:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }

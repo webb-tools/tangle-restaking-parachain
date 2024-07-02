@@ -647,7 +647,7 @@ impl<T: Config>
 			Error::<T>::DelegatorNotExist
 		);
 
-		// Make sure from account is the entrance account of lst-minting module.
+		// Make sure from account is the entrance account of Lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
 		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
@@ -714,11 +714,11 @@ impl<T: Config>
 		Ok(query_id)
 	}
 
-	fn tune_lst_exchange_rate(
+	fn tune_Lst_exchange_rate(
 		&self,
 		who: &Option<MultiLocation>,
 		token_amount: BalanceOf<T>,
-		_lst_amount: BalanceOf<T>,
+		_Lst_amount: BalanceOf<T>,
 		currency_id: CurrencyId,
 	) -> Result<(), Error<T>> {
 		let who = who.as_ref().ok_or(Error::<T>::DelegatorNotExist)?;
@@ -730,7 +730,7 @@ impl<T: Config>
 			Err(Error::<T>::DelegatorNotExist)?;
 		}
 
-		Pallet::<T>::tune_lst_exchange_rate_without_update_ledger(who, token_amount, currency_id)?;
+		Pallet::<T>::tune_Lst_exchange_rate_without_update_ledger(who, token_amount, currency_id)?;
 
 		Ok(())
 	}
@@ -760,11 +760,11 @@ impl<T: Config>
 		to: &MultiLocation,
 		currency_id: CurrencyId,
 	) -> DispatchResult {
-		let lst = CurrencyId::Lst(TokenSymbol::PHA);
+		let Lst = CurrencyId::Lst(TokenSymbol::PHA);
 
-		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, lst, currency_id)?;
+		let charge_amount = Pallet::<T>::inner_calculate_Lst_hosting_fee(amount, Lst, currency_id)?;
 
-		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, lst)
+		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, Lst)
 	}
 
 	/// Deposit some amount as fee to nominator accounts.
