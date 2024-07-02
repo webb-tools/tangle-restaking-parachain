@@ -25,7 +25,7 @@ use sp_runtime::Perbill;
 use tangle_kusama_runtime::{
 	Runtime, RuntimeOrigin, Slp, XcmDestWeightAndFeeHandler, XcmInterface,
 };
-use tangle_lst_voting::{AccountVote, TallyOf};
+use tangle_Lst_voting::{AccountVote, TallyOf};
 use tangle_primitives::{
 	currency::VKSM, Balance, CurrencyId, LstSupplyProvider, XcmOperationType as XcmOperation, KSM,
 };
@@ -35,7 +35,7 @@ use xcm_emulator::{Parachain, RelayChain, TestExt};
 
 #[test]
 fn vote_works() {
-	let lst = VKSM;
+	let Lst = VKSM;
 	let poll_index = 0;
 
 	Kusama::execute_with(|| {
@@ -84,14 +84,14 @@ fn vote_works() {
 			None
 		));
 		assert_eq!(
-			<Runtime as tangle_lst_voting::Config>::LstSupplyProvider::get_token_supply(KSM),
+			<Runtime as tangle_Lst_voting::Config>::LstSupplyProvider::get_token_supply(KSM),
 			Some(1_000_000_000_000)
 		);
 		assert_eq!(
-			<Runtime as tangle_lst_voting::Config>::LstSupplyProvider::get_lst_supply(VKSM),
+			<Runtime as tangle_Lst_voting::Config>::LstSupplyProvider::get_Lst_supply(VKSM),
 			Some(1_000_000_000_000)
 		);
-		let token = CurrencyId::to_token(&lst).unwrap();
+		let token = CurrencyId::to_token(&Lst).unwrap();
 		assert_ok!(XcmInterface::set_xcm_dest_weight_and_fee(
 			token,
 			XcmOperation::Vote,
@@ -134,30 +134,30 @@ fn vote_works() {
 
 		assert_ok!(LstVoting::set_vote_cap_ratio(
 			RuntimeOrigin::root(),
-			lst,
+			Lst,
 			Perbill::from_percent(90)
 		));
-		assert_ok!(LstVoting::add_delegator(RuntimeOrigin::root(), lst, 5));
-		assert_ok!(LstVoting::set_vote_locking_period(RuntimeOrigin::root(), lst, 0));
-		assert_ok!(LstVoting::set_undeciding_timeout(RuntimeOrigin::root(), lst, 100));
+		assert_ok!(LstVoting::add_delegator(RuntimeOrigin::root(), Lst, 5));
+		assert_ok!(LstVoting::set_vote_locking_period(RuntimeOrigin::root(), Lst, 0));
+		assert_ok!(LstVoting::set_undeciding_timeout(RuntimeOrigin::root(), Lst, 100));
 
 		assert_ok!(LstVoting::vote(
 			RuntimeOrigin::signed(TangleKusamaAlice::get()),
-			lst,
+			Lst,
 			poll_index,
 			aye(1_000_000_000_000u128, 5)
 		));
 
 		assert_eq!(
-			tally(lst, poll_index),
+			tally(Lst, poll_index),
 			TallyOf::<Runtime>::from_parts(5_000_000_000_000, 0, 1_000_000_000_000)
 		);
 
 		assert!(System::events().iter().any(|r| matches!(
 			r.event,
-			RuntimeEvent::LstVoting(tangle_lst_voting::Event::Voted {
+			RuntimeEvent::LstVoting(tangle_Lst_voting::Event::Voted {
 				who: _,
-				lst: VKSM,
+				Lst: VKSM,
 				poll_index: 0,
 				token_vote: _,
 				delegator_vote: _,
@@ -190,8 +190,8 @@ fn vote_works() {
 			.for_each(|r| log::debug!("TangleKusama >>> {:?}", r.event));
 		assert!(System::events().iter().any(|r| matches!(
 			r.event,
-			RuntimeEvent::LstVoting(tangle_lst_voting::Event::VoteNotified {
-				lst: VKSM,
+			RuntimeEvent::LstVoting(tangle_Lst_voting::Event::VoteNotified {
+				Lst: VKSM,
 				poll_index: 0,
 				success: true,
 			})
@@ -200,7 +200,7 @@ fn vote_works() {
 			RuntimeOrigin::root(),
 			VKSM,
 			0,
-			tangle_lst_voting::ReferendumInfoOf::<Runtime>::Completed(1),
+			tangle_Lst_voting::ReferendumInfoOf::<Runtime>::Completed(1),
 		));
 		assert_ok!(LstVoting::remove_delegator_vote(
 			RuntimeOrigin::signed(TangleKusamaAlice::get()),
@@ -234,8 +234,8 @@ fn vote_works() {
 			.for_each(|r| log::debug!("TangleKusama >>> {:?}", r.event));
 		assert!(System::events().iter().any(|r| matches!(
 			r.event,
-			RuntimeEvent::LstVoting(tangle_lst_voting::Event::DelegatorVoteRemovedNotified {
-				lst: VKSM,
+			RuntimeEvent::LstVoting(tangle_Lst_voting::Event::DelegatorVoteRemovedNotified {
+				Lst: VKSM,
 				poll_index: 0,
 				success: true,
 			})
@@ -258,8 +258,8 @@ pub fn aye(amount: Balance, conviction: u8) -> AccountVote<Balance> {
 	AccountVote::Standard { vote, balance: amount }
 }
 
-fn tally(lst: CurrencyId, poll_index: u32) -> TallyOf<Runtime> {
-	tangle_kusama_runtime::LstVoting::ensure_referendum_ongoing(lst, poll_index)
+fn tally(Lst: CurrencyId, poll_index: u32) -> TallyOf<Runtime> {
+	tangle_kusama_runtime::LstVoting::ensure_referendum_ongoing(Lst, poll_index)
 		.expect("No poll")
 		.tally
 }

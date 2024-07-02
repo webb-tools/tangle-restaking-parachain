@@ -463,10 +463,10 @@ impl Contains<RuntimeCall> for SafeCallFilter {
 				| orml_tokens::Call::transfer_keep_alive { .. },
 			)
 			| RuntimeCall::LstMinting(
-				tangle_lst_minting::Call::mint { .. }
-				| tangle_lst_minting::Call::rebond { .. }
-				| tangle_lst_minting::Call::rebond_by_unlock_id { .. }
-				| tangle_lst_minting::Call::redeem { .. },
+				tangle_Lst_minting::Call::mint { .. }
+				| tangle_Lst_minting::Call::rebond { .. }
+				| tangle_Lst_minting::Call::rebond_by_unlock_id { .. }
+				| tangle_Lst_minting::Call::redeem { .. },
 			)
 			| RuntimeCall::XcmInterface(tangle_xcm_interface::Call::transfer_statemine_assets {
 				..

@@ -487,7 +487,7 @@ impl<T: frame_system::Config> tangle_slp::WeightInfo for TangleWeight<T> {
 	// Proof Skipped: Slp DelegatorLatestTuneRecord (max_values: None, max_size: None, mode: Measured)
 	// Storage: Slp DelegatorLedgers (r:1 w:1)
 	// Proof Skipped: Slp DelegatorLedgers (max_values: None, max_size: None, mode: Measured)
-	fn charge_host_fee_and_tune_lst_exchange_rate() -> Weight {
+	fn charge_host_fee_and_tune_Lst_exchange_rate() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `2097`
 		//  Estimated: `5562`
@@ -787,7 +787,7 @@ impl<T: frame_system::Config> tangle_slp::WeightInfo for TangleWeight<T> {
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	fn convert_treasury_lst() -> Weight {
+	fn convert_treasury_Lst() -> Weight {
 		Weight::from_parts(42_190_000, 3911)
 			.saturating_add(RocksDbWeight::get().reads(1_u64))
 			.saturating_add(RocksDbWeight::get().writes(1_u64))

@@ -168,12 +168,12 @@ pub trait StakingAgent<
 		weight_and_fee: Option<(Weight, Balance)>,
 	) -> Result<QueryId, Error>;
 
-	/// Tune the lst exchage rate.
-	fn tune_lst_exchange_rate(
+	/// Tune the Lst exchage rate.
+	fn tune_Lst_exchange_rate(
 		&self,
 		who: &Option<MultiLocation>,
 		token_amount: Balance,
-		lst_amount: Balance,
+		Lst_amount: Balance,
 		currency_id: CurrencyId,
 	) -> Result<(), Error>;
 

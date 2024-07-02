@@ -2991,7 +2991,7 @@ export default {
 	TanglePrimitivesCurrencyCurrencyId: {
 		_enum: {
 			Native: 'TanglePrimitivesCurrencyTokenSymbol',
-			lst: 'TanglePrimitivesCurrencyTokenSymbol',
+			Lst: 'TanglePrimitivesCurrencyTokenSymbol',
 			Token: 'TanglePrimitivesCurrencyTokenSymbol',
 			Stable: 'TanglePrimitivesCurrencyTokenSymbol',
 			VSToken: 'TanglePrimitivesCurrencyTokenSymbol',
@@ -3471,7 +3471,7 @@ export default {
 			register_token_metadata: {
 				metadata: 'TangleAssetRegistryAssetMetadata',
 			},
-			register_lst_metadata: {
+			register_Lst_metadata: {
 				tokenId: 'u8',
 			},
 			register_vstoken_metadata: {
@@ -3505,7 +3505,7 @@ export default {
 		minimalBalance: 'u128',
 	},
 	/**
-	 * Lookup284: tangle_lst_minting::pallet::Call<T>
+	 * Lookup284: tangle_Lst_minting::pallet::Call<T>
 	 **/
 	TangleLstMintingCall: {
 		_enum: {
@@ -3516,8 +3516,8 @@ export default {
 				channelId: 'Option<u32>',
 			},
 			redeem: {
-				lstId: 'TanglePrimitivesCurrencyCurrencyId',
-				lstAmount: 'u128',
+				LstId: 'TanglePrimitivesCurrencyCurrencyId',
+				LstAmount: 'u128',
 			},
 			rebond: {
 				tokenId: 'TanglePrimitivesCurrencyCurrencyId',
@@ -3697,7 +3697,7 @@ export default {
 				currencyId: 'TanglePrimitivesCurrencyCurrencyId',
 				dest: 'StagingXcmV3MultiLocation',
 			},
-			charge_host_fee_and_tune_lst_exchange_rate: {
+			charge_host_fee_and_tune_Lst_exchange_rate: {
 				currencyId: 'TanglePrimitivesCurrencyCurrencyId',
 				value: 'Compact<u128>',
 				who: 'Option<StagingXcmV3MultiLocation>',
@@ -3806,8 +3806,8 @@ export default {
 				currencyId: 'TanglePrimitivesCurrencyCurrencyId',
 				who: 'StagingXcmV3MultiLocation',
 			},
-			convert_treasury_lst: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+			convert_treasury_Lst: {
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				amount: 'u128',
 			},
 			clean_outdated_validator_boost_list: {
@@ -3989,7 +3989,7 @@ export default {
 			},
 			redeem: {
 				evmCaller: 'H160',
-				lstId: 'TanglePrimitivesCurrencyCurrencyId',
+				LstId: 'TanglePrimitivesCurrencyCurrencyId',
 				targetChain: 'TangleSlpxTargetChain',
 			},
 			stable_pool_swap: {
@@ -4160,53 +4160,53 @@ export default {
 				poolId: 'u32',
 				tokenRateInfo: 'Vec<(TanglePrimitivesCurrencyCurrencyId,(u128,u128))>',
 			},
-			config_lst_auto_refresh: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+			config_Lst_auto_refresh: {
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				hardcap: 'Permill',
 			},
-			remove_lst_auto_refresh: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+			remove_Lst_auto_refresh: {
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 			},
 		},
 	},
 	/**
-	 * Lookup342: tangle_lst_voting::pallet::Call<T>
+	 * Lookup342: tangle_Lst_voting::pallet::Call<T>
 	 **/
 	TangleLstVotingCall: {
 		_enum: {
 			vote: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
-				lstVote: 'TangleLstVotingVoteAccountVote',
+				LstVote: 'TangleLstVotingVoteAccountVote',
 			},
 			unlock: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
 			},
 			remove_delegator_vote: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
 				derivativeIndex: 'Compact<u16>',
 			},
 			kill_referendum: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
 			},
 			add_delegator: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				derivativeIndex: 'Compact<u16>',
 			},
 			set_referendum_status: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
 				info: 'TangleLstVotingVoteReferendumInfo',
 			},
 			set_vote_locking_period: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				lockingPeriod: 'u32',
 			},
 			set_undeciding_timeout: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				undecidingTimeout: 'u32',
 			},
 			notify_vote: {
@@ -4219,13 +4219,13 @@ export default {
 				response: 'XcmV3Response',
 			},
 			set_vote_cap_ratio: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				voteCapRatio: 'Perbill',
 			},
 		},
 	},
 	/**
-	 * Lookup343: tangle_lst_voting::vote::AccountVote<Balance>
+	 * Lookup343: tangle_Lst_voting::vote::AccountVote<Balance>
 	 **/
 	TangleLstVotingVoteAccountVote: {
 		_enum: {
@@ -4245,7 +4245,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup344: tangle_lst_voting::vote::ReferendumInfo<Moment, tangle_lst_voting::vote::Tally<Votes, Total>>
+	 * Lookup344: tangle_Lst_voting::vote::ReferendumInfo<Moment, tangle_Lst_voting::vote::Tally<Votes, Total>>
 	 **/
 	TangleLstVotingVoteReferendumInfo: {
 		_enum: {
@@ -4255,7 +4255,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup345: tangle_lst_voting::vote::Tally<Votes, Total>
+	 * Lookup345: tangle_Lst_voting::vote::Tally<Votes, Total>
 	 **/
 	TangleLstVotingVoteTally: {
 		ayes: 'u128',
@@ -4263,7 +4263,7 @@ export default {
 		support: 'u128',
 	},
 	/**
-	 * Lookup346: tangle_lst_voting::vote::ReferendumStatus<Moment, tangle_lst_voting::vote::Tally<Votes, Total>>
+	 * Lookup346: tangle_Lst_voting::vote::ReferendumStatus<Moment, tangle_Lst_voting::vote::Tally<Votes, Total>>
 	 **/
 	TangleLstVotingVoteReferendumStatus: {
 		submitted: 'Option<u32>',
@@ -5208,7 +5208,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup387: tangle_lst_minting::pallet::Event<T>
+	 * Lookup387: tangle_Lst_minting::pallet::Event<T>
 	 **/
 	TangleLstMintingEvent: {
 		_enum: {
@@ -5216,7 +5216,7 @@ export default {
 				address: 'AccountId32',
 				tokenId: 'TanglePrimitivesCurrencyCurrencyId',
 				tokenAmount: 'u128',
-				lstAmount: 'u128',
+				LstAmount: 'u128',
 				fee: 'u128',
 				remark: 'Bytes',
 			},
@@ -5224,7 +5224,7 @@ export default {
 				address: 'AccountId32',
 				tokenId: 'TanglePrimitivesCurrencyCurrencyId',
 				tokenAmount: 'u128',
-				lstAmount: 'u128',
+				LstAmount: 'u128',
 				fee: 'u128',
 				unlockId: 'u32',
 			},
@@ -5238,14 +5238,14 @@ export default {
 				address: 'AccountId32',
 				tokenId: 'TanglePrimitivesCurrencyCurrencyId',
 				tokenAmount: 'u128',
-				lstAmount: 'u128',
+				LstAmount: 'u128',
 				fee: 'u128',
 			},
 			RebondedByUnlockId: {
 				address: 'AccountId32',
 				tokenId: 'TanglePrimitivesCurrencyCurrencyId',
 				tokenAmount: 'u128',
-				lstAmount: 'u128',
+				LstAmount: 'u128',
 				fee: 'u128',
 				unlockId: 'u32',
 			},
@@ -5665,14 +5665,14 @@ export default {
 			},
 			XcmRedeem: {
 				evmCaller: 'H160',
-				lstId: 'TanglePrimitivesCurrencyCurrencyId',
-				lstAmount: 'u128',
+				LstId: 'TanglePrimitivesCurrencyCurrencyId',
+				LstAmount: 'u128',
 				targetChain: 'TangleSlpxTargetChain',
 			},
 			XcmRedeemFailed: {
 				evmCaller: 'H160',
-				lstId: 'TanglePrimitivesCurrencyCurrencyId',
-				lstAmount: 'u128',
+				LstId: 'TanglePrimitivesCurrencyCurrencyId',
+				LstAmount: 'u128',
 				targetChain: 'TangleSlpxTargetChain',
 			},
 			SetTransferToFee: {
@@ -5697,7 +5697,7 @@ export default {
 				currencyId: 'TanglePrimitivesCurrencyCurrencyId',
 				tokenAmount: 'u128',
 				vcurrencyId: 'TanglePrimitivesCurrencyCurrencyId',
-				lstAmount: 'u128',
+				LstAmount: 'u128',
 			},
 			SetCurrencyToSupportXcmFee: {
 				currencyId: 'TanglePrimitivesCurrencyCurrencyId',
@@ -5894,11 +5894,11 @@ export default {
 				tokenRate: 'Vec<(TanglePrimitivesCurrencyCurrencyId,(u128,u128))>',
 			},
 			TokenRateHardcapConfigured: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				hardcap: 'Permill',
 			},
 			TokenRateHardcapRemoved: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 			},
 			TokenRateRefreshFailed: {
 				poolId: 'u32',
@@ -5906,60 +5906,60 @@ export default {
 		},
 	},
 	/**
-	 * Lookup407: tangle_lst_voting::pallet::Event<T>
+	 * Lookup407: tangle_Lst_voting::pallet::Event<T>
 	 **/
 	TangleLstVotingEvent: {
 		_enum: {
 			Voted: {
 				who: 'AccountId32',
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 				tokenVote: 'TangleLstVotingVoteAccountVote',
 				delegatorVote: 'TangleLstVotingVoteAccountVote',
 			},
 			Unlocked: {
 				who: 'AccountId32',
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 			},
 			DelegatorVoteRemoved: {
 				who: 'AccountId32',
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				derivativeIndex: 'u16',
 			},
 			DelegatorAdded: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				derivativeIndex: 'u16',
 			},
 			ReferendumInfoCreated: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 				info: 'TangleLstVotingVoteReferendumInfo',
 			},
 			ReferendumInfoSet: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 				info: 'TangleLstVotingVoteReferendumInfo',
 			},
 			VoteLockingPeriodSet: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				lockingPeriod: 'u32',
 			},
 			UndecidingTimeoutSet: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				undecidingTimeout: 'u32',
 			},
 			ReferendumKilled: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 			},
 			VoteNotified: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 				success: 'bool',
 			},
 			DelegatorVoteRemovedNotified: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 				success: 'bool',
 			},
@@ -5969,7 +5969,7 @@ export default {
 				response: 'XcmV3Response',
 			},
 			VoteCapRatioSet: {
-				lst: 'TanglePrimitivesCurrencyCurrencyId',
+				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				voteCapRatio: 'Perbill',
 			},
 		},
@@ -6462,7 +6462,7 @@ export default {
 	 **/
 	TangleParachainStakingDelayedPayout: {
 		roundIssuance: 'u128',
-		totalStakingReward: 'u128',
+		totaLstakingReward: 'u128',
 		collatorCommission: 'Perbill',
 	},
 	/**
@@ -7640,7 +7640,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup704: tangle_lst_minting::pallet::Error<T>
+	 * Lookup704: tangle_Lst_minting::pallet::Error<T>
 	 **/
 	TangleLstMintingError: {
 		_enum: [
@@ -7787,7 +7787,7 @@ export default {
 			'NotSetExecutionFee',
 			'FreeBalanceTooLow',
 			'ArgumentsError',
-			'ErrorConvertlst',
+			'ErrorConvertLst',
 			'ErrorValidating',
 			'ErrorDelivering',
 			'Unsupported',
@@ -7892,7 +7892,7 @@ export default {
 		_enum: ['SwapUnderMin', 'MintUnderMin', 'CantMint', 'RedeemOverMax', 'TokenRateNotSet'],
 	},
 	/**
-	 * Lookup737: tangle_lst_voting::vote::Voting<Balance, sp_core::crypto::AccountId32, BlockNumber, PollIndex, MaxVotes>
+	 * Lookup737: tangle_Lst_voting::vote::Voting<Balance, sp_core::crypto::AccountId32, BlockNumber, PollIndex, MaxVotes>
 	 **/
 	TangleLstVotingVoteVoting: {
 		_enum: {
@@ -7901,7 +7901,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup738: tangle_lst_voting::vote::Casting<Balance, BlockNumber, PollIndex, MaxVotes>
+	 * Lookup738: tangle_Lst_voting::vote::Casting<Balance, BlockNumber, PollIndex, MaxVotes>
 	 **/
 	TangleLstVotingVoteCasting: {
 		votes: 'Vec<(u32,TangleLstVotingVoteAccountVote,u16,u128)>',
@@ -7909,11 +7909,11 @@ export default {
 		prior: 'TangleLstVotingVotePriorLock',
 	},
 	/**
-	 * Lookup742: tangle_lst_voting::vote::PriorLock<BlockNumber, Balance>
+	 * Lookup742: tangle_Lst_voting::vote::PriorLock<BlockNumber, Balance>
 	 **/
 	TangleLstVotingVotePriorLock: '(u32,u128)',
 	/**
-	 * Lookup743: tangle_lst_voting::vote::Delegating<Balance, sp_core::crypto::AccountId32, BlockNumber>
+	 * Lookup743: tangle_Lst_voting::vote::Delegating<Balance, sp_core::crypto::AccountId32, BlockNumber>
 	 **/
 	TangleLstVotingVoteDelegating: {
 		balance: 'u128',
@@ -7923,7 +7923,7 @@ export default {
 		prior: 'TangleLstVotingVotePriorLock',
 	},
 	/**
-	 * Lookup757: tangle_lst_voting::pallet::Error<T>
+	 * Lookup757: tangle_Lst_voting::pallet::Error<T>
 	 **/
 	TangleLstVotingError: {
 		_enum: [

@@ -996,7 +996,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32,
 					tokenId: TanglePrimitivesCurrencyCurrencyId,
 					tokenAmount: u128,
-					lstAmount: u128,
+					LstAmount: u128,
 					fee: u128,
 					remark: Bytes,
 				],
@@ -1004,7 +1004,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32;
 					tokenId: TanglePrimitivesCurrencyCurrencyId;
 					tokenAmount: u128;
-					lstAmount: u128;
+					LstAmount: u128;
 					fee: u128;
 					remark: Bytes;
 				}
@@ -1020,14 +1020,14 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32,
 					tokenId: TanglePrimitivesCurrencyCurrencyId,
 					tokenAmount: u128,
-					lstAmount: u128,
+					LstAmount: u128,
 					fee: u128,
 				],
 				{
 					address: AccountId32;
 					tokenId: TanglePrimitivesCurrencyCurrencyId;
 					tokenAmount: u128;
-					lstAmount: u128;
+					LstAmount: u128;
 					fee: u128;
 				}
 			>;
@@ -1037,7 +1037,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32,
 					tokenId: TanglePrimitivesCurrencyCurrencyId,
 					tokenAmount: u128,
-					lstAmount: u128,
+					LstAmount: u128,
 					fee: u128,
 					unlockId: u32,
 				],
@@ -1045,7 +1045,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32;
 					tokenId: TanglePrimitivesCurrencyCurrencyId;
 					tokenAmount: u128;
-					lstAmount: u128;
+					LstAmount: u128;
 					fee: u128;
 					unlockId: u32;
 				}
@@ -1056,7 +1056,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32,
 					tokenId: TanglePrimitivesCurrencyCurrencyId,
 					tokenAmount: u128,
-					lstAmount: u128,
+					LstAmount: u128,
 					fee: u128,
 					unlockId: u32,
 				],
@@ -1064,7 +1064,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32;
 					tokenId: TanglePrimitivesCurrencyCurrencyId;
 					tokenAmount: u128;
-					lstAmount: u128;
+					LstAmount: u128;
 					fee: u128;
 					unlockId: u32;
 				}
@@ -1112,28 +1112,28 @@ declare module '@polkadot/api-base/types/events' {
 		LstVoting: {
 			DelegatorAdded: AugmentedEvent<
 				ApiType,
-				[lst: TanglePrimitivesCurrencyCurrencyId, derivativeIndex: u16],
-				{ lst: TanglePrimitivesCurrencyCurrencyId; derivativeIndex: u16 }
+				[Lst: TanglePrimitivesCurrencyCurrencyId, derivativeIndex: u16],
+				{ Lst: TanglePrimitivesCurrencyCurrencyId; derivativeIndex: u16 }
 			>;
 			DelegatorVoteRemoved: AugmentedEvent<
 				ApiType,
-				[who: AccountId32, lst: TanglePrimitivesCurrencyCurrencyId, derivativeIndex: u16],
-				{ who: AccountId32; lst: TanglePrimitivesCurrencyCurrencyId; derivativeIndex: u16 }
+				[who: AccountId32, Lst: TanglePrimitivesCurrencyCurrencyId, derivativeIndex: u16],
+				{ who: AccountId32; Lst: TanglePrimitivesCurrencyCurrencyId; derivativeIndex: u16 }
 			>;
 			DelegatorVoteRemovedNotified: AugmentedEvent<
 				ApiType,
-				[lst: TanglePrimitivesCurrencyCurrencyId, pollIndex: u32, success: bool],
-				{ lst: TanglePrimitivesCurrencyCurrencyId; pollIndex: u32; success: bool }
+				[Lst: TanglePrimitivesCurrencyCurrencyId, pollIndex: u32, success: bool],
+				{ Lst: TanglePrimitivesCurrencyCurrencyId; pollIndex: u32; success: bool }
 			>;
 			ReferendumInfoCreated: AugmentedEvent<
 				ApiType,
 				[
-					lst: TanglePrimitivesCurrencyCurrencyId,
+					Lst: TanglePrimitivesCurrencyCurrencyId,
 					pollIndex: u32,
 					info: TangleLstVotingVoteReferendumInfo,
 				],
 				{
-					lst: TanglePrimitivesCurrencyCurrencyId;
+					Lst: TanglePrimitivesCurrencyCurrencyId;
 					pollIndex: u32;
 					info: TangleLstVotingVoteReferendumInfo;
 				}
@@ -1141,20 +1141,20 @@ declare module '@polkadot/api-base/types/events' {
 			ReferendumInfoSet: AugmentedEvent<
 				ApiType,
 				[
-					lst: TanglePrimitivesCurrencyCurrencyId,
+					Lst: TanglePrimitivesCurrencyCurrencyId,
 					pollIndex: u32,
 					info: TangleLstVotingVoteReferendumInfo,
 				],
 				{
-					lst: TanglePrimitivesCurrencyCurrencyId;
+					Lst: TanglePrimitivesCurrencyCurrencyId;
 					pollIndex: u32;
 					info: TangleLstVotingVoteReferendumInfo;
 				}
 			>;
 			ReferendumKilled: AugmentedEvent<
 				ApiType,
-				[lst: TanglePrimitivesCurrencyCurrencyId, pollIndex: u32],
-				{ lst: TanglePrimitivesCurrencyCurrencyId; pollIndex: u32 }
+				[Lst: TanglePrimitivesCurrencyCurrencyId, pollIndex: u32],
+				{ Lst: TanglePrimitivesCurrencyCurrencyId; pollIndex: u32 }
 			>;
 			ResponseReceived: AugmentedEvent<
 				ApiType,
@@ -1163,31 +1163,31 @@ declare module '@polkadot/api-base/types/events' {
 			>;
 			UndecidingTimeoutSet: AugmentedEvent<
 				ApiType,
-				[lst: TanglePrimitivesCurrencyCurrencyId, undecidingTimeout: u32],
-				{ lst: TanglePrimitivesCurrencyCurrencyId; undecidingTimeout: u32 }
+				[Lst: TanglePrimitivesCurrencyCurrencyId, undecidingTimeout: u32],
+				{ Lst: TanglePrimitivesCurrencyCurrencyId; undecidingTimeout: u32 }
 			>;
 			Unlocked: AugmentedEvent<
 				ApiType,
-				[who: AccountId32, lst: TanglePrimitivesCurrencyCurrencyId, pollIndex: u32],
-				{ who: AccountId32; lst: TanglePrimitivesCurrencyCurrencyId; pollIndex: u32 }
+				[who: AccountId32, Lst: TanglePrimitivesCurrencyCurrencyId, pollIndex: u32],
+				{ who: AccountId32; Lst: TanglePrimitivesCurrencyCurrencyId; pollIndex: u32 }
 			>;
 			VoteCapRatioSet: AugmentedEvent<
 				ApiType,
-				[lst: TanglePrimitivesCurrencyCurrencyId, voteCapRatio: Perbill],
-				{ lst: TanglePrimitivesCurrencyCurrencyId; voteCapRatio: Perbill }
+				[Lst: TanglePrimitivesCurrencyCurrencyId, voteCapRatio: Perbill],
+				{ Lst: TanglePrimitivesCurrencyCurrencyId; voteCapRatio: Perbill }
 			>;
 			Voted: AugmentedEvent<
 				ApiType,
 				[
 					who: AccountId32,
-					lst: TanglePrimitivesCurrencyCurrencyId,
+					Lst: TanglePrimitivesCurrencyCurrencyId,
 					pollIndex: u32,
 					tokenVote: TangleLstVotingVoteAccountVote,
 					delegatorVote: TangleLstVotingVoteAccountVote,
 				],
 				{
 					who: AccountId32;
-					lst: TanglePrimitivesCurrencyCurrencyId;
+					Lst: TanglePrimitivesCurrencyCurrencyId;
 					pollIndex: u32;
 					tokenVote: TangleLstVotingVoteAccountVote;
 					delegatorVote: TangleLstVotingVoteAccountVote;
@@ -1195,13 +1195,13 @@ declare module '@polkadot/api-base/types/events' {
 			>;
 			VoteLockingPeriodSet: AugmentedEvent<
 				ApiType,
-				[lst: TanglePrimitivesCurrencyCurrencyId, lockingPeriod: u32],
-				{ lst: TanglePrimitivesCurrencyCurrencyId; lockingPeriod: u32 }
+				[Lst: TanglePrimitivesCurrencyCurrencyId, lockingPeriod: u32],
+				{ Lst: TanglePrimitivesCurrencyCurrencyId; lockingPeriod: u32 }
 			>;
 			VoteNotified: AugmentedEvent<
 				ApiType,
-				[lst: TanglePrimitivesCurrencyCurrencyId, pollIndex: u32, success: bool],
-				{ lst: TanglePrimitivesCurrencyCurrencyId; pollIndex: u32; success: bool }
+				[Lst: TanglePrimitivesCurrencyCurrencyId, pollIndex: u32, success: bool],
+				{ Lst: TanglePrimitivesCurrencyCurrencyId; pollIndex: u32; success: bool }
 			>;
 			/**
 			 * Generic event
@@ -1762,7 +1762,7 @@ declare module '@polkadot/api-base/types/events' {
 			 * A new term with new_members. This indicates that enough candidates existed to run
 			 * the election, not that enough have has been elected. The inner value must be examined
 			 * for this purpose. A `NewTerm(\[\])` indicates that some candidates got their bond
-			 * slashed and none were elected, whilst `EmptyTerm` means that no candidates existed to
+			 * slashed and none were elected, whiLst `EmptyTerm` means that no candidates existed to
 			 * begin with.
 			 **/
 			NewTerm: AugmentedEvent<
@@ -2935,14 +2935,14 @@ declare module '@polkadot/api-base/types/events' {
 				ApiType,
 				[
 					evmCaller: H160,
-					lstId: TanglePrimitivesCurrencyCurrencyId,
-					lstAmount: u128,
+					LstId: TanglePrimitivesCurrencyCurrencyId,
+					LstAmount: u128,
 					targetChain: TangleSlpxTargetChain,
 				],
 				{
 					evmCaller: H160;
-					lstId: TanglePrimitivesCurrencyCurrencyId;
-					lstAmount: u128;
+					LstId: TanglePrimitivesCurrencyCurrencyId;
+					LstAmount: u128;
 					targetChain: TangleSlpxTargetChain;
 				}
 			>;
@@ -2950,14 +2950,14 @@ declare module '@polkadot/api-base/types/events' {
 				ApiType,
 				[
 					evmCaller: H160,
-					lstId: TanglePrimitivesCurrencyCurrencyId,
-					lstAmount: u128,
+					LstId: TanglePrimitivesCurrencyCurrencyId,
+					LstAmount: u128,
 					targetChain: TangleSlpxTargetChain,
 				],
 				{
 					evmCaller: H160;
-					lstId: TanglePrimitivesCurrencyCurrencyId;
-					lstAmount: u128;
+					LstId: TanglePrimitivesCurrencyCurrencyId;
+					LstAmount: u128;
 					targetChain: TangleSlpxTargetChain;
 				}
 			>;
@@ -2967,13 +2967,13 @@ declare module '@polkadot/api-base/types/events' {
 					currencyId: TanglePrimitivesCurrencyCurrencyId,
 					tokenAmount: u128,
 					vcurrencyId: TanglePrimitivesCurrencyCurrencyId,
-					lstAmount: u128,
+					LstAmount: u128,
 				],
 				{
 					currencyId: TanglePrimitivesCurrencyCurrencyId;
 					tokenAmount: u128;
 					vcurrencyId: TanglePrimitivesCurrencyCurrencyId;
-					lstAmount: u128;
+					LstAmount: u128;
 				}
 			>;
 			XcmStablePoolSwap: AugmentedEvent<
@@ -3202,13 +3202,13 @@ declare module '@polkadot/api-base/types/events' {
 			>;
 			TokenRateHardcapConfigured: AugmentedEvent<
 				ApiType,
-				[lst: TanglePrimitivesCurrencyCurrencyId, hardcap: Permill],
-				{ lst: TanglePrimitivesCurrencyCurrencyId; hardcap: Permill }
+				[Lst: TanglePrimitivesCurrencyCurrencyId, hardcap: Permill],
+				{ Lst: TanglePrimitivesCurrencyCurrencyId; hardcap: Permill }
 			>;
 			TokenRateHardcapRemoved: AugmentedEvent<
 				ApiType,
-				[lst: TanglePrimitivesCurrencyCurrencyId],
-				{ lst: TanglePrimitivesCurrencyCurrencyId }
+				[Lst: TanglePrimitivesCurrencyCurrencyId],
+				{ Lst: TanglePrimitivesCurrencyCurrencyId }
 			>;
 			TokenRateRefreshFailed: AugmentedEvent<ApiType, [poolId: u32], { poolId: u32 }>;
 			TokenRateSet: AugmentedEvent<

@@ -443,11 +443,11 @@ impl<T: Config>
 	/// aggregating all its miner accounts' interests.
 	// Filecoin use TimeUnit::Kblock, which means 1000 blocks. Filecoin produces
 	// one block per 30 seconds . Kblock takes around 8.33 hours.
-	fn tune_lst_exchange_rate(
+	fn tune_Lst_exchange_rate(
 		&self,
 		who: &Option<MultiLocation>,
 		token_amount: BalanceOf<T>,
-		_lst_amount: BalanceOf<T>,
+		_Lst_amount: BalanceOf<T>,
 		currency_id: CurrencyId,
 	) -> Result<(), Error<T>> {
 		let who = who.as_ref().ok_or(Error::<T>::ValidatorNotExist)?;
@@ -479,7 +479,7 @@ impl<T: Config>
 			token_amount.checked_sub(&fee_to_charge).ok_or(Error::<T>::UnderFlow)?;
 
 		if amount_to_increase > Zero::zero() {
-			// Tune the lst exchange rate.
+			// Tune the Lst exchange rate.
 			T::LstMinting::increase_token_pool(currency_id, amount_to_increase)
 				.map_err(|_| Error::<T>::IncreaseTokenPoolError)?;
 

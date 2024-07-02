@@ -320,7 +320,8 @@ pub mod pallet {
 		}
 	}
 
-	impl<T: Config> XcmDestWeightAndFeeHandler<CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> {
+	impl<T: Config> XcmDestWeightAndFeeHandler<CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> where <<T as pallet::Config>::MultiCurrency as MultiCurrency<<T as frame_system::Config>::AccountId>>::Balance: sp_arithmetic::rational::MultiplyRational,
+	<<T as pallet::Config>::MultiCurrency as MultiCurrency<<T as frame_system::Config>::AccountId>>::Balance: num_traits::ops::saturating::Saturating {
 		fn get_operation_weight_and_fee(
 			token: CurrencyIdOf<T>,
 			operation: XcmOperationType,

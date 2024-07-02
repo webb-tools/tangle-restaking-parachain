@@ -164,27 +164,27 @@ impl<T: Config> Pallet<T> {
         Ok(())
     }
 
-    /// Charge lst for hosting fee.
-    pub(crate) fn inner_calculate_lst_hosting_fee(
+    /// Charge Lst for hosting fee.
+    pub(crate) fn inner_calculate_Lst_hosting_fee(
         amount: BalanceOf<T>,
-        lst: CurrencyId,
+        Lst: CurrencyId,
         currency_id: CurrencyId,
     ) -> Result<BalanceOf<T>, Error<T>> {
         ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
 
-        let lst_issuance = T::MultiCurrency::total_issuance(lst);
+        let Lst_issuance = T::MultiCurrency::total_issuance(Lst);
         let token_pool = T::LstMinting::get_token_pool(currency_id);
         // Calculate how much vksm the beneficiary account can get.
         let amount: u128 = amount.unique_saturated_into();
-        let lst_issuance: u128 = lst_issuance.unique_saturated_into();
+        let Lst_issuance: u128 = Lst_issuance.unique_saturated_into();
         let token_pool: u128 = token_pool.unique_saturated_into();
-        let can_get_lst = U256::from(amount)
-            .checked_mul(U256::from(lst_issuance))
+        let can_get_Lst = U256::from(amount)
+            .checked_mul(U256::from(Lst_issuance))
             .and_then(|n| n.checked_div(U256::from(token_pool)))
             .and_then(|n| TryInto::<u128>::try_into(n).ok())
             .unwrap_or_else(Zero::zero);
 
-        let charge_amount = BalanceOf::<T>::unique_saturated_from(can_get_lst);
+        let charge_amount = BalanceOf::<T>::unique_saturated_from(can_get_Lst);
 
         Ok(charge_amount)
     }
@@ -212,7 +212,7 @@ impl<T: Config> Pallet<T> {
         DelegatorsMultilocation2Index::<T>::get(currency_id, from)
             .ok_or(Error::<T>::DelegatorNotExist)?;
 
-        // Make sure the receiving account is the Exit_account from lst-minting module.
+        // Make sure the receiving account is the Exit_account from Lst-minting module.
         let to_account_id = Self::multilocation_to_account(to)?;
         let (_, exit_account) = T::LstMinting::get_entrance_and_exit_accounts();
         ensure!(to_account_id == exit_account, Error::<T>::InvalidAccount);
@@ -233,7 +233,7 @@ impl<T: Config> Pallet<T> {
         Ok((dest, beneficiary))
     }
 
-    pub(crate) fn tune_lst_exchange_rate_without_update_ledger(
+    pub(crate) fn tune_Lst_exchange_rate_without_update_ledger(
         who: &MultiLocation,
         token_amount: BalanceOf<T>,
         currency_id: CurrencyId,
@@ -263,7 +263,7 @@ impl<T: Config> Pallet<T> {
             Error::<T>::DelegatorNotBonded
         );
 
-        // Tune the lst exchange rate.
+        // Tune the Lst exchange rate.
         T::LstMinting::increase_token_pool(currency_id, token_amount)
             .map_err(|_| Error::<T>::IncreaseTokenPoolError)?;
 

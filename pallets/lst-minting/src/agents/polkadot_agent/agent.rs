@@ -896,7 +896,7 @@ impl<T: Config>
 			Error::<T>::DelegatorNotExist
 		);
 
-		// Make sure from account is the entrance account of lst-minting module.
+		// Make sure from account is the entrance account of Lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
 		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
@@ -926,16 +926,16 @@ impl<T: Config>
 		Err(Error::<T>::Unsupported)
 	}
 
-	fn tune_lst_exchange_rate(
+	fn tune_Lst_exchange_rate(
 		&self,
 		who: &Option<MultiLocation>,
 		token_amount: BalanceOf<T>,
-		_lst_amount: BalanceOf<T>,
+		_Lst_amount: BalanceOf<T>,
 		currency_id: CurrencyId,
 	) -> Result<(), Error<T>> {
 		let who = who.as_ref().ok_or(Error::<T>::DelegatorNotExist)?;
 
-		Pallet::<T>::tune_lst_exchange_rate_without_update_ledger(who, token_amount, currency_id)?;
+		Pallet::<T>::tune_Lst_exchange_rate_without_update_ledger(who, token_amount, currency_id)?;
 
 		// update delegator ledger
 		DelegatorLedgers::<T>::mutate(currency_id, who, |old_ledger| -> Result<(), Error<T>> {
@@ -982,11 +982,11 @@ impl<T: Config>
 		currency_id: CurrencyId,
 	) -> DispatchResult {
 		// Get current VKSM/KSM or VDOT/DOT exchange rate.
-		let lst = currency_id.to_lst().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
+		let Lst = currency_id.to_Lst().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
 
-		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, lst, currency_id)?;
+		let charge_amount = Pallet::<T>::inner_calculate_Lst_hosting_fee(amount, Lst, currency_id)?;
 
-		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, lst)
+		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, Lst)
 	}
 
 	/// Deposit some amount as fee to nominator accounts.

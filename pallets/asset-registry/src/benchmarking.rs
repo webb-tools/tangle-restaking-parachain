@@ -113,7 +113,7 @@ benchmarks! {
 		assert_eq!(CurrencyMetadatas::<T>::get(Token2(0)), Some(metadata.clone()))
 	}
 
-	register_vtoken_metadata {
+	register_Lst_metadata {
 		let origin = T::RegisterOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let metadata = AssetMetadata {
 			name: b"Bifrost Native Coin".to_vec(),
@@ -132,13 +132,13 @@ benchmarks! {
 			Box::new(metadata.clone())
 		));
 
-		let call = Call::<T>::register_vtoken_metadata {
+		let call = Call::<T>::register_Lst_metadata {
 			token_id: 0
 		};
 	}: {call.dispatch_bypass_filter(origin)?}
 	verify {
 		assert_eq!(
-			CurrencyMetadatas::<T>::get(CurrencyId::VToken2(0)),
+			CurrencyMetadatas::<T>::get(CurrencyId::Lst2(0)),
 			Some(v_metadata.clone())
 		)
 	}

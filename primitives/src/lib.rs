@@ -63,8 +63,8 @@ pub type AccountIndex = u32;
 /// An index to an asset
 pub type AssetId = u32;
 
-/// Vtoken Mint type
-pub type VtokenMintPrice = u128;
+/// Lst Mint type
+pub type LstMintPrice = u128;
 
 /// Balance of an account.
 pub type Balance = u128;
@@ -161,12 +161,12 @@ pub type TimeStampedPrice = orml_oracle::TimestampedValue<Price, Moment>;
 pub enum ExtraFeeName {
 	SalpContribute,
 	StatemineTransfer,
-	VoteVtoken,
+	VoteLst,
 	VoteRemoveDelegatorVote,
 	NoExtraFee,
 }
 
-// For vtoken-minting and slp modules
+// For Lst-minting and slp modules
 #[derive(Encode, Decode, Clone, RuntimeDebug, Eq, TypeInfo, MaxEncodedLen)]
 pub enum TimeUnit {
 	// Kusama staking time unit
@@ -226,7 +226,7 @@ impl PartialOrd for TimeUnit {
 	}
 }
 
-// For vtoken-minting
+// For Lst-minting
 #[derive(
 	PartialEq, Eq, Clone, Encode, Decode, MaxEncodedLen, RuntimeDebug, scale_info::TypeInfo,
 )]
@@ -324,7 +324,7 @@ pub enum XcmOperationType {
 	XtokensTransferBack,
 	ExecuteLeave,
 	ConvertAsset,
-	// VtokenVoting operations
+	// LstVoting operations
 	Vote,
 	RemoveVote,
 	Any,

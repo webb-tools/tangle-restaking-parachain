@@ -973,15 +973,15 @@ impl FeeGetter<RuntimeCall> for ExtraFeeMatcher {
 				extra_fee_name: ExtraFeeName::StatemineTransfer,
 				extra_fee_currency: RelayCurrencyId::get(),
 			},
-			RuntimeCall::LstVoting(tangle_lst_voting::Call::vote { lst, .. }) => ExtraFeeInfo {
-				extra_fee_name: ExtraFeeName::Votelst,
-				extra_fee_currency: lst.to_token().unwrap_or(lst),
+			RuntimeCall::LstVoting(tangle_Lst_voting::Call::vote { Lst, .. }) => ExtraFeeInfo {
+				extra_fee_name: ExtraFeeName::VoteLst,
+				extra_fee_currency: Lst.to_token().unwrap_or(Lst),
 			},
-			RuntimeCall::LstVoting(tangle_lst_voting::Call::remove_delegator_vote {
-				lst, ..
+			RuntimeCall::LstVoting(tangle_Lst_voting::Call::remove_delegator_vote {
+				Lst, ..
 			}) => ExtraFeeInfo {
 				extra_fee_name: ExtraFeeName::VoteRemoveDelegatorVote,
-				extra_fee_currency: lst.to_token().unwrap_or(lst),
+				extra_fee_currency: Lst.to_token().unwrap_or(Lst),
 			},
 			_ => ExtraFeeInfo::default(),
 		}
@@ -1172,7 +1172,7 @@ impl Contains<CurrencyId> for DerivativeAccountTokenFilter {
 	}
 }
 
-impl tangle_lst_voting::Config for Runtime {
+impl tangle_Lst_voting::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type RuntimeOrigin = RuntimeOrigin;
 	type RuntimeCall = RuntimeCall;
@@ -1187,7 +1187,7 @@ impl tangle_lst_voting::Config for Runtime {
 	type MaxVotes = ConstU32<256>;
 	type QueryTimeout = QueryTimeout;
 	type ReferendumCheckInterval = ReferendumCheckInterval;
-	type WeightInfo = weights::tangle_lst_voting::TangleWeight<Runtime>;
+	type WeightInfo = weights::tangle_Lst_voting::TangleWeight<Runtime>;
 }
 
 // tangle modules end
@@ -1275,7 +1275,7 @@ impl zenlink_protocol::Config for Runtime {
 type MultiAssets = ZenlinkMultiAssets<ZenlinkProtocol, Balances, LocalAssetAdaptor<Currencies>>;
 
 pub struct OnRedeemSuccess;
-impl tangle_lst_minting::OnRedeemSuccess<AccountId, CurrencyId, Balance> for OnRedeemSuccess {
+impl tangle_Lst_minting::OnRedeemSuccess<AccountId, CurrencyId, Balance> for OnRedeemSuccess {
 	fn on_redeem_success(token_id: CurrencyId, to: AccountId, token_amount: Balance) -> Weight {
 		Default::default()
 	}
@@ -1284,7 +1284,7 @@ impl tangle_lst_minting::OnRedeemSuccess<AccountId, CurrencyId, Balance> for OnR
 		address: AccountId,
 		token_id: CurrencyId,
 		token_amount: Balance,
-		lst_amount: Balance,
+		Lst_amount: Balance,
 		fee: Balance,
 	) -> Weight {
 		Default::default()
@@ -1297,7 +1297,7 @@ parameter_types! {
 	pub TangleFeeAccount: AccountId = TreasuryPalletId::get().into_account_truncating();
 }
 
-impl tangle_lst_minting::Config for Runtime {
+impl tangle_Lst_minting::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type MultiCurrency = Currencies;
 	type ControlOrigin = TechAdminOrCouncil;
@@ -1308,7 +1308,7 @@ impl tangle_lst_minting::Config for Runtime {
 	type FeeAccount = TangleFeeAccount;
 	type TangleSlp = Slp;
 	type TangleSlpx = Slpx;
-	type WeightInfo = weights::tangle_lst_minting::TangleWeight<Runtime>;
+	type WeightInfo = weights::tangle_Lst_minting::TangleWeight<Runtime>;
 	type OnRedeemSuccess = OnRedeemSuccess;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;
@@ -1612,7 +1612,7 @@ construct_runtime! {
 		// tangle modules
 		TokenIssuer: tangle_token_issuer = 109,
 		AssetRegistry: tangle_asset_registry = 114,
-		LstMinting: tangle_lst_minting = 115,
+		LstMinting: tangle_Lst_minting = 115,
 		Slp: tangle_slp = 116,
 		XcmInterface: tangle_xcm_interface = 117,
 		Slpx: tangle_slpx = 125,
@@ -1620,7 +1620,7 @@ construct_runtime! {
 		FellowshipReferenda: pallet_referenda::<Instance2> = 127,
 		StableAsset: tangle_stable_asset exclude_parts { Call } = 128,
 		StablePool: tangle_stable_pool = 129,
-		LstVoting: tangle_lst_voting = 130,
+		LstVoting: tangle_Lst_voting = 130,
 		Prices: pallet_prices = 132,
 		Oracle: orml_oracle::<Instance1> = 133,
 		OracleMembership: pallet_membership::<Instance3> = 134,
@@ -1702,8 +1702,8 @@ mod benches {
 		[tangle_slpx, Slpx]
 		[tangle_stable_pool, StablePool]
 		[tangle_token_issuer, TokenIssuer]
-		[tangle_lst_minting, LstMinting]
-		[tangle_lst_voting, LstVoting]
+		[tangle_Lst_minting, LstMinting]
+		[tangle_Lst_voting, LstVoting]
 	);
 }
 

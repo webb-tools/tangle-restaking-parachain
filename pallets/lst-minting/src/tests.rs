@@ -47,8 +47,8 @@ fn mint_bnc() {
 #[test]
 fn redeem_bnc() {
 	ExtBuilder::default().one_hundred_for_alice_n_bob().build().execute_with(|| {
-		// AssetIdMaps::<Runtime>::register_lst_metadata(TokenSymbol::TNT)
-		// 	.expect("lst register");
+		// AssetIdMaps::<Runtime>::register_Lst_metadata(TokenSymbol::TNT)
+		// 	.expect("Lst register");
 		assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(ALICE), TNT, 0));
 		assert_ok!(LstMinting::mint(
 			Some(BOB).into(),

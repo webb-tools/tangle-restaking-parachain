@@ -14,15 +14,16 @@ log = { workspace = true }
 frame-support = { workspace = true }
 frame-system = { workspace = true }
 frame-benchmarking = { workspace = true, optional = true }
-# tangle-primitives = { workspace = true }
+tangle-primitives = { workspace = true }
 orml-traits = { workspace = true }
 sp-std = { workspace = true }
+sp-core = { workspace = true }
 hex-literal = { workspace = true }
 pallet-balances = { workspace = true }
 xcm = { workspace = true }
 polkadot-parachain-primitives = { workspace = true }
-# sp-runtime = { workspace = true }
-tangle-xcm-interface = { workspace = true }
+sp-runtime = { workspace = true }
+#tangle-xcm-interface = { workspace = true }
 
 [dev-dependencies]
 orml-tokens = { workspace = true }
@@ -49,14 +50,16 @@ std = [
 	"frame-system/std",
 	"frame-benchmarking/std",
 	"sp-std/std",
-	# "tangle-primitives/std",
+	"tangle-primitives/std",
 	"orml-traits/std",
 	# "tangle-asset-registry/std",
 	"tangle-runtime-common/std",
 	"polkadot-parachain-primitives/std",
 	"xcm/std",
 	"pallet-balances/std",
-	"tangle-xcm-interface/std"
+	#"tangle-xcm-interface/std",
+	"sp-core/std",
+	"sp-runtime/std"
 ]
 
 runtime-benchmarks = [

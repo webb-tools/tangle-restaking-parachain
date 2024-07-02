@@ -56,7 +56,7 @@ pub trait WeightInfo {
 	fn register_native_asset() -> Weight;
 	fn update_native_asset() -> Weight;
 	fn register_token_metadata() -> Weight;
-	fn register_vtoken_metadata() -> Weight;
+	fn register_Lst_metadata() -> Weight;
 	fn register_vstoken_metadata() -> Weight;
 	fn register_vsbond_metadata() -> Weight;
 	fn register_location() -> Weight;
@@ -111,7 +111,7 @@ impl WeightInfo for () {
 	}
 	/// Storage: AssetRegistry CurrencyMetadatas (r:2 w:1)
 	/// Proof Skipped: AssetRegistry CurrencyMetadatas (max_values: None, max_size: None, mode: Measured)
-	fn register_vtoken_metadata() -> Weight {
+	fn register_Lst_metadata() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `779`
 		//  Estimated: `6719`

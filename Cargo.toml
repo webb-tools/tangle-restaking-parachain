@@ -241,8 +241,8 @@ tangle-parachain-staking = { path = "pallets/parachain-staking", default-feature
 tangle-primitives = { path = "primitives", default-features = false }
 
 # orml deps
-orml-tokens= { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
-orml-traits= { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-tokens = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
+orml-traits = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
 orml-unknown-tokens = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
 orml-utilities    = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }
 orml-xcm = { git = "https://github.com/bifrost-finance/open-runtime-module-library", branch = "release-polkadot-v1.7.0", default-features = false }

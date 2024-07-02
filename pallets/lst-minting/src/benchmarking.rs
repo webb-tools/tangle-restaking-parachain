@@ -86,7 +86,7 @@ benchmarks! {
 		let caller: T::AccountId = whitelisted_caller();
 		const VKSM: CurrencyId = CurrencyId::Lst(TokenSymbol::KSM);
 		const KSM: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
-		let lst_amount = BalanceOf::<T>::unique_saturated_from(90u128);
+		let Lst_amount = BalanceOf::<T>::unique_saturated_from(90u128);
 		let redeem_amount = BalanceOf::<T>::unique_saturated_from(1000000000u128);
 		let token_amount = BalanceOf::<T>::unique_saturated_from(10000000000u128);
 		const FEE: Permill = Permill::from_percent(50);
@@ -94,7 +94,7 @@ benchmarks! {
 		assert_ok!(LstMinting::<T>::set_unlock_duration(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM, TimeUnit::Era(1)));
 		// assert_ok!(LstMinting::<T>::increase_token_pool(KSM, token_amount));
 		assert_ok!(LstMinting::<T>::update_ongoing_time_unit(KSM, TimeUnit::Era(1)));
-		// assert_ok!(LstMinting::<T>::set_minimum_redeem(RawOrigin::Root.into(), VKSM, lst_amount));
+		// assert_ok!(LstMinting::<T>::set_minimum_redeem(RawOrigin::Root.into(), VKSM, Lst_amount));
 		T::MultiCurrency::deposit(KSM, &caller, token_amount)?;
 		assert_ok!(LstMinting::<T>::mint(RawOrigin::Signed(caller.clone()).into(), KSM, token_amount,BoundedVec::default(), None));
 	}: _(RawOrigin::Signed(caller.clone()), VKSM, redeem_amount)

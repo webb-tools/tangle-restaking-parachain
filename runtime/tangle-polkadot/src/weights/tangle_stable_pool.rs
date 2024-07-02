@@ -85,7 +85,7 @@ impl<T: frame_system::Config> tangle_stable_pool::WeightInfo for TangleWeight<T>
 	}
 	/// Storage: `StableAsset::TokenRateHardcap` (r:0 w:1)
 	/// Proof: `StableAsset::TokenRateHardcap` (`max_values`: None, `max_size`: None, mode: `Measured`)
-	fn config_lst_auto_refresh() -> Weight {
+	fn config_Lst_auto_refresh() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
 		//  Estimated: `0`
@@ -96,7 +96,7 @@ impl<T: frame_system::Config> tangle_stable_pool::WeightInfo for TangleWeight<T>
 	}
 	/// Storage: `StableAsset::TokenRateHardcap` (r:0 w:1)
 	/// Proof: `StableAsset::TokenRateHardcap` (`max_values`: None, `max_size`: None, mode: `Measured`)
-	fn remove_lst_auto_refresh() -> Weight {
+	fn remove_Lst_auto_refresh() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
 		//  Estimated: `0`

@@ -38,7 +38,7 @@ fn set_minimum_mint_should_work() {
 	TangleKusama::execute_with(|| {
 		assert_ok!(LstMinting::set_minimum_mint(RawOrigin::Root.into(), KSM, 50_000_000_000,));
 		assert_eq!(LstMinting::minimum_mint(KSM), 50_000_000_000);
-		assert_eq!(AssetIdMaps::<Runtime>::check_lst_registered(TokenSymbol::KSM), true);
+		assert_eq!(AssetIdMaps::<Runtime>::check_Lst_registered(TokenSymbol::KSM), true);
 		assert_eq!(AssetIdMaps::<Runtime>::check_token_registered(TokenSymbol::KSM), true);
 	});
 }

@@ -96,7 +96,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -122,7 +122,7 @@ declare module '@polkadot/api-base/types/submittable' {
 				[TanglePrimitivesCurrencyCurrencyId, XcmVersionedMultiLocation, SpWeightsWeightV2Weight]
 			>;
 			/**
-			 * See [`Pallet::register_lst_metadata`].
+			 * See [`Pallet::register_Lst_metadata`].
 			 **/
 			registerLstMetadata: AugmentedSubmittable<
 				(tokenId: u8 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>,
@@ -136,7 +136,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -169,7 +169,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -238,7 +238,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -817,7 +817,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -872,7 +872,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1670,7 +1670,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1697,7 +1697,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1727,7 +1727,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1755,7 +1755,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1783,7 +1783,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1816,10 +1816,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			redeem: AugmentedSubmittable<
 				(
-					lstId:
+					LstId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1835,7 +1835,7 @@ declare module '@polkadot/api-base/types/submittable' {
 						| { Lend: any }
 						| string
 						| Uint8Array,
-					lstAmount: u128 | AnyNumber | Uint8Array,
+					LstAmount: u128 | AnyNumber | Uint8Array,
 				) => SubmittableExtrinsic<ApiType>,
 				[TanglePrimitivesCurrencyCurrencyId, u128]
 			>;
@@ -1847,7 +1847,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1891,7 +1891,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1919,7 +1919,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1947,7 +1947,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -1983,7 +1983,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2019,7 +2019,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					tokenId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2050,10 +2050,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			addDelegator: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2078,10 +2078,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			killReferendum: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2144,10 +2144,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			removeDelegatorVote: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2173,10 +2173,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			setReferendumStatus: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2208,10 +2208,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			setUndecidingTimeout: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2236,10 +2236,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			setVoteCapRatio: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2264,10 +2264,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			setVoteLockingPeriod: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2292,10 +2292,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			unlock: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2320,10 +2320,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			vote: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2340,7 +2340,7 @@ declare module '@polkadot/api-base/types/submittable' {
 						| string
 						| Uint8Array,
 					pollIndex: Compact<u32> | AnyNumber | Uint8Array,
-					lstVote:
+					LstVote:
 						| TangleLstVotingVoteAccountVote
 						| { Standard: any }
 						| { Split: any }
@@ -2401,7 +2401,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					distributeCurrency:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -2538,7 +2538,7 @@ declare module '@polkadot/api-base/types/submittable' {
 								(
 									| TanglePrimitivesCurrencyCurrencyId
 									| { Native: any }
-									| { lst: any }
+									| { Lst: any }
 									| { Token: any }
 									| { Stable: any }
 									| { VSToken: any }
@@ -3274,7 +3274,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					assetId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3301,7 +3301,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					foreignAssetId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3320,7 +3320,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					assetId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3347,7 +3347,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					assetId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3834,7 +3834,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3863,7 +3863,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3891,7 +3891,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3919,7 +3919,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3947,7 +3947,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -3998,7 +3998,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4042,14 +4042,14 @@ declare module '@polkadot/api-base/types/submittable' {
 				]
 			>;
 			/**
-			 * See [`Pallet::charge_host_fee_and_tune_lst_exchange_rate`].
+			 * See [`Pallet::charge_host_fee_and_tune_Lst_exchange_rate`].
 			 **/
 			chargeHostFeeAndTuneLstExchangeRate: AugmentedSubmittable<
 				(
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4084,7 +4084,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4125,7 +4125,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					token:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4172,7 +4172,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4219,7 +4219,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4247,7 +4247,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4285,14 +4285,14 @@ declare module '@polkadot/api-base/types/submittable' {
 				]
 			>;
 			/**
-			 * See [`Pallet::convert_treasury_lst`].
+			 * See [`Pallet::convert_treasury_Lst`].
 			 **/
 			convertTreasuryLst: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4320,7 +4320,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4348,7 +4348,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4398,7 +4398,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4426,7 +4426,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4454,7 +4454,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4482,7 +4482,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4516,7 +4516,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4579,7 +4579,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4638,7 +4638,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4689,7 +4689,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4742,7 +4742,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4769,7 +4769,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4797,7 +4797,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4825,7 +4825,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4853,7 +4853,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4881,7 +4881,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4916,7 +4916,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4950,7 +4950,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -4983,7 +4983,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5026,7 +5026,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5062,7 +5062,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5098,7 +5098,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5144,7 +5144,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5172,7 +5172,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5200,7 +5200,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5235,7 +5235,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5275,7 +5275,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5303,7 +5303,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5348,7 +5348,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5383,7 +5383,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5434,7 +5434,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5475,7 +5475,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5525,7 +5525,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5587,7 +5587,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5633,7 +5633,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5668,10 +5668,10 @@ declare module '@polkadot/api-base/types/submittable' {
 			redeem: AugmentedSubmittable<
 				(
 					evmCaller: H160 | string | Uint8Array,
-					lstId:
+					LstId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5725,7 +5725,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5753,7 +5753,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5804,7 +5804,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5852,7 +5852,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyIdIn:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5871,7 +5871,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyIdOut:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5916,7 +5916,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyIdIn:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5935,7 +5935,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyIdOut:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -5988,14 +5988,14 @@ declare module '@polkadot/api-base/types/submittable' {
 				[u32, Vec<u128>, u128]
 			>;
 			/**
-			 * See [`Pallet::config_lst_auto_refresh`].
+			 * See [`Pallet::config_Lst_auto_refresh`].
 			 **/
 			configLstAutoRefresh: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6025,7 +6025,7 @@ declare module '@polkadot/api-base/types/submittable' {
 						| (
 								| TanglePrimitivesCurrencyCurrencyId
 								| { Native: any }
-								| { lst: any }
+								| { Lst: any }
 								| { Token: any }
 								| { Stable: any }
 								| { VSToken: any }
@@ -6075,7 +6075,7 @@ declare module '@polkadot/api-base/types/submittable' {
 								(
 									| TanglePrimitivesCurrencyCurrencyId
 									| { Native: any }
-									| { lst: any }
+									| { Lst: any }
 									| { Token: any }
 									| { Stable: any }
 									| { VSToken: any }
@@ -6170,14 +6170,14 @@ declare module '@polkadot/api-base/types/submittable' {
 				[u32, u128, u32, u128, u32]
 			>;
 			/**
-			 * See [`Pallet::remove_lst_auto_refresh`].
+			 * See [`Pallet::remove_Lst_auto_refresh`].
 			 **/
 			removeLstAutoRefresh: AugmentedSubmittable<
 				(
-					lst:
+					Lst:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6228,7 +6228,7 @@ declare module '@polkadot/api-base/types/submittable' {
 			/**
 			 * See [`Pallet::kill_storage`].
 			 **/
-			killStorage: AugmentedSubmittable<
+			kilLstorage: AugmentedSubmittable<
 				(keys: Vec<Bytes> | (Bytes | string | Uint8Array)[]) => SubmittableExtrinsic<ApiType>,
 				[Vec<Bytes>]
 			>;
@@ -6564,7 +6564,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6592,7 +6592,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6621,7 +6621,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6649,7 +6649,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6677,7 +6677,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6706,7 +6706,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6758,7 +6758,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6795,7 +6795,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6833,7 +6833,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6870,7 +6870,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -6907,7 +6907,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -7179,7 +7179,7 @@ declare module '@polkadot/api-base/types/submittable' {
 								(
 									| TanglePrimitivesCurrencyCurrencyId
 									| { Native: any }
-									| { lst: any }
+									| { Lst: any }
 									| { Token: any }
 									| { Stable: any }
 									| { VSToken: any }
@@ -7342,7 +7342,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -7435,7 +7435,7 @@ declare module '@polkadot/api-base/types/submittable' {
 								(
 									| TanglePrimitivesCurrencyCurrencyId
 									| { Native: any }
-									| { lst: any }
+									| { Lst: any }
 									| { Token: any }
 									| { Stable: any }
 									| { VSToken: any }
@@ -7478,7 +7478,7 @@ declare module '@polkadot/api-base/types/submittable' {
 					currencyId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
-						| { lst: any }
+						| { Lst: any }
 						| { Token: any }
 						| { Stable: any }
 						| { VSToken: any }
@@ -8027,7 +8027,7 @@ declare module '@polkadot/api-base/types/submittable' {
 						| (
 								| TanglePrimitivesCurrencyCurrencyId
 								| { Native: any }
-								| { lst: any }
+								| { Lst: any }
 								| { Token: any }
 								| { Stable: any }
 								| { VSToken: any }
@@ -8063,7 +8063,7 @@ declare module '@polkadot/api-base/types/submittable' {
 						| (
 								| TanglePrimitivesCurrencyCurrencyId
 								| { Native: any }
-								| { lst: any }
+								| { Lst: any }
 								| { Token: any }
 								| { Stable: any }
 								| { VSToken: any }
