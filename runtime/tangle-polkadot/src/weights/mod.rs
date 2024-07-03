@@ -20,10 +20,10 @@
 pub mod orml_oracle;
 pub mod orml_tokens;
 pub mod pallet_xcm;
-pub mod tangle_asset_registry;
-pub mod tangle_currencies;
 pub mod tangle_Lst_minting;
 pub mod tangle_Lst_voting;
+pub mod tangle_asset_registry;
+pub mod tangle_currencies;
 pub mod tangle_slp;
 pub mod tangle_slpx;
 pub mod tangle_stable_pool;

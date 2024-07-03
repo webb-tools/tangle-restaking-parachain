@@ -190,7 +190,7 @@ pub trait CurrencyIdConversion<CurrencyId> {
 
 pub trait CurrencyIdRegister<CurrencyId> {
 	fn check_token_registered(token_symbol: TokenSymbol) -> bool;
-	fn check_Lst_registered(token_symbol: TokenSymbol) -> bool;
+	fn check_lst_registered(token_symbol: TokenSymbol) -> bool;
 	fn check_vstoken_registered(token_symbol: TokenSymbol) -> bool;
 	fn check_vsbond_registered(
 		token_symbol: TokenSymbol,
@@ -198,7 +198,7 @@ pub trait CurrencyIdRegister<CurrencyId> {
 		first_slot: crate::LeasePeriod,
 		last_slot: crate::LeasePeriod,
 	) -> bool;
-	fn register_Lst_metadata(token_symbol: TokenSymbol) -> DispatchResult;
+	fn register_lst_metadata(token_symbol: TokenSymbol) -> DispatchResult;
 	fn register_vstoken_metadata(token_symbol: TokenSymbol) -> DispatchResult;
 	fn register_vsbond_metadata(
 		token_symbol: TokenSymbol,
@@ -207,7 +207,7 @@ pub trait CurrencyIdRegister<CurrencyId> {
 		last_slot: crate::LeasePeriod,
 	) -> DispatchResult;
 	fn check_token2_registered(token_id: TokenId) -> bool;
-	fn check_Lst2_registered(token_id: TokenId) -> bool;
+	fn check_lst2_registered(token_id: TokenId) -> bool;
 	fn check_vstoken2_registered(token_id: TokenId) -> bool;
 	fn check_vsbond2_registered(
 		token_id: TokenId,
@@ -231,7 +231,7 @@ impl<CurrencyId> CurrencyIdRegister<CurrencyId> for () {
 		false
 	}
 
-	fn check_Lst_registered(_token_symbol: TokenSymbol) -> bool {
+	fn check_lst_registered(_token_symbol: TokenSymbol) -> bool {
 		false
 	}
 
@@ -248,7 +248,7 @@ impl<CurrencyId> CurrencyIdRegister<CurrencyId> for () {
 		false
 	}
 
-	fn register_Lst_metadata(_token_symbol: TokenSymbol) -> DispatchResult {
+	fn register_lst_metadata(_token_symbol: TokenSymbol) -> DispatchResult {
 		Ok(())
 	}
 
@@ -269,7 +269,7 @@ impl<CurrencyId> CurrencyIdRegister<CurrencyId> for () {
 		false
 	}
 
-	fn check_Lst2_registered(_token_id: TokenId) -> bool {
+	fn check_lst2_registered(_token_id: TokenId) -> bool {
 		false
 	}
 
@@ -504,7 +504,7 @@ pub trait DerivativeAccountHandler<CurrencyId, Balance> {
 }
 
 pub trait LstSupplyProvider<CurrencyId, Balance> {
-	fn get_Lst_supply(Lst: CurrencyId) -> Option<Balance>;
+	fn get_lst_supply(Lst: CurrencyId) -> Option<Balance>;
 
 	fn get_token_supply(token: CurrencyId) -> Option<Balance>;
 }

@@ -98,7 +98,7 @@ impl<T: frame_system::Config> tangle_asset_registry::WeightInfo for TangleWeight
 	}
 	// Storage: AssetRegistry CurrencyMetadatas (r:2 w:1)
 	// Proof Skipped: AssetRegistry CurrencyMetadatas (max_values: None, max_size: None, mode: Measured)
-	fn register_Lst_metadata() -> Weight {
+	fn register_lst_metadata() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `779`
 		//  Estimated: `6719`

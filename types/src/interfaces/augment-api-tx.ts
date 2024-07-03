@@ -122,7 +122,7 @@ declare module '@polkadot/api-base/types/submittable' {
 				[TanglePrimitivesCurrencyCurrencyId, XcmVersionedMultiLocation, SpWeightsWeightV2Weight]
 			>;
 			/**
-			 * See [`Pallet::register_Lst_metadata`].
+			 * See [`Pallet::register_lst_metadata`].
 			 **/
 			registerLstMetadata: AugmentedSubmittable<
 				(tokenId: u8 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>,

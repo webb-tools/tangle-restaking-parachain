@@ -3471,7 +3471,7 @@ export default {
 			register_token_metadata: {
 				metadata: 'TangleAssetRegistryAssetMetadata',
 			},
-			register_Lst_metadata: {
+			register_lst_metadata: {
 				tokenId: 'u8',
 			},
 			register_vstoken_metadata: {

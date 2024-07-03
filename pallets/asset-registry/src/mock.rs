@@ -20,12 +20,12 @@
 
 #![cfg(test)]
 
-use tangle_primitives::{AccountId, Balance};
 use frame_support::{
 	construct_runtime, derive_impl, ord_parameter_types, pallet_prelude::ConstU32, parameter_types,
 };
 use frame_system::EnsureSignedBy;
 use sp_runtime::BuildStorage;
+use tangle_primitives::{AccountId, Balance};
 
 use crate as asset_registry;
 
