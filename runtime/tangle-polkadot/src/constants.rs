@@ -16,19 +16,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! A set of constant values used in Tangle runtime.
+//! A set of constant values used in Bifrost runtime.
 
 /// Money matters.
 pub mod currency {
 	use crate::Runtime;
+	use tangle_primitives::{Balance, CurrencyId, TokenSymbol};
+	use tangle_runtime_common::{cent, milli};
 	use frame_support::weights::{
 		constants::{ExtrinsicBaseWeight, WEIGHT_REF_TIME_PER_SECOND},
 		WeightToFeeCoefficient, WeightToFeeCoefficients, WeightToFeePolynomial,
 	};
 	use smallvec::smallvec;
 	pub use sp_runtime::Perbill;
-	use tangle_primitives::{Balance, CurrencyId, TokenSymbol};
-	use tangle_runtime_common::{cent, milli};
 
 	pub const BNCS: Balance = 1_000_000_000_000;
 	pub const DOLLARS: Balance = BNCS;
@@ -60,15 +60,15 @@ pub mod currency {
 	}
 
 	fn base_tx_fee<Runtime: tangle_asset_registry::Config>() -> Balance {
-		milli::<Runtime>(CurrencyId::Native(TokenSymbol::TNT)) / 3
+		milli::<Runtime>(CurrencyId::Native(TokenSymbol::BNC)) / 3
 	}
 
 	fn xcm_base_tx_fee<Runtime: tangle_asset_registry::Config>() -> Balance {
-		cent::<Runtime>(CurrencyId::Native(TokenSymbol::TNT)) / 10
+		cent::<Runtime>(CurrencyId::Native(TokenSymbol::BNC)) / 10
 	}
 
 	// 1 KSM = 10 DOT
-	// DOT precision is 1/100 of KSM and TNT
+	// DOT precision is 1/100 of KSM and BNC
 	pub fn dot_per_second<Runtime: tangle_asset_registry::Config>() -> u128 {
 		let base_weight = Balance::from(ExtrinsicBaseWeight::get().ref_time());
 		let base_tx_per_second = (WEIGHT_REF_TIME_PER_SECOND as u128) / base_weight;

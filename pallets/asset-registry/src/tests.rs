@@ -175,7 +175,7 @@ fn register_token_metadata_should_work() {
 }
 
 #[test]
-fn register_Lst_metadata_should_work() {
+fn register_lst_metadata_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
 			name: b"Bifrost Native Coin".to_vec(),

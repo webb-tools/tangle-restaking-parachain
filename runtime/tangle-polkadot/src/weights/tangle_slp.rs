@@ -1,6 +1,7 @@
 // This file is part of Tangle.
 
-
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,14 +26,14 @@
 //!
 //! THIS FILE WAS AUTO-GENERATED USING THE SUBSTRATE BENCHMARK CLI VERSION 4.0.0-dev
 //! DATE: 2023-09-14, STEPS: `50`, REPEAT: 20, LOW RANGE: `[]`, HIGH RANGE: `[]`
-//! HOSTNAME: `tangle-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
-//! WASM-EXECUTION: Compiled, CHAIN: Some("tangle-kusama-local"), DB CACHE: 1024
+//! HOSTNAME: `bifrost-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
+//! WASM-EXECUTION: Compiled, CHAIN: Some("bifrost-kusama-local"), DB CACHE: 1024
 
 // Executed Command:
-// target/release/tangle
+// target/release/bifrost
 // benchmark
 // pallet
-// --chain=tangle-kusama-local
+// --chain=bifrost-kusama-local
 // --steps=50
 // --repeat=20
 // --pallet=tangle_slp
@@ -40,7 +41,7 @@
 // --execution=wasm
 // --wasm-execution=compiled
 // --heap-pages=4096
-// --output=./runtime/tangle-kusama/src/weights/tangle_slp.rs
+// --output=./runtime/bifrost-kusama/src/weights/tangle_slp.rs
 // --template=./weight-template/runtime-weight-template.hbs
 
 #![cfg_attr(rustfmt, rustfmt_skip)]
@@ -51,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_slp.
-pub struct TangleWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_slp::WeightInfo for TangleWeight<T> {
+pub struct BifrostWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_slp::WeightInfo for BifrostWeight<T> {
 	// Storage: Slp DelegatorNextIndex (r:1 w:1)
 	// Proof Skipped: Slp DelegatorNextIndex (max_values: None, max_size: None, mode: Measured)
 	// Storage: ParachainInfo ParachainId (r:1 w:0)
@@ -487,7 +488,7 @@ impl<T: frame_system::Config> tangle_slp::WeightInfo for TangleWeight<T> {
 	// Proof Skipped: Slp DelegatorLatestTuneRecord (max_values: None, max_size: None, mode: Measured)
 	// Storage: Slp DelegatorLedgers (r:1 w:1)
 	// Proof Skipped: Slp DelegatorLedgers (max_values: None, max_size: None, mode: Measured)
-	fn charge_host_fee_and_tune_Lst_exchange_rate() -> Weight {
+	fn charge_host_fee_and_tune_lst_exchange_rate() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `2097`
 		//  Estimated: `5562`
@@ -787,7 +788,7 @@ impl<T: frame_system::Config> tangle_slp::WeightInfo for TangleWeight<T> {
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(1))
 	}
-	fn convert_treasury_Lst() -> Weight {
+	fn convert_treasury_lst() -> Weight {
 		Weight::from_parts(42_190_000, 3911)
 			.saturating_add(RocksDbWeight::get().reads(1_u64))
 			.saturating_add(RocksDbWeight::get().writes(1_u64))

@@ -36443,9 +36443,9 @@ pub mod api {
 		use super::root_mod;
 		use super::runtime_types;
 		#[doc = "The `Error` enum of this pallet."]
-		pub type Error = runtime_types::tangle_Lst_minting::pallet::Error;
+		pub type Error = runtime_types::tangle_lst_minting::pallet::Error;
 		#[doc = "Contains a variant per dispatchable extrinsic that this pallet has."]
-		pub type Call = runtime_types::tangle_Lst_minting::pallet::Call;
+		pub type Call = runtime_types::tangle_lst_minting::pallet::Call;
 		pub mod calls {
 			use super::root_mod;
 			use super::runtime_types;
@@ -37079,7 +37079,7 @@ pub mod api {
 			}
 		}
 		#[doc = "The `Event` enum of this pallet"]
-		pub type Event = runtime_types::tangle_Lst_minting::pallet::Event;
+		pub type Event = runtime_types::tangle_lst_minting::pallet::Event;
 		pub mod events {
 			use super::runtime_types;
 			#[derive(
@@ -39111,14 +39111,14 @@ pub mod api {
 				# [codec (crate = :: subxt :: ext :: codec)]
 				#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
-				#[doc = "See [`Pallet::charge_host_fee_and_tune_Lst_exchange_rate`]."]
+				#[doc = "See [`Pallet::charge_host_fee_and_tune_lst_exchange_rate`]."]
 				pub struct ChargeHostFeeAndTuneLstExchangeRate {
-					pub currency_id: charge_host_fee_and_tune_Lst_exchange_rate::CurrencyId,
+					pub currency_id: charge_host_fee_and_tune_lst_exchange_rate::CurrencyId,
 					#[codec(compact)]
-					pub value: charge_host_fee_and_tune_Lst_exchange_rate::Value,
-					pub who: charge_host_fee_and_tune_Lst_exchange_rate::Who,
+					pub value: charge_host_fee_and_tune_lst_exchange_rate::Value,
+					pub who: charge_host_fee_and_tune_lst_exchange_rate::Who,
 				}
-				pub mod charge_host_fee_and_tune_Lst_exchange_rate {
+				pub mod charge_host_fee_and_tune_lst_exchange_rate {
 					use super::runtime_types;
 					pub type CurrencyId = runtime_types::tangle_primitives::currency::CurrencyId;
 					pub type Value = ::core::primitive::u128;
@@ -39128,7 +39128,7 @@ pub mod api {
 				}
 				impl ::subxt::blocks::StaticExtrinsic for ChargeHostFeeAndTuneLstExchangeRate {
 					const PALLET: &'static str = "Slp";
-					const CALL: &'static str = "charge_host_fee_and_tune_Lst_exchange_rate";
+					const CALL: &'static str = "charge_host_fee_and_tune_lst_exchange_rate";
 				}
 				#[derive(
 					:: subxt :: ext :: codec :: Decode,
@@ -39852,19 +39852,19 @@ pub mod api {
 				# [codec (crate = :: subxt :: ext :: codec)]
 				#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
-				#[doc = "See [`Pallet::convert_treasury_Lst`]."]
+				#[doc = "See [`Pallet::convert_treasury_lst`]."]
 				pub struct ConvertTreasuryLst {
-					pub Lst: convert_treasury_Lst::Lst,
-					pub amount: convert_treasury_Lst::Amount,
+					pub Lst: convert_treasury_lst::Lst,
+					pub amount: convert_treasury_lst::Amount,
 				}
-				pub mod convert_treasury_Lst {
+				pub mod convert_treasury_lst {
 					use super::runtime_types;
 					pub type Lst = runtime_types::tangle_primitives::currency::CurrencyId;
 					pub type Amount = ::core::primitive::u128;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for ConvertTreasuryLst {
 					const PALLET: &'static str = "Slp";
-					const CALL: &'static str = "convert_treasury_Lst";
+					const CALL: &'static str = "convert_treasury_lst";
 				}
 				#[derive(
 					:: subxt :: ext :: codec :: Decode,
@@ -40363,16 +40363,16 @@ pub mod api {
 						],
 					)
 				}
-				#[doc = "See [`Pallet::charge_host_fee_and_tune_Lst_exchange_rate`]."]
-				pub fn charge_host_fee_and_tune_Lst_exchange_rate(
+				#[doc = "See [`Pallet::charge_host_fee_and_tune_lst_exchange_rate`]."]
+				pub fn charge_host_fee_and_tune_lst_exchange_rate(
 					&self,
-					currency_id: types::charge_host_fee_and_tune_Lst_exchange_rate::CurrencyId,
-					value: types::charge_host_fee_and_tune_Lst_exchange_rate::Value,
-					who: types::charge_host_fee_and_tune_Lst_exchange_rate::Who,
+					currency_id: types::charge_host_fee_and_tune_lst_exchange_rate::CurrencyId,
+					value: types::charge_host_fee_and_tune_lst_exchange_rate::Value,
+					who: types::charge_host_fee_and_tune_lst_exchange_rate::Who,
 				) -> ::subxt::tx::Payload<types::ChargeHostFeeAndTuneLstExchangeRate> {
 					::subxt::tx::Payload::new_static(
 						"Slp",
-						"charge_host_fee_and_tune_Lst_exchange_rate",
+						"charge_host_fee_and_tune_lst_exchange_rate",
 						types::ChargeHostFeeAndTuneLstExchangeRate { currency_id, value, who },
 						[
 							166u8, 42u8, 183u8, 158u8, 51u8, 152u8, 144u8, 51u8, 138u8, 148u8,
@@ -40853,15 +40853,15 @@ pub mod api {
 						],
 					)
 				}
-				#[doc = "See [`Pallet::convert_treasury_Lst`]."]
-				pub fn convert_treasury_Lst(
+				#[doc = "See [`Pallet::convert_treasury_lst`]."]
+				pub fn convert_treasury_lst(
 					&self,
-					Lst: types::convert_treasury_Lst::Lst,
-					amount: types::convert_treasury_Lst::Amount,
+					Lst: types::convert_treasury_lst::Lst,
+					amount: types::convert_treasury_lst::Amount,
 				) -> ::subxt::tx::Payload<types::ConvertTreasuryLst> {
 					::subxt::tx::Payload::new_static(
 						"Slp",
-						"convert_treasury_Lst",
+						"convert_treasury_lst",
 						types::ConvertTreasuryLst { Lst, amount },
 						[
 							116u8, 182u8, 9u8, 64u8, 153u8, 148u8, 121u8, 50u8, 231u8, 232u8,
@@ -48688,19 +48688,19 @@ pub mod api {
 				# [codec (crate = :: subxt :: ext :: codec)]
 				#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
-				#[doc = "See [`Pallet::config_Lst_auto_refresh`]."]
+				#[doc = "See [`Pallet::config_lst_auto_refresh`]."]
 				pub struct ConfigLstAutoRefresh {
-					pub Lst: config_Lst_auto_refresh::Lst,
-					pub hardcap: config_Lst_auto_refresh::Hardcap,
+					pub Lst: config_lst_auto_refresh::Lst,
+					pub hardcap: config_lst_auto_refresh::Hardcap,
 				}
-				pub mod config_Lst_auto_refresh {
+				pub mod config_lst_auto_refresh {
 					use super::runtime_types;
 					pub type Lst = runtime_types::tangle_primitives::currency::CurrencyId;
 					pub type Hardcap = runtime_types::sp_arithmetic::per_things::Permill;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for ConfigLstAutoRefresh {
 					const PALLET: &'static str = "StablePool";
-					const CALL: &'static str = "config_Lst_auto_refresh";
+					const CALL: &'static str = "config_lst_auto_refresh";
 				}
 				#[derive(
 					:: subxt :: ext :: codec :: Decode,
@@ -48715,17 +48715,17 @@ pub mod api {
 				# [codec (crate = :: subxt :: ext :: codec)]
 				#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
-				#[doc = "See [`Pallet::remove_Lst_auto_refresh`]."]
+				#[doc = "See [`Pallet::remove_lst_auto_refresh`]."]
 				pub struct RemoveLstAutoRefresh {
-					pub Lst: remove_Lst_auto_refresh::Lst,
+					pub Lst: remove_lst_auto_refresh::Lst,
 				}
-				pub mod remove_Lst_auto_refresh {
+				pub mod remove_lst_auto_refresh {
 					use super::runtime_types;
 					pub type Lst = runtime_types::tangle_primitives::currency::CurrencyId;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for RemoveLstAutoRefresh {
 					const PALLET: &'static str = "StablePool";
-					const CALL: &'static str = "remove_Lst_auto_refresh";
+					const CALL: &'static str = "remove_lst_auto_refresh";
 				}
 			}
 			pub struct TransactionApi;
@@ -48933,15 +48933,15 @@ pub mod api {
 						],
 					)
 				}
-				#[doc = "See [`Pallet::config_Lst_auto_refresh`]."]
-				pub fn config_Lst_auto_refresh(
+				#[doc = "See [`Pallet::config_lst_auto_refresh`]."]
+				pub fn config_lst_auto_refresh(
 					&self,
-					Lst: types::config_Lst_auto_refresh::Lst,
-					hardcap: types::config_Lst_auto_refresh::Hardcap,
+					Lst: types::config_lst_auto_refresh::Lst,
+					hardcap: types::config_lst_auto_refresh::Hardcap,
 				) -> ::subxt::tx::Payload<types::ConfigLstAutoRefresh> {
 					::subxt::tx::Payload::new_static(
 						"StablePool",
-						"config_Lst_auto_refresh",
+						"config_lst_auto_refresh",
 						types::ConfigLstAutoRefresh { Lst, hardcap },
 						[
 							30u8, 44u8, 71u8, 159u8, 74u8, 151u8, 245u8, 90u8, 80u8, 189u8, 212u8,
@@ -48950,14 +48950,14 @@ pub mod api {
 						],
 					)
 				}
-				#[doc = "See [`Pallet::remove_Lst_auto_refresh`]."]
-				pub fn remove_Lst_auto_refresh(
+				#[doc = "See [`Pallet::remove_lst_auto_refresh`]."]
+				pub fn remove_lst_auto_refresh(
 					&self,
-					Lst: types::remove_Lst_auto_refresh::Lst,
+					Lst: types::remove_lst_auto_refresh::Lst,
 				) -> ::subxt::tx::Payload<types::RemoveLstAutoRefresh> {
 					::subxt::tx::Payload::new_static(
 						"StablePool",
-						"remove_Lst_auto_refresh",
+						"remove_lst_auto_refresh",
 						types::RemoveLstAutoRefresh { Lst },
 						[
 							2u8, 126u8, 22u8, 194u8, 152u8, 164u8, 46u8, 216u8, 156u8, 112u8,
@@ -48973,9 +48973,9 @@ pub mod api {
 		use super::root_mod;
 		use super::runtime_types;
 		#[doc = "The `Error` enum of this pallet."]
-		pub type Error = runtime_types::tangle_Lst_voting::pallet::Error;
+		pub type Error = runtime_types::tangle_lst_voting::pallet::Error;
 		#[doc = "Contains a variant per dispatchable extrinsic that this pallet has."]
-		pub type Call = runtime_types::tangle_Lst_voting::pallet::Call;
+		pub type Call = runtime_types::tangle_lst_voting::pallet::Call;
 		pub mod calls {
 			use super::root_mod;
 			use super::runtime_types;
@@ -49006,7 +49006,7 @@ pub mod api {
 					use super::runtime_types;
 					pub type Lst = runtime_types::tangle_primitives::currency::CurrencyId;
 					pub type PollIndex = ::core::primitive::u32;
-					pub type LstVote = runtime_types::tangle_Lst_voting::vote::AccountVote<
+					pub type LstVote = runtime_types::tangle_lst_voting::vote::AccountVote<
 						::core::primitive::u128,
 					>;
 				}
@@ -49153,9 +49153,9 @@ pub mod api {
 					use super::runtime_types;
 					pub type Lst = runtime_types::tangle_primitives::currency::CurrencyId;
 					pub type PollIndex = ::core::primitive::u32;
-					pub type Info = runtime_types::tangle_Lst_voting::vote::ReferendumInfo<
+					pub type Info = runtime_types::tangle_lst_voting::vote::ReferendumInfo<
 						::core::primitive::u32,
-						runtime_types::tangle_Lst_voting::vote::Tally<::core::primitive::u128>,
+						runtime_types::tangle_lst_voting::vote::Tally<::core::primitive::u128>,
 					>;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for SetReferendumStatus {
@@ -49499,7 +49499,7 @@ pub mod api {
 			}
 		}
 		#[doc = "The `Event` enum of this pallet"]
-		pub type Event = runtime_types::tangle_Lst_voting::pallet::Event;
+		pub type Event = runtime_types::tangle_lst_voting::pallet::Event;
 		pub mod events {
 			use super::runtime_types;
 			#[derive(
@@ -49528,9 +49528,9 @@ pub mod api {
 				pub type Lst = runtime_types::tangle_primitives::currency::CurrencyId;
 				pub type PollIndex = ::core::primitive::u32;
 				pub type TokenVote =
-					runtime_types::tangle_Lst_voting::vote::AccountVote<::core::primitive::u128>;
+					runtime_types::tangle_lst_voting::vote::AccountVote<::core::primitive::u128>;
 				pub type DelegatorVote =
-					runtime_types::tangle_Lst_voting::vote::AccountVote<::core::primitive::u128>;
+					runtime_types::tangle_lst_voting::vote::AccountVote<::core::primitive::u128>;
 			}
 			impl ::subxt::events::StaticEvent for Voted {
 				const PALLET: &'static str = "LstVoting";
@@ -49640,9 +49640,9 @@ pub mod api {
 				use super::runtime_types;
 				pub type Lst = runtime_types::tangle_primitives::currency::CurrencyId;
 				pub type PollIndex = ::core::primitive::u32;
-				pub type Info = runtime_types::tangle_Lst_voting::vote::ReferendumInfo<
+				pub type Info = runtime_types::tangle_lst_voting::vote::ReferendumInfo<
 					::core::primitive::u32,
-					runtime_types::tangle_Lst_voting::vote::Tally<::core::primitive::u128>,
+					runtime_types::tangle_lst_voting::vote::Tally<::core::primitive::u128>,
 				>;
 			}
 			impl ::subxt::events::StaticEvent for ReferendumInfoCreated {
@@ -49671,9 +49671,9 @@ pub mod api {
 				use super::runtime_types;
 				pub type Lst = runtime_types::tangle_primitives::currency::CurrencyId;
 				pub type PollIndex = ::core::primitive::u32;
-				pub type Info = runtime_types::tangle_Lst_voting::vote::ReferendumInfo<
+				pub type Info = runtime_types::tangle_lst_voting::vote::ReferendumInfo<
 					::core::primitive::u32,
-					runtime_types::tangle_Lst_voting::vote::Tally<::core::primitive::u128>,
+					runtime_types::tangle_lst_voting::vote::Tally<::core::primitive::u128>,
 				>;
 			}
 			impl ::subxt::events::StaticEvent for ReferendumInfoSet {
@@ -49876,16 +49876,16 @@ pub mod api {
 				pub mod referendum_info_for {
 					use super::runtime_types;
 					pub type ReferendumInfoFor =
-						runtime_types::tangle_Lst_voting::vote::ReferendumInfo<
+						runtime_types::tangle_lst_voting::vote::ReferendumInfo<
 							::core::primitive::u32,
-							runtime_types::tangle_Lst_voting::vote::Tally<::core::primitive::u128>,
+							runtime_types::tangle_lst_voting::vote::Tally<::core::primitive::u128>,
 						>;
 					pub type Param0 = runtime_types::tangle_primitives::currency::CurrencyId;
 					pub type Param1 = ::core::primitive::u32;
 				}
 				pub mod voting_for {
 					use super::runtime_types;
-					pub type VotingFor = runtime_types::tangle_Lst_voting::vote::Voting<
+					pub type VotingFor = runtime_types::tangle_lst_voting::vote::Voting<
 						::core::primitive::u128,
 						::subxt::utils::AccountId32,
 						::core::primitive::u32,
@@ -49918,7 +49918,7 @@ pub mod api {
 						::core::primitive::u16,
 						::subxt::utils::AccountId32,
 						::core::option::Option<(
-							runtime_types::tangle_Lst_voting::vote::AccountVote<
+							runtime_types::tangle_lst_voting::vote::AccountVote<
 								::core::primitive::u128,
 							>,
 							::core::primitive::u128,
@@ -49963,7 +49963,7 @@ pub mod api {
 					pub type DelegatorVotes =
 						runtime_types::bounded_collections::bounded_vec::BoundedVec<(
 							::core::primitive::u16,
-							runtime_types::tangle_Lst_voting::vote::AccountVote<
+							runtime_types::tangle_lst_voting::vote::AccountVote<
 								::core::primitive::u128,
 							>,
 						)>;
@@ -49975,7 +49975,7 @@ pub mod api {
 					pub type PendingDelegatorVotes =
 						runtime_types::bounded_collections::bounded_vec::BoundedVec<(
 							::core::primitive::u16,
-							runtime_types::tangle_Lst_voting::vote::AccountVote<
+							runtime_types::tangle_lst_voting::vote::AccountVote<
 								::core::primitive::u128,
 							>,
 						)>;
@@ -62603,7 +62603,7 @@ pub mod api {
 				#[codec(index = 114)]
 				AssetRegistry(runtime_types::tangle_asset_registry::pallet::Call),
 				#[codec(index = 115)]
-				LstMinting(runtime_types::tangle_Lst_minting::pallet::Call),
+				LstMinting(runtime_types::tangle_lst_minting::pallet::Call),
 				#[codec(index = 116)]
 				Slp(runtime_types::tangle_slp::pallet::Call),
 				#[codec(index = 117)]
@@ -62617,7 +62617,7 @@ pub mod api {
 				#[codec(index = 129)]
 				StablePool(runtime_types::tangle_stable_pool::pallet::Call),
 				#[codec(index = 130)]
-				LstVoting(runtime_types::tangle_Lst_voting::pallet::Call),
+				LstVoting(runtime_types::tangle_lst_voting::pallet::Call),
 				#[codec(index = 132)]
 				Prices(runtime_types::pallet_prices::pallet::Call),
 				#[codec(index = 133)]
@@ -62718,7 +62718,7 @@ pub mod api {
 				#[codec(index = 114)]
 				AssetRegistry(runtime_types::tangle_asset_registry::pallet::Error),
 				#[codec(index = 115)]
-				LstMinting(runtime_types::tangle_Lst_minting::pallet::Error),
+				LstMinting(runtime_types::tangle_lst_minting::pallet::Error),
 				#[codec(index = 116)]
 				Slp(runtime_types::tangle_slp::pallet::Error),
 				#[codec(index = 117)]
@@ -62734,7 +62734,7 @@ pub mod api {
 				#[codec(index = 129)]
 				StablePool(runtime_types::tangle_stable_pool::pallet::Error),
 				#[codec(index = 130)]
-				LstVoting(runtime_types::tangle_Lst_voting::pallet::Error),
+				LstVoting(runtime_types::tangle_lst_voting::pallet::Error),
 				#[codec(index = 133)]
 				Oracle(runtime_types::orml_oracle::module::Error),
 				#[codec(index = 134)]
@@ -62833,7 +62833,7 @@ pub mod api {
 				#[codec(index = 114)]
 				AssetRegistry(runtime_types::tangle_asset_registry::pallet::Event),
 				#[codec(index = 115)]
-				LstMinting(runtime_types::tangle_Lst_minting::pallet::Event),
+				LstMinting(runtime_types::tangle_lst_minting::pallet::Event),
 				#[codec(index = 116)]
 				Slp(runtime_types::tangle_slp::pallet::Event),
 				#[codec(index = 117)]
@@ -62847,7 +62847,7 @@ pub mod api {
 				#[codec(index = 128)]
 				StableAsset(runtime_types::tangle_stable_asset::pallet::Event),
 				#[codec(index = 130)]
-				LstVoting(runtime_types::tangle_Lst_voting::pallet::Event),
+				LstVoting(runtime_types::tangle_lst_voting::pallet::Event),
 				#[codec(index = 132)]
 				Prices(runtime_types::pallet_prices::pallet::Event),
 				#[codec(index = 133)]
@@ -62889,7 +62889,7 @@ pub mod api {
 				pub aura: runtime_types::sp_consensus_aura::sr25519::app_sr25519::Public,
 			}
 		}
-		pub mod tangle_Lst_minting {
+		pub mod tangle_lst_minting {
 			use super::runtime_types;
 			pub mod pallet {
 				use super::runtime_types;
@@ -63154,7 +63154,7 @@ pub mod api {
 				}
 			}
 		}
-		pub mod tangle_Lst_voting {
+		pub mod tangle_lst_voting {
 			use super::runtime_types;
 			pub mod pallet {
 				use super::runtime_types;
@@ -63179,7 +63179,7 @@ pub mod api {
 						Lst: runtime_types::tangle_primitives::currency::CurrencyId,
 						#[codec(compact)]
 						poll_index: ::core::primitive::u32,
-						Lst_vote: runtime_types::tangle_Lst_voting::vote::AccountVote<
+						Lst_vote: runtime_types::tangle_lst_voting::vote::AccountVote<
 							::core::primitive::u128,
 						>,
 					},
@@ -63219,9 +63219,9 @@ pub mod api {
 						Lst: runtime_types::tangle_primitives::currency::CurrencyId,
 						#[codec(compact)]
 						poll_index: ::core::primitive::u32,
-						info: runtime_types::tangle_Lst_voting::vote::ReferendumInfo<
+						info: runtime_types::tangle_lst_voting::vote::ReferendumInfo<
 							::core::primitive::u32,
-							runtime_types::tangle_Lst_voting::vote::Tally<::core::primitive::u128>,
+							runtime_types::tangle_lst_voting::vote::Tally<::core::primitive::u128>,
 						>,
 					},
 					#[codec(index = 6)]
@@ -63351,10 +63351,10 @@ pub mod api {
 						who: ::subxt::utils::AccountId32,
 						Lst: runtime_types::tangle_primitives::currency::CurrencyId,
 						poll_index: ::core::primitive::u32,
-						token_vote: runtime_types::tangle_Lst_voting::vote::AccountVote<
+						token_vote: runtime_types::tangle_lst_voting::vote::AccountVote<
 							::core::primitive::u128,
 						>,
-						delegator_vote: runtime_types::tangle_Lst_voting::vote::AccountVote<
+						delegator_vote: runtime_types::tangle_lst_voting::vote::AccountVote<
 							::core::primitive::u128,
 						>,
 					},
@@ -63379,18 +63379,18 @@ pub mod api {
 					ReferendumInfoCreated {
 						Lst: runtime_types::tangle_primitives::currency::CurrencyId,
 						poll_index: ::core::primitive::u32,
-						info: runtime_types::tangle_Lst_voting::vote::ReferendumInfo<
+						info: runtime_types::tangle_lst_voting::vote::ReferendumInfo<
 							::core::primitive::u32,
-							runtime_types::tangle_Lst_voting::vote::Tally<::core::primitive::u128>,
+							runtime_types::tangle_lst_voting::vote::Tally<::core::primitive::u128>,
 						>,
 					},
 					#[codec(index = 5)]
 					ReferendumInfoSet {
 						Lst: runtime_types::tangle_primitives::currency::CurrencyId,
 						poll_index: ::core::primitive::u32,
-						info: runtime_types::tangle_Lst_voting::vote::ReferendumInfo<
+						info: runtime_types::tangle_lst_voting::vote::ReferendumInfo<
 							::core::primitive::u32,
-							runtime_types::tangle_Lst_voting::vote::Tally<::core::primitive::u128>,
+							runtime_types::tangle_lst_voting::vote::Tally<::core::primitive::u128>,
 						>,
 					},
 					#[codec(index = 6)]
@@ -63475,13 +63475,13 @@ pub mod api {
 				pub struct Casting<_0, _1, _2> {
 					pub votes: runtime_types::bounded_collections::bounded_vec::BoundedVec<(
 						_1,
-						runtime_types::tangle_Lst_voting::vote::AccountVote<_0>,
+						runtime_types::tangle_lst_voting::vote::AccountVote<_0>,
 						::core::primitive::u16,
 						_0,
 					)>,
 					pub delegations:
 						runtime_types::pallet_conviction_voting::types::Delegations<_0>,
-					pub prior: runtime_types::tangle_Lst_voting::vote::PriorLock<_1, _0>,
+					pub prior: runtime_types::tangle_lst_voting::vote::PriorLock<_1, _0>,
 					#[codec(skip)]
 					pub __ignore: ::core::marker::PhantomData<_2>,
 				}
@@ -63504,7 +63504,7 @@ pub mod api {
 					pub conviction: runtime_types::pallet_conviction_voting::conviction::Conviction,
 					pub delegations:
 						runtime_types::pallet_conviction_voting::types::Delegations<_0>,
-					pub prior: runtime_types::tangle_Lst_voting::vote::PriorLock<_2, _0>,
+					pub prior: runtime_types::tangle_lst_voting::vote::PriorLock<_2, _0>,
 				}
 				#[derive(
 					:: subxt :: ext :: codec :: Decode,
@@ -63535,7 +63535,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				pub enum ReferendumInfo<_0, _1> {
 					#[codec(index = 0)]
-					Ongoing(runtime_types::tangle_Lst_voting::vote::ReferendumStatus<_0, _1>),
+					Ongoing(runtime_types::tangle_lst_voting::vote::ReferendumStatus<_0, _1>),
 					#[codec(index = 1)]
 					Completed(_0),
 					#[codec(index = 2)]
@@ -63591,9 +63591,9 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				pub enum Voting<_0, _1, _2, _3> {
 					#[codec(index = 0)]
-					Casting(runtime_types::tangle_Lst_voting::vote::Casting<_0, _2, _2>),
+					Casting(runtime_types::tangle_lst_voting::vote::Casting<_0, _2, _2>),
 					#[codec(index = 1)]
-					Delegating(runtime_types::tangle_Lst_voting::vote::Delegating<_0, _1, _2>),
+					Delegating(runtime_types::tangle_lst_voting::vote::Delegating<_0, _1, _2>),
 					__Ignore(::core::marker::PhantomData<_3>),
 				}
 			}
@@ -64749,8 +64749,8 @@ pub mod api {
 						>,
 					},
 					#[codec(index = 20)]
-					#[doc = "See [`Pallet::charge_host_fee_and_tune_Lst_exchange_rate`]."]
-					charge_host_fee_and_tune_Lst_exchange_rate {
+					#[doc = "See [`Pallet::charge_host_fee_and_tune_lst_exchange_rate`]."]
+					charge_host_fee_and_tune_lst_exchange_rate {
 						currency_id: runtime_types::tangle_primitives::currency::CurrencyId,
 						#[codec(compact)]
 						value: ::core::primitive::u128,
@@ -64963,8 +64963,8 @@ pub mod api {
 						>,
 					},
 					#[codec(index = 47)]
-					#[doc = "See [`Pallet::convert_treasury_Lst`]."]
-					convert_treasury_Lst {
+					#[doc = "See [`Pallet::convert_treasury_lst`]."]
+					convert_treasury_lst {
 						Lst: runtime_types::tangle_primitives::currency::CurrencyId,
 						amount: ::core::primitive::u128,
 					},
@@ -66698,14 +66698,14 @@ pub mod api {
 						)>,
 					},
 					#[codec(index = 10)]
-					#[doc = "See [`Pallet::config_Lst_auto_refresh`]."]
-					config_Lst_auto_refresh {
+					#[doc = "See [`Pallet::config_lst_auto_refresh`]."]
+					config_lst_auto_refresh {
 						Lst: runtime_types::tangle_primitives::currency::CurrencyId,
 						hardcap: runtime_types::sp_arithmetic::per_things::Permill,
 					},
 					#[codec(index = 11)]
-					#[doc = "See [`Pallet::remove_Lst_auto_refresh`]."]
-					remove_Lst_auto_refresh {
+					#[doc = "See [`Pallet::remove_lst_auto_refresh`]."]
+					remove_lst_auto_refresh {
 						Lst: runtime_types::tangle_primitives::currency::CurrencyId,
 					},
 				}

@@ -3505,7 +3505,7 @@ export default {
 		minimalBalance: 'u128',
 	},
 	/**
-	 * Lookup284: tangle_Lst_minting::pallet::Call<T>
+	 * Lookup284: tangle_lst_minting::pallet::Call<T>
 	 **/
 	TangleLstMintingCall: {
 		_enum: {
@@ -3697,7 +3697,7 @@ export default {
 				currencyId: 'TanglePrimitivesCurrencyCurrencyId',
 				dest: 'StagingXcmV3MultiLocation',
 			},
-			charge_host_fee_and_tune_Lst_exchange_rate: {
+			charge_host_fee_and_tune_lst_exchange_rate: {
 				currencyId: 'TanglePrimitivesCurrencyCurrencyId',
 				value: 'Compact<u128>',
 				who: 'Option<StagingXcmV3MultiLocation>',
@@ -3806,7 +3806,7 @@ export default {
 				currencyId: 'TanglePrimitivesCurrencyCurrencyId',
 				who: 'StagingXcmV3MultiLocation',
 			},
-			convert_treasury_Lst: {
+			convert_treasury_lst: {
 				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				amount: 'u128',
 			},
@@ -4160,17 +4160,17 @@ export default {
 				poolId: 'u32',
 				tokenRateInfo: 'Vec<(TanglePrimitivesCurrencyCurrencyId,(u128,u128))>',
 			},
-			config_Lst_auto_refresh: {
+			config_lst_auto_refresh: {
 				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 				hardcap: 'Permill',
 			},
-			remove_Lst_auto_refresh: {
+			remove_lst_auto_refresh: {
 				Lst: 'TanglePrimitivesCurrencyCurrencyId',
 			},
 		},
 	},
 	/**
-	 * Lookup342: tangle_Lst_voting::pallet::Call<T>
+	 * Lookup342: tangle_lst_voting::pallet::Call<T>
 	 **/
 	TangleLstVotingCall: {
 		_enum: {
@@ -4225,7 +4225,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup343: tangle_Lst_voting::vote::AccountVote<Balance>
+	 * Lookup343: tangle_lst_voting::vote::AccountVote<Balance>
 	 **/
 	TangleLstVotingVoteAccountVote: {
 		_enum: {
@@ -4245,7 +4245,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup344: tangle_Lst_voting::vote::ReferendumInfo<Moment, tangle_Lst_voting::vote::Tally<Votes, Total>>
+	 * Lookup344: tangle_lst_voting::vote::ReferendumInfo<Moment, tangle_lst_voting::vote::Tally<Votes, Total>>
 	 **/
 	TangleLstVotingVoteReferendumInfo: {
 		_enum: {
@@ -4255,7 +4255,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup345: tangle_Lst_voting::vote::Tally<Votes, Total>
+	 * Lookup345: tangle_lst_voting::vote::Tally<Votes, Total>
 	 **/
 	TangleLstVotingVoteTally: {
 		ayes: 'u128',
@@ -4263,7 +4263,7 @@ export default {
 		support: 'u128',
 	},
 	/**
-	 * Lookup346: tangle_Lst_voting::vote::ReferendumStatus<Moment, tangle_Lst_voting::vote::Tally<Votes, Total>>
+	 * Lookup346: tangle_lst_voting::vote::ReferendumStatus<Moment, tangle_lst_voting::vote::Tally<Votes, Total>>
 	 **/
 	TangleLstVotingVoteReferendumStatus: {
 		submitted: 'Option<u32>',
@@ -5208,7 +5208,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup387: tangle_Lst_minting::pallet::Event<T>
+	 * Lookup387: tangle_lst_minting::pallet::Event<T>
 	 **/
 	TangleLstMintingEvent: {
 		_enum: {
@@ -5906,7 +5906,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup407: tangle_Lst_voting::pallet::Event<T>
+	 * Lookup407: tangle_lst_voting::pallet::Event<T>
 	 **/
 	TangleLstVotingEvent: {
 		_enum: {
@@ -7640,7 +7640,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup704: tangle_Lst_minting::pallet::Error<T>
+	 * Lookup704: tangle_lst_minting::pallet::Error<T>
 	 **/
 	TangleLstMintingError: {
 		_enum: [
@@ -7892,7 +7892,7 @@ export default {
 		_enum: ['SwapUnderMin', 'MintUnderMin', 'CantMint', 'RedeemOverMax', 'TokenRateNotSet'],
 	},
 	/**
-	 * Lookup737: tangle_Lst_voting::vote::Voting<Balance, sp_core::crypto::AccountId32, BlockNumber, PollIndex, MaxVotes>
+	 * Lookup737: tangle_lst_voting::vote::Voting<Balance, sp_core::crypto::AccountId32, BlockNumber, PollIndex, MaxVotes>
 	 **/
 	TangleLstVotingVoteVoting: {
 		_enum: {
@@ -7901,7 +7901,7 @@ export default {
 		},
 	},
 	/**
-	 * Lookup738: tangle_Lst_voting::vote::Casting<Balance, BlockNumber, PollIndex, MaxVotes>
+	 * Lookup738: tangle_lst_voting::vote::Casting<Balance, BlockNumber, PollIndex, MaxVotes>
 	 **/
 	TangleLstVotingVoteCasting: {
 		votes: 'Vec<(u32,TangleLstVotingVoteAccountVote,u16,u128)>',
@@ -7909,11 +7909,11 @@ export default {
 		prior: 'TangleLstVotingVotePriorLock',
 	},
 	/**
-	 * Lookup742: tangle_Lst_voting::vote::PriorLock<BlockNumber, Balance>
+	 * Lookup742: tangle_lst_voting::vote::PriorLock<BlockNumber, Balance>
 	 **/
 	TangleLstVotingVotePriorLock: '(u32,u128)',
 	/**
-	 * Lookup743: tangle_Lst_voting::vote::Delegating<Balance, sp_core::crypto::AccountId32, BlockNumber>
+	 * Lookup743: tangle_lst_voting::vote::Delegating<Balance, sp_core::crypto::AccountId32, BlockNumber>
 	 **/
 	TangleLstVotingVoteDelegating: {
 		balance: 'u128',
@@ -7923,7 +7923,7 @@ export default {
 		prior: 'TangleLstVotingVotePriorLock',
 	},
 	/**
-	 * Lookup757: tangle_Lst_voting::pallet::Error<T>
+	 * Lookup757: tangle_lst_voting::pallet::Error<T>
 	 **/
 	TangleLstVotingError: {
 		_enum: [

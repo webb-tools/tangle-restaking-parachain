@@ -341,7 +341,7 @@ impl CurrencyId {
 		}
 	}
 
-	pub fn to_Lst(&self) -> Result<Self, ()> {
+	pub fn to_lst(&self) -> Result<Self, ()> {
 		match self {
 			Self::Token(symbol) => Ok(Self::Lst(*symbol)),
 			Self::Token2(id) => Ok(Self::Lst2(*id)),
@@ -362,7 +362,7 @@ impl CurrencyId {
 impl CurrencyIdExt for CurrencyId {
 	type TokenSymbol = TokenSymbol;
 
-	fn is_Lst(&self) -> bool {
+	fn is_lst(&self) -> bool {
 		matches!(self, CurrencyId::Lst(_) | CurrencyId::Lst2(_))
 	}
 

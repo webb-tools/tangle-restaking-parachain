@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -203,8 +206,8 @@ impl pallet_referenda::TracksInfo<Balance, BlockNumber> for TracksInfo {
 fn vote_locking_always_longer_than_enactment_period() {
 	for (_, track) in TRACKS_DATA {
 		assert!(
-			<Runtime as pallet_conviction_voting::Config>::VoteLockingPeriod::get()
-				>= track.min_enactment_period,
+			<Runtime as pallet_conviction_voting::Config>::VoteLockingPeriod::get() >=
+				track.min_enactment_period,
 			"Track {} has enactment period {} < vote locking period {}",
 			track.name,
 			track.min_enactment_period,

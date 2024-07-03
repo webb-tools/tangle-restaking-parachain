@@ -16,6 +16,7 @@ members = [
 	"pallets/currencies",
 	"pallets/xcm-interface",
 	"pallets/lst-minting",
+	"pallets/slp",
 	"pallets/parachain-staking",
 	"runtime/tangle-polkadot",
 	"tangle-restaking-subxt",
@@ -35,6 +36,7 @@ tangle-parachain-staking = { path = "pallets/parachain-staking", default-feature
 tangle-primitives = { path = "primitives" , default-features = false }
 tangle-runtime-common = { path = "runtime/common", default-features = false }
 tangle-lst-minting = { path = "pallets/lst-minting", default-features = false }
+tangle-slp = { path = "pallets/slp", default-features = false }
 tangle-xcm-interface = { path = "pallets/xcm-interface", default-features = false }
 pallet-traits = { path = "pallets/traits", default-features = false }
 

@@ -1,4 +1,4 @@
-// This file is part of Bifrost.
+// This file is part of Tangle.
 
 // Copyright (C) Liebi Technologies PTE. LTD.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -17,9 +17,9 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::mock::{bifrost, Bifrost, BifrostSlp, Relay, RelayBalances, RelayXcmPallet};
-use bifrost_polkadot_runtime::xcm_config::ParaId;
-use bifrost_primitives::CurrencyId;
-use bifrost_slp::MinimumsMaximums;
+use tangle_polkadot_runtime::xcm_config::ParaId;
+use tangle_primitives::CurrencyId;
+use tangle_slp::MinimumsMaximums;
 use frame_support::{assert_ok, traits::Currency};
 use sp_runtime::{
 	traits::{AccountIdConversion, Convert},
@@ -31,13 +31,13 @@ use xcm_simulator::TestExt;
 
 const ENTRANCE_ACCOUNT: [u8; 32] =
 	hex_literal::hex!["6d6f646c62662f76746b696e0000000000000000000000000000000000000000"];
-const BIFROST_TREASURY_ACCOUNT: [u8; 32] =
+const tangle_TREASURY_ACCOUNT: [u8; 32] =
 	hex_literal::hex!["6d6f646c62662f74727372790000000000000000000000000000000000000000"];
-const BIFROST_TREASURY_MULTILOCATION: MultiLocation = MultiLocation {
+const tangle_TREASURY_MULTILOCATION: MultiLocation = MultiLocation {
 	parents: 0,
 	interior: xcm::v3::Junctions::X1(xcm::v3::Junction::AccountId32 {
 		network: None,
-		id: BIFROST_TREASURY_ACCOUNT,
+		id: tangle_TREASURY_ACCOUNT,
 	}),
 };
 pub const KUSAMA_ALICE_STASH_ACCOUNT: [u8; 32] =
@@ -72,7 +72,7 @@ fn cross_dot_to_bifrost(to: AccountId32, amount: u128) {
 }
 
 fn slp_setup() {
-	cross_dot_to_bifrost(BIFROST_TREASURY_ACCOUNT.into(), 10000 * DOT_DECIMALS);
+	cross_dot_to_bifrost(tangle_TREASURY_ACCOUNT.into(), 10000 * DOT_DECIMALS);
 	cross_dot_to_bifrost(ENTRANCE_ACCOUNT.into(), 10000 * DOT_DECIMALS);
 
 	let mins_and_maxs = MinimumsMaximums {
@@ -100,7 +100,7 @@ fn slp_setup() {
 		assert_ok!(BifrostSlp::set_fee_source(
 			bifrost::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
-			Some((BIFROST_TREASURY_MULTILOCATION, 1 * DOT_DECIMALS))
+			Some((tangle_TREASURY_MULTILOCATION, 1 * DOT_DECIMALS))
 		));
 
 		assert_ok!(BifrostSlp::initialize_delegator(
@@ -121,7 +121,7 @@ fn slp_setup() {
 fn relaychain_staking_bond() {
 	slp_setup();
 	Bifrost::execute_with(|| {
-		let delegator = bifrost_polkadot_runtime::SubAccountIndexMultiLocationConvertor::convert((
+		let delegator = tangle_polkadot_runtime::SubAccountIndexMultiLocationConvertor::convert((
 			0,
 			CurrencyId::Token2(0),
 		));

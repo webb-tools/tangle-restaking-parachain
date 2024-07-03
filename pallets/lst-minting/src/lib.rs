@@ -464,7 +464,7 @@ pub mod pallet {
 			token_amount: BalanceOf<T>,
 		) -> DispatchResult {
 			let exchanger = ensure_signed(origin)?;
-			let Lst_id = T::CurrencyIdConversion::convert_to_Lst(token_id)
+			let Lst_id = T::CurrencyIdConversion::convert_to_lst(token_id)
 				.map_err(|_| Error::<T>::NotSupportTokenType)?;
 			let _token_amount_to_rebond =
 				Self::token_to_rebond(token_id).ok_or(Error::<T>::InvalidRebondToken)?;
@@ -632,7 +632,7 @@ pub mod pallet {
 		) -> DispatchResult {
 			let exchanger = ensure_signed(origin)?;
 
-			let Lst_id = T::CurrencyIdConversion::convert_to_Lst(token_id)
+			let Lst_id = T::CurrencyIdConversion::convert_to_lst(token_id)
 				.map_err(|_| Error::<T>::NotSupportTokenType)?;
 			let _token_amount_to_rebond =
 				Self::token_to_rebond(token_id).ok_or(Error::<T>::InvalidRebondToken)?;
@@ -761,7 +761,7 @@ pub mod pallet {
 				},
 				CurrencyId::Token2(token_id) => {
 					if !T::CurrencyIdRegister::check_lst2_registered(token_id) {
-						T::CurrencyIdRegister::register_Lst2_metadata(token_id)?;
+						T::CurrencyIdRegister::register_lst2_metadata(token_id)?;
 					}
 				},
 				_ => (),
@@ -1384,7 +1384,7 @@ pub mod pallet {
 		) -> Result<BalanceOf<T>, DispatchError> {
 			ensure!(token_amount >= MinimumMint::<T>::get(token_id), Error::<T>::BelowMinimumMint);
 
-			let Lst_id = T::CurrencyIdConversion::convert_to_Lst(token_id)
+			let Lst_id = T::CurrencyIdConversion::convert_to_lst(token_id)
 				.map_err(|_| Error::<T>::NotSupportTokenType)?;
 			let (token_amount_excluding_fee, Lst_amount, fee) =
 				Self::mint_without_tranfer(&exchanger, Lst_id, token_id, token_amount)?;
@@ -1605,7 +1605,7 @@ pub mod pallet {
 		}
 
 		pub fn Lst_id_inner(token_id: CurrencyIdOf<T>) -> Option<CurrencyIdOf<T>> {
-			T::CurrencyIdConversion::convert_to_Lst(token_id).ok()
+			T::CurrencyIdConversion::convert_to_lst(token_id).ok()
 		}
 
 		pub fn token_id_inner(Lst_id: CurrencyIdOf<T>) -> Option<CurrencyIdOf<T>> {
@@ -1682,7 +1682,7 @@ pub mod pallet {
 				},
 				None => {
 					for token_id in T::AssetIdMaps::get_all_currency() {
-						if token_id.is_Lst() {
+						if token_id.is_lst() {
 							let Lst_id = token_id;
 							let token_id = T::CurrencyIdConversion::convert_to_token(Lst_id)
 								.map_err(|_| Error::<T>::NotSupportTokenType)?;
@@ -1697,7 +1697,7 @@ pub mod pallet {
 		}
 
 		fn get_lst_amount(token: CurrencyIdOf<T>, amount: u128) -> Result<U256, DispatchError> {
-			let Lst_id = T::CurrencyIdConversion::convert_to_Lst(token)
+			let Lst_id = T::CurrencyIdConversion::convert_to_lst(token)
 				.map_err(|_| Error::<T>::NotSupportTokenType)?;
 
 			let token_pool_amount = Self::token_pool(token);
@@ -1914,7 +1914,7 @@ impl<T: Config> LstMintingInterface<AccountIdOf<T>, CurrencyIdOf<T>, BalanceOf<T
 		Self::redeem_inner(exchanger, Lst_id, Lst_amount, redeem_type)
 	}
 
-	fn token_to_Lst(
+	fn token_to_lst(
 		token_id: CurrencyIdOf<T>,
 		Lst_id: CurrencyIdOf<T>,
 		token_amount: BalanceOf<T>,
@@ -1965,7 +1965,7 @@ impl<T: Config> LstMintingInterface<AccountIdOf<T>, CurrencyIdOf<T>, BalanceOf<T
 
 impl<T: Config> LstSupplyProvider<CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> {
 	fn get_lst_supply(Lst: CurrencyIdOf<T>) -> Option<BalanceOf<T>> {
-		if CurrencyId::is_Lst(&Lst) {
+		if CurrencyId::is_lst(&Lst) {
 			Some(T::MultiCurrency::total_issuance(Lst))
 		} else {
 			None

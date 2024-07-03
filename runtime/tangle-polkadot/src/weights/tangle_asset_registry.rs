@@ -1,6 +1,7 @@
 // This file is part of Tangle.
 
-
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,14 +26,14 @@
 //!
 //! THIS FILE WAS AUTO-GENERATED USING THE SUBSTRATE BENCHMARK CLI VERSION 4.0.0-dev
 //! DATE: 2023-09-14, STEPS: `50`, REPEAT: 20, LOW RANGE: `[]`, HIGH RANGE: `[]`
-//! HOSTNAME: `tangle-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
-//! WASM-EXECUTION: Compiled, CHAIN: Some("tangle-kusama-local"), DB CACHE: 1024
+//! HOSTNAME: `bifrost-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
+//! WASM-EXECUTION: Compiled, CHAIN: Some("bifrost-kusama-local"), DB CACHE: 1024
 
 // Executed Command:
-// target/release/tangle
+// target/release/bifrost
 // benchmark
 // pallet
-// --chain=tangle-kusama-local
+// --chain=bifrost-kusama-local
 // --steps=50
 // --repeat=20
 // --pallet=tangle_asset_registry
@@ -40,7 +41,7 @@
 // --execution=wasm
 // --wasm-execution=compiled
 // --heap-pages=4096
-// --output=./runtime/tangle-kusama/src/weights/tangle_asset_registry.rs
+// --output=./runtime/bifrost-kusama/src/weights/tangle_asset_registry.rs
 // --template=./weight-template/runtime-weight-template.hbs
 
 #![cfg_attr(rustfmt, rustfmt_skip)]
@@ -51,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_asset_registry.
-pub struct TangleWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_asset_registry::WeightInfo for TangleWeight<T> {
+pub struct BifrostWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_asset_registry::WeightInfo for BifrostWeight<T> {
 	// Storage: AssetRegistry LocationToCurrencyIds (r:1 w:1)
 	// Proof Skipped: AssetRegistry LocationToCurrencyIds (max_values: None, max_size: None, mode: Measured)
 	// Storage: AssetRegistry CurrencyIdToLocations (r:1 w:1)
@@ -137,7 +138,7 @@ impl<T: frame_system::Config> tangle_asset_registry::WeightInfo for TangleWeight
 	// Proof Skipped: AssetRegistry CurrencyIdToLocations (max_values: None, max_size: None, mode: Measured)
 	// Storage: AssetRegistry CurrencyIdToWeights (r:0 w:1)
 	// Proof Skipped: AssetRegistry CurrencyIdToWeights (max_values: None, max_size: None, mode: Measured)
-	fn register_multilocation() -> Weight {
+	fn register_location() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `683`
 		//  Estimated: `4148`
@@ -154,7 +155,7 @@ impl<T: frame_system::Config> tangle_asset_registry::WeightInfo for TangleWeight
 	// Proof Skipped: AssetRegistry CurrencyIdToWeights (max_values: None, max_size: None, mode: Measured)
 	// Storage: AssetRegistry CurrencyIdToLocations (r:0 w:1)
 	// Proof Skipped: AssetRegistry CurrencyIdToLocations (max_values: None, max_size: None, mode: Measured)
-	fn force_set_multilocation() -> Weight {
+	fn force_set_location() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `683`
 		//  Estimated: `4148`
@@ -162,5 +163,16 @@ impl<T: frame_system::Config> tangle_asset_registry::WeightInfo for TangleWeight
 		Weight::from_parts(52_775_000, 4148)
 			.saturating_add(T::DbWeight::get().reads(1))
 			.saturating_add(T::DbWeight::get().writes(3))
+	}
+	// Storage: `AssetRegistry::CurrencyMetadatas` (r:1 w:1)
+	// Proof: `AssetRegistry::CurrencyMetadatas` (`max_values`: None, `max_size`: None, mode: `Measured`)
+	fn update_currency_metadata() -> Weight {
+		// Proof Size summary in bytes:
+		//  Measured:  `409`
+		//  Estimated: `3874`
+		// Minimum execution time: 12_000 nanoseconds.
+		Weight::from_parts(13_000_000, 3874)
+			.saturating_add(T::DbWeight::get().reads(1))
+			.saturating_add(T::DbWeight::get().writes(1))
 	}
 }

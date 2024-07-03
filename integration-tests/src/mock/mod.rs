@@ -1,4 +1,4 @@
-// This file is part of Bifrost.
+// This file is part of Tangle.
 
 // Copyright (C) Liebi Technologies PTE. LTD.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,11 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-pub mod bifrost;
+pub mod tangle;
 mod mock_message_queue;
 pub mod relaychain;
 
-use bifrost_primitives::CurrencyId;
+use tangle_primitives::CurrencyId;
 use sp_io::TestExternalities;
 use sp_runtime::{AccountId32, BuildStorage};
 use xcm_simulator::{decl_test_network, decl_test_parachain, decl_test_relay_chain, TestExt};
@@ -30,10 +30,10 @@ pub const BOB: AccountId32 = AccountId32::new([1u8; 32]);
 pub type Amount = i128;
 
 decl_test_parachain! {
-	pub struct Bifrost {
-		Runtime = bifrost::Runtime,
-		XcmpMessageHandler = bifrost::MessageQueue,
-		DmpMessageHandler = bifrost::MessageQueue,
+	pub struct tangle {
+		Runtime = tangle::Runtime,
+		XcmpMessageHandler = tangle::MessageQueue,
+		DmpMessageHandler = tangle::MessageQueue,
 		new_ext = para_ext(2030),
 	}
 }
@@ -54,21 +54,21 @@ decl_test_network! {
 	pub struct TestNet {
 		relay_chain = Relay,
 		parachains = vec![
-			(2030, Bifrost),
+			(2030, tangle),
 		],
 	}
 }
 
-pub type BifrostTokens = orml_tokens::Pallet<bifrost::Runtime>;
-pub type BifrostXTokens = orml_xtokens::Pallet<bifrost::Runtime>;
-pub type BifrostSlp = bifrost_slp::Pallet<bifrost::Runtime>;
+pub type tangleTokens = orml_tokens::Pallet<tangle::Runtime>;
+pub type tangleXTokens = orml_xtokens::Pallet<tangle::Runtime>;
+pub type tangleSlp = tangle_slp::Pallet<tangle::Runtime>;
 
 pub type RelayBalances = pallet_balances::Pallet<relaychain::Runtime>;
 pub type RelaySystem = frame_system::Pallet<relaychain::Runtime>;
 pub type RelayXcmPallet = pallet_xcm::Pallet<relaychain::Runtime>;
 
 pub fn para_ext(para_id: u32) -> TestExternalities {
-	use bifrost::{MessageQueue, Runtime, System};
+	use tangle::{MessageQueue, Runtime, System};
 
 	let mut t = frame_system::GenesisConfig::<Runtime>::default().build_storage().unwrap();
 

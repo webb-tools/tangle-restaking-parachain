@@ -1,4 +1,4 @@
-// This file is part of Bifrost.
+// This file is part of Tangle.
 
 // Copyright (C) Liebi Technologies PTE. LTD.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -27,18 +27,18 @@ use sp_runtime::{traits::IdentityLookup, AccountId32};
 use sp_std::prelude::*;
 
 use crate::mock::{mock_message_queue, Amount};
-use bifrost_asset_registry::AssetIdMaps;
-use bifrost_polkadot_runtime::{
+use tangle_asset_registry::AssetIdMaps;
+use tangle_polkadot_runtime::{
 	xcm_config::{
 		BaseXcmWeight, BifrostAccountIdToLocation, BifrostAssetTransactor, MaxAssetsForTransfer,
 		ParachainMinFee, SelfRelativeLocation, UniversalLocation,
 	},
 	BifrostCurrencyIdConvert, BifrostTreasuryAccount, MaxLengthLimit, MaxRefundPerBlock,
 	MaxTypeEntryPerBlock, NativeCurrencyId, SelfParaChainId, SubAccountIndexMultiLocationConvertor,
-	VtokenMinting, XcmInterface,
+	LstMinting, XcmInterface,
 };
-use bifrost_primitives::CurrencyId;
-use bifrost_slp::QueryResponseManager;
+use tangle_primitives::CurrencyId;
+use tangle_slp::QueryResponseManager;
 use pallet_xcm::{QueryStatus, XcmPassthrough};
 use polkadot_parachain_primitives::primitives::Sibling;
 use xcm::latest::prelude::*;
@@ -227,19 +227,19 @@ impl pallet_xcm::Config for Runtime {
 	type AdminOrigin = EnsureRoot<AccountId>;
 }
 
-impl bifrost_currencies::Config for Runtime {
+impl tangle_currencies::Config for Runtime {
 	type GetNativeCurrencyId = NativeCurrencyId;
 	type MultiCurrency = Tokens;
 	type NativeCurrency =
-		bifrost_currencies::BasicCurrencyAdapter<Runtime, Balances, Amount, BlockNumber>;
+		tangle_currencies::BasicCurrencyAdapter<Runtime, Balances, Amount, BlockNumber>;
 	type WeightInfo = ();
 }
 
-// impl bifrost_xcm_interface::Config for Runtime {
+// impl tangle_xcm_interface::Config for Runtime {
 //     type RuntimeEvent = RuntimeEvent;
 //     type UpdateOrigin = EnsureRoot<Runtime>;
 //     type MultiCurrency = Currencies;
-//     type RelayNetwork = bifrost_polkadot_runtime::xcm_config::RelayNetwork;
+//     type RelayNetwork = tangle_polkadot_runtime::xcm_config::RelayNetwork;
 //     type RelaychainCurrencyId = RelayCurrencyId;
 //     type ParachainSovereignAccount = ParachainAccount;
 //     type XcmExecutor = XcmExecutor<XcmConfig>;
@@ -274,7 +274,7 @@ impl QueryResponseManager<QueryId, Location, BlockNumber, RuntimeCall>
 		}
 	}
 
-	fn remove_query_record(query_id: bifrost_slp::QueryId) -> bool {
+	fn remove_query_record(query_id: tangle_slp::QueryId) -> bool {
 		// Temporarily banned. Querries from pallet_xcm cannot be removed unless it is in ready
 		// status. And we are not allowed to mannually change query status.
 		// So in the manual mode, it is not possible to remove the query at all.
@@ -285,14 +285,14 @@ impl QueryResponseManager<QueryId, Location, BlockNumber, RuntimeCall>
 	}
 }
 
-impl bifrost_slp::Config for Runtime {
+impl tangle_slp::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type RuntimeOrigin = RuntimeOrigin;
 	type RuntimeCall = RuntimeCall;
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EnsureRoot<AccountId>;
 	type WeightInfo = ();
-	type VtokenMinting = VtokenMinting;
+	type LstMinting = LstMinting;
 	type AccountConverter = SubAccountIndexMultiLocationConvertor;
 	type ParachainId = SelfParaChainId;
 	type SubstrateResponseManager = SubstrateResponseManager;
@@ -308,7 +308,7 @@ impl bifrost_slp::Config for Runtime {
 	type TreasuryAccount = BifrostTreasuryAccount;
 }
 
-impl bifrost_asset_registry::Config for Runtime {
+impl tangle_asset_registry::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
 	type RegisterOrigin = EnsureRoot<AccountId>;
@@ -327,8 +327,8 @@ construct_runtime!(
 		PolkadotXcm: pallet_xcm,
 		Tokens: orml_tokens,
 		XTokens: orml_xtokens,
-		Currencies: bifrost_currencies,
-		Slp: bifrost_slp,
-		AssetRegistry: bifrost_asset_registry
+		Currencies: tangle_currencies,
+		Slp: tangle_slp,
+		AssetRegistry: tangle_asset_registry
 	}
 );
