@@ -21,11 +21,11 @@
 #![cfg(test)]
 
 use super::*;
-use tangle_primitives::TokenSymbol;
 use frame_support::{assert_noop, assert_ok};
 use mock::{
 	AssetRegistry, CouncilAccount, ExtBuilder, Runtime, RuntimeEvent, RuntimeOrigin, System,
 };
+use tangle_primitives::TokenSymbol;
 
 #[test]
 fn versioned_multi_location_convert_work() {
@@ -190,10 +190,7 @@ fn register_Lst_metadata_should_work() {
 			minimal_balance: 0,
 		};
 		assert_noop!(
-			AssetRegistry::register_Lst_metadata(
-				RuntimeOrigin::signed(CouncilAccount::get()),
-				1
-			),
+			AssetRegistry::register_lst_metadata(RuntimeOrigin::signed(CouncilAccount::get()), 1),
 			Error::<Runtime>::CurrencyIdNotExists
 		);
 
@@ -202,15 +199,12 @@ fn register_Lst_metadata_should_work() {
 			Box::new(metadata.clone())
 		));
 
-		assert_ok!(AssetRegistry::register_Lst_metadata(
+		assert_ok!(AssetRegistry::register_lst_metadata(
 			RuntimeOrigin::signed(CouncilAccount::get()),
 			0
 		));
 
-		assert_eq!(
-			CurrencyMetadatas::<Runtime>::get(CurrencyId::Lst2(0)),
-			Some(v_metadata.clone())
-		)
+		assert_eq!(CurrencyMetadatas::<Runtime>::get(CurrencyId::Lst2(0)), Some(v_metadata.clone()))
 	})
 }
 
@@ -230,10 +224,7 @@ fn register_vstoken_metadata_should_work() {
 			minimal_balance: 0,
 		};
 		assert_noop!(
-			AssetRegistry::register_Lst_metadata(
-				RuntimeOrigin::signed(CouncilAccount::get()),
-				1
-			),
+			AssetRegistry::register_lst_metadata(RuntimeOrigin::signed(CouncilAccount::get()), 1),
 			Error::<Runtime>::CurrencyIdNotExists
 		);
 
@@ -267,10 +258,7 @@ fn register_vsbond_metadata_should_work() {
 		let v_metadata =
 			AssetMetadata { name: name.clone(), symbol: name, decimals: 12, minimal_balance: 0 };
 		assert_noop!(
-			AssetRegistry::register_Lst_metadata(
-				RuntimeOrigin::signed(CouncilAccount::get()),
-				1
-			),
+			AssetRegistry::register_lst_metadata(RuntimeOrigin::signed(CouncilAccount::get()), 1),
 			Error::<Runtime>::CurrencyIdNotExists
 		);
 

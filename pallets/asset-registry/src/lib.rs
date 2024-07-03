@@ -22,12 +22,6 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-pub use tangle_primitives::{
-	AssetIds, CurrencyId,
-	CurrencyId::{Native, Token, Token2},
-	CurrencyIdConversion, CurrencyIdMapping, CurrencyIdRegister, ForeignAssetId, LeasePeriod,
-	ParaId, PoolId, TokenId, TokenInfo, TokenSymbol,
-};
 use frame_support::{
 	dispatch::DispatchResult,
 	ensure,
@@ -42,6 +36,12 @@ use sp_runtime::{
 	ArithmeticError, FixedPointNumber, FixedU128, RuntimeDebug,
 };
 use sp_std::{boxed::Box, vec::Vec};
+pub use tangle_primitives::{
+	AssetIds, CurrencyId,
+	CurrencyId::{Native, Token, Token2},
+	CurrencyIdConversion, CurrencyIdMapping, CurrencyIdRegister, ForeignAssetId, LeasePeriod,
+	ParaId, PoolId, TokenId, TokenInfo, TokenSymbol,
+};
 use xcm::{
 	opaque::lts::XcmContext,
 	v3::MultiLocation,
@@ -247,12 +247,10 @@ pub mod pallet {
 			for &currency in self.vcurrency.iter() {
 				match currency {
 					CurrencyId::Lst(symbol) => {
-						AssetIdMaps::<T>::register_Lst_metadata(symbol)
-							.expect("Lst register");
+						AssetIdMaps::<T>::register_lst_metadata(symbol).expect("Lst register");
 					},
 					CurrencyId::Lst2(token_id) => {
-						AssetIdMaps::<T>::register_Lst2_metadata(token_id)
-							.expect("Lst register");
+						AssetIdMaps::<T>::register_Lst2_metadata(token_id).expect("Lst register");
 					},
 					CurrencyId::VSToken(symbol) => {
 						AssetIdMaps::<T>::register_vstoken_metadata(symbol)
@@ -332,8 +330,8 @@ pub mod pallet {
 		}
 
 		#[pallet::call_index(3)]
-		#[pallet::weight(T::WeightInfo::register_Lst_metadata())]
-		pub fn register_Lst_metadata(origin: OriginFor<T>, token_id: TokenId) -> DispatchResult {
+		#[pallet::weight(T::WeightInfo::register_lst_metadata())]
+		pub fn register_lst_metadata(origin: OriginFor<T>, token_id: TokenId) -> DispatchResult {
 			T::RegisterOrigin::ensure_origin(origin)?;
 
 			if let Some(token_metadata) = CurrencyMetadatas::<T>::get(Token2(token_id)) {
@@ -664,23 +662,25 @@ impl<T: Config> CurrencyIdMapping<CurrencyId, MultiLocation, AssetMetadata<Balan
 impl<T: Config> CurrencyIdConversion<CurrencyId> for AssetIdMaps<T> {
 	fn convert_to_token(currency_id: CurrencyId) -> Result<CurrencyId, ()> {
 		match currency_id {
-			CurrencyId::VSBond(TokenSymbol::BNC, 2001, 13, 20) =>
-				Ok(CurrencyId::Token(TokenSymbol::KSM)),
+			CurrencyId::VSBond(TokenSymbol::BNC, 2001, 13, 20) => {
+				Ok(CurrencyId::Token(TokenSymbol::KSM))
+			},
 			CurrencyId::Lst(TokenSymbol::BNC) => Ok(CurrencyId::Native(TokenSymbol::BNC)),
-			CurrencyId::Lst(token_symbol) |
-			CurrencyId::VSToken(token_symbol) |
-			CurrencyId::VSBond(token_symbol, ..) => Ok(CurrencyId::Token(token_symbol)),
-			CurrencyId::Lst2(token_id) |
-			CurrencyId::VSToken2(token_id) |
-			CurrencyId::VSBond2(token_id, ..) => Ok(CurrencyId::Token2(token_id)),
+			CurrencyId::Lst(token_symbol)
+			| CurrencyId::VSToken(token_symbol)
+			| CurrencyId::VSBond(token_symbol, ..) => Ok(CurrencyId::Token(token_symbol)),
+			CurrencyId::Lst2(token_id)
+			| CurrencyId::VSToken2(token_id)
+			| CurrencyId::VSBond2(token_id, ..) => Ok(CurrencyId::Token2(token_id)),
 			_ => Err(()),
 		}
 	}
 
 	fn convert_to_Lst(currency_id: CurrencyId) -> Result<CurrencyId, ()> {
 		match currency_id {
-			CurrencyId::Token(token_symbol) | CurrencyId::Native(token_symbol) =>
-				Ok(CurrencyId::Lst(token_symbol)),
+			CurrencyId::Token(token_symbol) | CurrencyId::Native(token_symbol) => {
+				Ok(CurrencyId::Lst(token_symbol))
+			},
 			CurrencyId::Token2(token_id) => Ok(CurrencyId::Lst2(token_id)),
 			_ => Err(()),
 		}
@@ -709,8 +709,9 @@ impl<T: Config> CurrencyIdConversion<CurrencyId> for AssetIdMaps<T> {
 				}
 				Ok(vs_bond)
 			},
-			CurrencyId::Token2(token_id) =>
-				Ok(CurrencyId::VSBond2(token_id, index, first_slot, last_slot)),
+			CurrencyId::Token2(token_id) => {
+				Ok(CurrencyId::VSBond2(token_id, index, first_slot, last_slot))
+			},
 			_ => Err(()),
 		}
 	}
@@ -721,7 +722,7 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 		CurrencyMetadatas::<T>::get(CurrencyId::Token(token_symbol)).is_some()
 	}
 
-	fn check_Lst_registered(token_symbol: TokenSymbol) -> bool {
+	fn check_lst_registered(token_symbol: TokenSymbol) -> bool {
 		CurrencyMetadatas::<T>::get(CurrencyId::Lst(token_symbol)).is_some()
 	}
 
@@ -744,7 +745,7 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 		.is_some()
 	}
 
-	fn register_Lst_metadata(token_symbol: TokenSymbol) -> sp_runtime::DispatchResult {
+	fn register_lst_metadata(token_symbol: TokenSymbol) -> sp_runtime::DispatchResult {
 		if let Some(token_metadata) = CurrencyMetadatas::<T>::get(CurrencyId::Token(token_symbol)) {
 			let Lst_metadata = Pallet::<T>::convert_to_Lst_metadata(token_metadata);
 			Pallet::<T>::do_register_metadata(CurrencyId::Lst(token_symbol), &Lst_metadata)?;
@@ -783,8 +784,8 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 		let option_token_metadata =
 			if CurrencyMetadatas::<T>::contains_key(CurrencyId::Token(token_symbol)) {
 				CurrencyMetadatas::<T>::get(CurrencyId::Token(token_symbol))
-			} else if token_symbol == TokenSymbol::BNC &&
-				CurrencyMetadatas::<T>::contains_key(CurrencyId::Native(token_symbol))
+			} else if token_symbol == TokenSymbol::BNC
+				&& CurrencyMetadatas::<T>::contains_key(CurrencyId::Native(token_symbol))
 			{
 				CurrencyMetadatas::<T>::get(CurrencyId::Native(token_symbol))
 			} else {
@@ -813,7 +814,7 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 		CurrencyMetadatas::<T>::get(CurrencyId::Token2(token_id)).is_some()
 	}
 
-	fn check_Lst2_registered(token_id: TokenId) -> bool {
+	fn check_lst2_registered(token_id: TokenId) -> bool {
 		CurrencyMetadatas::<T>::get(CurrencyId::Lst2(token_id)).is_some()
 	}
 

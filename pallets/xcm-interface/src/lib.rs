@@ -20,11 +20,11 @@
 
 pub mod calls;
 pub mod traits;
-use tangle_asset_registry::AssetMetadata;
-use tangle_primitives::{traits::XcmDestWeightAndFeeHandler, CurrencyIdMapping, XcmOperationType};
 pub use calls::*;
 use orml_traits::MultiCurrency;
 pub use pallet::*;
+use tangle_asset_registry::AssetMetadata;
+use tangle_primitives::{traits::XcmDestWeightAndFeeHandler, CurrencyIdMapping, XcmOperationType};
 pub use traits::{ChainId, MessageId, Nonce, SalpHelper};
 
 macro_rules! use_relay {
@@ -320,8 +320,15 @@ pub mod pallet {
 		}
 	}
 
-	impl<T: Config> XcmDestWeightAndFeeHandler<CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> where <<T as pallet::Config>::MultiCurrency as MultiCurrency<<T as frame_system::Config>::AccountId>>::Balance: sp_arithmetic::rational::MultiplyRational,
-	<<T as pallet::Config>::MultiCurrency as MultiCurrency<<T as frame_system::Config>::AccountId>>::Balance: num_traits::ops::saturating::Saturating {
+	impl<T: Config> XcmDestWeightAndFeeHandler<CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T>
+	where
+		<<T as pallet::Config>::MultiCurrency as MultiCurrency<
+			<T as frame_system::Config>::AccountId,
+		>>::Balance: sp_arithmetic::rational::MultiplyRational,
+		<<T as pallet::Config>::MultiCurrency as MultiCurrency<
+			<T as frame_system::Config>::AccountId,
+		>>::Balance: num_traits::ops::saturating::Saturating,
+	{
 		fn get_operation_weight_and_fee(
 			token: CurrencyIdOf<T>,
 			operation: XcmOperationType,

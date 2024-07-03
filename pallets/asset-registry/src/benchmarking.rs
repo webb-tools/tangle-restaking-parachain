@@ -20,10 +20,10 @@
 
 use super::*;
 use crate::Pallet as AssetRegistry;
-use tangle_primitives::{CurrencyId, TokenSymbol};
 use frame_benchmarking::{benchmarks, v1::BenchmarkError};
 use frame_support::{assert_ok, traits::UnfilteredDispatchable};
 use sp_runtime::traits::UniqueSaturatedFrom;
+use tangle_primitives::{CurrencyId, TokenSymbol};
 
 benchmarks! {
 	register_native_asset {
@@ -113,7 +113,7 @@ benchmarks! {
 		assert_eq!(CurrencyMetadatas::<T>::get(Token2(0)), Some(metadata.clone()))
 	}
 
-	register_Lst_metadata {
+	register_lst_metadata {
 		let origin = T::RegisterOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let metadata = AssetMetadata {
 			name: b"Bifrost Native Coin".to_vec(),
@@ -132,7 +132,7 @@ benchmarks! {
 			Box::new(metadata.clone())
 		));
 
-		let call = Call::<T>::register_Lst_metadata {
+		let call = Call::<T>::register_lst_metadata {
 			token_id: 0
 		};
 	}: {call.dispatch_bypass_filter(origin)?}

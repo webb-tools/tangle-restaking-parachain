@@ -35695,17 +35695,17 @@ pub mod api {
 				# [codec (crate = :: subxt :: ext :: codec)]
 				#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
-				#[doc = "See [`Pallet::register_Lst_metadata`]."]
+				#[doc = "See [`Pallet::register_lst_metadata`]."]
 				pub struct RegisterLstMetadata {
-					pub token_id: register_Lst_metadata::TokenId,
+					pub token_id: register_lst_metadata::TokenId,
 				}
-				pub mod register_Lst_metadata {
+				pub mod register_lst_metadata {
 					use super::runtime_types;
 					pub type TokenId = ::core::primitive::u8;
 				}
 				impl ::subxt::blocks::StaticExtrinsic for RegisterLstMetadata {
 					const PALLET: &'static str = "AssetRegistry";
-					const CALL: &'static str = "register_Lst_metadata";
+					const CALL: &'static str = "register_lst_metadata";
 				}
 				#[derive(
 					:: subxt :: ext :: codec :: Decode,
@@ -35886,14 +35886,14 @@ pub mod api {
 						],
 					)
 				}
-				#[doc = "See [`Pallet::register_Lst_metadata`]."]
-				pub fn register_Lst_metadata(
+				#[doc = "See [`Pallet::register_lst_metadata`]."]
+				pub fn register_lst_metadata(
 					&self,
-					token_id: types::register_Lst_metadata::TokenId,
+					token_id: types::register_lst_metadata::TokenId,
 				) -> ::subxt::tx::Payload<types::RegisterLstMetadata> {
 					::subxt::tx::Payload::new_static(
 						"AssetRegistry",
-						"register_Lst_metadata",
+						"register_lst_metadata",
 						types::RegisterLstMetadata { token_id },
 						[
 							141u8, 212u8, 116u8, 239u8, 147u8, 80u8, 23u8, 172u8, 49u8, 84u8,
@@ -62192,8 +62192,8 @@ pub mod api {
 						>,
 					},
 					#[codec(index = 3)]
-					#[doc = "See [`Pallet::register_Lst_metadata`]."]
-					register_Lst_metadata { token_id: ::core::primitive::u8 },
+					#[doc = "See [`Pallet::register_lst_metadata`]."]
+					register_lst_metadata { token_id: ::core::primitive::u8 },
 					#[codec(index = 4)]
 					#[doc = "See [`Pallet::register_vstoken_metadata`]."]
 					register_vstoken_metadata { token_id: ::core::primitive::u8 },

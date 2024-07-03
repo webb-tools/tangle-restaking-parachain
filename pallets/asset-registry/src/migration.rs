@@ -17,10 +17,10 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::*;
-use tangle_primitives::{CurrencyId, BNC};
 use frame_support::traits::{Get, OnRuntimeUpgrade};
 #[cfg(feature = "try-runtime")]
 use sp_runtime::TryRuntimeError;
+use tangle_primitives::{CurrencyId, BNC};
 use xcm::v3::prelude::{GeneralKey, X1};
 
 const LOG_TARGET: &str = "asset-registry::migration";
