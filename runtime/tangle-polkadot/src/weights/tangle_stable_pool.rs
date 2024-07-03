@@ -1,6 +1,7 @@
 // This file is part of Tangle.
 
-
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,14 +26,14 @@
 //!
 //! THIS FILE WAS AUTO-GENERATED USING THE SUBSTRATE BENCHMARK CLI VERSION 4.0.0-dev
 //! DATE: 2023-09-14, STEPS: `50`, REPEAT: 20, LOW RANGE: `[]`, HIGH RANGE: `[]`
-//! HOSTNAME: `tangle-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
-//! WASM-EXECUTION: Compiled, CHAIN: Some("tangle-kusama-local"), DB CACHE: 1024
+//! HOSTNAME: `bifrost-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
+//! WASM-EXECUTION: Compiled, CHAIN: Some("bifrost-kusama-local"), DB CACHE: 1024
 
 // Executed Command:
-// target/release/tangle
+// target/release/bifrost
 // benchmark
 // pallet
-// --chain=tangle-kusama-local
+// --chain=bifrost-kusama-local
 // --steps=50
 // --repeat=20
 // --pallet=tangle_stable_pool
@@ -40,7 +41,7 @@
 // --execution=wasm
 // --wasm-execution=compiled
 // --heap-pages=4096
-// --output=./runtime/tangle-kusama/src/weights/tangle_stable_pool.rs
+// --output=./runtime/bifrost-kusama/src/weights/tangle_stable_pool.rs
 // --template=./weight-template/runtime-weight-template.hbs
 
 #![cfg_attr(rustfmt, rustfmt_skip)]
@@ -51,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_stable_pool.
-pub struct TangleWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_stable_pool::WeightInfo for TangleWeight<T> {
+pub struct BifrostWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_stable_pool::WeightInfo for BifrostWeight<T> {
 	// Storage: StableAsset PoolCount (r:1 w:1)
 	// Proof Skipped: StableAsset PoolCount (max_values: Some(1), max_size: None, mode: Measured)
 	// Storage: AssetRegistry CurrencyMetadatas (r:1 w:1)
@@ -85,7 +86,7 @@ impl<T: frame_system::Config> tangle_stable_pool::WeightInfo for TangleWeight<T>
 	}
 	/// Storage: `StableAsset::TokenRateHardcap` (r:0 w:1)
 	/// Proof: `StableAsset::TokenRateHardcap` (`max_values`: None, `max_size`: None, mode: `Measured`)
-	fn config_Lst_auto_refresh() -> Weight {
+	fn config_lst_auto_refresh() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
 		//  Estimated: `0`
@@ -96,7 +97,7 @@ impl<T: frame_system::Config> tangle_stable_pool::WeightInfo for TangleWeight<T>
 	}
 	/// Storage: `StableAsset::TokenRateHardcap` (r:0 w:1)
 	/// Proof: `StableAsset::TokenRateHardcap` (`max_values`: None, `max_size`: None, mode: `Measured`)
-	fn remove_Lst_auto_refresh() -> Weight {
+	fn remove_lst_auto_refresh() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `0`
 		//  Estimated: `0`

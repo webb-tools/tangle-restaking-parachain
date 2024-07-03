@@ -1,4 +1,4 @@
-// This file is part of Bifrost.
+// This file is part of Tangle.
 
 // Copyright (C) Liebi Technologies PTE. LTD.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -19,7 +19,7 @@
 use crate::mock::{
 	Bifrost, BifrostTokens, BifrostXTokens, Relay, RelayBalances, RelaySystem, TestNet, ALICE, BOB,
 };
-use bifrost_primitives::CurrencyId;
+use tangle_primitives::CurrencyId;
 use cumulus_primitives_core::ParaId;
 use frame_support::{assert_ok, traits::Currency};
 use orml_traits::MultiCurrency;

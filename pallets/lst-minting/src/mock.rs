@@ -1,4 +1,4 @@
-// This file is part of Bifrost.
+// This file is part of Tangle.
 
 // Copyright (C) Liebi Technologies PTE. LTD.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -21,14 +21,14 @@
 #![cfg(test)]
 #![allow(non_upper_case_globals)]
 
-use bifrost_asset_registry::AssetIdMaps;
-use bifrost_primitives::{
+use tangle_asset_registry::AssetIdMaps;
+use tangle_primitives::{
 	currency::{BNC, DOT, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR},
 	CurrencyId, CurrencyIdMapping, SlpxOperator, TokenSymbol,
 };
-use bifrost_runtime_common::{micro, milli};
-use bifrost_slp::{QueryId, QueryResponseManager};
-use bifrost_ve_minting::{Point, VeMintingInterface};
+use tangle_runtime_common::{micro, milli};
+use tangle_slp::{QueryId, QueryResponseManager};
+use tangle_ve_minting::{Point, VeMintingInterface};
 pub use cumulus_primitives_core::ParaId;
 use frame_support::{
 	derive_impl, ord_parameter_types,
@@ -48,7 +48,7 @@ use xcm::{prelude::*, v3::Weight};
 use xcm_builder::{FixedWeightBounds, FrameTransactionalProcessor};
 use xcm_executor::XcmExecutor;
 
-use crate as vtoken_minting;
+use crate as Lst_minting;
 
 pub type BlockNumber = u64;
 pub type Amount = i128;
@@ -66,10 +66,10 @@ frame_support::construct_runtime!(
 		Tokens: orml_tokens,
 		XTokens: orml_xtokens,
 		Balances: pallet_balances,
-		Currencies: bifrost_currencies,
-		VtokenMinting: vtoken_minting,
-		Slp: bifrost_slp,
-		AssetRegistry: bifrost_asset_registry,
+		Currencies: tangle_currencies,
+		LstMinting: Lst_minting,
+		Slp: tangle_slp,
+		AssetRegistry: tangle_asset_registry,
 		PolkadotXcm: pallet_xcm,
 	}
 );
@@ -93,9 +93,9 @@ parameter_types! {
 }
 
 pub type AdaptedBasicCurrency =
-	bifrost_currencies::BasicCurrencyAdapter<Runtime, Balances, Amount, BlockNumber>;
+	tangle_currencies::BasicCurrencyAdapter<Runtime, Balances, Amount, BlockNumber>;
 
-impl bifrost_currencies::Config for Runtime {
+impl tangle_currencies::Config for Runtime {
 	type GetNativeCurrencyId = NativeCurrencyId;
 	type MultiCurrency = Tokens;
 	type NativeCurrency = AdaptedBasicCurrency;
@@ -208,7 +208,7 @@ ord_parameter_types! {
 	pub const RelayCurrencyId: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 }
 
-impl vtoken_minting::Config for Runtime {
+impl Lst_minting::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
@@ -241,7 +241,7 @@ impl vtoken_minting::Config for Runtime {
 ord_parameter_types! {
 	pub const CouncilAccount: AccountId = AccountId::from([1u8; 32]);
 }
-impl bifrost_asset_registry::Config for Runtime {
+impl tangle_asset_registry::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
 	type RegisterOrigin = EnsureSignedBy<CouncilAccount, AccountId>;
@@ -289,14 +289,14 @@ parameter_types! {
 	pub const TreasuryAccount: AccountId32 = TREASURY_ACCOUNT;
 }
 
-impl bifrost_slp::Config for Runtime {
+impl tangle_slp::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type RuntimeOrigin = RuntimeOrigin;
 	type RuntimeCall = RuntimeCall;
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
 	type WeightInfo = ();
-	type VtokenMinting = VtokenMinting;
+	type LstMinting = LstMinting;
 	type AccountConverter = ();
 	type ParachainId = ParachainId;
 	type SubstrateResponseManager = SubstrateResponseManager;
@@ -433,7 +433,7 @@ impl ExtBuilder {
 		.assimilate_storage(&mut t)
 		.unwrap();
 
-		bifrost_asset_registry::GenesisConfig::<Runtime> {
+		tangle_asset_registry::GenesisConfig::<Runtime> {
 			currency: vec![
 				(DOT, 100_000_000, None),
 				(KSM, 10_000_000, None),
@@ -455,16 +455,16 @@ impl ExtBuilder {
 pub fn run_to_block(n: BlockNumber) {
 	use frame_support::traits::Hooks;
 	while System::block_number() <= n {
-		VtokenMinting::on_finalize(System::block_number());
+		LstMinting::on_finalize(System::block_number());
 		System::on_finalize(System::block_number());
 		System::set_block_number(System::block_number() + 1);
 		System::on_initialize(System::block_number());
-		VtokenMinting::on_initialize(System::block_number());
+		LstMinting::on_initialize(System::block_number());
 	}
 }
 
-use bifrost_primitives::PoolId;
-use bifrost_ve_minting::IncentiveConfig;
+use tangle_primitives::PoolId;
+use tangle_ve_minting::IncentiveConfig;
 // Mock VeMinting Struct
 pub struct VeMinting;
 impl VeMintingInterface<AccountId, CurrencyId, Balance, BlockNumber> for VeMinting {

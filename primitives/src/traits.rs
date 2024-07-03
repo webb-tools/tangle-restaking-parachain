@@ -43,7 +43,7 @@ pub trait TokenInfo {
 /// Extension trait for CurrencyId
 pub trait CurrencyIdExt {
 	type TokenSymbol;
-	fn is_Lst(&self) -> bool;
+	fn is_lst(&self) -> bool;
 	fn is_token(&self) -> bool;
 	fn is_vstoken(&self) -> bool;
 	fn is_vsbond(&self) -> bool;
@@ -178,7 +178,7 @@ pub trait CurrencyIdMapping<CurrencyId, MultiLocation, AssetMetadata> {
 
 pub trait CurrencyIdConversion<CurrencyId> {
 	fn convert_to_token(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
-	fn convert_to_Lst(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
+	fn convert_to_lst(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
 	fn convert_to_vstoken(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
 	fn convert_to_vsbond(
 		currency_id: CurrencyId,
@@ -215,7 +215,7 @@ pub trait CurrencyIdRegister<CurrencyId> {
 		first_slot: crate::LeasePeriod,
 		last_slot: crate::LeasePeriod,
 	) -> bool;
-	fn register_Lst2_metadata(token_id: TokenId) -> DispatchResult;
+	fn register_lst2_metadata(token_id: TokenId) -> DispatchResult;
 	fn register_vstoken2_metadata(token_id: TokenId) -> DispatchResult;
 	fn register_vsbond2_metadata(
 		token_id: TokenId,
@@ -286,7 +286,7 @@ impl<CurrencyId> CurrencyIdRegister<CurrencyId> for () {
 		false
 	}
 
-	fn register_Lst2_metadata(_token_id: TokenId) -> DispatchResult {
+	fn register_lst2_metadata(_token_id: TokenId) -> DispatchResult {
 		Ok(())
 	}
 
@@ -333,7 +333,7 @@ pub trait LstMintingInterface<AccountId, CurrencyId, Balance> {
 		Lst_amount: Balance,
 		redeem: RedeemType<AccountId>,
 	) -> DispatchResultWithPostInfo;
-	fn token_to_Lst(
+	fn token_to_lst(
 		token_id: CurrencyId,
 		Lst_id: CurrencyId,
 		token_amount: Balance,
@@ -369,24 +369,24 @@ impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, Curren
 
 	fn redeem(
 		_exchanger: AccountId,
-		_Lst_id: CurrencyId,
-		_Lst_amount: Balance,
+		_lst_id: CurrencyId,
+		_lst_amount: Balance,
 	) -> DispatchResultWithPostInfo {
 		Ok(().into())
 	}
 
 	fn slpx_redeem(
 		_exchanger: AccountId,
-		_Lst_id: CurrencyId,
-		_Lst_amount: Balance,
+		_lst_id: CurrencyId,
+		_lst_amount: Balance,
 		_redeem_type: RedeemType<AccountId>,
 	) -> DispatchResultWithPostInfo {
 		Ok(().into())
 	}
 
-	fn token_to_Lst(
+	fn token_to_lst(
 		_token_id: CurrencyId,
-		_Lst_id: CurrencyId,
+		_lst_id: CurrencyId,
 		_token_amount: Balance,
 	) -> Result<Balance, DispatchError> {
 		Ok(Zero::zero())
@@ -394,8 +394,8 @@ impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, Curren
 
 	fn Lst_to_token(
 		_token_id: CurrencyId,
-		_Lst_id: CurrencyId,
-		_Lst_amount: Balance,
+		_lst_id: CurrencyId,
+		_lst_amount: Balance,
 	) -> Result<Balance, DispatchError> {
 		Ok(Zero::zero())
 	}
@@ -404,7 +404,7 @@ impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, Curren
 		None
 	}
 
-	fn token_id(_Lst_id: CurrencyId) -> Option<CurrencyId> {
+	fn token_id(_lst_id: CurrencyId) -> Option<CurrencyId> {
 		None
 	}
 
@@ -412,7 +412,7 @@ impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, Curren
 		Zero::zero()
 	}
 
-	fn get_minimums_redeem(_Lst_id: CurrencyId) -> Balance {
+	fn get_minimums_redeem(_lst_id: CurrencyId) -> Balance {
 		Zero::zero()
 	}
 
@@ -524,13 +524,13 @@ pub trait LstMintRedeemProvider<CurrencyId, Balance> {
 impl<CurrencyId, Balance> LstMintRedeemProvider<CurrencyId, Balance> for () {
 	fn record_mint_amount(
 		_channel_id: Option<u32>,
-		_Lst: CurrencyId,
+		_lst: CurrencyId,
 		_amount: Balance,
 	) -> Result<(), DispatchError> {
 		Ok(())
 	}
 
-	fn record_redeem_amount(_Lst: CurrencyId, _amount: Balance) -> Result<(), DispatchError> {
+	fn record_redeem_amount(_lst: CurrencyId, _amount: Balance) -> Result<(), DispatchError> {
 		Ok(())
 	}
 }

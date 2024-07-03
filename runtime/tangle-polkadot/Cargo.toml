@@ -1,7 +1,7 @@
 [package]
 name = "tangle-polkadot-runtime"
 version = "0.8.0"
-
+authors = ["Edwin Wang <lark930@gmail.com>"]
 edition = "2021"
 build = "build.rs"
 
@@ -26,6 +26,7 @@ frame-system = { workspace = true }
 frame-system-benchmarking = { workspace = true, optional = true }
 frame-system-rpc-runtime-api = { workspace = true }
 frame-try-runtime = { workspace = true, optional = true }
+pallet-asset-rate = { workspace = true }
 pallet-aura = { workspace = true }
 pallet-authorship = { workspace = true }
 pallet-balances = { workspace = true }
@@ -37,16 +38,21 @@ pallet-elections-phragmen = { workspace = true }
 pallet-identity = { workspace = true }
 pallet-indices = { workspace = true }
 pallet-membership = { workspace = true }
+pallet-message-queue = { workspace = true }
 pallet-multisig = { workspace = true }
 pallet-preimage = { workspace = true }
 pallet-proxy = { workspace = true }
+pallet-ranked-collective = { workspace = true }
+pallet-referenda = { workspace = true }
 pallet-scheduler = { workspace = true }
 pallet-session = { workspace = true }
 pallet-timestamp = { workspace = true }
+pallet-tips = { workspace = true }
 pallet-transaction-payment = { workspace = true }
 pallet-transaction-payment-rpc-runtime-api = { workspace = true }
 pallet-treasury = { workspace = true }
 pallet-utility = { workspace = true }
+pallet-whitelist = { workspace = true }
 sp-api = { workspace = true }
 sp-arithmetic = { workspace = true }
 sp-block-builder = { workspace = true }
@@ -61,19 +67,19 @@ sp-staking = { workspace = true }
 sp-std = { workspace = true }
 sp-transaction-pool = { workspace = true }
 sp-version = { workspace = true }
-
+sp-genesis-builder = { workspace = true }
 
 # Cumulus dependencies
 cumulus-pallet-aura-ext = { workspace = true }
-cumulus-pallet-dmp-queue = { workspace = true }
 cumulus-pallet-parachain-system = { workspace = true }
 cumulus-pallet-xcm = { workspace = true }
 cumulus-pallet-xcmp-queue = { workspace = true }
 cumulus-primitives-core = { workspace = true }
 cumulus-primitives-timestamp = { workspace = true }
 cumulus-primitives-utility = { workspace = true }
-pallet-collator-selection  = { workspace = true }
+pallet-collator-selection = { workspace = true }
 parachain-info = { workspace = true }
+parachains-common = { workspace = true }
 
 # Polkadot dependencies
 pallet-xcm = { workspace = true }
@@ -87,20 +93,24 @@ xcm-executor = { workspace = true }
 # orml
 orml-tokens = { workspace = true }
 orml-traits = { workspace = true }
+orml-xtokens = { workspace = true }
 orml-unknown-tokens = { workspace = true }
 orml-xcm = { workspace = true }
 orml-xcm-support = { workspace = true }
-orml-xtokens = { workspace = true }
 orml-oracle = { workspace = true }
+
+# zenlink
+merkle-distributor = { workspace = true }
+zenlink-protocol = { workspace = true }
+zenlink-protocol-runtime-api = { workspace = true }
 
 # tangle
 tangle-asset-registry = { workspace = true }
-tangle-currencies = { workspace = true }
 tangle-primitives = { workspace = true }
 tangle-runtime-common = { workspace = true }
+tangle-slp = { workspace = true }
 tangle-lst-minting = { workspace = true }
 tangle-xcm-interface = { workspace = true }
-tangle-parachain-staking = { workspace = true }
 
 [build-dependencies]
 substrate-wasm-builder = { workspace = true, optional = true }
@@ -108,22 +118,19 @@ substrate-wasm-builder = { workspace = true, optional = true }
 [features]
 default = ["std"]
 std = [
-	"strum/std",
 	"parity-scale-codec/std",
-	"scale-info/std",
 	"log/std",
-
-	"frame-benchmarking?/std",
+	"scale-info/std",
+	"strum/std",
 	"frame-executive/std",
 	"frame-support/std",
 	"frame-system-rpc-runtime-api/std",
 	"frame-system/std",
-	"frame-system-benchmarking?/std",
 	"frame-try-runtime/std",
 	"pallet-aura/std",
-	"pallet-authorship/std",
 	"pallet-balances/std",
 	"pallet-bounties/std",
+	"pallet-collator-selection/std",
 	"pallet-collective/std",
 	"pallet-conviction-voting/std",
 	"pallet-democracy/std",
@@ -134,13 +141,16 @@ std = [
 	"pallet-multisig/std",
 	"pallet-preimage/std",
 	"pallet-proxy/std",
+	"pallet-ranked-collective/std",
+	"pallet-referenda/std",
 	"pallet-scheduler/std",
 	"pallet-session/std",
 	"pallet-timestamp/std",
+	"pallet-tips/std",
 	"pallet-transaction-payment-rpc-runtime-api/std",
 	"pallet-transaction-payment/std",
 	"pallet-treasury/std",
-	"pallet-utility/std",
+	"pallet-whitelist/std",
 	"sp-api/std",
 	"sp-arithmetic/std",
 	"sp-block-builder/std",
@@ -154,25 +164,21 @@ std = [
 	"sp-staking/std",
 	"sp-std/std",
 	"sp-transaction-pool/std",
-	"sp-version/std",
+	"sp-genesis-builder/std",
 
 	"cumulus-pallet-aura-ext/std",
-	"cumulus-pallet-dmp-queue/std",
 	"cumulus-pallet-parachain-system/std",
 	"cumulus-pallet-xcm/std",
 	"cumulus-pallet-xcmp-queue/std",
 	"cumulus-primitives-core/std",
 	"cumulus-primitives-timestamp/std",
 	"cumulus-primitives-utility/std",
-	"pallet-collator-selection/std",
 	"parachain-info/std",
 
-	"pallet-xcm/std",
-	"polkadot-parachain-primitives/std",
 	"polkadot-primitives/std",
-	"xcm/std",
 	"xcm-builder/std",
 	"xcm-executor/std",
+	"xcm/std",
 
 	"orml-tokens/std",
 	"orml-traits/std",
@@ -182,12 +188,15 @@ std = [
 	"orml-xcm/std",
 	"orml-xtokens/std",
 
-	"tangle-primitives/std",
+	"merkle-distributor/std",
+	"zenlink-protocol-runtime-api/std",
+	"zenlink-protocol/std",
+
 	"tangle-asset-registry/std",
-	"tangle-currencies/std",
+	"tangle-primitives/std",
 	"tangle-runtime-common/std",
+	"tangle-slp/std",
 	"tangle-lst-minting/std",
-	"tangle-parachain-staking/std",
 	"tangle-xcm-interface/std",
 	"substrate-wasm-builder"
 ]
@@ -198,68 +207,72 @@ runtime-benchmarks = [
 	"frame-system-benchmarking/runtime-benchmarks",
 	"frame-support/runtime-benchmarks",
 	"frame-system/runtime-benchmarks",
-	"pallet-balances/runtime-benchmarks",
-	"pallet-bounties/runtime-benchmarks",
+	"pallet-asset-rate/runtime-benchmarks",
 	"pallet-collective/runtime-benchmarks",
 	"pallet-conviction-voting/runtime-benchmarks",
+	"pallet-ranked-collective/runtime-benchmarks",
+	"pallet-referenda/runtime-benchmarks",
+	"pallet-balances/runtime-benchmarks",
+	"pallet-bounties/runtime-benchmarks",
 	"pallet-indices/runtime-benchmarks",
 	"pallet-scheduler/runtime-benchmarks",
 	"pallet-timestamp/runtime-benchmarks",
 	"pallet-treasury/runtime-benchmarks",
 	"pallet-utility/runtime-benchmarks",
 	"pallet-xcm/runtime-benchmarks",
-	"pallet-elections-phragmen/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
 	"xcm-builder/runtime-benchmarks",
-	"tangle-lst-minting/runtime-benchmarks",
-	"tangle-asset-registry/runtime-benchmarks",
-	"tangle-parachain-staking/runtime-benchmarks",
+	"tangle-slp/runtime-benchmarks",
 	"sp-api/disable-logging",
 ]
 
 try-runtime = [
-	"frame-try-runtime",
-	"frame-support/try-runtime",
-	"frame-system/try-runtime",
-	"frame-executive/try-runtime",
-	"pallet-timestamp/try-runtime",
-	"pallet-indices/try-runtime",
-	"cumulus-pallet-parachain-system/try-runtime",
-	"parachain-info/try-runtime",
-	"pallet-balances/try-runtime",
-	"pallet-transaction-payment/try-runtime",
-	"pallet-authorship/try-runtime",
-	"pallet-session/try-runtime",
-	"pallet-aura/try-runtime",
-	"cumulus-pallet-aura-ext/try-runtime",
-	"tangle-parachain-staking/try-runtime",
-	"pallet-democracy/try-runtime",
-	"pallet-collective/try-runtime",
-	"pallet-conviction-voting/try-runtime",
-	"pallet-elections-phragmen/try-runtime",
-	"pallet-membership/try-runtime",
-	"cumulus-pallet-xcmp-queue/try-runtime",
-	"pallet-xcm/try-runtime",
-	"cumulus-pallet-xcm/try-runtime",
-	"cumulus-pallet-dmp-queue/try-runtime",
-	"pallet-collator-selection/try-runtime",
-	"pallet-utility/try-runtime",
-	"pallet-scheduler/try-runtime",
-	"pallet-proxy/try-runtime",
-	"pallet-multisig/try-runtime",
-	"pallet-identity/try-runtime",
-	"pallet-treasury/try-runtime",
-	"pallet-bounties/try-runtime",
-	"pallet-preimage/try-runtime",
-	"orml-xtokens/try-runtime",
-	"orml-tokens/try-runtime",
-	"tangle-currencies/try-runtime",
-	"orml-unknown-tokens/try-runtime",
-	"orml-xcm/try-runtime",
-	"orml-oracle/try-runtime",
 	"tangle-asset-registry/try-runtime",
+	"tangle-slp/try-runtime",
 	"tangle-lst-minting/try-runtime",
 	"tangle-xcm-interface/try-runtime",
+	"cumulus-pallet-aura-ext/try-runtime",
+	"cumulus-pallet-parachain-system/try-runtime",
+	"cumulus-pallet-xcm/try-runtime",
+	"cumulus-pallet-xcmp-queue/try-runtime",
+	"frame-executive/try-runtime",
+	"frame-support/try-runtime",
+	"frame-system/try-runtime",
+	"frame-try-runtime",
+	"frame-try-runtime/try-runtime",
+	"merkle-distributor/try-runtime",
+	"orml-oracle/try-runtime",
+	"orml-tokens/try-runtime",
+	"orml-unknown-tokens/try-runtime",
+	"orml-xcm/try-runtime",
+	"orml-xtokens/try-runtime",
+	"pallet-aura/try-runtime",
+	"pallet-authorship/try-runtime",
+	"pallet-balances/try-runtime",
+	"pallet-bounties/try-runtime",
+	"pallet-collator-selection/try-runtime",
+	"pallet-collective/try-runtime",
+	"pallet-conviction-voting/try-runtime",
+	"pallet-democracy/try-runtime",
+	"pallet-elections-phragmen/try-runtime",
+	"pallet-identity/try-runtime",
+	"pallet-indices/try-runtime",
+	"pallet-membership/try-runtime",
+	"pallet-multisig/try-runtime",
+	"pallet-preimage/try-runtime",
+	"pallet-proxy/try-runtime",
+	"pallet-ranked-collective/try-runtime",
+	"pallet-referenda/try-runtime",
+	"pallet-scheduler/try-runtime",
+	"pallet-session/try-runtime",
+	"pallet-timestamp/try-runtime",
+	"pallet-tips/try-runtime",
+	"pallet-transaction-payment/try-runtime",
+	"pallet-treasury/try-runtime",
+	"pallet-utility/try-runtime",
+	"pallet-whitelist/try-runtime",
+	"parachain-info/try-runtime",
+	"zenlink-protocol/try-runtime",
 ]
 
 # When enabled, the runtime API will not be build.

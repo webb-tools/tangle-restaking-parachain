@@ -197,7 +197,7 @@ fn u64_to_currency_id_should_work() {
 }
 
 #[test]
-fn to_Lst_should_work() {
+fn to_lst_should_work() {
 	let native_bnc = CurrencyId::Native(TokenSymbol::BNC);
 	let native_asg = CurrencyId::Native(TokenSymbol::ASG);
 	let Lst_ksm = CurrencyId::Lst(TokenSymbol::KSM);
@@ -214,21 +214,21 @@ fn to_Lst_should_work() {
 	let stable_lp_token = CurrencyId::StableLpToken(100);
 	let lp_token = CurrencyId::LPToken(TokenSymbol::BNC, 0, TokenSymbol::KSM, 2);
 
-	assert_eq!(native_bnc.to_Lst(), Ok(CurrencyId::Lst(TokenSymbol::BNC)));
-	assert_eq!(native_asg.to_Lst(), Err(()));
-	assert_eq!(Lst_ksm.to_Lst(), Err(()));
-	assert_eq!(token_ksm.to_Lst(), Ok(CurrencyId::Lst(TokenSymbol::KSM)));
-	assert_eq!(stable_kusd.to_Lst(), Err(()));
-	assert_eq!(vstoken_eth.to_Lst(), Err(()));
-	assert_eq!(vsbond_ksm.to_Lst(), Err(()));
-	assert_eq!(token2_dot.to_Lst(), Ok(CurrencyId::Lst2(DOT_TOKEN_ID)));
-	assert_eq!(Lst2_dot.to_Lst(), Err(()));
-	assert_eq!(vstoken2_dot.to_Lst(), Err(()));
-	assert_eq!(vsbond2_dot.to_Lst(), Err(()));
-	assert_eq!(foreign_asset.to_Lst(), Err(()));
-	assert_eq!(blp.to_Lst(), Err(()));
-	assert_eq!(stable_lp_token.to_Lst(), Err(()));
-	assert_eq!(lp_token.to_Lst(), Err(()));
+	assert_eq!(native_bnc.to_lst(), Ok(CurrencyId::Lst(TokenSymbol::BNC)));
+	assert_eq!(native_asg.to_lst(), Err(()));
+	assert_eq!(Lst_ksm.to_lst(), Err(()));
+	assert_eq!(token_ksm.to_lst(), Ok(CurrencyId::Lst(TokenSymbol::KSM)));
+	assert_eq!(stable_kusd.to_lst(), Err(()));
+	assert_eq!(vstoken_eth.to_lst(), Err(()));
+	assert_eq!(vsbond_ksm.to_lst(), Err(()));
+	assert_eq!(token2_dot.to_lst(), Ok(CurrencyId::Lst2(DOT_TOKEN_ID)));
+	assert_eq!(Lst2_dot.to_lst(), Err(()));
+	assert_eq!(vstoken2_dot.to_lst(), Err(()));
+	assert_eq!(vsbond2_dot.to_lst(), Err(()));
+	assert_eq!(foreign_asset.to_lst(), Err(()));
+	assert_eq!(blp.to_lst(), Err(()));
+	assert_eq!(stable_lp_token.to_lst(), Err(()));
+	assert_eq!(lp_token.to_lst(), Err(()));
 }
 
 #[test]

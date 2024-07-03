@@ -1,6 +1,7 @@
 // This file is part of Tangle.
 
-
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,14 +26,14 @@
 //!
 //! THIS FILE WAS AUTO-GENERATED USING THE SUBSTRATE BENCHMARK CLI VERSION 4.0.0-dev
 //! DATE: 2023-09-14, STEPS: `50`, REPEAT: 20, LOW RANGE: `[]`, HIGH RANGE: `[]`
-//! HOSTNAME: `tangle-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
-//! WASM-EXECUTION: Compiled, CHAIN: Some("tangle-kusama-local"), DB CACHE: 1024
+//! HOSTNAME: `bifrost-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
+//! WASM-EXECUTION: Compiled, CHAIN: Some("bifrost-kusama-local"), DB CACHE: 1024
 
 // Executed Command:
-// target/release/tangle
+// target/release/bifrost
 // benchmark
 // pallet
-// --chain=tangle-kusama-local
+// --chain=bifrost-kusama-local
 // --steps=50
 // --repeat=20
 // --pallet=tangle_slpx
@@ -40,7 +41,7 @@
 // --execution=wasm
 // --wasm-execution=compiled
 // --heap-pages=4096
-// --output=./runtime/tangle-kusama/src/weights/tangle_slpx.rs
+// --output=./runtime/bifrost-kusama/src/weights/tangle_slpx.rs
 // --template=./weight-template/runtime-weight-template.hbs
 
 #![cfg_attr(rustfmt, rustfmt_skip)]
@@ -51,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_slpx.
-pub struct TangleWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_slpx::WeightInfo for TangleWeight<T> {
+pub struct BifrostWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_slpx::WeightInfo for BifrostWeight<T> {
 	// Storage: Slpx WhitelistAccountId (r:1 w:1)
 	// Proof: Slpx WhitelistAccountId (max_values: None, max_size: Some(338), added: 2813, mode: MaxEncodedLen)
 	fn add_whitelist() -> Weight {
@@ -125,6 +126,19 @@ impl<T: frame_system::Config> tangle_slpx::WeightInfo for TangleWeight<T> {
 		Weight::from_parts(360_766_000, 11362)
 			.saturating_add(T::DbWeight::get().reads(16))
 			.saturating_add(T::DbWeight::get().writes(8))
+	}
+	// Storage: `Slpx::WhitelistAccountId` (r:1 w:0)
+	// Proof: `Slpx::WhitelistAccountId` (`max_values`: None, `max_size`: Some(338), added: 2813, mode: `MaxEncodedLen`)
+	// Storage: `Slpx::OrderQueue` (r:1 w:1)
+	// Proof: `Slpx::OrderQueue` (`max_values`: Some(1), `max_size`: Some(203002), added: 203497, mode: `MaxEncodedLen`)
+	fn mint_with_channel_id() -> Weight {
+		// Proof Size summary in bytes:
+		//  Measured:  `81`
+		//  Estimated: `204487`
+		// Minimum execution time: 12_000 nanoseconds.
+		Weight::from_parts(13_000_000, 204487)
+			.saturating_add(T::DbWeight::get().reads(2))
+			.saturating_add(T::DbWeight::get().writes(1))
 	}
 	// Storage: Slpx WhitelistAccountId (r:1 w:0)
 	// Proof: Slpx WhitelistAccountId (max_values: None, max_size: Some(338), added: 2813, mode: MaxEncodedLen)

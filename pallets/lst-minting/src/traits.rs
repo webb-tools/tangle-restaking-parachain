@@ -1,4 +1,4 @@
-// This file is part of Bifrost.
+// This file is part of Tangle.
 
 // Copyright (C) Liebi Technologies PTE. LTD.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -50,7 +50,7 @@ pub trait OnRedeemSuccess<AccountId, CurrencyId, Balance> {
 		address: AccountId,
 		token_id: CurrencyId,
 		token_amount: Balance,
-		vtoken_amount: Balance,
+		Lst_amount: Balance,
 		fee: Balance,
 	) -> frame_support::pallet_prelude::Weight;
 }
@@ -64,7 +64,7 @@ impl<AccountId, CurrencyId, Balance> OnRedeemSuccess<AccountId, CurrencyId, Bala
 		_address: AccountId,
 		_token_id: CurrencyId,
 		_token_amount: Balance,
-		_vtoken_amount: Balance,
+		_lst_amount: Balance,
 		_fee: Balance,
 	) -> Weight {
 		Weight::zero()

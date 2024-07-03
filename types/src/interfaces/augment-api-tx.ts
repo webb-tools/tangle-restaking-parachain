@@ -4042,7 +4042,7 @@ declare module '@polkadot/api-base/types/submittable' {
 				]
 			>;
 			/**
-			 * See [`Pallet::charge_host_fee_and_tune_Lst_exchange_rate`].
+			 * See [`Pallet::charge_host_fee_and_tune_lst_exchange_rate`].
 			 **/
 			chargeHostFeeAndTuneLstExchangeRate: AugmentedSubmittable<
 				(
@@ -4285,7 +4285,7 @@ declare module '@polkadot/api-base/types/submittable' {
 				]
 			>;
 			/**
-			 * See [`Pallet::convert_treasury_Lst`].
+			 * See [`Pallet::convert_treasury_lst`].
 			 **/
 			convertTreasuryLst: AugmentedSubmittable<
 				(
@@ -5988,7 +5988,7 @@ declare module '@polkadot/api-base/types/submittable' {
 				[u32, Vec<u128>, u128]
 			>;
 			/**
-			 * See [`Pallet::config_Lst_auto_refresh`].
+			 * See [`Pallet::config_lst_auto_refresh`].
 			 **/
 			configLstAutoRefresh: AugmentedSubmittable<
 				(
@@ -6170,7 +6170,7 @@ declare module '@polkadot/api-base/types/submittable' {
 				[u32, u128, u32, u128, u32]
 			>;
 			/**
-			 * See [`Pallet::remove_Lst_auto_refresh`].
+			 * See [`Pallet::remove_lst_auto_refresh`].
 			 **/
 			removeLstAutoRefresh: AugmentedSubmittable<
 				(

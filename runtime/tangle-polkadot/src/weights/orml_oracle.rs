@@ -5,7 +5,7 @@
 //! EXECUTION: Some(Wasm), WASM-EXECUTION: Compiled, CHAIN: Some("dev"), DB CACHE: 128
 
 // Executed Command:
-// target/release/tangle
+// target/release/bifrost
 // benchmark
 // --chain=dev
 // --steps=50
