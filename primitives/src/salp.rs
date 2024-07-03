@@ -50,6 +50,27 @@ pub enum RpcContributionStatus {
 	MigratedIdle,
 }
 
+#[derive(
+	Encode,
+	Decode,
+	Clone,
+	PartialEq,
+	Eq,
+	Copy,
+	RuntimeDebug,
+	scale_info::TypeInfo,
+	Serialize,
+	Deserialize,
+)]
+pub enum DestChain {
+	DOT,
+	ASTAR,
+	FIL,
+	MANTA,
+	PHALA,
+	NATIVE
+}
+
 impl<BalanceOf> ContributionStatus<BalanceOf>
 where
 	BalanceOf: frame_support::sp_runtime::traits::Zero + Clone + Copy,
