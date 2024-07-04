@@ -21,14 +21,6 @@
 #![cfg(test)]
 #![allow(non_upper_case_globals)]
 
-use tangle_asset_registry::AssetIdMaps;
-use tangle_primitives::{
-	currency::{BNC, DOT, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR},
-	CurrencyId, CurrencyIdMapping, SlpxOperator, TokenSymbol,
-};
-use tangle_runtime_common::{micro, milli};
-use tangle_slp::{QueryId, QueryResponseManager};
-use tangle_ve_minting::{Point, VeMintingInterface};
 pub use cumulus_primitives_core::ParaId;
 use frame_support::{
 	derive_impl, ord_parameter_types,
@@ -44,6 +36,14 @@ use sp_runtime::{
 	traits::{ConstU32, IdentityLookup},
 	AccountId32, BuildStorage, DispatchError, DispatchResult,
 };
+use tangle_asset_registry::AssetIdMaps;
+use tangle_primitives::{
+	currency::{BNC, DOT, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR},
+	CurrencyId, CurrencyIdMapping, SlpxOperator, TokenSymbol,
+};
+use tangle_runtime_common::{micro, milli};
+use tangle_slp::{QueryId, QueryResponseManager};
+use tangle_ve_minting::{Point, VeMintingInterface};
 use xcm::{prelude::*, v3::Weight};
 use xcm_builder::{FixedWeightBounds, FrameTransactionalProcessor};
 use xcm_executor::XcmExecutor;

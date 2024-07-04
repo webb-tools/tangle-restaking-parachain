@@ -155,6 +155,17 @@ pub mod pallet {
 	pub type LocationToCurrencyIds<T: Config> =
 		StorageMap<_, Twox64Concat, xcm::v3::Location, CurrencyId, OptionQuery>;
 
+	/// The storages for TokenIds for validators.
+	///
+	#[pallet::storage]
+	pub type ValidatorsCurrency<T: Config> = StorageMap<
+		_, 
+		Blake2_128Concat, 
+		Vec<MultiLocation>,
+		(CurrencyId, TokenId), // (Original CurrencyId, LstId)
+		OptionQuery
+	>;
+
 	#[pallet::storage]
 	#[pallet::getter(fn currency_id_to_weight)]
 	pub type CurrencyIdToWeights<T: Config> =
@@ -676,14 +687,27 @@ impl<T: Config> CurrencyIdConversion<CurrencyId> for AssetIdMaps<T> {
 		}
 	}
 
-	fn convert_to_lst(currency_id: CurrencyId) -> Result<CurrencyId, ()> {
-		match currency_id {
-			CurrencyId::Token(token_symbol) | CurrencyId::Native(token_symbol) => {
-				Ok(CurrencyId::Lst(token_symbol))
-			},
-			CurrencyId::Token2(token_id) => Ok(CurrencyId::Lst2(token_id)),
-			_ => Err(()),
-		}
+	fn convert_to_lst(currency_id: CurrencyId, validators : Option<Vec<MultiLocation>>) -> Result<CurrencyId, ()> {
+		let lst_currency_id = match currency_id {
+            CurrencyId::Token(token_symbol) | CurrencyId::Native(token_symbol) => {
+                CurrencyId::Lst(token_symbol)
+            },
+            CurrencyId::Token2(token_id) => CurrencyId::Lst2(token_id),
+            _ => return Err(()),
+        };
+
+        if let Some(validators) = validators {
+            // Check if the validators already have a currency_id associated
+			if ValidatorsCurrency::<T>::contains_key(&validators) {
+				Ok(())
+			} else {
+				// If not, insert the new mapping
+				ValidatorsCurrency::<T>::insert(validators, (original_currency_id, lst_currency_id));
+				Ok(())
+			}
+        }
+
+        Ok(lst_currency_id)
 	}
 
 	fn convert_to_vstoken(currency_id: CurrencyId) -> Result<CurrencyId, ()> {
