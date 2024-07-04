@@ -24,14 +24,13 @@ use crate::{
 		SubstrateLedgerUpdateOperation, SubstrateValidatorsByDelegatorUpdateEntry, UnlockChunk,
 		ValidatorsByDelegatorUpdateEntry,
 	},
-	traits::{QueryResponseManager, StakingAgent},
 	AccountIdOf, BalanceOf, BoundedVec, Config, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	ValidatorsByDelegator, ValidatorsByDelegatorXcmUpdateQueue,
 };
 use tangle_primitives::{
 	currency::KSM, CurrencyId, LstMintingOperator, XcmDestWeightAndFeeHandler, XcmOperationType,
-	DOT,
+	DOT, staking::{QueryResponseManager, StakingAgent}
 };
 use core::marker::PhantomData;
 use frame_support::{ensure, traits::Get};

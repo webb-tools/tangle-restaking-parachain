@@ -18,12 +18,11 @@
 use crate::{
 	pallet::{Error, Event},
 	primitives::{FilecoinLedger, Ledger},
-	traits::StakingAgent,
 	AccountIdOf, BalanceOf, BoundedVec, Config, DelegatorLatestTuneRecord, DelegatorLedgers,
 	LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit, Validators, ValidatorsByDelegator,
 	ValidatorsByDelegatorUpdateEntry,
 };
-use tangle_primitives::{CurrencyId, LstMintingOperator};
+use tangle_primitives::{CurrencyId, LstMintingOperator, staking::StakingAgent};
 use core::marker::PhantomData;
 use frame_support::ensure;
 use orml_traits::MultiCurrency;

@@ -32,6 +32,8 @@ use xcm::v4::{prelude::*, Asset, Location};
 use xcm_executor::traits::{AssetTransferError, TransferType, XcmAssetTransfers};
 
 pub mod currency;
+pub mod staking;
+pub mod staking_primitives;
 mod salp;
 pub mod traits;
 pub use salp::*;
