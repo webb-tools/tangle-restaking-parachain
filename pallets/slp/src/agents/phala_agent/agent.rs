@@ -23,12 +23,11 @@ use crate::{
 	primitives::{
 		Ledger, PhalaLedger, QueryId, SubstrateLedgerUpdateEntry, SubstrateLedgerUpdateOperation,
 	},
-	traits::{QueryResponseManager, StakingAgent},
 	AccountIdOf, BalanceOf, Config, CurrencyId, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, Hash, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	Validators, ValidatorsByDelegatorUpdateEntry,
 };
-use tangle_primitives::{TokenSymbol, LstMintingOperator, XcmOperationType};
+use tangle_primitives::{TokenSymbol, LstMintingOperator, XcmOperationType, staking::{QueryResponseManager, StakingAgent}};
 use core::marker::PhantomData;
 use frame_support::{ensure, traits::Get};
 use frame_system::pallet_prelude::BlockNumberFor;

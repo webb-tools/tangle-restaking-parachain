@@ -27,7 +27,6 @@ use crate::{
 		OneToManyScheduledRequest, ParachainStakingLedgerUpdateEntry,
 		ParachainStakingLedgerUpdateOperation, QueryId,
 	},
-	traits::{QueryResponseManager, StakingAgent},
 	AccountIdOf, BalanceOf, Config, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	Validators, ValidatorsByDelegatorUpdateEntry, BNC,
@@ -35,7 +34,7 @@ use crate::{
 use tangle_parachain_staking::ParachainStakingInterface;
 use tangle_primitives::{
 	currency::{GLMR, MANTA, MOVR},
-	CurrencyId, LstMintingOperator, XcmOperationType,
+	CurrencyId, LstMintingOperator, XcmOperationType, staking::{QueryResponseManager, StakingAgent}
 };
 use core::marker::PhantomData;
 use frame_support::{ensure, traits::Get};

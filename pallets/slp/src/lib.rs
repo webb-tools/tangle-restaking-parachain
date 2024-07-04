@@ -27,7 +27,6 @@ pub use crate::{
 		Delays, LedgerUpdateEntry, MinimumsMaximums, QueryId, SubstrateLedger,
 		ValidatorsByDelegatorUpdateEntry,
 	},
-	traits::{OnRefund, QueryResponseManager, StakingAgent},
 	Junction::AccountId32,
 	Junctions::X1,
 };
@@ -38,7 +37,7 @@ use tangle_primitives::{
 	traits::XcmDestWeightAndFeeHandler,
 	CurrencyId, CurrencyIdExt, CurrencyIdMapping, DerivativeAccountHandler, DerivativeIndex,
 	SlpHostingFeeProvider, SlpOperator, TimeUnit, LstMintingOperator, XcmOperationType, ASTR,
-	DOT, FIL, GLMR,
+	DOT, FIL, GLMR, staking::{OnRefund, QueryResponseManager, StakingAgent},
 };
 use cumulus_primitives_core::{relay_chain::HashT, ParaId};
 use frame_support::{pallet_prelude::*, traits::Contains, weights::Weight};
@@ -58,11 +57,9 @@ pub use weights::WeightInfo;
 use xcm::v3::{Junction, Junctions, MultiLocation};
 
 mod agents;
-pub mod migrations;
 mod mocks;
 pub mod primitives;
 mod tests;
-pub mod traits;
 pub mod weights;
 
 #[cfg(feature = "runtime-benchmarks")]

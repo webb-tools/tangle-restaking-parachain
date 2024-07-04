@@ -74,6 +74,7 @@ pub trait StakingAgent<
 
 	/// Delegate to some validators.
 	fn delegate(
+        &self,
 		who: &AccountId,
 		targets: &Vec<MultiLocation>,
 		currency_id: CurrencyId,

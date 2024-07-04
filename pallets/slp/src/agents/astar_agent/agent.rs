@@ -23,12 +23,11 @@ use crate::{
 		Ledger, QueryId, SubstrateLedger, SubstrateLedgerUpdateEntry,
 		SubstrateLedgerUpdateOperation, UnlockChunk, ValidatorsByDelegatorUpdateEntry,
 	},
-	traits::{QueryResponseManager, StakingAgent},
 	AccountIdOf, BalanceOf, Config, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	Validators,
 };
-use tangle_primitives::{CurrencyId, LstMintingOperator, XcmOperationType, ASTR_TOKEN_ID};
+use tangle_primitives::{CurrencyId, LstMintingOperator, XcmOperationType, ASTR_TOKEN_ID, staking::{QueryResponseManager, StakingAgent}};
 use core::marker::PhantomData;
 use frame_support::{ensure, traits::Get};
 use frame_system::pallet_prelude::BlockNumberFor;
