@@ -21,9 +21,9 @@
 #![cfg(test)]
 
 use crate::{mock::*, DispatchError::Module, *};
-use tangle_primitives::currency::{BNC, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR};
 use frame_support::{assert_noop, assert_ok, sp_runtime::Permill, BoundedVec};
 use sp_runtime::ModuleError;
+use tangle_primitives::currency::{BNC, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR};
 
 #[test]
 fn mint_bnc() {

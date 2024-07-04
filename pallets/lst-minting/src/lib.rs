@@ -32,6 +32,8 @@ pub mod traits;
 pub mod weights;
 pub use weights::WeightInfo;
 
+use frame_support::traits::fungibles;
+use frame_support::traits::nonfungibles;
 use frame_support::{
 	pallet_prelude::*,
 	sp_runtime::{
@@ -50,14 +52,14 @@ pub use pallet::*;
 use sp_core::U256;
 use sp_std::{vec, vec::Vec};
 use tangle_asset_registry::AssetMetadata;
-use tangle_primitives::{
-	CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdMapping, CurrencyIdRegister,
-	LstMintRedeemProvider, LstMintingInterface, LstMintingOperator, LstSupplyProvider, RedeemType,
-	SlpOperator, SlpxOperator, TimeUnit, DestChain
-};
 use tangle_primitives::staking::StakingAgent;
 use tangle_primitives::staking_primitives::LedgerUpdateEntry;
 use tangle_primitives::staking_primitives::ValidatorsByDelegatorUpdateEntry;
+use tangle_primitives::{
+	CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdMapping, CurrencyIdRegister,
+	DestChain, LstMintRedeemProvider, LstMintingInterface, LstMintingOperator, LstSupplyProvider,
+	RedeemType, SlpOperator, SlpxOperator, TimeUnit,
+};
 
 pub use traits::*;
 use xcm::v3::MultiLocation;
@@ -167,11 +169,18 @@ pub mod pallet {
 			AssetMetadata<BalanceOf<Self>>,
 		>;
 
-		type StakingAgent : StakingAgent<BalanceOf<Self>,
+		type StakingAgent: StakingAgent<
+			BalanceOf<Self>,
 			Self::AccountId,
 			LedgerUpdateEntry<BalanceOf<Self>>,
 			ValidatorsByDelegatorUpdateEntry,
-			Error<Self>>;
+			Error<Self>,
+		>;
+
+		type AssetHandler: fungibles::Inspect<Self::AccountId> + fungibles::Create<Self::AccountId>;
+
+		type NftHandler: nonfungibles::Inspect<Self::AccountId>
+			+ nonfungibles::Create<Self::AccountId>;
 
 		/// Set default weight.
 		type WeightInfo: WeightInfo;
@@ -449,11 +458,12 @@ pub mod pallet {
 			token_amount: BalanceOf<T>,
 			remark: BoundedVec<u8, ConstU32<32>>,
 			channel_id: Option<u32>,
-			validators: Vec<MultiLocation>
+			validators: Vec<MultiLocation>,
 		) -> DispatchResult {
 			// Check origin
 			let exchanger = ensure_signed(origin)?;
-			Self::mint_inner(exchanger, token_id, token_amount, remark, channel_id, validators).map(|_| ())
+			Self::mint_inner(exchanger, token_id, token_amount, remark, channel_id, validators)
+				.map(|_| ())
 		}
 
 		#[pallet::call_index(1)]
@@ -473,9 +483,10 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			token_id: CurrencyIdOf<T>,
 			token_amount: BalanceOf<T>,
+			validators: Vec<MultiLocation>,
 		) -> DispatchResult {
 			let exchanger = ensure_signed(origin)?;
-			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id)
+			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id, validators)
 				.map_err(|_| Error::<T>::NotSupportTokenType)?;
 			let _token_amount_to_rebond =
 				Self::token_to_rebond(token_id).ok_or(Error::<T>::InvalidRebondToken)?;
@@ -888,7 +899,7 @@ pub mod pallet {
 			lst_id: CurrencyId,
 			token_id: CurrencyId,
 			token_amount: BalanceOf<T>,
-			validators: Vec<MultiLocation>
+			validators: Vec<MultiLocation>,
 		) -> Result<(BalanceOf<T>, BalanceOf<T>, BalanceOf<T>), DispatchError> {
 			let token_pool_amount = Self::token_pool(token_id);
 			let lst_total_issuance = T::MultiCurrency::total_issuance(lst_id);
@@ -1299,15 +1310,20 @@ pub mod pallet {
 			token_amount: BalanceOf<T>,
 			remark: BoundedVec<u8, ConstU32<32>>,
 			channel_id: Option<u32>,
-			validators: Vec<MultiLocation>
+			validators: Vec<MultiLocation>,
 		) -> Result<BalanceOf<T>, DispatchError> {
 			ensure!(token_amount >= MinimumMint::<T>::get(token_id), Error::<T>::BelowMinimumMint);
 
-			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id)
+			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id, Some(validators))
 				.map_err(|_| Error::<T>::NotSupportTokenType)?;
-			let (token_amount_excluding_fee, lst_amount, fee) =
-				Self::mint_without_transfer(&exchanger, lst_id, token_id, token_amount, validators.clone())?;
-			
+			let (token_amount_excluding_fee, lst_amount, fee) = Self::mint_without_transfer(
+				&exchanger,
+				lst_id,
+				token_id,
+				token_amount,
+				validators.clone(),
+			)?;
+
 			// Transfer the user's token to EntranceAccount.
 			T::MultiCurrency::transfer(
 				token_id,
@@ -1320,13 +1336,7 @@ pub mod pallet {
 			T::ChannelCommission::record_mint_amount(channel_id, lst_id, lst_amount)?;
 
 			// attempt staking via agent
-			T::StakingAgent::delegate(
-				&exchanger,
-				&exchanger,
-				&validators,
-				token_id,
-				None
-			)?;
+			T::StakingAgent::delegate(&exchanger, &exchanger, &validators, token_id, None)?;
 
 			Self::deposit_event(Event::Minted {
 				address: exchanger,
@@ -1534,7 +1544,7 @@ pub mod pallet {
 		}
 
 		pub fn lst_id_inner(token_id: CurrencyIdOf<T>) -> Option<CurrencyIdOf<T>> {
-			T::CurrencyIdConversion::convert_to_lst(token_id).ok()
+			T::CurrencyIdConversion::convert_to_lst(token_id, None).ok()
 		}
 
 		pub fn token_id_inner(lst_id: CurrencyIdOf<T>) -> Option<CurrencyIdOf<T>> {
@@ -1626,7 +1636,7 @@ pub mod pallet {
 		}
 
 		fn get_lst_amount(token: CurrencyIdOf<T>, amount: u128) -> Result<U256, DispatchError> {
-			let lst_id = T::CurrencyIdConversion::convert_to_lst(token)
+			let lst_id = T::CurrencyIdConversion::convert_to_lst(token, None)
 				.map_err(|_| Error::<T>::NotSupportTokenType)?;
 
 			let token_pool_amount = Self::token_pool(token);
@@ -1822,7 +1832,7 @@ impl<T: Config> LstMintingOperator<CurrencyId, BalanceOf<T>, AccountIdOf<T>, Tim
 // 		token_amount: BalanceOf<T>,
 // 		remark: BoundedVec<u8, ConstU32<32>>,
 // 		channel_id: Option<u32>,
-// 		
+//
 // 		validators: Vec<MultiLocation>
 // 	) -> Result<BalanceOf<T>, DispatchError> {
 // 		Self::mint_inner(exchanger, token_id, token_amount, remark, channel_id, dest_chain, validators)
