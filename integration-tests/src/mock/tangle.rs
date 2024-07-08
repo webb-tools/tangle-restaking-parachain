@@ -27,20 +27,20 @@ use sp_runtime::{traits::IdentityLookup, AccountId32};
 use sp_std::prelude::*;
 
 use crate::mock::{mock_message_queue, Amount};
+use pallet_xcm::{QueryStatus, XcmPassthrough};
+use polkadot_parachain_primitives::primitives::Sibling;
 use tangle_asset_registry::AssetIdMaps;
 use tangle_polkadot_runtime::{
 	xcm_config::{
 		BaseXcmWeight, BifrostAccountIdToLocation, BifrostAssetTransactor, MaxAssetsForTransfer,
 		ParachainMinFee, SelfRelativeLocation, UniversalLocation,
 	},
-	BifrostCurrencyIdConvert, BifrostTreasuryAccount, MaxLengthLimit, MaxRefundPerBlock,
-	MaxTypeEntryPerBlock, NativeCurrencyId, SelfParaChainId, SubAccountIndexMultiLocationConvertor,
-	LstMinting, XcmInterface,
+	BifrostCurrencyIdConvert, BifrostTreasuryAccount, LstMinting, MaxLengthLimit,
+	MaxRefundPerBlock, MaxTypeEntryPerBlock, NativeCurrencyId, SelfParaChainId,
+	SubAccountIndexMultiLocationConvertor, XcmInterface,
 };
 use tangle_primitives::CurrencyId;
 use tangle_slp::QueryResponseManager;
-use pallet_xcm::{QueryStatus, XcmPassthrough};
-use polkadot_parachain_primitives::primitives::Sibling;
 use xcm::latest::prelude::*;
 use xcm_builder::{
 	AccountId32Aliases, AllowUnpaidExecutionFrom, EnsureXcmOrigin, FixedRateOfFungible,

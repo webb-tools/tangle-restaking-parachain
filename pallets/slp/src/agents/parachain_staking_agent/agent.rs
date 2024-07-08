@@ -31,11 +31,6 @@ use crate::{
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	Validators, ValidatorsByDelegatorUpdateEntry, BNC,
 };
-use tangle_parachain_staking::ParachainStakingInterface;
-use tangle_primitives::{
-	currency::{GLMR, MANTA, MOVR},
-	CurrencyId, LstMintingOperator, XcmOperationType, staking::{QueryResponseManager, StakingAgent}
-};
 use core::marker::PhantomData;
 use frame_support::{ensure, traits::Get};
 use orml_traits::MultiCurrency;
@@ -46,6 +41,12 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
+use tangle_parachain_staking::ParachainStakingInterface;
+use tangle_primitives::{
+	currency::{GLMR, MANTA, MOVR},
+	staking::{QueryResponseManager, StakingAgent},
+	CurrencyId, LstMintingOperator, XcmOperationType,
+};
 use xcm::{
 	opaque::v3::{
 		Junction::{AccountId32, Parachain},
@@ -1511,8 +1512,7 @@ impl<T: Config>
 		// Get current VMOVR/MOVR、VGLMR/GLMR exchange rate.
 		let Lst = currency_id.to_lst().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
 
-		let charge_amount =
-			Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
+		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
 
 		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, Lst)
 	}

@@ -22,7 +22,6 @@ use crate::{
 	LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit, Validators, ValidatorsByDelegator,
 	ValidatorsByDelegatorUpdateEntry,
 };
-use tangle_primitives::{CurrencyId, LstMintingOperator, staking::StakingAgent};
 use core::marker::PhantomData;
 use frame_support::ensure;
 use orml_traits::MultiCurrency;
@@ -32,6 +31,7 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
+use tangle_primitives::{staking::StakingAgent, CurrencyId, LstMintingOperator};
 use xcm::v3::prelude::*;
 
 /// StakingAgent implementation for Filecoin

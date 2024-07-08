@@ -25,11 +25,11 @@ use crate::{
 	},
 	BNC, *,
 };
-use tangle_parachain_staking::RoundInfo;
-use tangle_primitives::VBNC;
 use frame_support::{assert_noop, assert_ok, PalletId};
 use parity_scale_codec::alloc::collections::BTreeMap;
 use sp_runtime::traits::AccountIdConversion;
+use tangle_parachain_staking::RoundInfo;
+use tangle_primitives::VBNC;
 
 #[test]
 fn initialize_parachain_staking_delegator() {

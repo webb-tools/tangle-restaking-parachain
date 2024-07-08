@@ -17,15 +17,15 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::mock::{bifrost, Bifrost, BifrostSlp, Relay, RelayBalances, RelayXcmPallet};
-use tangle_polkadot_runtime::xcm_config::ParaId;
-use tangle_primitives::CurrencyId;
-use tangle_slp::MinimumsMaximums;
 use frame_support::{assert_ok, traits::Currency};
 use sp_runtime::{
 	traits::{AccountIdConversion, Convert},
 	AccountId32,
 };
 use std::convert::Into;
+use tangle_polkadot_runtime::xcm_config::ParaId;
+use tangle_primitives::CurrencyId;
+use tangle_slp::MinimumsMaximums;
 use xcm::{v3::MultiLocation, v4::prelude::*, VersionedAssets, VersionedLocation};
 use xcm_simulator::TestExt;
 

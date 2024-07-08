@@ -19,10 +19,10 @@
 #![cfg(test)]
 
 use crate::{mocks::mock_kusama::*, *};
-use tangle_primitives::currency::{BNC, KSM, VKSM};
 use frame_support::{assert_noop, assert_ok, PalletId};
 use orml_traits::MultiCurrency;
 use sp_runtime::traits::AccountIdConversion;
+use tangle_primitives::currency::{BNC, KSM, VKSM};
 use xcm::v3::prelude::*;
 
 const SUBACCOUNT_0_32: [u8; 32] =

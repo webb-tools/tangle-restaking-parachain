@@ -87,8 +87,6 @@ pub struct ExtBuilder {
 	balances: Vec<(AccountId, Balance)>,
 }
 
-
-
 impl ExtBuilder {
 	pub fn build(self) -> sp_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::<Runtime>::default().build_storage().unwrap();

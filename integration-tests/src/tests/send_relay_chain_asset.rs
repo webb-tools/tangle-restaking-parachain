@@ -19,11 +19,11 @@
 use crate::mock::{
 	Bifrost, BifrostTokens, BifrostXTokens, Relay, RelayBalances, RelaySystem, TestNet, ALICE, BOB,
 };
-use tangle_primitives::CurrencyId;
 use cumulus_primitives_core::ParaId;
 use frame_support::{assert_ok, traits::Currency};
 use orml_traits::MultiCurrency;
 use sp_runtime::traits::AccountIdConversion;
+use tangle_primitives::CurrencyId;
 use xcm::v4::{Junction, Location, WeightLimit};
 use xcm_simulator::TestExt;
 

@@ -16,13 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-pub mod tangle;
 mod mock_message_queue;
 pub mod relaychain;
+pub mod tangle;
 
-use tangle_primitives::CurrencyId;
 use sp_io::TestExternalities;
 use sp_runtime::{AccountId32, BuildStorage};
+use tangle_primitives::CurrencyId;
 use xcm_simulator::{decl_test_network, decl_test_parachain, decl_test_relay_chain, TestExt};
 
 pub const ALICE: AccountId32 = AccountId32::new([0u8; 32]);

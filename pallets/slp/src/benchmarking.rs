@@ -20,11 +20,11 @@
 #![cfg(feature = "runtime-benchmarks")]
 
 use crate::*;
-use tangle_primitives::{DOT, VDOT};
 use frame_benchmarking::v2::*;
 use frame_support::{assert_ok, PalletId};
 use frame_system::RawOrigin as SystemOrigin;
 use sp_runtime::traits::{AccountIdConversion, StaticLookup, UniqueSaturatedFrom};
+use tangle_primitives::{DOT, VDOT};
 
 const DELEGATOR1: MultiLocation =
 	MultiLocation { parents: 1, interior: X1(AccountId32 { network: None, id: [1u8; 32] }) };
@@ -200,9 +200,9 @@ pub fn init_ongoing_time<T: Config>(origin: <T as frame_system::Config>::Runtime
 mod benchmarks {
 	use super::*;
 	use crate::primitives::{PhalaLedger, SubstrateValidatorsByDelegatorUpdateEntry};
-	use tangle_primitives::VKSM;
 	use frame_benchmarking::impl_benchmark_test_suite;
 	use sp_arithmetic::traits::SaturatedConversion;
+	use tangle_primitives::VKSM;
 
 	#[benchmark]
 	fn initialize_delegator() -> Result<(), BenchmarkError> {

@@ -22,11 +22,6 @@
 
 use crate as tangle_slp;
 use crate::{Config, DispatchResult, QueryResponseManager, XcmDestWeightAndFeeHandler};
-use tangle_asset_registry::AssetIdMaps;
-use tangle_primitives::{
-	currency::{BNC, KSM},
-	Amount, Balance, CurrencyId, SlpxOperator, TokenSymbol, XcmOperationType,
-};
 pub use cumulus_primitives_core::ParaId;
 use frame_support::{
 	construct_runtime, derive_impl, ord_parameter_types,
@@ -46,6 +41,11 @@ use sp_runtime::{
 	AccountId32, BuildStorage, Percent,
 };
 use sp_std::{boxed::Box, vec::Vec};
+use tangle_asset_registry::AssetIdMaps;
+use tangle_primitives::{
+	currency::{BNC, KSM},
+	Amount, Balance, CurrencyId, SlpxOperator, TokenSymbol, XcmOperationType,
+};
 use xcm::v3::{prelude::*, MultiLocation, Weight};
 use xcm_builder::{FixedWeightBounds, FrameTransactionalProcessor};
 use xcm_executor::XcmExecutor;

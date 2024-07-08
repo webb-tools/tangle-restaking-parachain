@@ -391,12 +391,11 @@ pub mod pallet {
 			value: BalanceOf<T>,
 		) -> DoubleEncoded<()> {
 			use_relay!({
-				
 				RelaychainCall::Crowdloan::<BalanceOf<T>, AccountIdOf<T>, BlockNumberFor<T>>(
-						ContributeCall::Contribute(Contribution { index, value, signature: None }),
-					)
-					.encode()
-					.into()
+					ContributeCall::Contribute(Contribution { index, value, signature: None }),
+				)
+				.encode()
+				.into()
 			})
 		}
 	}
