@@ -50,7 +50,7 @@ pub trait OnRedeemSuccess<AccountId, CurrencyId, Balance> {
 		address: AccountId,
 		token_id: CurrencyId,
 		token_amount: Balance,
-		Lst_amount: Balance,
+		lst_amount: Balance,
 		fee: Balance,
 	) -> frame_support::pallet_prelude::Weight;
 }

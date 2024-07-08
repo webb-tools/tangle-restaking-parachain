@@ -19,7 +19,6 @@ members = [
 	"pallets/slp",
 	"pallets/parachain-staking",
 	"runtime/tangle-polkadot",
-	"tangle-restaking-subxt",
 	"integration-tests"
 ]
 resolver = "2"

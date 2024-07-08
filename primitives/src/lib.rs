@@ -163,7 +163,7 @@ pub type TimeStampedPrice = orml_oracle::TimestampedValue<Price, Moment>;
 pub enum ExtraFeeName {
 	SalpContribute,
 	StatemineTransfer,
-	VoteLst,
+	Votelst,
 	VoteRemoveDelegatorVote,
 	NoExtraFee,
 }

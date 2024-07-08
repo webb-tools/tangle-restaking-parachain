@@ -367,13 +367,8 @@ impl InstanceFilter<RuntimeCall> for ProxyType {
 				RuntimeCall::Session(..) |
 				RuntimeCall::Council(..) |
 				RuntimeCall::TechnicalCommittee(..) |
-				RuntimeCall::PhragmenElection(..) |
 				RuntimeCall::TechnicalMembership(..) |
 				RuntimeCall::Treasury(..) |
-				RuntimeCall::Bounties(..) |
-				RuntimeCall::Tips(..) |
-				RuntimeCall::ConvictionVoting(..) |
-				RuntimeCall::Referenda(..) |
 				RuntimeCall::FellowshipCollective(..) |
 				RuntimeCall::FellowshipReferenda(..) |
 				RuntimeCall::Whitelist(..) |
@@ -384,9 +379,7 @@ impl InstanceFilter<RuntimeCall> for ProxyType {
 			ProxyType::Governance => matches!(
 				c,
 				RuntimeCall::Council(..) | RuntimeCall::TechnicalCommittee(..) |
-						RuntimeCall::PhragmenElection(..) |
 						RuntimeCall::Treasury(..) |
-						RuntimeCall::Bounties(..) |
 						RuntimeCall::Tips(..) | RuntimeCall::Utility(..) |
 						// OpenGov calls
 						RuntimeCall::ConvictionVoting(..) |
@@ -683,7 +676,7 @@ impl pallet_treasury::Config for Runtime {
 	type ProposalBondMinimum = ProposalBondMinimum;
 	type ProposalBondMaximum = ProposalBondMaximum;
 	type RejectOrigin = MoreThanHalfCouncil;
-	type SpendFunds = Bounties;
+	type SpendFunds = ();
 	type SpendPeriod = SpendPeriod;
 	type WeightInfo = pallet_treasury::weights::SubstrateWeight<Runtime>;
 }
@@ -695,38 +688,10 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 	}
 }
 
-impl pallet_bounties::Config for Runtime {
-	type BountyDepositBase = BountyDepositBase;
-	type BountyDepositPayoutDelay = BountyDepositPayoutDelay;
-	type BountyUpdatePeriod = BountyUpdatePeriod;
-	type BountyValueMinimum = BountyValueMinimum;
-	type CuratorDepositMultiplier = CuratorDepositMultiplier;
-	type CuratorDepositMin = CuratorDepositMin;
-	type CuratorDepositMax = CuratorDepositMax;
-	type DataDepositPerByte = DataDepositPerByte;
-	type RuntimeEvent = RuntimeEvent;
-	type MaximumReasonLength = MaximumReasonLength;
-	type WeightInfo = pallet_bounties::weights::SubstrateWeight<Runtime>;
-	type ChildBountyManager = ();
-}
-
-impl pallet_tips::Config for Runtime {
-	type DataDepositPerByte = DataDepositPerByte;
-	type RuntimeEvent = RuntimeEvent;
-	type MaximumReasonLength = MaximumReasonLength;
-	type TipCountdown = TipCountdown;
-	type TipFindersFee = TipFindersFee;
-	type TipReportDepositBase = TipReportDepositBase;
-	type Tippers = PhragmenElection;
-	type MaxTipAmount = ();
-	type WeightInfo = pallet_tips::weights::SubstrateWeight<Runtime>;
-}
-
 impl pallet_transaction_payment::Config for Runtime {
 	type FeeMultiplierUpdate = SlowAdjustingFeeUpdate<Self>;
 	type LengthToFee = ConstantMultiplier<Balance, TransactionByteFee>;
-	type OnChargeTransaction =
-		pallet_transaction_payment::CurrencyAdapter<Balances, DealWithFees<Runtime>>;
+	type OnChargeTransaction = pallet_transaction_payment::CurrencyAdapter<Balances, ()>;
 	type OperationalFeeMultiplier = ConstU8<5>;
 	type WeightToFee = WeightToFee;
 	type RuntimeEvent = RuntimeEvent;
@@ -848,6 +813,7 @@ parameter_types! {
 	pub const PotId: PalletId = PalletId(*b"PotStake");
 	pub const SessionLength: BlockNumber = 6 * HOURS;
 	pub const MaxInvulnerables: u32 = 100;
+	pub const MaxCandidates: u32 = 100;
 }
 
 impl pallet_collator_selection::Config for Runtime {
@@ -1407,8 +1373,6 @@ construct_runtime! {
 
 		// Treasury stuff
 		Treasury: pallet_treasury = 61,
-		Bounties: pallet_bounties = 62,
-		Tips: pallet_tips = 63,
 		Preimage: pallet_preimage = 64,
 
 		// Third party modules

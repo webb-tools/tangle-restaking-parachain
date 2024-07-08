@@ -1419,7 +1419,7 @@ declare module '@polkadot/api-base/types/errors' {
 			 * ArgumentsError
 			 **/
 			ArgumentsError: AugmentedError<ApiType>;
-			ErrorConvertLst: AugmentedError<ApiType>;
+			ErrorConvertlst: AugmentedError<ApiType>;
 			ErrorDelivering: AugmentedError<ApiType>;
 			ErrorValidating: AugmentedError<ApiType>;
 			/**

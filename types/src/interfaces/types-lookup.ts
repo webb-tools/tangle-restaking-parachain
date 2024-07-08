@@ -3837,8 +3837,8 @@ declare module '@polkadot/types/lookup' {
 	interface TanglePrimitivesCurrencyCurrencyId extends Enum {
 		readonly isNative: boolean;
 		readonly asNative: TanglePrimitivesCurrencyTokenSymbol;
-		readonly isLst: boolean;
-		readonly asLst: TanglePrimitivesCurrencyTokenSymbol;
+		readonly islst: boolean;
+		readonly aslst: TanglePrimitivesCurrencyTokenSymbol;
 		readonly isToken: boolean;
 		readonly asToken: TanglePrimitivesCurrencyTokenSymbol;
 		readonly isStable: boolean;
@@ -4880,9 +4880,9 @@ declare module '@polkadot/types/lookup' {
 			readonly currencyId: TanglePrimitivesCurrencyCurrencyId;
 			readonly who: StagingXcmV3MultiLocation;
 		} & Struct;
-		readonly isConvertTreasuryLst: boolean;
-		readonly asConvertTreasuryLst: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+		readonly isConvertTreasurylst: boolean;
+		readonly asConvertTreasurylst: {
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly amount: u128;
 		} & Struct;
 		readonly isCleanOutdatedValidatorBoostList: boolean;
@@ -5363,12 +5363,12 @@ declare module '@polkadot/types/lookup' {
 		} & Struct;
 		readonly isConfigLstAutoRefresh: boolean;
 		readonly asConfigLstAutoRefresh: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly hardcap: Permill;
 		} & Struct;
 		readonly isRemoveLstAutoRefresh: boolean;
 		readonly asRemoveLstAutoRefresh: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 		} & Struct;
 		readonly type:
 			| 'CreatePool'
@@ -5389,45 +5389,45 @@ declare module '@polkadot/types/lookup' {
 	interface TangleLstVotingCall extends Enum {
 		readonly isVote: boolean;
 		readonly asVote: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: Compact<u32>;
 			readonly LstVote: TangleLstVotingVoteAccountVote;
 		} & Struct;
 		readonly isUnlock: boolean;
 		readonly asUnlock: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: Compact<u32>;
 		} & Struct;
 		readonly isRemoveDelegatorVote: boolean;
 		readonly asRemoveDelegatorVote: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: Compact<u32>;
 			readonly derivativeIndex: Compact<u16>;
 		} & Struct;
 		readonly isKillReferendum: boolean;
 		readonly asKillReferendum: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: Compact<u32>;
 		} & Struct;
 		readonly isAddDelegator: boolean;
 		readonly asAddDelegator: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly derivativeIndex: Compact<u16>;
 		} & Struct;
 		readonly isSetReferendumStatus: boolean;
 		readonly asSetReferendumStatus: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: Compact<u32>;
 			readonly info: TangleLstVotingVoteReferendumInfo;
 		} & Struct;
 		readonly isSetVoteLockingPeriod: boolean;
 		readonly asSetVoteLockingPeriod: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly lockingPeriod: u32;
 		} & Struct;
 		readonly isSetUndecidingTimeout: boolean;
 		readonly asSetUndecidingTimeout: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly undecidingTimeout: u32;
 		} & Struct;
 		readonly isNotifyVote: boolean;
@@ -5442,7 +5442,7 @@ declare module '@polkadot/types/lookup' {
 		} & Struct;
 		readonly isSetVoteCapRatio: boolean;
 		readonly asSetVoteCapRatio: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly voteCapRatio: Perbill;
 		} & Struct;
 		readonly type:
@@ -7633,12 +7633,12 @@ declare module '@polkadot/types/lookup' {
 		} & Struct;
 		readonly isTokenRateHardcapConfigured: boolean;
 		readonly asTokenRateHardcapConfigured: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly hardcap: Permill;
 		} & Struct;
 		readonly isTokenRateHardcapRemoved: boolean;
 		readonly asTokenRateHardcapRemoved: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 		} & Struct;
 		readonly isTokenRateRefreshFailed: boolean;
 		readonly asTokenRateRefreshFailed: {
@@ -7668,7 +7668,7 @@ declare module '@polkadot/types/lookup' {
 		readonly isVoted: boolean;
 		readonly asVoted: {
 			readonly who: AccountId32;
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: u32;
 			readonly tokenVote: TangleLstVotingVoteAccountVote;
 			readonly delegatorVote: TangleLstVotingVoteAccountVote;
@@ -7676,56 +7676,56 @@ declare module '@polkadot/types/lookup' {
 		readonly isUnlocked: boolean;
 		readonly asUnlocked: {
 			readonly who: AccountId32;
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: u32;
 		} & Struct;
 		readonly isDelegatorVoteRemoved: boolean;
 		readonly asDelegatorVoteRemoved: {
 			readonly who: AccountId32;
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly derivativeIndex: u16;
 		} & Struct;
 		readonly isDelegatorAdded: boolean;
 		readonly asDelegatorAdded: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly derivativeIndex: u16;
 		} & Struct;
 		readonly isReferendumInfoCreated: boolean;
 		readonly asReferendumInfoCreated: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: u32;
 			readonly info: TangleLstVotingVoteReferendumInfo;
 		} & Struct;
 		readonly isReferendumInfoSet: boolean;
 		readonly asReferendumInfoSet: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: u32;
 			readonly info: TangleLstVotingVoteReferendumInfo;
 		} & Struct;
 		readonly isVoteLockingPeriodSet: boolean;
 		readonly asVoteLockingPeriodSet: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly lockingPeriod: u32;
 		} & Struct;
 		readonly isUndecidingTimeoutSet: boolean;
 		readonly asUndecidingTimeoutSet: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly undecidingTimeout: u32;
 		} & Struct;
 		readonly isReferendumKilled: boolean;
 		readonly asReferendumKilled: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: u32;
 		} & Struct;
 		readonly isVoteNotified: boolean;
 		readonly asVoteNotified: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: u32;
 			readonly success: bool;
 		} & Struct;
 		readonly isDelegatorVoteRemovedNotified: boolean;
 		readonly asDelegatorVoteRemovedNotified: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly pollIndex: u32;
 			readonly success: bool;
 		} & Struct;
@@ -7737,7 +7737,7 @@ declare module '@polkadot/types/lookup' {
 		} & Struct;
 		readonly isVoteCapRatioSet: boolean;
 		readonly asVoteCapRatioSet: {
-			readonly Lst: TanglePrimitivesCurrencyCurrencyId;
+			readonly lst: TanglePrimitivesCurrencyCurrencyId;
 			readonly voteCapRatio: Perbill;
 		} & Struct;
 		readonly type:
@@ -9898,7 +9898,7 @@ declare module '@polkadot/types/lookup' {
 		readonly isNotSetExecutionFee: boolean;
 		readonly isFreeBalanceTooLow: boolean;
 		readonly isArgumentsError: boolean;
-		readonly isErrorConvertLst: boolean;
+		readonly isErrorConvertlst: boolean;
 		readonly isErrorValidating: boolean;
 		readonly isErrorDelivering: boolean;
 		readonly isUnsupported: boolean;

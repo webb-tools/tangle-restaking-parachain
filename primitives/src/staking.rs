@@ -171,7 +171,7 @@ pub trait StakingAgent<
 		&self,
 		who: &Option<MultiLocation>,
 		token_amount: Balance,
-		Lst_amount: Balance,
+		lst_amount: Balance,
 		currency_id: CurrencyId,
 	) -> Result<(), Error>;
 

@@ -97,7 +97,7 @@ benchmarks! {
 		assert_ok!(LstMinting::<T>::set_unlock_duration(T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?, KSM, TimeUnit::Era(1)));
 		// assert_ok!(LstMinting::<T>::increase_token_pool(KSM, token_amount));
 		assert_ok!(LstMinting::<T>::update_ongoing_time_unit(KSM, TimeUnit::Era(1)));
-		// assert_ok!(LstMinting::<T>::set_minimum_redeem(RawOrigin::Root.into(), VKSM, Lst_amount));
+		// assert_ok!(LstMinting::<T>::set_minimum_redeem(RawOrigin::Root.into(), VKSM, lst_amount));
 		T::MultiCurrency::deposit(KSM, &caller, token_amount)?;
 		assert_ok!(LstMinting::<T>::mint(RawOrigin::Signed(caller.clone()).into(), KSM, token_amount,BoundedVec::default(), None));
 	}: _(RawOrigin::Signed(caller.clone()), VKSM, redeem_amount)
