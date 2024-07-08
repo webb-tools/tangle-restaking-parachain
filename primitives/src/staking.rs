@@ -3,8 +3,8 @@ use crate::{ TimeUnit};
 use crate::CurrencyId;
 use sp_runtime::DispatchResult;
 use xcm::latest::Weight;
-use sp_std::{boxed::Box, vec, vec::Vec};
-use xcm::v3::{Junction, Junctions, MultiLocation};
+use sp_std::{boxed::Box, vec::Vec};
+use xcm::v3::{MultiLocation};
 
 pub type QueryId = u64;
 

@@ -58,8 +58,8 @@ impl<T: Config> Pallet<T> {
 		let mut validators_list: Vec<MultiLocation> = vec![];
 		for validator in validators.iter() {
 			// Check if the validator is in the validator whitelist
-			ensure!(validators_set.contains(&validator), Error::<T>::ValidatorNotExist);
-			if !validators_list.contains(&validator) {
+			ensure!(validators_set.contains(validator), Error::<T>::ValidatorNotExist);
+			if !validators_list.contains(validator) {
 				validators_list.push(*validator);
 			}
 		}

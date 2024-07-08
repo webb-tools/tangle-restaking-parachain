@@ -348,7 +348,7 @@ impl<T: Config>
 			ensure!(validators_set.contains(candidate), Error::<T>::ValidatorNotExist);
 
 			// if the delegator is new, create a ledger for it
-			if !DelegatorLedgers::<T>::contains_key(currency_id, &who.clone()) {
+			if !DelegatorLedgers::<T>::contains_key(currency_id, who.clone()) {
 				// Create a new delegator ledger\
 				let ledger = PhalaLedger::<BalanceOf<T>> {
 					account: *who,
@@ -457,7 +457,7 @@ impl<T: Config>
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
 		let targets = targets.as_ref().ok_or(Error::<T>::ValidatorNotProvided)?;
-		Self::delegate(self, who, &targets, currency_id, weight_and_fee)
+		Self::delegate(self, who, targets, currency_id, weight_and_fee)
 	}
 
 	/// Corresponds to the `check_and_maybe_force_withdraw` funtion of PhalaVault pallet.
@@ -939,7 +939,7 @@ impl<T: Config> PhalaAgent<T> {
 		let shares: u128 = U256::from((*total_shares).saturated_into::<u128>())
 			.saturating_mul(amount.saturated_into::<u128>().into())
 			.checked_div((*total_value).saturated_into::<u128>().into())
-			.map(|x| u128::try_from(x))
+			.map(u128::try_from)
 			.ok_or(Error::<T>::OverFlow)?
 			.map_err(|_| Error::<T>::OverFlow)?;
 

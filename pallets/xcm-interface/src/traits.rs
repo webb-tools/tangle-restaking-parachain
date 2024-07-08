@@ -51,7 +51,7 @@ impl From<u64> for XcmBaseWeight {
 
 impl From<XcmBaseWeight> for u64 {
 	fn from(x: XcmBaseWeight) -> Self {
-		x.0.into()
+		x.0
 	}
 }
 

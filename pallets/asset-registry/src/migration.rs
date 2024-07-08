@@ -59,7 +59,7 @@ impl<T: Config> OnRuntimeUpgrade for InsertBNCMetadata<T> {
 		log::info!(target: LOG_TARGET, "Start to insert BNC Metadata...");
 		CurrencyMetadatas::<T>::insert(
 			BNC,
-			&AssetMetadata {
+			AssetMetadata {
 				name: b"Bifrost Native Token".to_vec(),
 				symbol: b"BNC".to_vec(),
 				decimals: 12,
@@ -71,7 +71,7 @@ impl<T: Config> OnRuntimeUpgrade for InsertBNCMetadata<T> {
 
 		LocationToCurrencyIds::<T>::insert(BNC_LOCATION, BNC);
 
-		Weight::from(T::DbWeight::get().reads_writes(3 as u64 + 1, 3 as u64 + 1))
+		T::DbWeight::get().reads_writes(3_u64 + 1, 3_u64 + 1)
 	}
 
 	#[cfg(feature = "try-runtime")]

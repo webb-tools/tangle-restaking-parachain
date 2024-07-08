@@ -327,7 +327,7 @@ impl<T: Config>
 		if validator == &MultiLocation::default() {
 			call = AstarCall::Staking(AstarDappsStakingCall::<T>::ClaimStakerRewards).encode();
 		} else {
-			let contract_h160 = Pallet::<T>::multilocation_to_h160_account(&validator)?;
+			let contract_h160 = Pallet::<T>::multilocation_to_h160_account(validator)?;
 			let smart_contract = SmartContract::<T::AccountId>::Evm(contract_h160);
 			call = AstarCall::Staking(AstarDappsStakingCall::<T>::ClaimBonusReward(smart_contract))
 				.encode()
