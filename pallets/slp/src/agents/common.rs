@@ -174,11 +174,11 @@ impl<T: Config> Pallet<T> {
 	) -> Result<BalanceOf<T>, Error<T>> {
 		ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
 
-		let Lst_issuance = T::MultiCurrency::total_issuance(Lst);
+		let lst_issuance = T::MultiCurrency::total_issuance(Lst);
 		let token_pool = T::LstMinting::get_token_pool(currency_id);
 		// Calculate how much vksm the beneficiary account can get.
 		let amount: u128 = amount.unique_saturated_into();
-		let Lst_issuance: u128 = Lst_issuance.unique_saturated_into();
+		let lst_issuance: u128 = Lst_issuance.unique_saturated_into();
 		let token_pool: u128 = token_pool.unique_saturated_into();
 		let can_get_lst = U256::from(amount)
 			.checked_mul(U256::from(Lst_issuance))

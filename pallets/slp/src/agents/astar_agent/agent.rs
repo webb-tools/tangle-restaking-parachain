@@ -584,7 +584,7 @@ impl<T: Config>
 		currency_id: CurrencyId,
 	) -> DispatchResult {
 		// Get current vASTR/ASTR exchange rate.
-		let Lst = CurrencyId::Lst2(ASTR_TOKEN_ID);
+		let lst = CurrencyId::Lst2(ASTR_TOKEN_ID);
 
 		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
 

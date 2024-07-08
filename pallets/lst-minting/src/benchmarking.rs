@@ -89,7 +89,7 @@ benchmarks! {
 		let caller: T::AccountId = whitelisted_caller();
 		const VKSM: CurrencyId = CurrencyId::Lst(TokenSymbol::KSM);
 		const KSM: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
-		let Lst_amount = BalanceOf::<T>::unique_saturated_from(90u128);
+		let lst_amount = BalanceOf::<T>::unique_saturated_from(90u128);
 		let redeem_amount = BalanceOf::<T>::unique_saturated_from(1000000000u128);
 		let token_amount = BalanceOf::<T>::unique_saturated_from(10000000000u128);
 		const FEE: Permill = Permill::from_percent(50);
