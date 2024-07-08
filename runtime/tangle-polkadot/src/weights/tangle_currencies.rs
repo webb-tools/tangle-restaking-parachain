@@ -1,7 +1,6 @@
 // This file is part of Tangle.
 
-// Copyright (C) Liebi Technologies PTE. LTD.
-// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,12 +22,12 @@
 //! EXECUTION: Some(Wasm), WASM-EXECUTION: Compiled, CHAIN: Some("asgard-local"), DB CACHE: 128
 
 // Executed Command:
-// target/release/bifrost
+// target/release/tangle
 // benchmark
 // --chain=asgard-local
 // --steps=50
 // --repeat=20
-// --pallet=bifrost-currencies
+// --pallet=tangle-currencies
 // --extrinsic=*
 // --execution=wasm
 // --wasm-execution=compiled
