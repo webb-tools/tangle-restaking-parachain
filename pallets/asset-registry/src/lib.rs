@@ -162,7 +162,7 @@ pub mod pallet {
 		_, 
 		Blake2_128Concat, 
 		Vec<MultiLocation>,
-		(CurrencyId, TokenId), // (Original CurrencyId, LstId)
+		(CurrencyId, CurrencyId), // (Original CurrencyId, LstId)
 		OptionQuery
 	>;
 
@@ -670,7 +670,7 @@ impl<T: Config> CurrencyIdMapping<CurrencyId, MultiLocation, AssetMetadata<Balan
 	}
 }
 
-impl<T: Config> CurrencyIdConversion<CurrencyId> for AssetIdMaps<T> {
+impl<T: Config> CurrencyIdConversion<CurrencyId, MultiLocation> for AssetIdMaps<T> {
 	fn convert_to_token(currency_id: CurrencyId) -> Result<CurrencyId, ()> {
 		match currency_id {
 			CurrencyId::VSBond(TokenSymbol::BNC, 2001, 13, 20) => {
@@ -698,12 +698,9 @@ impl<T: Config> CurrencyIdConversion<CurrencyId> for AssetIdMaps<T> {
 
         if let Some(validators) = validators {
             // Check if the validators already have a currency_id associated
-			if ValidatorsCurrency::<T>::contains_key(&validators) {
-				Ok(())
-			} else {
+			if !ValidatorsCurrency::<T>::contains_key(&validators) {
 				// If not, insert the new mapping
-				ValidatorsCurrency::<T>::insert(validators, (original_currency_id, lst_currency_id));
-				Ok(())
+				ValidatorsCurrency::<T>::insert(validators, (currency_id, lst_currency_id));
 			}
         }
 
