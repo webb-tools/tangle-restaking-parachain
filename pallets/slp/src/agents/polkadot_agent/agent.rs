@@ -973,9 +973,9 @@ impl<T: Config>
 		// Get current VKSM/KSM or VDOT/DOT exchange rate.
 		let lst = currency_id.to_lst().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
 
-		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
+		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, lst, currency_id)?;
 
-		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, Lst)
+		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, lst)
 	}
 
 	/// Deposit some amount as fee to nominator accounts.

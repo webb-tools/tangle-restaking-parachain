@@ -169,19 +169,19 @@ impl<T: Config> Pallet<T> {
 	/// Charge Lst for hosting fee.
 	pub(crate) fn inner_calculate_lst_hosting_fee(
 		amount: BalanceOf<T>,
-		Lst: CurrencyId,
+		lst: CurrencyId,
 		currency_id: CurrencyId,
 	) -> Result<BalanceOf<T>, Error<T>> {
 		ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
 
-		let lst_issuance = T::MultiCurrency::total_issuance(Lst);
+		let lst_issuance = T::MultiCurrency::total_issuance(lst);
 		let token_pool = T::LstMinting::get_token_pool(currency_id);
 		// Calculate how much vksm the beneficiary account can get.
 		let amount: u128 = amount.unique_saturated_into();
-		let lst_issuance: u128 = Lst_issuance.unique_saturated_into();
+		let lst_issuance: u128 = lst_issuance.unique_saturated_into();
 		let token_pool: u128 = token_pool.unique_saturated_into();
 		let can_get_lst = U256::from(amount)
-			.checked_mul(U256::from(Lst_issuance))
+			.checked_mul(U256::from(lst_issuance))
 			.and_then(|n| n.checked_div(U256::from(token_pool)))
 			.and_then(|n| TryInto::<u128>::try_into(n).ok())
 			.unwrap_or_else(Zero::zero);

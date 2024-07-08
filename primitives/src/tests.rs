@@ -216,7 +216,7 @@ fn to_lst_should_work() {
 
 	assert_eq!(native_bnc.to_lst(), Ok(CurrencyId::Lst(TokenSymbol::BNC)));
 	assert_eq!(native_asg.to_lst(), Err(()));
-	assert_eq!(Lst_ksm.to_lst(), Err(()));
+	assert_eq!(lst_ksm.to_lst(), Err(()));
 	assert_eq!(token_ksm.to_lst(), Ok(CurrencyId::Lst(TokenSymbol::KSM)));
 	assert_eq!(stable_kusd.to_lst(), Err(()));
 	assert_eq!(vstoken_eth.to_lst(), Err(()));
@@ -250,8 +250,8 @@ fn to_token_should_work() {
 	let lp_token = CurrencyId::LPToken(TokenSymbol::BNC, 0, TokenSymbol::KSM, 2);
 
 	assert_eq!(native_bnc.to_token(), Err(()));
-	assert_eq!(Lst_bnc.to_token(), Ok(CurrencyId::Native(TokenSymbol::BNC)));
-	assert_eq!(Lst_ksm.to_token(), Ok(CurrencyId::Token(TokenSymbol::KSM)));
+	assert_eq!(lst_bnc.to_token(), Ok(CurrencyId::Native(TokenSymbol::BNC)));
+	assert_eq!(lst_ksm.to_token(), Ok(CurrencyId::Token(TokenSymbol::KSM)));
 	assert_eq!(token_ksm.to_token(), Err(()));
 	assert_eq!(stable_kusd.to_token(), Err(()));
 	assert_eq!(vstoken_eth.to_token(), Err(()));

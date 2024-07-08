@@ -2991,7 +2991,7 @@ export default {
 	TanglePrimitivesCurrencyCurrencyId: {
 		_enum: {
 			Native: 'TanglePrimitivesCurrencyTokenSymbol',
-			Lst: 'TanglePrimitivesCurrencyTokenSymbol',
+			lst: 'TanglePrimitivesCurrencyTokenSymbol',
 			Token: 'TanglePrimitivesCurrencyTokenSymbol',
 			Stable: 'TanglePrimitivesCurrencyTokenSymbol',
 			VSToken: 'TanglePrimitivesCurrencyTokenSymbol',
@@ -3807,7 +3807,7 @@ export default {
 				who: 'StagingXcmV3MultiLocation',
 			},
 			convert_treasury_lst: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				amount: 'u128',
 			},
 			clean_outdated_validator_boost_list: {
@@ -4161,11 +4161,11 @@ export default {
 				tokenRateInfo: 'Vec<(TanglePrimitivesCurrencyCurrencyId,(u128,u128))>',
 			},
 			config_lst_auto_refresh: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				hardcap: 'Permill',
 			},
 			remove_lst_auto_refresh: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 			},
 		},
 	},
@@ -4175,38 +4175,38 @@ export default {
 	TangleLstVotingCall: {
 		_enum: {
 			vote: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
 				LstVote: 'TangleLstVotingVoteAccountVote',
 			},
 			unlock: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
 			},
 			remove_delegator_vote: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
 				derivativeIndex: 'Compact<u16>',
 			},
 			kill_referendum: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
 			},
 			add_delegator: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				derivativeIndex: 'Compact<u16>',
 			},
 			set_referendum_status: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
 				info: 'TangleLstVotingVoteReferendumInfo',
 			},
 			set_vote_locking_period: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				lockingPeriod: 'u32',
 			},
 			set_undeciding_timeout: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				undecidingTimeout: 'u32',
 			},
 			notify_vote: {
@@ -4219,7 +4219,7 @@ export default {
 				response: 'XcmV3Response',
 			},
 			set_vote_cap_ratio: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				voteCapRatio: 'Perbill',
 			},
 		},
@@ -5894,11 +5894,11 @@ export default {
 				tokenRate: 'Vec<(TanglePrimitivesCurrencyCurrencyId,(u128,u128))>',
 			},
 			TokenRateHardcapConfigured: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				hardcap: 'Permill',
 			},
 			TokenRateHardcapRemoved: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 			},
 			TokenRateRefreshFailed: {
 				poolId: 'u32',
@@ -5912,54 +5912,54 @@ export default {
 		_enum: {
 			Voted: {
 				who: 'AccountId32',
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 				tokenVote: 'TangleLstVotingVoteAccountVote',
 				delegatorVote: 'TangleLstVotingVoteAccountVote',
 			},
 			Unlocked: {
 				who: 'AccountId32',
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 			},
 			DelegatorVoteRemoved: {
 				who: 'AccountId32',
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				derivativeIndex: 'u16',
 			},
 			DelegatorAdded: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				derivativeIndex: 'u16',
 			},
 			ReferendumInfoCreated: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 				info: 'TangleLstVotingVoteReferendumInfo',
 			},
 			ReferendumInfoSet: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 				info: 'TangleLstVotingVoteReferendumInfo',
 			},
 			VoteLockingPeriodSet: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				lockingPeriod: 'u32',
 			},
 			UndecidingTimeoutSet: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				undecidingTimeout: 'u32',
 			},
 			ReferendumKilled: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 			},
 			VoteNotified: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 				success: 'bool',
 			},
 			DelegatorVoteRemovedNotified: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'u32',
 				success: 'bool',
 			},
@@ -5969,7 +5969,7 @@ export default {
 				response: 'XcmV3Response',
 			},
 			VoteCapRatioSet: {
-				Lst: 'TanglePrimitivesCurrencyCurrencyId',
+				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				voteCapRatio: 'Perbill',
 			},
 		},

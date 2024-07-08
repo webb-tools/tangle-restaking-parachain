@@ -48,7 +48,7 @@ use xcm::{prelude::*, v3::Weight};
 use xcm_builder::{FixedWeightBounds, FrameTransactionalProcessor};
 use xcm_executor::XcmExecutor;
 
-use crate as Lst_minting;
+use crate as lst_minting;
 
 pub type BlockNumber = u64;
 pub type Amount = i128;
@@ -67,7 +67,7 @@ frame_support::construct_runtime!(
 		XTokens: orml_xtokens,
 		Balances: pallet_balances,
 		Currencies: tangle_currencies,
-		LstMinting: Lst_minting,
+		LstMinting: lst_minting,
 		Slp: tangle_slp,
 		AssetRegistry: tangle_asset_registry,
 		PolkadotXcm: pallet_xcm,
@@ -208,7 +208,7 @@ ord_parameter_types! {
 	pub const RelayCurrencyId: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 }
 
-impl Lst_minting::Config for Runtime {
+impl lst_minting::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;

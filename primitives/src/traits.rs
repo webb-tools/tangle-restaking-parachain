@@ -327,29 +327,29 @@ pub trait LstMintingInterface<AccountId, CurrencyId, Balance> {
 	) -> Result<Balance, DispatchError>;
 	fn redeem(
 		exchanger: AccountId,
-		Lst_id: CurrencyId,
-		Lst_amount: Balance,
+		lst_id: CurrencyId,
+		lst_amount: Balance,
 	) -> DispatchResultWithPostInfo;
 	fn slpx_redeem(
 		exchanger: AccountId,
-		Lst_id: CurrencyId,
-		Lst_amount: Balance,
+		lst_id: CurrencyId,
+		lst_amount: Balance,
 		redeem: RedeemType<AccountId>,
 	) -> DispatchResultWithPostInfo;
 	fn token_to_lst(
 		token_id: CurrencyId,
-		Lst_id: CurrencyId,
+		lst_id: CurrencyId,
 		token_amount: Balance,
 	) -> Result<Balance, DispatchError>;
-	fn Lst_to_token(
+	fn lst_to_token(
 		token_id: CurrencyId,
-		Lst_id: CurrencyId,
-		Lst_amount: Balance,
+		lst_id: CurrencyId,
+		lst_amount: Balance,
 	) -> Result<Balance, DispatchError>;
-	fn Lst_id(token_id: CurrencyId) -> Option<CurrencyId>;
-	fn token_id(Lst_id: CurrencyId) -> Option<CurrencyId>;
+	fn lst_id(token_id: CurrencyId) -> Option<CurrencyId>;
+	fn token_id(lst_id: CurrencyId) -> Option<CurrencyId>;
 	fn get_token_pool(currency_id: CurrencyId) -> Balance;
-	fn get_minimums_redeem(Lst_id: CurrencyId) -> Balance;
+	fn get_minimums_redeem(lst_id: CurrencyId) -> Balance;
 	fn get_astar_parachain_id() -> u32;
 	fn get_moonbeam_parachain_id() -> u32;
 	fn get_hydradx_parachain_id() -> u32;
@@ -395,7 +395,7 @@ impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, Curren
 		Ok(Zero::zero())
 	}
 
-	fn Lst_to_token(
+	fn lst_to_token(
 		_token_id: CurrencyId,
 		_lst_id: CurrencyId,
 		_lst_amount: Balance,
@@ -403,7 +403,7 @@ impl<AccountId, CurrencyId, Balance: Zero> LstMintingInterface<AccountId, Curren
 		Ok(Zero::zero())
 	}
 
-	fn Lst_id(_token_id: CurrencyId) -> Option<CurrencyId> {
+	fn lst_id(_token_id: CurrencyId) -> Option<CurrencyId> {
 		None
 	}
 
@@ -507,7 +507,7 @@ pub trait DerivativeAccountHandler<CurrencyId, Balance> {
 }
 
 pub trait LstSupplyProvider<CurrencyId, Balance> {
-	fn get_lst_supply(Lst: CurrencyId) -> Option<Balance>;
+	fn get_lst_supply(lst: CurrencyId) -> Option<Balance>;
 
 	fn get_token_supply(token: CurrencyId) -> Option<Balance>;
 }
@@ -517,11 +517,11 @@ pub trait LstMintRedeemProvider<CurrencyId, Balance> {
 	// record the mint amount of Lst
 	fn record_mint_amount(
 		channel_id: Option<u32>,
-		Lst: CurrencyId,
+		lst: CurrencyId,
 		amount: Balance,
 	) -> Result<(), DispatchError>;
 	// record the redeem amount of Lst
-	fn record_redeem_amount(Lst: CurrencyId, amount: Balance) -> Result<(), DispatchError>;
+	fn record_redeem_amount(lst: CurrencyId, amount: Balance) -> Result<(), DispatchError>;
 }
 
 impl<CurrencyId, Balance> LstMintRedeemProvider<CurrencyId, Balance> for () {
