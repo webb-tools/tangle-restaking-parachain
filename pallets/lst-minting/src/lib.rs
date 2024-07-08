@@ -153,9 +153,9 @@ pub mod pallet {
 		#[pallet::constant]
 		type MantaParachainId: Get<u32>;
 
-		type tangleSlp: SlpOperator<CurrencyId>;
+		type TangleSlp: SlpOperator<CurrencyId>;
 
-		type tangleSlpx: SlpxOperator<BalanceOf<Self>>;
+		type TangleSlpx: SlpxOperator<BalanceOf<Self>>;
 
 		type CurrencyIdConversion: CurrencyIdConversion<CurrencyId, MultiLocation>;
 
@@ -1097,7 +1097,7 @@ pub mod pallet {
 						if token_id == FIL {
 							let assets = vec![
 								(token_id, unlock_amount),
-								(BNC, T::tangleSlpx::get_moonbeam_transfer_to_fee()),
+								(BNC, T::TangleSlpx::get_moonbeam_transfer_to_fee()),
 							];
 
 							T::XcmTransfer::transfer_multicurrencies(
@@ -1361,7 +1361,7 @@ pub mod pallet {
 			ensure!(lst_amount >= MinimumRedeem::<T>::get(lst_id), Error::<T>::BelowMinimumRedeem);
 
 			ensure!(
-				!T::tangleSlp::all_delegation_requests_occupied(token_id),
+				!T::TangleSlp::all_delegation_requests_occupied(token_id),
 				Error::<T>::CanNotRedeem,
 			);
 
