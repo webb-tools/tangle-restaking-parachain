@@ -157,7 +157,7 @@ pub mod pallet {
 
 		type tangleSlpx: SlpxOperator<BalanceOf<Self>>;
 
-		type CurrencyIdConversion: CurrencyIdConversion<CurrencyId>;
+		type CurrencyIdConversion: CurrencyIdConversion<CurrencyId, MultiLocation>;
 
 		type CurrencyIdRegister: CurrencyIdRegister<CurrencyId>;
 
@@ -486,7 +486,7 @@ pub mod pallet {
 			validators: Vec<MultiLocation>,
 		) -> DispatchResult {
 			let exchanger = ensure_signed(origin)?;
-			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id, validators)
+			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id, Some(validators))
 				.map_err(|_| Error::<T>::NotSupportTokenType)?;
 			let _token_amount_to_rebond =
 				Self::token_to_rebond(token_id).ok_or(Error::<T>::InvalidRebondToken)?;

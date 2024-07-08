@@ -176,9 +176,9 @@ pub trait CurrencyIdMapping<CurrencyId, MultiLocation, AssetMetadata> {
 	fn get_all_currency() -> Vec<CurrencyId>;
 }
 
-pub trait CurrencyIdConversion<CurrencyId> {
+pub trait CurrencyIdConversion<CurrencyId, MultiLocation> {
 	fn convert_to_token(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
-	fn convert_to_lst(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
+	fn convert_to_lst(currency_id: CurrencyId, validators: Option<Vec<MultiLocation>>) -> Result<CurrencyId, ()>;
 	fn convert_to_vstoken(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
 	fn convert_to_vsbond(
 		currency_id: CurrencyId,
