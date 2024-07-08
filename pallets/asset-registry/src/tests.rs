@@ -300,7 +300,7 @@ fn register_multilocation_should_work() {
 				RuntimeOrigin::signed(CouncilAccount::get()),
 				Token2(0),
 				Box::new(versioned_location.clone()),
-				Weight::from_parts(2000_000_000, 0)
+				Weight::from_parts(2_000_000_000, 0)
 			),
 			Error::<Runtime>::CurrencyIdNotExists
 		);
@@ -314,7 +314,7 @@ fn register_multilocation_should_work() {
 			RuntimeOrigin::signed(CouncilAccount::get()),
 			Token2(0),
 			Box::new(versioned_location.clone()),
-			Weight::from_parts(2000_000_000, 0)
+			Weight::from_parts(2_000_000_000, 0)
 		));
 
 		assert_noop!(
@@ -322,7 +322,7 @@ fn register_multilocation_should_work() {
 				RuntimeOrigin::signed(CouncilAccount::get()),
 				Token2(0),
 				Box::new(versioned_location.clone()),
-				Weight::from_parts(2000_000_000, 0)
+				Weight::from_parts(2_000_000_000, 0)
 			),
 			Error::<Runtime>::CurrencyIdExisted
 		);
@@ -331,7 +331,7 @@ fn register_multilocation_should_work() {
 		assert_eq!(CurrencyIdToLocations::<Runtime>::get(Token2(0)), Some(location));
 		assert_eq!(
 			CurrencyIdToWeights::<Runtime>::get(Token2(0)),
-			Some(Weight::from_parts(2000_000_000, 0))
+			Some(Weight::from_parts(2_000_000_000, 0))
 		);
 	})
 }
@@ -353,7 +353,7 @@ fn force_set_multilocation_should_work() {
 				RuntimeOrigin::signed(CouncilAccount::get()),
 				Token2(0),
 				Box::new(versioned_location.clone()),
-				Weight::from_parts(2000_000_000, 0)
+				Weight::from_parts(2_000_000_000, 0)
 			),
 			Error::<Runtime>::CurrencyIdNotExists
 		);
@@ -367,21 +367,21 @@ fn force_set_multilocation_should_work() {
 			RuntimeOrigin::signed(CouncilAccount::get()),
 			Token2(0),
 			Box::new(versioned_location.clone()),
-			Weight::from_parts(2000_000_000, 0)
+			Weight::from_parts(2_000_000_000, 0)
 		));
 
 		assert_ok!(AssetRegistry::force_set_location(
 			RuntimeOrigin::signed(CouncilAccount::get()),
 			Token2(0),
 			Box::new(versioned_location.clone()),
-			Weight::from_parts(2000_000_000, 0)
+			Weight::from_parts(2_000_000_000, 0)
 		));
 
 		assert_eq!(LocationToCurrencyIds::<Runtime>::get(location), Some(Token2(0)));
 		assert_eq!(CurrencyIdToLocations::<Runtime>::get(Token2(0)), Some(location));
 		assert_eq!(
 			CurrencyIdToWeights::<Runtime>::get(Token2(0)),
-			Some(Weight::from_parts(2000_000_000, 0))
+			Some(Weight::from_parts(2_000_000_000, 0))
 		);
 	})
 }

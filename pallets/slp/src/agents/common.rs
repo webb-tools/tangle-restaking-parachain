@@ -196,7 +196,7 @@ impl<T: Config> Pallet<T> {
 	) -> DispatchResult {
 		ensure!(charge_amount > Zero::zero(), Error::<T>::AmountZero);
 
-		let beneficiary = Self::multilocation_to_account(&to)?;
+		let beneficiary = Self::multilocation_to_account(to)?;
 		// Issue corresponding vksm to beneficiary account.
 		T::MultiCurrency::deposit(depoist_currency, &beneficiary, charge_amount)?;
 
@@ -210,7 +210,7 @@ impl<T: Config> Pallet<T> {
 	) -> Result<(), Error<T>> {
 		// ensure who is a valid delegator
 		ensure!(
-			DelegatorsMultilocation2Index::<T>::contains_key(currency_id, &who),
+			DelegatorsMultilocation2Index::<T>::contains_key(currency_id, who),
 			Error::<T>::DelegatorNotExist
 		);
 
@@ -218,7 +218,7 @@ impl<T: Config> Pallet<T> {
 		let current_time_unit = T::LstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 		// Get DelegatorLatestTuneRecord for the currencyId.
-		let latest_time_unit_op = DelegatorLatestTuneRecord::<T>::get(currency_id, &who);
+		let latest_time_unit_op = DelegatorLatestTuneRecord::<T>::get(currency_id, who);
 		// ensure each delegator can only tune once per TimeUnit.
 		ensure!(
 			latest_time_unit_op != Some(current_time_unit.clone()),
@@ -257,7 +257,7 @@ impl<T: Config> Pallet<T> {
 		let source_account = Self::native_multilocation_to_account(&source_location)?;
 
 		// withdraw. If withdraw fails, issue an event and continue.
-		if let Err(_) = T::MultiCurrency::withdraw(currency_id, &source_account, fee) {
+		if T::MultiCurrency::withdraw(currency_id, &source_account, fee).is_err() {
 			// Deposit event
 			Self::deposit_event(Event::BurnFeeFailed { currency_id, amount: fee });
 		}
@@ -306,7 +306,7 @@ impl<T: Config> Pallet<T> {
 			}]),
 		};
 
-		return interior;
+		interior
 	}
 
 	pub(crate) fn prepare_send_as_subaccount_call(
@@ -397,7 +397,7 @@ impl<T: Config> Pallet<T> {
 		let query_id =
 			T::SubstrateResponseManager::create_query_record(responder, callback_option, timeout);
 
-		return Ok((query_id, notify_call_weight));
+		Ok((query_id, notify_call_weight))
 	}
 
 	pub(crate) fn construct_xcm_and_send_as_subaccount_without_query_id(

@@ -82,15 +82,12 @@ construct_runtime!(
 	}
 );
 
+#[derive(Default)]
 pub struct ExtBuilder {
 	balances: Vec<(AccountId, Balance)>,
 }
 
-impl Default for ExtBuilder {
-	fn default() -> Self {
-		Self { balances: vec![] }
-	}
-}
+
 
 impl ExtBuilder {
 	pub fn build(self) -> sp_io::TestExternalities {

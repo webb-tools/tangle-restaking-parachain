@@ -108,7 +108,7 @@ impl<T: Config>
 		let collator = validator.ok_or(Error::<T>::ValidatorNotProvided)?;
 		let mins_maxs = MinimumsAndMaximums::<T>::get(currency_id).ok_or(Error::<T>::NotExist)?;
 		// Ensure amount is no less than delegation_amount_minimum.
-		ensure!(amount >= mins_maxs.delegation_amount_minimum.into(), Error::<T>::LowerThanMinimum);
+		ensure!(amount >= mins_maxs.delegation_amount_minimum, Error::<T>::LowerThanMinimum);
 
 		// check if the validator is in the white list.
 		let validator_list =
@@ -260,7 +260,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				MANTA => {
 					let validator_multilocation =
@@ -274,7 +273,6 @@ impl<T: Config>
 						delegation_count,
 					))
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -414,7 +412,6 @@ impl<T: Config>
 						amount,
 					))
 					.encode()
-					.into()
 				},
 				MANTA => {
 					let validator_account = Pallet::<T>::multilocation_to_account(&collator)?;
@@ -423,7 +420,6 @@ impl<T: Config>
 						amount,
 					))
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -496,7 +492,7 @@ impl<T: Config>
 			let delegated_amount_after =
 				old_delegate_amount.checked_sub(&amount).ok_or(Error::<T>::UnderFlow)?;
 			ensure!(
-				delegated_amount_after >= mins_maxs.delegation_amount_minimum.into(),
+				delegated_amount_after >= mins_maxs.delegation_amount_minimum,
 				Error::<T>::LowerThanMinimum
 			);
 
@@ -577,7 +573,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				MANTA => {
 					let validator_account = Pallet::<T>::multilocation_to_account(&collator)?;
@@ -588,7 +583,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -725,7 +719,7 @@ impl<T: Config>
 			let active =
 				ledger.total.checked_sub(&ledger.less_total).ok_or(Error::<T>::UnderFlow)?;
 			let rebond_after_amount =
-				active.checked_add(&rebond_amount).ok_or(Error::<T>::OverFlow)?;
+				active.checked_add(rebond_amount).ok_or(Error::<T>::OverFlow)?;
 
 			// ensure the rebond after amount meet the delegator bond requirement.
 			ensure!(
@@ -766,7 +760,7 @@ impl<T: Config>
 
 						old_ledger.less_total = old_ledger
 							.less_total
-							.checked_sub(&cancel_amount)
+							.checked_sub(cancel_amount)
 							.ok_or(Error::<T>::UnderFlow)?;
 
 						let request_index = old_ledger
@@ -797,7 +791,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				MANTA => {
 					let validator_account = Pallet::<T>::multilocation_to_account(&collator)?;
@@ -805,7 +798,6 @@ impl<T: Config>
 						MantaParachainStakingCall::<T>::CancelDelegationRequest(validator_account),
 					)
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -907,7 +899,7 @@ impl<T: Config>
 
 						old_ledger.less_total = old_ledger
 							.less_total
-							.checked_add(&revoke_amount)
+							.checked_add(revoke_amount)
 							.ok_or(Error::<T>::OverFlow)?;
 
 						let unlock_time_unit =
@@ -939,22 +931,20 @@ impl<T: Config>
 			let call: Vec<u8> = match currency_id {
 				MOVR | GLMR => {
 					let validator_h160_account =
-						Pallet::<T>::multilocation_to_h160_account(&validator)?;
+						Pallet::<T>::multilocation_to_h160_account(validator)?;
 					MoonbeamCall::Staking(
 						MoonbeamParachainStakingCall::<T>::ScheduleRevokeDelegation(
 							validator_h160_account,
 						),
 					)
 					.encode()
-					.into()
 				},
 				MANTA => {
-					let validator_account = Pallet::<T>::multilocation_to_account(&validator)?;
+					let validator_account = Pallet::<T>::multilocation_to_account(validator)?;
 					MantaCall::ParachainStaking(
 						MantaParachainStakingCall::<T>::ScheduleRevokeDelegation(validator_account),
 					)
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -1278,7 +1268,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				MANTA => {
 					let delegator_account = Pallet::<T>::multilocation_to_account(who)?;
@@ -1290,7 +1279,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -1398,16 +1386,14 @@ impl<T: Config>
 					dest,
 					Unlimited,
 				))
-				.encode()
-				.into(),
+				.encode(),
 				MANTA => MantaCall::Xtokens(MantaXtokensCall::<T>::Transfer(
 					MantaCurrencyId::MantaCurrency(1),
 					amount.unique_saturated_into(),
 					dest,
 					Unlimited,
 				))
-				.encode()
-				.into(),
+				.encode(),
 				_ => Err(Error::<T>::Unsupported)?,
 			};
 
@@ -1445,7 +1431,7 @@ impl<T: Config>
 		);
 
 		// Make sure from account is the entrance account of Lst-minting module.
-		let from_account_id = Pallet::<T>::multilocation_to_account(&from)?;
+		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
 		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
 
@@ -1712,7 +1698,7 @@ impl<T: Config> ParachainStakingAgent<T> {
 
 								old_ledger.less_total = old_ledger
 									.less_total
-									.checked_add(&revoke_amount)
+									.checked_add(revoke_amount)
 									.ok_or(Error::<T>::OverFlow)?;
 
 								let unlock_time_unit =
@@ -1748,7 +1734,7 @@ impl<T: Config> ParachainStakingAgent<T> {
 
 								old_ledger.less_total = old_ledger
 									.less_total
-									.checked_sub(&cancel_amount)
+									.checked_sub(cancel_amount)
 									.ok_or(Error::<T>::UnderFlow)?;
 
 								let request_index = old_ledger

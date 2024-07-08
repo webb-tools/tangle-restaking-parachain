@@ -434,7 +434,7 @@ impl<T: Config>
 		let current_time_unit = T::LstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 		// Get DelegatorLatestTuneRecord for the currencyId.
-		let latest_time_unit_op = DelegatorLatestTuneRecord::<T>::get(currency_id, &who);
+		let latest_time_unit_op = DelegatorLatestTuneRecord::<T>::get(currency_id, who);
 		// ensure each delegator can only tune once per TimeUnit at most.
 		ensure!(
 			latest_time_unit_op != Some(current_time_unit.clone()),

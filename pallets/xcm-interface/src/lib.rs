@@ -340,7 +340,7 @@ pub mod pallet {
 		) -> DispatchResult {
 			// If param weight_and_fee is a none, it will delete the storage. Otherwise, revise the
 			// storage to the new value if exists, or insert a new record if not exists before.
-			XcmWeightAndFee::<T>::mutate_exists(currency_id, &operation, |wt_n_f| {
+			XcmWeightAndFee::<T>::mutate_exists(currency_id, operation, |wt_n_f| {
 				*wt_n_f = weight_and_fee;
 			});
 
@@ -350,7 +350,7 @@ pub mod pallet {
 
 	impl<T: Config> Pallet<T> {
 		pub(crate) fn transact_id(data: &[u8]) -> MessageId {
-			return sp_io::hashing::blake2_256(data);
+			sp_io::hashing::blake2_256(data)
 		}
 
 		pub(crate) fn build_ump_transact(
@@ -391,13 +391,12 @@ pub mod pallet {
 			value: BalanceOf<T>,
 		) -> DoubleEncoded<()> {
 			use_relay!({
-				let contribute_call =
-					RelaychainCall::Crowdloan::<BalanceOf<T>, AccountIdOf<T>, BlockNumberFor<T>>(
+				
+				RelaychainCall::Crowdloan::<BalanceOf<T>, AccountIdOf<T>, BlockNumberFor<T>>(
 						ContributeCall::Contribute(Contribution { index, value, signature: None }),
 					)
 					.encode()
-					.into();
-				contribute_call
+					.into()
 			})
 		}
 	}

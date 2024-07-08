@@ -770,7 +770,7 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 		if let Some(token_metadata) = CurrencyMetadatas::<T>::get(CurrencyId::Token(token_symbol)) {
 			let Lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
 			Pallet::<T>::do_register_metadata(CurrencyId::Lst(token_symbol), &Lst_metadata)?;
-			return Ok(());
+			Ok(())
 		} else if let Some(token_metadata) =
 			CurrencyMetadatas::<T>::get(CurrencyId::Native(token_symbol))
 		{
@@ -790,9 +790,9 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 				&vstoken_metadata,
 			)?;
 
-			return Ok(());
+			Ok(())
 		} else {
-			return Err(Error::<T>::CurrencyIdNotExists.into());
+			Err(Error::<T>::CurrencyIdNotExists.into())
 		}
 	}
 
@@ -825,9 +825,9 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 				&vsbond_metadata,
 			)?;
 
-			return Ok(());
+			Ok(())
 		} else {
-			return Err(Error::<T>::CurrencyIdNotExists.into());
+			Err(Error::<T>::CurrencyIdNotExists.into())
 		}
 	}
 
@@ -858,9 +858,9 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 			let Lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
 			Pallet::<T>::do_register_metadata(CurrencyId::Lst2(token_id), &Lst_metadata)?;
 
-			return Ok(());
+			Ok(())
 		} else {
-			return Err(Error::<T>::CurrencyIdNotExists.into());
+			Err(Error::<T>::CurrencyIdNotExists.into())
 		}
 	}
 
@@ -869,9 +869,9 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 			let vstoken_metadata = Pallet::<T>::convert_to_vstoken_metadata(token_metadata);
 			Pallet::<T>::do_register_metadata(CurrencyId::VSToken2(token_id), &vstoken_metadata)?;
 
-			return Ok(());
+			Ok(())
 		} else {
-			return Err(Error::<T>::CurrencyIdNotExists.into());
+			Err(Error::<T>::CurrencyIdNotExists.into())
 		}
 	}
 
@@ -893,9 +893,9 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 				&vsbond_metadata,
 			)?;
 
-			return Ok(());
+			Ok(())
 		} else {
-			return Err(Error::<T>::CurrencyIdNotExists.into());
+			Err(Error::<T>::CurrencyIdNotExists.into())
 		}
 	}
 

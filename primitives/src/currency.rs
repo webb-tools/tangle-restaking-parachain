@@ -405,7 +405,7 @@ impl TryFrom<u64> for CurrencyId {
 	fn try_from(id: u64) -> Result<Self, Self::Error> {
 		let c_discr = ((id & 0x0000_0000_0000_ff00) >> 8) as u8;
 
-		let t_discr = ((id & 0x0000_0000_0000_00ff) >> 00) as u8;
+		let t_discr = (id & 0x0000_0000_0000_00ff) as u8;
 
 		let pid = ((id & 0xffff_0000_0000_0000) >> 48) as u32;
 		let lp1 = ((id & 0x0000_ffff_0000_0000) >> 32) as u32;
