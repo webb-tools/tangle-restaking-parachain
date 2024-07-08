@@ -752,7 +752,7 @@ impl<T: Config>
 		to: &MultiLocation,
 		currency_id: CurrencyId,
 	) -> DispatchResult {
-		let Lst = CurrencyId::Lst(TokenSymbol::PHA);
+		let lst = CurrencyId::Lst(TokenSymbol::PHA);
 
 		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
 

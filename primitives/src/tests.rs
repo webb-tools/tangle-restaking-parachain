@@ -200,13 +200,13 @@ fn u64_to_currency_id_should_work() {
 fn to_lst_should_work() {
 	let native_bnc = CurrencyId::Native(TokenSymbol::BNC);
 	let native_asg = CurrencyId::Native(TokenSymbol::ASG);
-	let Lst_ksm = CurrencyId::Lst(TokenSymbol::KSM);
+	let lst_ksm = CurrencyId::Lst(TokenSymbol::KSM);
 	let token_ksm = CurrencyId::Token(TokenSymbol::KSM);
 	let stable_kusd = CurrencyId::Stable(TokenSymbol::KUSD);
 	let vstoken_eth = CurrencyId::VSToken(TokenSymbol::ETH);
 	let vsbond_ksm = CurrencyId::VSBond(TokenSymbol::KSM, 2001, 0, 1000);
 	let token2_dot = CurrencyId::Token2(DOT_TOKEN_ID);
-	let Lst2_dot = CurrencyId::Lst2(DOT_TOKEN_ID);
+	let lst2_dot = CurrencyId::Lst2(DOT_TOKEN_ID);
 	let vstoken2_dot = CurrencyId::VSToken2(DOT_TOKEN_ID);
 	let vsbond2_dot = CurrencyId::VSBond2(DOT_TOKEN_ID, 2030, 0, 1000);
 	let foreign_asset = CurrencyId::ForeignAsset(1984);
@@ -234,14 +234,14 @@ fn to_lst_should_work() {
 #[test]
 fn to_token_should_work() {
 	let native_bnc = CurrencyId::Native(TokenSymbol::BNC);
-	let Lst_bnc = CurrencyId::Lst(TokenSymbol::BNC);
-	let Lst_ksm = CurrencyId::Lst(TokenSymbol::KSM);
+	let lst_bnc = CurrencyId::Lst(TokenSymbol::BNC);
+	let lst_ksm = CurrencyId::Lst(TokenSymbol::KSM);
 	let token_ksm = CurrencyId::Token(TokenSymbol::KSM);
 	let stable_kusd = CurrencyId::Stable(TokenSymbol::KUSD);
 	let vstoken_eth = CurrencyId::VSToken(TokenSymbol::ETH);
 	let vsbond_ksm = CurrencyId::VSBond(TokenSymbol::KSM, 2001, 0, 1000);
 	let token2_dot = CurrencyId::Token2(DOT_TOKEN_ID);
-	let Lst2_dot = CurrencyId::Lst2(DOT_TOKEN_ID);
+	let lst2_dot = CurrencyId::Lst2(DOT_TOKEN_ID);
 	let vstoken2_dot = CurrencyId::VSToken2(DOT_TOKEN_ID);
 	let vsbond2_dot = CurrencyId::VSBond2(DOT_TOKEN_ID, 2030, 0, 1000);
 	let foreign_asset = CurrencyId::ForeignAsset(1984);

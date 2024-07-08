@@ -346,7 +346,7 @@ pub mod pallet {
 			T::RegisterOrigin::ensure_origin(origin)?;
 
 			if let Some(token_metadata) = CurrencyMetadatas::<T>::get(Token2(token_id)) {
-				let Lst_metadata = Self::convert_to_lst_metadata(token_metadata);
+				let lst_metadata = Self::convert_to_lst_metadata(token_metadata);
 				Self::do_register_metadata(CurrencyId::Lst2(token_id), &Lst_metadata)?;
 
 				return Ok(());
@@ -771,13 +771,13 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 
 	fn register_lst_metadata(token_symbol: TokenSymbol) -> sp_runtime::DispatchResult {
 		if let Some(token_metadata) = CurrencyMetadatas::<T>::get(CurrencyId::Token(token_symbol)) {
-			let Lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
+			let lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
 			Pallet::<T>::do_register_metadata(CurrencyId::Lst(token_symbol), &Lst_metadata)?;
 			Ok(())
 		} else if let Some(token_metadata) =
 			CurrencyMetadatas::<T>::get(CurrencyId::Native(token_symbol))
 		{
-			let Lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
+			let lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
 			Pallet::<T>::do_register_metadata(CurrencyId::Lst(token_symbol), &Lst_metadata)?;
 			return Ok(());
 		} else {
@@ -858,7 +858,7 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 
 	fn register_lst2_metadata(token_id: TokenId) -> DispatchResult {
 		if let Some(token_metadata) = CurrencyMetadatas::<T>::get(CurrencyId::Token2(token_id)) {
-			let Lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
+			let lst_metadata = Pallet::<T>::convert_to_lst_metadata(token_metadata);
 			Pallet::<T>::do_register_metadata(CurrencyId::Lst2(token_id), &Lst_metadata)?;
 
 			Ok(())
