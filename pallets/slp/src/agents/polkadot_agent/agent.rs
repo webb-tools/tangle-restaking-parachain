@@ -28,10 +28,6 @@ use crate::{
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	ValidatorsByDelegator, ValidatorsByDelegatorXcmUpdateQueue,
 };
-use tangle_primitives::{
-	currency::KSM, CurrencyId, LstMintingOperator, XcmDestWeightAndFeeHandler, XcmOperationType,
-	DOT, staking::{QueryResponseManager, StakingAgent}
-};
 use core::marker::PhantomData;
 use frame_support::{ensure, traits::Get};
 use frame_system::pallet_prelude::BlockNumberFor;
@@ -41,6 +37,11 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
+use tangle_primitives::{
+	currency::KSM,
+	staking::{QueryResponseManager, StakingAgent},
+	CurrencyId, LstMintingOperator, XcmDestWeightAndFeeHandler, XcmOperationType, DOT,
+};
 use xcm::{opaque::v3::MultiLocation, v3::prelude::*, VersionedAssets, VersionedLocation};
 
 /// StakingAgent implementation for Kusama/Polkadot
@@ -623,9 +624,10 @@ impl<T: Config>
 		};
 		// Construct xcm message.
 		let call = match currency_id {
-			KSM =>
+			KSM => {
 				KusamaCall::Staking(StakingCall::<T>::PayoutStakers(validator_account, payout_era))
-					.encode(),
+					.encode()
+			},
 			DOT => PolkadotCall::Staking(StakingCall::<T>::PayoutStakers(
 				validator_account,
 				payout_era,
@@ -679,8 +681,9 @@ impl<T: Config>
 
 		// Construct xcm message.
 		let call = match currency_id {
-			KSM =>
-				KusamaCall::Staking(StakingCall::<T>::WithdrawUnbonded(num_slashing_spans)).encode(),
+			KSM => {
+				KusamaCall::Staking(StakingCall::<T>::WithdrawUnbonded(num_slashing_spans)).encode()
+			},
 			DOT => PolkadotCall::Staking(StakingCall::<T>::WithdrawUnbonded(num_slashing_spans))
 				.encode(),
 			_ => Err(Error::NotSupportedCurrencyId)?,
@@ -921,11 +924,7 @@ impl<T: Config>
 	) -> Result<(), Error<T>> {
 		let who = who.as_ref().ok_or(Error::<T>::DelegatorNotExist)?;
 
-		Pallet::<T>::tune_lst_exchange_rate_without_update_ledger(
-			who,
-			token_amount,
-			currency_id,
-		)?;
+		Pallet::<T>::tune_lst_exchange_rate_without_update_ledger(who, token_amount, currency_id)?;
 
 		// update delegator ledger
 		DelegatorLedgers::<T>::mutate(currency_id, who, |old_ledger| -> Result<(), Error<T>> {
@@ -974,8 +973,7 @@ impl<T: Config>
 		// Get current VKSM/KSM or VDOT/DOT exchange rate.
 		let Lst = currency_id.to_lst().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
 
-		let charge_amount =
-			Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
+		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
 
 		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, Lst)
 	}

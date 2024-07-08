@@ -25,10 +25,10 @@ use crate::{
 	Junctions::X2,
 	*,
 };
-use tangle_primitives::currency::{PHA, VPHA};
 use frame_support::{assert_noop, assert_ok, PalletId};
 use polkadot_parachain_primitives::primitives::Sibling;
 use sp_runtime::traits::AccountIdConversion;
+use tangle_primitives::currency::{PHA, VPHA};
 
 // parents 0 means vault, parents 1 means stake_pool
 const VALIDATOR_0_LOCATION: MultiLocation =
@@ -166,8 +166,7 @@ fn add_validator_works() {
 fn phala_delegate_works() {
 	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
-	let subaccount_id_0: AccountId =
-		Utility::derivative_account_id(tangle_parachain_account_id, 0);
+	let subaccount_id_0: AccountId = Utility::derivative_account_id(tangle_parachain_account_id, 0);
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -371,8 +370,7 @@ fn phala_xcm_setup() {
 fn phala_setup() {
 	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
-	let subaccount_id_0: AccountId =
-		Utility::derivative_account_id(tangle_parachain_account_id, 0);
+	let subaccount_id_0: AccountId = Utility::derivative_account_id(tangle_parachain_account_id, 0);
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,
@@ -534,8 +532,7 @@ fn phala_bond_works() {
 fn phala_unbond_works() {
 	let tangle_parachain_account_id: AccountId = Sibling::from(2001).into_account_truncating();
 	// subaccount_id_0: 41YcGwBLwxbFV7VfbF6zYGgUnYbt96dHcA2DWruRJkWtANFD
-	let subaccount_id_0: AccountId =
-		Utility::derivative_account_id(tangle_parachain_account_id, 0);
+	let subaccount_id_0: AccountId = Utility::derivative_account_id(tangle_parachain_account_id, 0);
 
 	let subaccount_0_location = MultiLocation {
 		parents: 1,

@@ -20,12 +20,12 @@ use crate::{
 	Pallet, TrailingZeroInput, Validators, ValidatorsByDelegatorUpdateEntry, ASTR, DOT, GLMR, H160,
 	KSM, MANTA, MOVR, PHA,
 };
-use tangle_primitives::CurrencyId;
-use tangle_xcm_interface::traits::parachains;
 use frame_support::ensure;
 use parity_scale_codec::Encode;
 use sp_core::Get;
 use sp_std::prelude::*;
+use tangle_primitives::CurrencyId;
+use tangle_xcm_interface::traits::parachains;
 use xcm::v3::{prelude::*, MultiLocation};
 
 // Some untilities.
@@ -218,8 +218,9 @@ impl<T: Config> Pallet<T> {
 		if now <= timeout {
 			let currency_id = match entry.clone() {
 				LedgerUpdateEntry::Substrate(substrate_entry) => Some(substrate_entry.currency_id),
-				LedgerUpdateEntry::ParachainStaking(moonbeam_entry) =>
-					Some(moonbeam_entry.currency_id),
+				LedgerUpdateEntry::ParachainStaking(moonbeam_entry) => {
+					Some(moonbeam_entry.currency_id)
+				},
 				_ => None,
 			}
 			.ok_or(Error::<T>::NotSupportedCurrencyId)?;
@@ -251,8 +252,9 @@ impl<T: Config> Pallet<T> {
 		let mut updated = true;
 		if now <= timeout {
 			let currency_id = match entry.clone() {
-				ValidatorsByDelegatorUpdateEntry::Substrate(substrate_entry) =>
-					Some(substrate_entry.currency_id),
+				ValidatorsByDelegatorUpdateEntry::Substrate(substrate_entry) => {
+					Some(substrate_entry.currency_id)
+				},
 			}
 			.ok_or(Error::<T>::NotSupportedCurrencyId)?;
 
@@ -296,8 +298,9 @@ impl<T: Config> Pallet<T> {
 		let (entry, _) = Self::get_validators_by_delegator_update_entry(query_id)
 			.ok_or(Error::<T>::QueryNotExist)?;
 		let currency_id = match entry {
-			ValidatorsByDelegatorUpdateEntry::Substrate(substrate_entry) =>
-				Some(substrate_entry.currency_id),
+			ValidatorsByDelegatorUpdateEntry::Substrate(substrate_entry) => {
+				Some(substrate_entry.currency_id)
+			},
 		}
 		.ok_or(Error::<T>::NotSupportedCurrencyId)?;
 
@@ -328,12 +331,15 @@ impl<T: Config> Pallet<T> {
 				1,
 				[xcm::v4::prelude::Parachain(parachains::moonbeam::ID)],
 			)),
-			ASTR =>
-				Ok(xcm::v4::Location::new(1, [xcm::v4::prelude::Parachain(parachains::astar::ID)])),
-			MANTA =>
-				Ok(xcm::v4::Location::new(1, [xcm::v4::prelude::Parachain(parachains::manta::ID)])),
-			PHA =>
-				Ok(xcm::v4::Location::new(1, [xcm::v4::prelude::Parachain(parachains::phala::ID)])),
+			ASTR => {
+				Ok(xcm::v4::Location::new(1, [xcm::v4::prelude::Parachain(parachains::astar::ID)]))
+			},
+			MANTA => {
+				Ok(xcm::v4::Location::new(1, [xcm::v4::prelude::Parachain(parachains::manta::ID)]))
+			},
+			PHA => {
+				Ok(xcm::v4::Location::new(1, [xcm::v4::prelude::Parachain(parachains::phala::ID)]))
+			},
 			_ => Err(Error::<T>::NotSupportedCurrencyId),
 		}
 	}
@@ -356,8 +362,9 @@ impl<T: Config> Pallet<T> {
 					PalletInstance(parachains::moonbeam::PALLET_ID),
 				),
 			}),
-			MANTA =>
-				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::manta::ID)) }),
+			MANTA => {
+				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::manta::ID)) })
+			},
 			_ => Err(Error::<T>::NotSupportedCurrencyId),
 		}
 	}

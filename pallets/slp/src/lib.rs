@@ -30,15 +30,6 @@ pub use crate::{
 	Junction::AccountId32,
 	Junctions::X1,
 };
-use tangle_asset_registry::AssetMetadata;
-use tangle_parachain_staking::ParachainStakingInterface;
-use tangle_primitives::{
-	currency::{BNC, KSM, MANTA, MOVR, PHA},
-	traits::XcmDestWeightAndFeeHandler,
-	CurrencyId, CurrencyIdExt, CurrencyIdMapping, DerivativeAccountHandler, DerivativeIndex,
-	SlpHostingFeeProvider, SlpOperator, TimeUnit, LstMintingOperator, XcmOperationType, ASTR,
-	DOT, FIL, GLMR, staking::{OnRefund, QueryResponseManager, StakingAgent},
-};
 use cumulus_primitives_core::{relay_chain::HashT, ParaId};
 use frame_support::{pallet_prelude::*, traits::Contains, weights::Weight};
 use frame_system::{
@@ -53,6 +44,16 @@ use sp_core::{bounded::BoundedVec, H160};
 use sp_io::hashing::blake2_256;
 use sp_runtime::traits::{CheckedAdd, CheckedSub, Convert, TrailingZeroInput, UniqueSaturatedFrom};
 use sp_std::{boxed::Box, vec, vec::Vec};
+use tangle_asset_registry::AssetMetadata;
+use tangle_parachain_staking::ParachainStakingInterface;
+use tangle_primitives::{
+	currency::{BNC, KSM, MANTA, MOVR, PHA},
+	staking::{OnRefund, QueryResponseManager, StakingAgent},
+	traits::XcmDestWeightAndFeeHandler,
+	CurrencyId, CurrencyIdExt, CurrencyIdMapping, DerivativeAccountHandler, DerivativeIndex,
+	LstMintingOperator, SlpHostingFeeProvider, SlpOperator, TimeUnit, XcmOperationType, ASTR, DOT,
+	FIL, GLMR,
+};
 pub use weights::WeightInfo;
 use xcm::v3::{Junction, Junctions, MultiLocation};
 
@@ -2243,7 +2244,9 @@ pub mod pallet {
 			match origin.clone().into() {
 				Ok(RawOrigin::Signed(ref signer))
 					if Some(signer) == <OperateOrigins<T>>::get(currency_id).as_ref() =>
-					Ok(()),
+				{
+					Ok(())
+				},
 				_ => {
 					T::ControlOrigin::ensure_origin(origin)
 						.map_err(|_| Error::<T>::NotAuthorized)?;

@@ -29,11 +29,11 @@ use crate::{
 	Junctions::X2,
 	*,
 };
-use tangle_primitives::{currency::VMANTA, Balance};
 use frame_support::{assert_noop, assert_ok, PalletId};
 use parity_scale_codec::alloc::collections::BTreeMap;
 use polkadot_parachain_primitives::primitives::Sibling;
 use sp_runtime::traits::AccountIdConversion;
+use tangle_primitives::{currency::VMANTA, Balance};
 use xcm::opaque::v3::Junction::AccountId32;
 
 const VALIDATOR_0_ACCOUNT_ID_32: [u8; 32] =

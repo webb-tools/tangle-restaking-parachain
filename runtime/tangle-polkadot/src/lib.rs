@@ -24,9 +24,9 @@
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 use core::convert::TryInto;
-use tangle_slp::{DerivativeAccountProvider};
 use tangle_primitives::staking::QueryResponseManager;
 use tangle_primitives::SlpxOperator;
+use tangle_slp::DerivativeAccountProvider;
 // A few exports that help ease life for downstream crates.
 pub use frame_support::{
 	construct_runtime, match_types, parameter_types,
@@ -42,7 +42,6 @@ pub use frame_support::{
 	},
 	PalletId, StorageValue,
 };
-use sp_runtime::traits::Verify;
 use frame_system::limits::{BlockLength, BlockWeights};
 pub use pallet_balances::Call as BalancesCall;
 pub use pallet_timestamp::Call as TimestampCall;
@@ -50,6 +49,7 @@ use polkadot_runtime_common::impls::DealWithFees;
 use sp_api::impl_runtime_apis;
 use sp_arithmetic::Percent;
 use sp_core::{ConstBool, OpaqueMetadata};
+use sp_runtime::traits::Verify;
 use sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
 	traits::{
@@ -383,7 +383,7 @@ impl InstanceFilter<RuntimeCall> for ProxyType {
 			),
 			ProxyType::Governance => matches!(
 				c,
-						RuntimeCall::Council(..) | RuntimeCall::TechnicalCommittee(..) |
+				RuntimeCall::Council(..) | RuntimeCall::TechnicalCommittee(..) |
 						RuntimeCall::PhragmenElection(..) |
 						RuntimeCall::Treasury(..) |
 						RuntimeCall::Bounties(..) |
@@ -1167,10 +1167,10 @@ pub struct DummySlpxOperator;
 
 // Implement the SlpxOperator trait for DummySlpxOperator
 impl SlpxOperator<u32> for DummySlpxOperator {
-    fn get_moonbeam_transfer_to_fee() -> u32 {
-        // Return a dummy fee, for example, 100
-        100
-    }
+	fn get_moonbeam_transfer_to_fee() -> u32 {
+		// Return a dummy fee, for example, 100
+		100
+	}
 }
 
 impl tangle_lst_minting::Config for Runtime {

@@ -19,9 +19,9 @@
 #![cfg(test)]
 
 use crate::{mocks::mock::*, primitives::FilecoinLedger, *};
-use tangle_primitives::currency::{FIL, VFIL};
 use frame_support::{assert_noop, assert_ok, PalletId};
 use sp_runtime::traits::AccountIdConversion;
+use tangle_primitives::currency::{FIL, VFIL};
 
 fn mins_maxs_setup() {
 	let mins_and_maxs = MinimumsMaximums {

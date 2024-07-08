@@ -159,11 +159,11 @@ pub mod pallet {
 	///
 	#[pallet::storage]
 	pub type ValidatorsCurrency<T: Config> = StorageMap<
-		_, 
-		Blake2_128Concat, 
+		_,
+		Blake2_128Concat,
 		Vec<MultiLocation>,
 		(CurrencyId, CurrencyId), // (Original CurrencyId, LstId)
-		OptionQuery
+		OptionQuery,
 	>;
 
 	#[pallet::storage]
@@ -687,24 +687,27 @@ impl<T: Config> CurrencyIdConversion<CurrencyId, MultiLocation> for AssetIdMaps<
 		}
 	}
 
-	fn convert_to_lst(currency_id: CurrencyId, validators : Option<Vec<MultiLocation>>) -> Result<CurrencyId, ()> {
+	fn convert_to_lst(
+		currency_id: CurrencyId,
+		validators: Option<Vec<MultiLocation>>,
+	) -> Result<CurrencyId, ()> {
 		let lst_currency_id = match currency_id {
-            CurrencyId::Token(token_symbol) | CurrencyId::Native(token_symbol) => {
-                CurrencyId::Lst(token_symbol)
-            },
-            CurrencyId::Token2(token_id) => CurrencyId::Lst2(token_id),
-            _ => return Err(()),
-        };
+			CurrencyId::Token(token_symbol) | CurrencyId::Native(token_symbol) => {
+				CurrencyId::Lst(token_symbol)
+			},
+			CurrencyId::Token2(token_id) => CurrencyId::Lst2(token_id),
+			_ => return Err(()),
+		};
 
-        if let Some(validators) = validators {
-            // Check if the validators already have a currency_id associated
+		if let Some(validators) = validators {
+			// Check if the validators already have a currency_id associated
 			if !ValidatorsCurrency::<T>::contains_key(&validators) {
 				// If not, insert the new mapping
 				ValidatorsCurrency::<T>::insert(validators, (currency_id, lst_currency_id));
 			}
-        }
+		}
 
-        Ok(lst_currency_id)
+		Ok(lst_currency_id)
 	}
 
 	fn convert_to_vstoken(currency_id: CurrencyId) -> Result<CurrencyId, ()> {

@@ -1,10 +1,9 @@
-
-use crate::{ TimeUnit};
 use crate::CurrencyId;
+use crate::TimeUnit;
 use sp_runtime::DispatchResult;
-use xcm::latest::Weight;
 use sp_std::{boxed::Box, vec::Vec};
-use xcm::v3::{MultiLocation};
+use xcm::latest::Weight;
+use xcm::v3::MultiLocation;
 
 pub type QueryId = u64;
 
@@ -84,7 +83,7 @@ pub trait StakingAgent<
 
 	/// Delegate to some validators.
 	fn delegate(
-        &self,
+		&self,
 		who: &MultiLocation,
 		targets: &Vec<MultiLocation>,
 		currency_id: CurrencyId,

@@ -27,7 +27,6 @@ use crate::{
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	Validators,
 };
-use tangle_primitives::{CurrencyId, LstMintingOperator, XcmOperationType, ASTR_TOKEN_ID, staking::{QueryResponseManager, StakingAgent}};
 use core::marker::PhantomData;
 use frame_support::{ensure, traits::Get};
 use frame_system::pallet_prelude::BlockNumberFor;
@@ -37,6 +36,10 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
+use tangle_primitives::{
+	staking::{QueryResponseManager, StakingAgent},
+	CurrencyId, LstMintingOperator, XcmOperationType, ASTR_TOKEN_ID,
+};
 use xcm::{
 	opaque::v3::{Junction::Parachain, Junctions::X1, MultiLocation},
 	v3::prelude::*,
@@ -534,11 +537,7 @@ impl<T: Config>
 	) -> Result<(), Error<T>> {
 		let who = who.as_ref().ok_or(Error::<T>::DelegatorNotExist)?;
 
-		Pallet::<T>::tune_lst_exchange_rate_without_update_ledger(
-			who,
-			token_amount,
-			currency_id,
-		)?;
+		Pallet::<T>::tune_lst_exchange_rate_without_update_ledger(who, token_amount, currency_id)?;
 
 		// update delegator ledger
 		DelegatorLedgers::<T>::mutate(currency_id, who, |old_ledger| -> Result<(), Error<T>> {
@@ -587,8 +586,7 @@ impl<T: Config>
 		// Get current vASTR/ASTR exchange rate.
 		let Lst = CurrencyId::Lst2(ASTR_TOKEN_ID);
 
-		let charge_amount =
-			Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
+		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
 
 		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, Lst)
 	}

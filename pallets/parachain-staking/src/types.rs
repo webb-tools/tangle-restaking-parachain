@@ -82,14 +82,12 @@ impl<AccountId: Ord, Balance> PartialEq for Bond<AccountId, Balance> {
 pub enum CollatorStatus {
 	/// Committed to be online and producing valid blocks (not equivocating)
 	#[default]
- Active,
+	Active,
 	/// Temporarily inactive and excused for inactivity
 	Idle,
 	/// Bonded until the inner round
 	Leaving(RoundIndex),
 }
-
-
 
 #[derive(Encode, Decode, RuntimeDebug, TypeInfo)]
 /// Snapshot of collator state at the start of the round for which they are selected

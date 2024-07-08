@@ -22,5 +22,5 @@ pub mod orml_tokens;
 pub mod pallet_xcm;
 pub mod tangle_asset_registry;
 pub mod tangle_currencies;
-pub mod tangle_slp;
 pub mod tangle_lst_minting;
+pub mod tangle_slp;

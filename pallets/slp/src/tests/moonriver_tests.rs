@@ -29,11 +29,11 @@ use crate::{
 	Junctions::X2,
 	*,
 };
-use tangle_primitives::{currency::VMOVR, Balance};
 use frame_support::{assert_noop, assert_ok, PalletId};
 use parity_scale_codec::alloc::collections::BTreeMap;
 use polkadot_parachain_primitives::primitives::Sibling;
 use sp_runtime::traits::AccountIdConversion;
+use tangle_primitives::{currency::VMOVR, Balance};
 
 const VALIDATOR_0_ACCOUNT_ID_20: [u8; 20] =
 	hex_literal::hex!["3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0"];

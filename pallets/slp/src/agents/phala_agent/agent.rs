@@ -27,7 +27,6 @@ use crate::{
 	DelegatorsMultilocation2Index, Hash, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	Validators, ValidatorsByDelegatorUpdateEntry,
 };
-use tangle_primitives::{TokenSymbol, LstMintingOperator, XcmOperationType, staking::{QueryResponseManager, StakingAgent}};
 use core::marker::PhantomData;
 use frame_support::{ensure, traits::Get};
 use frame_system::pallet_prelude::BlockNumberFor;
@@ -38,6 +37,10 @@ use sp_runtime::{
 	DispatchResult, SaturatedConversion,
 };
 use sp_std::prelude::*;
+use tangle_primitives::{
+	staking::{QueryResponseManager, StakingAgent},
+	LstMintingOperator, TokenSymbol, XcmOperationType,
+};
 use xcm::{
 	opaque::v3::{Junction::GeneralIndex, MultiLocation},
 	v3::prelude::*,
@@ -719,11 +722,7 @@ impl<T: Config>
 			Err(Error::<T>::DelegatorNotExist)?;
 		}
 
-		Pallet::<T>::tune_lst_exchange_rate_without_update_ledger(
-			who,
-			token_amount,
-			currency_id,
-		)?;
+		Pallet::<T>::tune_lst_exchange_rate_without_update_ledger(who, token_amount, currency_id)?;
 
 		Ok(())
 	}
@@ -755,8 +754,7 @@ impl<T: Config>
 	) -> DispatchResult {
 		let Lst = CurrencyId::Lst(TokenSymbol::PHA);
 
-		let charge_amount =
-			Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
+		let charge_amount = Pallet::<T>::inner_calculate_lst_hosting_fee(amount, Lst, currency_id)?;
 
 		Pallet::<T>::inner_charge_hosting_fee(charge_amount, to, Lst)
 	}

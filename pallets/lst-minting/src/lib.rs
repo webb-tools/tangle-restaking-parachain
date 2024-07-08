@@ -54,10 +54,10 @@ use sp_std::{vec, vec::Vec};
 use tangle_asset_registry::AssetMetadata;
 use tangle_primitives::staking::StakingAgentDelegator;
 
-
 use tangle_primitives::{
-	CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdMapping, CurrencyIdRegister, LstMintRedeemProvider, LstMintingInterface, LstMintingOperator, LstSupplyProvider,
-	RedeemType, SlpOperator, SlpxOperator, TimeUnit,
+	CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdMapping, CurrencyIdRegister,
+	LstMintRedeemProvider, LstMintingInterface, LstMintingOperator, LstSupplyProvider, RedeemType,
+	SlpOperator, SlpxOperator, TimeUnit,
 };
 
 pub use traits::*;
@@ -1313,8 +1313,9 @@ pub mod pallet {
 		) -> Result<BalanceOf<T>, DispatchError> {
 			ensure!(token_amount >= MinimumMint::<T>::get(token_id), Error::<T>::BelowMinimumMint);
 
-			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id, Some(validators.clone()))
-				.map_err(|_| Error::<T>::NotSupportTokenType)?;
+			let lst_id =
+				T::CurrencyIdConversion::convert_to_lst(token_id, Some(validators.clone()))
+					.map_err(|_| Error::<T>::NotSupportTokenType)?;
 			let (token_amount_excluding_fee, lst_amount, fee) = Self::mint_without_transfer(
 				&exchanger,
 				lst_id,

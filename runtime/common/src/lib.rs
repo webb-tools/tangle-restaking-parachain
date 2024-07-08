@@ -17,10 +17,6 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 #![cfg_attr(not(feature = "std"), no_std)]
-use tangle_asset_registry::{AssetIdMaps, Config};
-use tangle_primitives::{
-	AccountId, Balance, BlockNumber, CurrencyId, CurrencyIdMapping, TokenInfo,
-};
 use frame_support::{
 	parameter_types, sp_runtime::traits::BlockNumberProvider, traits::EitherOfDiverse,
 };
@@ -28,6 +24,10 @@ use frame_system::EnsureRoot;
 use pallet_transaction_payment::{Multiplier, TargetedFeeAdjustment};
 pub use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_runtime::{traits::Bounded, FixedPointNumber, Perquintill};
+use tangle_asset_registry::{AssetIdMaps, Config};
+use tangle_primitives::{
+	AccountId, Balance, BlockNumber, CurrencyId, CurrencyIdMapping, TokenInfo,
+};
 
 pub mod constants;
 pub mod currency_adapter;

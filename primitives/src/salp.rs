@@ -68,7 +68,7 @@ pub enum DestChain {
 	FIL,
 	MANTA,
 	PHALA,
-	NATIVE
+	NATIVE,
 }
 
 impl<BalanceOf> ContributionStatus<BalanceOf>
