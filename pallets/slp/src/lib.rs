@@ -2288,6 +2288,10 @@ pub mod pallet {
 	}
 }
 
+// impl tangle_primitives::StakingAgentDelegator<AccountId, MultiLocation, CurrencyId, Balance, Error> for Pallet<T>{
+
+// }
+
 pub struct DerivativeAccountProvider<T, F>(PhantomData<(T, F)>);
 
 impl<T: Config, F: Contains<CurrencyIdOf<T>>>

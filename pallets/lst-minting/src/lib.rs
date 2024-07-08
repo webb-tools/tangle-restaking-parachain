@@ -52,7 +52,7 @@ pub use pallet::*;
 use sp_core::U256;
 use sp_std::{vec, vec::Vec};
 use tangle_asset_registry::AssetMetadata;
-use tangle_primitives::staking::StakingAgent;
+use tangle_primitives::staking::StakingAgentDelegator;
 use tangle_primitives::staking_primitives::LedgerUpdateEntry;
 use tangle_primitives::staking_primitives::ValidatorsByDelegatorUpdateEntry;
 use tangle_primitives::{
@@ -169,11 +169,11 @@ pub mod pallet {
 			AssetMetadata<BalanceOf<Self>>,
 		>;
 
-		type StakingAgent: StakingAgent<
-			BalanceOf<Self>,
+		type StakingAgent: StakingAgentDelegator<
 			Self::AccountId,
-			LedgerUpdateEntry<BalanceOf<Self>>,
-			ValidatorsByDelegatorUpdateEntry,
+			MultiLocation,
+			CurrencyId,
+			BalanceOf<Self>,
 			Error<Self>,
 		>;
 
@@ -1314,7 +1314,7 @@ pub mod pallet {
 		) -> Result<BalanceOf<T>, DispatchError> {
 			ensure!(token_amount >= MinimumMint::<T>::get(token_id), Error::<T>::BelowMinimumMint);
 
-			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id, Some(validators))
+			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id, Some(validators.clone()))
 				.map_err(|_| Error::<T>::NotSupportTokenType)?;
 			let (token_amount_excluding_fee, lst_amount, fee) = Self::mint_without_transfer(
 				&exchanger,
@@ -1336,7 +1336,7 @@ pub mod pallet {
 			T::ChannelCommission::record_mint_amount(channel_id, lst_id, lst_amount)?;
 
 			// attempt staking via agent
-			T::StakingAgent::delegate(&exchanger, &exchanger, &validators, token_id, None)?;
+			T::StakingAgent::delegate(&exchanger, &validators, token_id, None)?;
 
 			Self::deposit_event(Event::Minted {
 				address: exchanger,
