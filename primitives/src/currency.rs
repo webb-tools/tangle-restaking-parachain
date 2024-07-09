@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Low-level types used throughout the Bifrost code.
+//! Low-level types used throughout the Tangle code.
 
 use bstringify::bstringify;
 use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
@@ -232,7 +232,7 @@ macro_rules! create_currency_id {
     }
 }
 
-// Bifrost Tokens list
+// Tangle Tokens list
 create_currency_id! {
 	// Represent a Token symbol with 8 bit
 	// Bit 8 : 0 for Pokladot Ecosystem, 1 for Kusama Ecosystem
@@ -242,7 +242,7 @@ create_currency_id! {
 	#[repr(u8)]
 	pub enum TokenSymbol {
 		ASG("Asgard", 12) = 0,
-		BNC("Bifrost", 12) = 1,
+		BNC("Tangle", 12) = 1,
 		KUSD("Karura Dollar", 12) = 2,
 		DOT("Polkadot", 10) = 3,
 		KSM("Kusama", 12) = 4,
@@ -252,6 +252,7 @@ create_currency_id! {
 		PHA("Phala Native Token", 12) = 8,
 		RMRK("RMRK Token",10) = 9,
 		MOVR("Moonriver Native Token",18) = 10,
+		TNT("Tangle", 18) = 11,
 	}
 }
 

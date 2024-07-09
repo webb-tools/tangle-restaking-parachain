@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_vstoken_conversion.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_vstoken_conversion::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_vstoken_conversion::WeightInfo for TangleWeight<T> {
 	// Storage: VstokenConversion ExchangeFee (r:1 w:1)
 	// Proof: VstokenConversion ExchangeFee (max_values: Some(1), max_size: Some(32), added: 527, mode: MaxEncodedLen)
 	fn set_exchange_fee() -> Weight {

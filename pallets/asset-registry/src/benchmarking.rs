@@ -99,7 +99,7 @@ benchmarks! {
 	register_token_metadata {
 		let origin = T::RegisterOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"Tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: BalanceOf::<T>::unique_saturated_from(0u128),
@@ -116,7 +116,7 @@ benchmarks! {
 	register_lst_metadata {
 		let origin = T::RegisterOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"Tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: BalanceOf::<T>::unique_saturated_from(0u128),
@@ -210,7 +210,7 @@ benchmarks! {
 	register_location {
 		let origin = T::RegisterOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"Tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: BalanceOf::<T>::unique_saturated_from(0u128),
@@ -245,7 +245,7 @@ benchmarks! {
 	force_set_location {
 		let origin = T::RegisterOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"Tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: BalanceOf::<T>::unique_saturated_from(0u128),

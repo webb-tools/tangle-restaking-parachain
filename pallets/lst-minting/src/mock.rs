@@ -197,10 +197,10 @@ parameter_types! {
 	pub const MaximumUnlockIdOfUser: u32 = 1_000;
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 1_000;
 	pub const MaxLockRecords: u32 = 64;
-	pub BifrostEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
-	pub BifrostExitAccount: PalletId = PalletId(*b"bf/vtout");
+	pub TangleEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
+	pub TangleExitAccount: PalletId = PalletId(*b"bf/vtout");
 	pub IncentivePoolAccount: PalletId = PalletId(*b"bf/inpoo");
-	pub BifrostFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
+	pub TangleFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
 }
 
 ord_parameter_types! {
@@ -215,13 +215,13 @@ impl lst_minting::Config for Runtime {
 	type MaximumUnlockIdOfUser = MaximumUnlockIdOfUser;
 	type MaximumUnlockIdOfTimeUnit = MaximumUnlockIdOfTimeUnit;
 	type MaxLockRecords = MaxLockRecords;
-	type EntranceAccount = BifrostEntranceAccount;
-	type ExitAccount = BifrostExitAccount;
-	type FeeAccount = BifrostFeeAccount;
-	type RedeemFeeAccount = BifrostFeeAccount;
+	type EntranceAccount = TangleEntranceAccount;
+	type ExitAccount = TangleExitAccount;
+	type FeeAccount = TangleFeeAccount;
+	type RedeemFeeAccount = TangleFeeAccount;
 	type IncentivePoolAccount = IncentivePoolAccount;
-	type BifrostSlp = Slp;
-	type BifrostSlpx = SlpxInterface;
+	type TangleSlp = Slp;
+	type TangleSlpx = SlpxInterface;
 	type VeMinting = VeMinting;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;

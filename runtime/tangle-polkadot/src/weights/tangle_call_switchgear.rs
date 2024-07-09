@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_call_switchgear.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_call_switchgear::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_call_switchgear::WeightInfo for TangleWeight<T> {
 	// Storage: CallSwitchgear SwitchedOffTransactions (r:1 w:1)
 	// Proof Skipped: CallSwitchgear SwitchedOffTransactions (max_values: None, max_size: None, mode: Measured)
 	fn switchoff_transaction() -> Weight {

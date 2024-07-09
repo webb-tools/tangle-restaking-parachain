@@ -417,7 +417,7 @@ impl<T: Config>
 		Err(Error::<T>::Unsupported)
 	}
 
-	/// Make token transferred back to Bifrost chain account.
+	/// Make token transferred back to Tangle chain account.
 	fn transfer_back(
 		&self,
 		from: &MultiLocation,
@@ -483,7 +483,7 @@ impl<T: Config>
 		Ok(())
 	}
 
-	/// Make token from Bifrost chain account to the staking chain account.
+	/// Make token from Tangle chain account to the staking chain account.
 	/// Receiving account must be one of the currency_id delegators.
 	fn transfer_to(
 		&self,

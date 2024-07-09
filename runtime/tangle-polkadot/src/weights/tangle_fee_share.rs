@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_fee_share.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_fee_share::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_fee_share::WeightInfo for TangleWeight<T> {
 	// Storage: FeeShare AutoEra (r:1 w:0)
 	// Proof Skipped: FeeShare AutoEra (max_values: Some(1), max_size: None, mode: Measured)
 	fn on_initialize() -> Weight {

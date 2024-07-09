@@ -93,7 +93,7 @@ pub enum PolkadotUtilityCall<PolkadotCall> {
 
 #[derive(Encode, Decode, RuntimeDebug, Clone)]
 pub enum StakingCall<T: Config> {
-	/// Kusama/Polkadot has the same account Id type as Bifrost.
+	/// Kusama/Polkadot has the same account Id type as Tangle.
 	#[codec(index = 0)]
 	Bond(#[codec(compact)] BalanceOf<T>, RewardDestination<T::AccountId>),
 	#[codec(index = 1)]

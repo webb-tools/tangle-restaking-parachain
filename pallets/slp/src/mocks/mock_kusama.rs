@@ -193,12 +193,12 @@ impl orml_tokens::Config for Runtime {
 	type CurrencyHooks = ();
 }
 
-pub type BifrostToken = tangle_currencies::BasicCurrencyAdapter<Runtime, Balances, Amount, u64>;
+pub type TangleToken = tangle_currencies::BasicCurrencyAdapter<Runtime, Balances, Amount, u64>;
 
 impl tangle_currencies::Config for Runtime {
 	type GetNativeCurrencyId = NativeCurrencyId;
 	type MultiCurrency = Tokens;
-	type NativeCurrency = BifrostToken;
+	type NativeCurrency = TangleToken;
 	type WeightInfo = ();
 }
 
@@ -218,7 +218,7 @@ impl orml_xtokens::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Balance = Balance;
 	type CurrencyId = CurrencyId;
-	type CurrencyIdConvert = BifrostCurrencyIdConvert;
+	type CurrencyIdConvert = TangleCurrencyIdConvert;
 	type AccountIdToLocation = ();
 	type UniversalLocation = UniversalLocation;
 	type SelfLocation = SelfRelativeLocation;
@@ -236,9 +236,9 @@ impl orml_xtokens::Config for Runtime {
 parameter_types! {
 	pub const MaximumUnlockIdOfUser: u32 = 10;
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 50;
-	pub BifrostEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
-	pub BifrostExitAccount: PalletId = PalletId(*b"bf/vtout");
-	pub BifrostFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
+	pub TangleEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
+	pub TangleExitAccount: PalletId = PalletId(*b"bf/vtout");
+	pub TangleFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
 	pub IncentivePoolAccount: PalletId = PalletId(*b"bf/inpoo");
 }
 
@@ -255,15 +255,15 @@ impl tangle_lst_minting::Config for Runtime {
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
 	type MaximumUnlockIdOfUser = MaximumUnlockIdOfUser;
 	type MaximumUnlockIdOfTimeUnit = MaximumUnlockIdOfTimeUnit;
-	type EntranceAccount = BifrostEntranceAccount;
-	type ExitAccount = BifrostExitAccount;
-	type FeeAccount = BifrostFeeAccount;
-	type RedeemFeeAccount = BifrostFeeAccount;
+	type EntranceAccount = TangleEntranceAccount;
+	type ExitAccount = TangleExitAccount;
+	type FeeAccount = TangleFeeAccount;
+	type RedeemFeeAccount = TangleFeeAccount;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;
 	type CurrencyIdRegister = AssetIdMaps<Runtime>;
-	type BifrostSlp = Slp;
-	type BifrostSlpx = SlpxInterface;
+	type TangleSlp = Slp;
+	type TangleSlpx = SlpxInterface;
 	type WeightInfo = ();
 	type OnRedeemSuccess = ();
 	type XcmTransfer = XTokens;
@@ -350,14 +350,14 @@ ord_parameter_types! {
 }
 
 parameter_types! {
-	pub BifrostParachainAccountId20: [u8; 20] = hex_literal::hex!["7369626cd1070000000000000000000000000000"].into();
+	pub TangleParachainAccountId20: [u8; 20] = hex_literal::hex!["7369626cd1070000000000000000000000000000"].into();
 }
 
 pub struct SubAccountIndexMultiLocationConvertor;
 impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationConvertor {
 	fn convert((sub_account_index, currency_id): (u16, CurrencyId)) -> MultiLocation {
 		match currency_id {
-			// AccountKey20 format of Bifrost sibling para account
+			// AccountKey20 format of Tangle sibling para account
 			CurrencyId::Token(TokenSymbol::MOVR) => MultiLocation::new(
 				1,
 				X2(
@@ -372,7 +372,7 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 					},
 				),
 			),
-			// Only relay chain use the Bifrost para account with "para"
+			// Only relay chain use the Tangle para account with "para"
 			CurrencyId::Token(TokenSymbol::KSM) => MultiLocation::new(
 				1,
 				X1(Junction::AccountId32 {
@@ -384,7 +384,7 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 					.into(),
 				}),
 			),
-			// Bifrost Kusama Native token
+			// Tangle Kusama Native token
 			CurrencyId::Native(TokenSymbol::BNC) => MultiLocation::new(
 				0,
 				X1(Junction::AccountId32 {
@@ -399,7 +399,7 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 			),
 			MANTA => {
 				// get parachain id
-				if let Some(location) = BifrostCurrencyIdConvert::convert(currency_id) {
+				if let Some(location) = TangleCurrencyIdConvert::convert(currency_id) {
 					let v3_location = xcm::v3::Location::try_from(location).unwrap();
 					if let Some(Parachain(para_id)) = v3_location.interior().first() {
 						MultiLocation::new(
@@ -426,10 +426,10 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 					MultiLocation::default()
 				}
 			},
-			// Other sibling chains use the Bifrost para account with "sibl"
+			// Other sibling chains use the Tangle para account with "sibl"
 			_ => {
 				// get parachain id
-				if let Some(location) = BifrostCurrencyIdConvert::convert(currency_id) {
+				if let Some(location) = TangleCurrencyIdConvert::convert(currency_id) {
 					let v3_location = xcm::v3::Location::try_from(location).unwrap();
 					if let Some(Parachain(para_id)) = v3_location.interior().first() {
 						MultiLocation::new(
@@ -482,8 +482,8 @@ parameter_types! {
 	pub const MaxLengthLimit: u32 = 100;
 }
 
-pub struct BifrostCurrencyIdConvert;
-impl Convert<CurrencyId, Option<xcm::v4::Location>> for BifrostCurrencyIdConvert {
+pub struct TangleCurrencyIdConvert;
+impl Convert<CurrencyId, Option<xcm::v4::Location>> for TangleCurrencyIdConvert {
 	fn convert(id: CurrencyId) -> Option<xcm::v4::Location> {
 		use CurrencyId::*;
 		use TokenSymbol::*;
@@ -525,7 +525,7 @@ impl QueryResponseManager<QueryId, xcm::v4::Location, u64, RuntimeCall>
 }
 
 parameter_types! {
-	pub BifrostTreasuryAccount: AccountId = PalletId(*b"bf/trsry").into_account_truncating();
+	pub TangleTreasuryAccount: AccountId = PalletId(*b"bf/trsry").into_account_truncating();
 }
 
 impl Config for Runtime {
@@ -548,7 +548,7 @@ impl Config for Runtime {
 	type ChannelCommission = ();
 	type StablePoolHandler = StablePool;
 	type AssetIdMaps = AssetIdMaps<Runtime>;
-	type TreasuryAccount = BifrostTreasuryAccount;
+	type TreasuryAccount = TangleTreasuryAccount;
 }
 
 pub struct XcmDestWeightAndFee;

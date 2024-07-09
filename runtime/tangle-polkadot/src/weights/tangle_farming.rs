@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_farming.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_farming::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_farming::WeightInfo for TangleWeight<T> {
 	// Storage: Farming PoolInfos (r:1 w:0)
 	// Proof Skipped: Farming PoolInfos (max_values: None, max_size: None, mode: Measured)
 	// Storage: Farming GaugePoolInfos (r:1 w:0)

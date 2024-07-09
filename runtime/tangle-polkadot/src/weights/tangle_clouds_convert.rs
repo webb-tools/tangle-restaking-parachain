@@ -30,8 +30,8 @@
 use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_clouds_convert::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_clouds_convert::WeightInfo for TangleWeight<T> {
 	fn clouds_to_vebnc() -> Weight {
 		Weight::from_parts(150_867_000, 5223)
 			.saturating_add(RocksDbWeight::get().reads(7_u64))

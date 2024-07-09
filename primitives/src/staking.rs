@@ -137,7 +137,7 @@ pub trait StakingAgent<
 		weight_and_fee: Option<(Weight, Balance)>,
 	) -> Result<QueryId, Error>;
 
-	/// Make token transferred back to Bifrost chain account.
+	/// Make token transferred back to Tangle chain account.
 	fn transfer_back(
 		&self,
 		from: &MultiLocation,
@@ -147,7 +147,7 @@ pub trait StakingAgent<
 		weight_and_fee: Option<(Weight, Balance)>,
 	) -> Result<(), Error>;
 
-	/// Make token from Bifrost chain account to the staking chain account.
+	/// Make token from Tangle chain account to the staking chain account.
 	fn transfer_to(
 		&self,
 		from: &MultiLocation,
@@ -176,7 +176,7 @@ pub trait StakingAgent<
 	) -> Result<(), Error>;
 
 	/// ************************************
-	/// Abstraction over a fee manager for charging fee from the origin chain(Bifrost)
+	/// Abstraction over a fee manager for charging fee from the origin chain(Tangle)
 	/// or deposit fee reserves for the destination chain nominator accounts.
 	/// ************************************
 	/// Charge hosting fee.

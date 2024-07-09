@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_lst_voting.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_lst_voting::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_lst_voting::WeightInfo for TangleWeight<T> {
 	// Storage: LstVoting UndecidingTimeout (r:1 w:0)
 	// Proof: LstVoting UndecidingTimeout (max_values: None, max_size: Some(26), added: 2501, mode: MaxEncodedLen)
 	// Storage: LstVoting DelegatorVote (r:2 w:1)

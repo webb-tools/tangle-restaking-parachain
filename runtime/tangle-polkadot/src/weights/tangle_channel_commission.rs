@@ -48,8 +48,8 @@ use frame_support::{traits::Get, weights::Weight};
 use core::marker::PhantomData;
 
 /// Weight functions for `tangle_channel_commission`.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_channel_commission::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_channel_commission::WeightInfo for TangleWeight<T> {
 	/// Storage: `ChannelCommission::ChannelNextId` (r:1 w:1)
 	/// Proof: `ChannelCommission::ChannelNextId` (`max_values`: Some(1), `max_size`: None, mode: `Measured`)
 	/// Storage: `ChannelCommission::CommissionTokens` (r:31 w:0)

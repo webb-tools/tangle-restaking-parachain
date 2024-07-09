@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_cross_in_out.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_cross_in_out::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_cross_in_out::WeightInfo for TangleWeight<T> {
 	// Storage: CrossInOut CrossCurrencyRegistry (r:1 w:1)
 	// Proof Skipped: CrossInOut CrossCurrencyRegistry (max_values: None, max_size: None, mode: Measured)
 	fn register_currency_for_cross_in_out() -> Weight {

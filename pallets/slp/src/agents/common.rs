@@ -501,7 +501,7 @@ impl<T: Config> Pallet<T> {
 		// Ensure amount is greater than zero.
 		ensure!(!amount.is_zero(), Error::<T>::AmountZero);
 
-		// Ensure the from account is located within Bifrost chain. Otherwise, the xcm massage will
+		// Ensure the from account is located within Tangle chain. Otherwise, the xcm massage will
 		// not succeed.
 		ensure!(from.parents.is_zero(), Error::<T>::InvalidTransferSource);
 
