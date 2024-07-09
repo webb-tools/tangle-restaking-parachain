@@ -81,7 +81,7 @@ pallet-collator-selection  = { workspace = true }
 parachain-info = { workspace = true }
 pallet-sudo = { workspace = true }
 pallet-assets = { workspace = true }
-pallet-nfts = { workspace = true }
+pallet-uniques = { workspace = true }
 
 
 # Polkadot dependencies
@@ -192,7 +192,7 @@ std = [
 	"parachain-info/std",
 	"pallet-sudo/std",
 	"pallet-assets/std",
-	"pallet-nfts/std",
+	"pallet-uniques/std",
 	"pallet-xcm/std",
 	"polkadot-parachain-primitives/std",
 	"polkadot-primitives/std",
@@ -256,7 +256,7 @@ runtime-benchmarks = [
 	"tangle-parachain-staking/runtime-benchmarks",
 	"pallet-sudo/runtime-benchmarks",
 	"pallet-assets/runtime-benchmarks",
-	"pallet-nfts/runtime-benchmarks",
+	"pallet-uniques/runtime-benchmarks",
 	"sp-api/disable-logging",
 ]
 
