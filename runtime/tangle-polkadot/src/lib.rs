@@ -24,8 +24,10 @@
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 use core::convert::TryInto;
+use frame_support::traits::AsEnsureOriginWithArg;
 use tangle_primitives::staking::QueryResponseManager;
 use tangle_primitives::SlpxOperator;
+use pallet_nfts::PalletFeatures;
 use tangle_slp::DerivativeAccountProvider;
 // A few exports that help ease life for downstream crates.
 pub use frame_support::{
@@ -1176,6 +1178,80 @@ where
 
 // zenlink runtime end
 
+
+parameter_types! {
+	pub const AssetDeposit: u128 = 1_000_000;
+	pub const MetadataDepositBase: u128 = 1_000_000;
+	pub const MetadataDepositPerByte: u128 = 100_000;
+	pub const AssetAccountDeposit: u128 = 1_000_000;
+	pub const ApprovalDeposit: u128 = 1_000_000;
+	pub const AssetsStringLimit: u32 = 50;
+	pub const RemoveItemsLimit: u32 = 50;
+}
+
+impl pallet_assets::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Balance = Balance;
+	type AssetId = u32;
+	type Currency = Balances;
+	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
+	type ForceOrigin = EnsureRoot<AccountId>;
+	type AssetDeposit = AssetDeposit;
+	type MetadataDepositBase = MetadataDepositBase;
+	type MetadataDepositPerByte = MetadataDepositPerByte;
+	type AssetAccountDeposit = AssetAccountDeposit;
+	type ApprovalDeposit = ApprovalDeposit;
+	type StringLimit = AssetsStringLimit;
+	type Freezer = ();
+	type Extra = ();
+	type WeightInfo = ();
+	type RemoveItemsLimit = RemoveItemsLimit;
+	type AssetIdParameter = u32;
+	type CallbackHandle = ();
+	#[cfg(feature = "runtime-benchmarks")]
+	type BenchmarkHelper = ();
+}
+
+parameter_types! {
+	pub NftsPalletFeatures: PalletFeatures = PalletFeatures::all_enabled();
+	pub const NftsMaxDeadlineDuration: BlockNumber = 12 * 30 * DAYS;
+	// re-use the Uniques deposits
+	pub const NftsCollectionDeposit: Balance = 1_000_000;
+	pub const NftsItemDeposit: Balance = 1_000_000;
+	pub const NftsMetadataDepositBase: Balance = 1_000_000;
+	pub const NftsAttributeDepositBase: Balance = 1_000_000;
+	pub const NftsDepositPerByte: Balance = 1_000_000;
+}
+
+impl pallet_nfts::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type CollectionId = u32;
+	type ItemId = u32;
+	type Currency = Balances;
+	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
+	type ForceOrigin = EnsureRoot<AccountId>;
+	type Locker = ();
+	type CollectionDeposit = NftsCollectionDeposit;
+	type ItemDeposit = NftsItemDeposit;
+	type MetadataDepositBase = NftsMetadataDepositBase;
+	type AttributeDepositBase = NftsAttributeDepositBase;
+	type DepositPerByte = NftsDepositPerByte;
+	type StringLimit = ConstU32<256>;
+	type KeyLimit = ConstU32<64>;
+	type ValueLimit = ConstU32<256>;
+	type ApprovalsLimit = ConstU32<20>;
+	type ItemAttributesApprovalsLimit = ConstU32<30>;
+	type MaxTips = ConstU32<10>;
+	type MaxDeadlineDuration = NftsMaxDeadlineDuration;
+	type MaxAttributesPerCall = ConstU32<10>;
+	type Features = NftsPalletFeatures;
+	type OffchainSignature = Signature;
+	type OffchainPublic = <Signature as Verify>::Signer;
+	type WeightInfo = ();
+	#[cfg(feature = "runtime-benchmarks")]
+	type Helper = ();
+}
+
 construct_runtime! {
 	pub enum Runtime {
 		// Basic stuff
@@ -1229,6 +1305,8 @@ construct_runtime! {
 		LstMinting: tangle_lst_minting = 115,
 		Slp: tangle_slp = 116,
 		XcmInterface: tangle_xcm_interface = 117,
+		Assets: pallet_assets = 118,
+		Nfts: pallet_nfts = 119
 	}
 }
 
