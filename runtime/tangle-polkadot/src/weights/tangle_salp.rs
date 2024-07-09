@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_salp.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_salp::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_salp::WeightInfo for TangleWeight<T> {
 	// Storage: Salp Funds (r:1 w:0)
 	// Proof Skipped: Salp Funds (max_values: None, max_size: None, mode: Measured)
 	// Storage: AssetRegistry CurrencyMetadatas (r:1 w:0)

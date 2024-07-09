@@ -47,8 +47,8 @@ use frame_support::{traits::Get, weights::Weight};
 use core::marker::PhantomData;
 
 /// Weight functions for `tangle_buy_back`.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_buy_back::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_buy_back::WeightInfo for TangleWeight<T> {
 	/// Storage: `System::Number` (r:1 w:0)
 	/// Proof: `System::Number` (`max_values`: Some(1), `max_size`: Some(4), added: 499, mode: `MaxEncodedLen`)
 	/// Storage: `System::ExecutionPhase` (r:1 w:0)

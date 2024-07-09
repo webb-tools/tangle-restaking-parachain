@@ -903,7 +903,7 @@ impl<T: Config> CurrencyIdRegister<CurrencyId> for AssetIdMaps<T> {
 	}
 
 	fn register_blp_metadata(pool_id: PoolId, decimals: u8) -> DispatchResult {
-		let name = scale_info::prelude::format!("Bifrost Stable Pool Token {}", pool_id)
+		let name = scale_info::prelude::format!("Tangle Stable Pool Token {}", pool_id)
 			.as_bytes()
 			.to_vec();
 		let symbol = scale_info::prelude::format!("BLP{}", pool_id).as_bytes().to_vec();

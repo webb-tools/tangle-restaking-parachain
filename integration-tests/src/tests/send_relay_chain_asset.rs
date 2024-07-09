@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::mock::{
-	Bifrost, BifrostTokens, BifrostXTokens, Relay, RelayBalances, RelaySystem, TestNet, ALICE, BOB,
+	Tangle, TangleTokens, TangleXTokens, Relay, RelayBalances, RelaySystem, TestNet, ALICE, BOB,
 };
 use cumulus_primitives_core::ParaId;
 use frame_support::{assert_ok, traits::Currency};
@@ -38,8 +38,8 @@ fn send_relay_chain_asset_to_relay_chain() {
 		);
 	});
 
-	Bifrost::execute_with(|| {
-		assert_ok!(BifrostXTokens::transfer(
+	Tangle::execute_with(|| {
+		assert_ok!(TangleXTokens::transfer(
 			Some(ALICE).into(),
 			CurrencyId::Token2(0),
 			50_000_000_000,
@@ -48,7 +48,7 @@ fn send_relay_chain_asset_to_relay_chain() {
 			),
 			WeightLimit::Unlimited
 		));
-		assert_eq!(BifrostTokens::free_balance(CurrencyId::Token2(0), &ALICE), 50_000_000_000);
+		assert_eq!(TangleTokens::free_balance(CurrencyId::Token2(0), &ALICE), 50_000_000_000);
 	});
 
 	Relay::execute_with(|| {

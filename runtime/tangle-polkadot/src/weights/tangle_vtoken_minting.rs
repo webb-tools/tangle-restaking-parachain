@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_lst_minting.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_lst_minting::WeightInfo for TangleWeight<T> {
 	// Storage: LstMinting MinimumMint (r:1 w:1)
 	// Proof: LstMinting MinimumMint (max_values: None, max_size: Some(38), added: 2513, mode: MaxEncodedLen)
 	// Storage: AssetRegistry CurrencyMetadatas (r:1 w:0)

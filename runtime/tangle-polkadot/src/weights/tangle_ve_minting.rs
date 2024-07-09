@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_ve_minting.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_ve_minting::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_ve_minting::WeightInfo for TangleWeight<T> {
 	// Storage: VeMinting VeConfigs (r:1 w:1)
 	// Proof Skipped: VeMinting VeConfigs (max_values: Some(1), max_size: None, mode: Measured)
 	// Storage: System Number (r:1 w:0)

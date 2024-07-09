@@ -159,7 +159,7 @@ fn update_native_asset_works() {
 fn register_token_metadata_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"Tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
@@ -178,7 +178,7 @@ fn register_token_metadata_should_work() {
 fn register_lst_metadata_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"Tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
@@ -286,7 +286,7 @@ fn register_vsbond_metadata_should_work() {
 fn register_multilocation_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"Tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,
@@ -340,7 +340,7 @@ fn register_multilocation_should_work() {
 fn force_set_multilocation_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let metadata = AssetMetadata {
-			name: b"Bifrost Native Coin".to_vec(),
+			name: b"Tangle Native Coin".to_vec(),
 			symbol: b"BNC".to_vec(),
 			decimals: 12,
 			minimal_balance: 0,

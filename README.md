@@ -3,7 +3,7 @@
 <h1 align="left">Tangle Parachain</a></h1>
 
 <p align="left">
-Tangle's Parachain is a liquid staking system built using [Bifrost's liquid staking modules.](https://github.com/bifrost-finance/bifrost/tree/develop/pallets) We leverage the liquid staking primarily for [Tangle's restaking infrastructure](https://github.com/webb-tools/tangle), rather than DeFi, as our main intention of creating liquid staking tokens in the Polkadot/Kusama ecosystem. The liquid staking system allows users to bond and nominate their chosen validators (or use programmatic defaults) while minting a liquid staked token representative of their nominations.
+Tangle's Parachain is a liquid staking system built using [Tangle's liquid staking modules.](https://github.com/bifrost-finance/bifrost/tree/develop/pallets) We leverage the liquid staking primarily for [Tangle's restaking infrastructure](https://github.com/webb-tools/tangle), rather than DeFi, as our main intention of creating liquid staking tokens in the Polkadot/Kusama ecosystem. The liquid staking system allows users to bond and nominate their chosen validators (or use programmatic defaults) while minting a liquid staked token representative of their nominations.
 
 Tangle's Parachain allows easy access to Polkadot liquidity for augmenting the security of Tangle's restaking infrastructure on Tangle mainnet. By minting liquid staked assets, users gain opportunities to secure restaking services, specifically [Blueprints](https://docs.tangle.tools/developers/blueprints), deployed on Tangle.
 

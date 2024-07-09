@@ -28,7 +28,7 @@ const LOG_TARGET: &str = "asset-registry::migration";
 pub fn update_blp_metadata<T: Config>(pool_count: u32) -> Weight {
 	for pool_id in 0..pool_count {
 		if let Some(old_metadata) = CurrencyMetadatas::<T>::get(CurrencyId::BLP(pool_id)) {
-			let name = scale_info::prelude::format!("Bifrost Stable Pool Token {}", pool_id)
+			let name = scale_info::prelude::format!("Tangle Stable Pool Token {}", pool_id)
 				.as_bytes()
 				.to_vec();
 			let symbol = scale_info::prelude::format!("BLP{}", pool_id).as_bytes().to_vec();
@@ -60,7 +60,7 @@ impl<T: Config> OnRuntimeUpgrade for InsertBNCMetadata<T> {
 		CurrencyMetadatas::<T>::insert(
 			BNC,
 			AssetMetadata {
-				name: b"Bifrost Native Token".to_vec(),
+				name: b"Tangle Native Token".to_vec(),
 				symbol: b"BNC".to_vec(),
 				decimals: 12,
 				minimal_balance: BalanceOf::<T>::unique_saturated_from(10_000_000_000u128),
@@ -87,7 +87,7 @@ impl<T: Config> OnRuntimeUpgrade for InsertBNCMetadata<T> {
 		assert_eq!(
 			metadata,
 			Some(AssetMetadata {
-				name: b"Bifrost Native Token".to_vec(),
+				name: b"Tangle Native Token".to_vec(),
 				symbol: b"BNC".to_vec(),
 				decimals: 12,
 				minimal_balance: BalanceOf::<T>::unique_saturated_from(10_000_000_000u128),

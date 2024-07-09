@@ -44,6 +44,7 @@ use xcm_builder::{
 	Account32Hash, DescribeAllTerminal, DescribeFamily, FrameTransactionalProcessor,
 	HashedDescription, TrailingSetTopicAsId,
 };
+use xcm::v4::{prelude::*, Asset, AssetId, InteriorLocation, Location};
 pub use xcm_builder::{
 	AccountId32Aliases, AllowKnownQueryResponses, AllowSubscriptionsFrom,
 	AllowTopLevelPaidExecutionFrom, EnsureXcmOrigin, FixedRateOfFungible, FixedWeightBounds,
@@ -66,12 +67,12 @@ pub struct TangleAssetMatcher<CurrencyId, CurrencyIdConvert>(
 impl<CurrencyId, CurrencyIdConvert, Amount> MatchesFungible<Amount>
 	for TangleAssetMatcher<CurrencyId, CurrencyIdConvert>
 where
-	CurrencyIdConvert: Convert<MultiLocation, Option<CurrencyId>>,
+	CurrencyIdConvert: Convert<Location, Option<CurrencyId>>,
 	Amount: TryFrom<u128>,
 {
-	fn matches_fungible(a: &MultiAsset) -> Option<Amount> {
-		if let (Fungible(ref amount), Concrete(ref location)) = (&a.fun, &a.id) {
-			if CurrencyIdConvert::convert(*location).is_some() {
+	fn matches_fungible(a: &Asset) -> Option<Amount> {
+		if let (Fungible(ref amount), AssetId(ref location)) = (&a.fun, &a.id) {
+			if CurrencyIdConvert::convert(location.clone()).is_some() {
 				return CheckedConversion::checked_from(*amount);
 			}
 		}
@@ -82,11 +83,11 @@ where
 /// A `FilterAssetLocation` implementation. Filters multi native assets whose
 /// reserve is same with `origin`.
 pub struct MultiNativeAsset<ReserveProvider>(PhantomData<ReserveProvider>);
-impl<ReserveProvider> ContainsPair<MultiAsset, MultiLocation> for MultiNativeAsset<ReserveProvider>
+impl<ReserveProvider> ContainsPair<Asset, Location> for MultiNativeAsset<ReserveProvider>
 where
 	ReserveProvider: Reserve,
 {
-	fn contains(asset: &MultiAsset, origin: &MultiLocation) -> bool {
+	fn contains(asset: &Asset, origin: &Location) -> bool {
 		if let Some(ref reserve) = ReserveProvider::reserve(asset) {
 			if reserve == origin {
 				return true;
@@ -204,7 +205,7 @@ parameter_types! {
 	pub const RelayNetwork: NetworkId = NetworkId::Polkadot;
 	pub RelayChainOrigin: RuntimeOrigin = cumulus_pallet_xcm::Origin::Relay.into();
 	pub SelfParaChainId: CumulusParaId = ParachainInfo::parachain_id();
-	pub UniversalLocation: InteriorMultiLocation = X2(GlobalConsensus(RelayNetwork::get()), Parachain(ParachainInfo::parachain_id().into()));
+	pub UniversalLocation: InteriorLocation = [GlobalConsensus(RelayNetwork::get()), Parachain(ParachainInfo::parachain_id().into())].into();
 }
 
 /// Type for specifying how a `MultiLocation` can be converted into an `AccountId`. This is used
@@ -254,20 +255,13 @@ parameter_types! {
 	pub const MaxInstructions: u32 = 100;
 }
 
-match_types! {
-	pub type ParentOrParentsExecutivePlurality: impl Contains<MultiLocation> = {
-		MultiLocation { parents: 1, interior: Here } |
-		MultiLocation { parents: 1, interior: X1(Plurality { id: BodyId::Executive, .. }) }
-	};
-}
-
 /// Barrier allowing a top level paid message with DescendOrigin instruction
 pub const DEFAULT_PROOF_SIZE: u64 = 64 * 1024;
 pub const DEFAULT_REF_TIMR: u64 = 10_000_000_000;
 pub struct AllowTopLevelPaidExecutionDescendOriginFirst<T>(PhantomData<T>);
-impl<T: Contains<MultiLocation>> ShouldExecute for AllowTopLevelPaidExecutionDescendOriginFirst<T> {
+impl<T: Contains<Location>> ShouldExecute for AllowTopLevelPaidExecutionDescendOriginFirst<T> {
 	fn should_execute<Call>(
-		origin: &MultiLocation,
+		origin: &Location,
 		message: &mut [Instruction<Call>],
 		max_weight: Weight,
 		_weight_credit: &mut Properties,
@@ -340,7 +334,7 @@ pub type TangleAssetTransactor = MultiCurrencyAdapter<
 	CurrencyId,
 	TangleCurrencyIdConvert<SelfParaChainId>,
 	DepositToAlternative<TangleTreasuryAccount, Currencies, CurrencyId, AccountId, Balance>,
->;
+	>;
 
 parameter_types! {
 	pub DotPerSecond: (AssetId,u128, u128) = (MultiLocation::parent().into(), dot_per_second::<Runtime>(),0);
@@ -385,9 +379,12 @@ parameter_types! {
 
 pub struct ToTreasury;
 impl TakeRevenue for ToTreasury {
-	fn take_revenue(revenue: MultiAsset) {
-		if let MultiAsset { id: Concrete(location), fun: Fungible(amount) } = revenue {
-			if let Some(currency_id) = TangleCurrencyIdConvert::<SelfParaChainId>::convert(location)
+	fn take_revenue(revenue: Asset) {
+		if let Asset { id: AssetId(location), fun: xcm::v4::Fungibility::Fungible(amount) } =
+			revenue
+		{
+			if let Some(currency_id) =
+				TangleCurrencyIdConvert::<SelfParaChainId>::convert(location)
 			{
 				let _ = Currencies::deposit(currency_id, &TangleTreasuryAccount::get(), amount);
 			}
@@ -513,8 +510,7 @@ impl xcm_executor::Config for XcmConfig {
 	type AssetTrap = TangleDropAssets<ToTreasury>;
 	type Barrier = Barrier;
 	type RuntimeCall = RuntimeCall;
-	type IsReserve =
-		(IsForeignNativeAssetFrom<AssetHubLocation>, MultiNativeAsset<RelativeReserveProvider>);
+	type IsReserve = MultiNativeAsset<RelativeReserveProvider>;
 	type IsTeleporter = ();
 	type UniversalLocation = UniversalLocation;
 	type OriginConverter = XcmOriginToTransactDispatchOrigin;
@@ -747,7 +743,7 @@ impl orml_unknown_tokens::Config for Runtime {
 
 impl orml_xcm::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
-	type SovereignOrigin = MoreThanHalfCouncil;
+	type SovereignOrigin = EnsureRoot<AccountId>;
 }
 
 pub struct DummySalpHelper;
@@ -772,7 +768,7 @@ parameter_types! {
 
 impl tangle_xcm_interface::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
-	type UpdateOrigin = TechAdminOrCouncil;
+	type UpdateOrigin = EnsureRoot<AccountId>;
 	type MultiCurrency = Currencies;
 	type RelayNetwork = RelayNetwork;
 	type RelaychainCurrencyId = RelayCurrencyId;

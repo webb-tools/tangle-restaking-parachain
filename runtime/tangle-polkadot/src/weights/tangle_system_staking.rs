@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_system_staking.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_system_staking::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_system_staking::WeightInfo for TangleWeight<T> {
 	// Storage: SystemStaking TokenList (r:1 w:0)
 	// Proof Skipped: SystemStaking TokenList (max_values: Some(1), max_size: None, mode: Measured)
 	// Storage: SystemStaking Round (r:1 w:0)

@@ -52,8 +52,8 @@ use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
 use sp_std::marker::PhantomData;
 
 /// Weight functions for tangle_flexible_fee.
-pub struct BifrostWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> tangle_flexible_fee::WeightInfo for BifrostWeight<T> {
+pub struct TangleWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> tangle_flexible_fee::WeightInfo for TangleWeight<T> {
 	// Storage: FlexibleFee UserDefaultFeeCurrency (r:0 w:1)
 	// Proof Skipped: FlexibleFee UserDefaultFeeCurrency (max_values: None, max_size: None, mode: Measured)
 	fn set_user_default_fee_currency() -> Weight {

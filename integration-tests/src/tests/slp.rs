@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::mock::{bifrost, Bifrost, BifrostSlp, Relay, RelayBalances, RelayXcmPallet};
+use crate::mock::{bifrost, Tangle, TangleSlp, Relay, RelayBalances, RelayXcmPallet};
 use frame_support::{assert_ok, traits::Currency};
 use sp_runtime::{
 	traits::{AccountIdConversion, Convert},
@@ -89,27 +89,27 @@ fn slp_setup() {
 		validators_maximum: 300,
 	};
 
-	Bifrost::execute_with(|| {
-		assert_ok!(BifrostSlp::set_minimums_and_maximums(
+	Tangle::execute_with(|| {
+		assert_ok!(TangleSlp::set_minimums_and_maximums(
 			bifrost::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
 			Some(mins_and_maxs)
 		));
 
 		// set fee_source for ksm to be treasury
-		assert_ok!(BifrostSlp::set_fee_source(
+		assert_ok!(TangleSlp::set_fee_source(
 			bifrost::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
 			Some((tangle_TREASURY_MULTILOCATION, 1 * DOT_DECIMALS))
 		));
 
-		assert_ok!(BifrostSlp::initialize_delegator(
+		assert_ok!(TangleSlp::initialize_delegator(
 			bifrost::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
 			None
 		));
 
-		assert_ok!(BifrostSlp::add_validator(
+		assert_ok!(TangleSlp::add_validator(
 			bifrost::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
 			Box::new(KUSAMA_ALICE_STASH_MULTILOCATION),
@@ -120,12 +120,12 @@ fn slp_setup() {
 #[test]
 fn relaychain_staking_bond() {
 	slp_setup();
-	Bifrost::execute_with(|| {
+	Tangle::execute_with(|| {
 		let delegator = tangle_polkadot_runtime::SubAccountIndexMultiLocationConvertor::convert((
 			0,
 			CurrencyId::Token2(0),
 		));
-		assert_ok!(BifrostSlp::bond(
+		assert_ok!(TangleSlp::bond(
 			bifrost::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
 			Box::new(delegator),

@@ -526,7 +526,7 @@ pub mod pallet {
 	const STORAGE_VERSION: StorageVersion = StorageVersion::new(3);
 
 	/// One operate origin(can be a multisig account) for a currency. An operating origins are
-	/// normal account in Bifrost chain.
+	/// normal account in Tangle chain.
 	#[pallet::storage]
 	#[pallet::getter(fn get_operate_origin)]
 	pub type OperateOrigins<T> = StorageMap<_, Blake2_128Concat, CurrencyId, AccountIdOf<T>>;

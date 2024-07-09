@@ -32,10 +32,10 @@ use polkadot_parachain_primitives::primitives::Sibling;
 use tangle_asset_registry::AssetIdMaps;
 use tangle_polkadot_runtime::{
 	xcm_config::{
-		BaseXcmWeight, BifrostAccountIdToLocation, BifrostAssetTransactor, MaxAssetsForTransfer,
+		BaseXcmWeight, TangleAccountIdToLocation, TangleAssetTransactor, MaxAssetsForTransfer,
 		ParachainMinFee, SelfRelativeLocation, UniversalLocation,
 	},
-	BifrostCurrencyIdConvert, BifrostTreasuryAccount, LstMinting, MaxLengthLimit,
+	TangleCurrencyIdConvert, TangleTreasuryAccount, LstMinting, MaxLengthLimit,
 	MaxRefundPerBlock, MaxTypeEntryPerBlock, NativeCurrencyId, SelfParaChainId,
 	SubAccountIndexMultiLocationConvertor, XcmInterface,
 };
@@ -118,8 +118,8 @@ impl orml_xtokens::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Balance = Balance;
 	type CurrencyId = CurrencyId;
-	type CurrencyIdConvert = BifrostCurrencyIdConvert<ParachainInfo>;
-	type AccountIdToLocation = BifrostAccountIdToLocation;
+	type CurrencyIdConvert = TangleCurrencyIdConvert<ParachainInfo>;
+	type AccountIdToLocation = TangleAccountIdToLocation;
 	type SelfLocation = SelfRelativeLocation;
 	type LocationsFilter = Everything;
 	type MinXcmFee = ParachainMinFee;
@@ -169,7 +169,7 @@ pub struct XcmConfig;
 impl Config for XcmConfig {
 	type RuntimeCall = RuntimeCall;
 	type XcmSender = XcmRouter;
-	type AssetTransactor = BifrostAssetTransactor;
+	type AssetTransactor = TangleAssetTransactor;
 	type OriginConverter = XcmOriginToCallOrigin;
 	type IsReserve = NativeAsset;
 	type IsTeleporter = ();
@@ -243,7 +243,7 @@ impl tangle_currencies::Config for Runtime {
 //     type RelaychainCurrencyId = RelayCurrencyId;
 //     type ParachainSovereignAccount = ParachainAccount;
 //     type XcmExecutor = XcmExecutor<XcmConfig>;
-//     type AccountIdToLocation = BifrostAccountIdToLocation;
+//     type AccountIdToLocation = TangleAccountIdToLocation;
 //     type SalpHelper = Salp;
 //     type ParachainId = SelfParaChainId;
 //     type CallBackTimeOut = ConstU32<10>;
@@ -305,7 +305,7 @@ impl tangle_slp::Config for Runtime {
 	type ChannelCommission = ();
 	type StablePoolHandler = ();
 	type AssetIdMaps = AssetIdMaps<Runtime>;
-	type TreasuryAccount = BifrostTreasuryAccount;
+	type TreasuryAccount = TangleTreasuryAccount;
 }
 
 impl tangle_asset_registry::Config for Runtime {
