@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::mock::{
-	Tangle, TangleTokens, TangleXTokens, Relay, RelayBalances, RelaySystem, TestNet, ALICE, BOB,
+	Relay, RelayBalances, RelaySystem, Tangle, TangleTokens, TangleXTokens, TestNet, ALICE, BOB,
 };
 use cumulus_primitives_core::ParaId;
 use frame_support::{assert_ok, traits::Currency};

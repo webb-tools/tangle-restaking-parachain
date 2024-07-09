@@ -32,12 +32,12 @@ use polkadot_parachain_primitives::primitives::Sibling;
 use tangle_asset_registry::AssetIdMaps;
 use tangle_polkadot_runtime::{
 	xcm_config::{
-		BaseXcmWeight, TangleAccountIdToLocation, TangleAssetTransactor, MaxAssetsForTransfer,
-		ParachainMinFee, SelfRelativeLocation, UniversalLocation,
+		BaseXcmWeight, MaxAssetsForTransfer, ParachainMinFee, SelfRelativeLocation,
+		TangleAccountIdToLocation, TangleAssetTransactor, UniversalLocation,
 	},
-	TangleCurrencyIdConvert, TangleTreasuryAccount, LstMinting, MaxLengthLimit,
-	MaxRefundPerBlock, MaxTypeEntryPerBlock, NativeCurrencyId, SelfParaChainId,
-	SubAccountIndexMultiLocationConvertor, XcmInterface,
+	LstMinting, MaxLengthLimit, MaxRefundPerBlock, MaxTypeEntryPerBlock, NativeCurrencyId,
+	SelfParaChainId, SubAccountIndexMultiLocationConvertor, TangleCurrencyIdConvert,
+	TangleTreasuryAccount, XcmInterface,
 };
 use tangle_primitives::CurrencyId;
 use tangle_slp::QueryResponseManager;

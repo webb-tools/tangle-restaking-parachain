@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::mock::{bifrost, Tangle, TangleSlp, Relay, RelayBalances, RelayXcmPallet};
+use crate::mock::{bifrost, Relay, RelayBalances, RelayXcmPallet, Tangle, TangleSlp};
 use frame_support::{assert_ok, traits::Currency};
 use sp_runtime::{
 	traits::{AccountIdConversion, Convert},
