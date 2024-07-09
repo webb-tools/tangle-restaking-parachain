@@ -100,8 +100,7 @@ pub use tangle_primitives::{
 };
 pub use tangle_runtime_common::{
 	cent, constants::time::*, dollar, micro, milli, millicent, AuraId, CouncilCollective,
-	EnsureRootOrAllTechnicalCommittee, SlowAdjustingFeeUpdate,
-	TechnicalCollective,
+	EnsureRootOrAllTechnicalCommittee, SlowAdjustingFeeUpdate, TechnicalCollective,
 };
 use tangle_slp::QueryId;
 
@@ -292,10 +291,10 @@ impl pallet_timestamp::Config for Runtime {
 }
 
 parameter_types! {
-	pub ExistentialDeposit: Balance = 10 * MILLIBNC;
-	pub TransferFee: Balance = 1 * MILLIBNC;
-	pub CreationFee: Balance = 1 * MILLIBNC;
-	pub TransactionByteFee: Balance = 16 * MICROBNC;
+	pub ExistentialDeposit: Balance = 10 * MILLITNT;
+	pub TransferFee: Balance = 1 * MILLITNT;
+	pub CreationFee: Balance = 1 * MILLITNT;
+	pub TransactionByteFee: Balance = 16 * MICROTNT;
 }
 
 impl pallet_utility::Config for Runtime {
@@ -537,34 +536,35 @@ impl pallet_balances::Config for Runtime {
 
 parameter_types! {
 	pub const ProposalBond: Permill = Permill::from_percent(5);
-	pub ProposalBondMinimum: Balance = 100 * BNCS;
-	pub ProposalBondMaximum: Balance = 500 * BNCS;
+	pub ProposalBondMinimum: Balance = 100 * TNT;
+	pub ProposalBondMaximum: Balance = 500 * TNT;
 	pub const SpendPeriod: BlockNumber = 6 * DAYS;
 	pub const Burn: Permill = Permill::from_perthousand(0);
 	pub const TipCountdown: BlockNumber = 1 * DAYS;
 	pub const TipFindersFee: Percent = Percent::from_percent(20);
-	pub TipReportDepositBase: Balance = 1 * BNCS;
+	pub TipReportDepositBase: Balance = 1 * TNT;
 	pub DataDepositPerByte: Balance = 10 * cent::<Runtime>(NativeCurrencyId::get());
-	pub BountyDepositBase: Balance = 1 * BNCS;
+	pub BountyDepositBase: Balance = 1 * TNT;
 	pub const BountyDepositPayoutDelay: BlockNumber = 4 * DAYS;
 	pub const BountyUpdatePeriod: BlockNumber = 90 * DAYS;
 	pub const MaximumReasonLength: u32 = 16384;
 	pub const PayoutSpendPeriod: BlockNumber = 30 * DAYS;
 	pub const BountyCuratorDeposit: Permill = Permill::from_percent(50);
-	pub BountyValueMinimum: Balance = 10 * BNCS;
+	pub BountyValueMinimum: Balance = 10 * TNT;
 	pub const MaxApprovals: u32 = 100;
 
 	pub const CuratorDepositMultiplier: Permill = Permill::from_percent(50);
-	pub CuratorDepositMin: Balance = 1 * BNCS;
-	pub CuratorDepositMax: Balance = 100 * BNCS;
-	pub const MaxBalance: Balance = 800_000 * BNCS;
+	pub CuratorDepositMin: Balance = 1 * TNT;
+	pub CuratorDepositMax: Balance = 100 * TNT;
+	pub const MaxBalance: Balance = 800_000 * TNT;
+	pub const SpendLimit: Balance = 100 * TNT;
 }
 
 type ApproveOrigin = EnsureRoot<AccountId>;
 
 impl pallet_treasury::Config for Runtime {
 	type ApproveOrigin = ApproveOrigin;
-	type SpendOrigin = EnsureRoot<AccountId>;
+	type SpendOrigin = frame_system::EnsureRootWithSuccess<Self::AccountId, SpendLimit>;
 	type Burn = Burn;
 	type BurnDestination = ();
 	type Currency = Balances;
@@ -763,12 +763,11 @@ parameter_types! {
 
 pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLocation {
 	match currency_id {
-		// AccountKey20 format of tangle sibling para account
-		CurrencyId::Token(TokenSymbol::MOVR) => MultiLocation::new(
+		CurrencyId::Token2(GLMR_TOKEN_ID) => MultiLocation::new(
 			1,
-			X2(
-				Parachain(parachains::moonriver::ID.into()),
-				AccountKey20 {
+			xcm::v3::Junctions::X2(
+				xcm::v3::Junction::Parachain(parachains::moonbeam::ID.into()),
+				xcm::v3::Junction::AccountKey20 {
 					network: None,
 					key: Slp::derivative_account_id_20(
 						polkadot_parachain_primitives::primitives::Sibling::from(
@@ -781,10 +780,10 @@ pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLoca
 				},
 			),
 		),
-		// Only relay chain use the tangle para account with "para"
-		CurrencyId::Token(TokenSymbol::KSM) => MultiLocation::new(
+		// Only relay chain use the Tangle para account with "para"
+		CurrencyId::Token2(DOT_TOKEN_ID) => xcm::v3::Location::new(
 			1,
-			X1(AccountId32 {
+			xcm::v3::Junctions::X1(xcm::v3::Junction::AccountId32 {
 				network: None,
 				id: Utility::derivative_account_id(
 					ParachainInfo::get().into_account_truncating(),
@@ -793,10 +792,10 @@ pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLoca
 				.into(),
 			}),
 		),
-		// tangle Kusama Native token
-		CurrencyId::Native(TokenSymbol::TNT) => MultiLocation::new(
+		// Tangle Polkadot Native token
+		CurrencyId::Native(TokenSymbol::TNT) => xcm::v3::Location::new(
 			0,
-			X1(AccountId32 {
+			xcm::v3::Junctions::X1(xcm::v3::Junction::AccountId32 {
 				network: None,
 				id: Utility::derivative_account_id(
 					polkadot_parachain_primitives::primitives::Sibling::from(ParachainInfo::get())
@@ -806,17 +805,17 @@ pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLoca
 				.into(),
 			}),
 		),
-		// Other sibling chains use the tangle para account with "sibl"
+		// Other sibling chains use the Tangle para account with "sibl"
 		_ => {
 			// get parachain id
 			if let Some(location) = TangleCurrencyIdConvert::<SelfParaChainId>::convert(currency_id)
 			{
 				if let Some(Parachain(para_id)) = location.interior().first() {
-					MultiLocation::new(
+					xcm::v3::Location::new(
 						1,
-						X2(
-							Parachain(*para_id),
-							AccountId32 {
+						xcm::v3::Junctions::X2(
+							xcm::v3::Junction::Parachain(*para_id),
+							xcm::v3::Junction::AccountId32 {
 								network: None,
 								id: Utility::derivative_account_id(
 									polkadot_parachain_primitives::primitives::Sibling::from(
@@ -830,10 +829,10 @@ pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLoca
 						),
 					)
 				} else {
-					MultiLocation::default()
+					xcm::v3::Location::default()
 				}
 			} else {
-				MultiLocation::default()
+				xcm::v3::Location::default()
 			}
 		},
 	}
@@ -865,7 +864,7 @@ impl QueryResponseManager<QueryId, cumulus_primitives_core::Location, BlockNumbe
 	}
 
 	fn create_query_record(
-		responder: Location,
+		responder: cumulus_primitives_core::Location,
 		call_back: Option<RuntimeCall>,
 		timeout: BlockNumber,
 	) -> u64 {
@@ -1031,7 +1030,7 @@ impl tangle_lst_minting::OnRedeemSuccess<AccountId, CurrencyId, Balance> for OnR
 parameter_types! {
 	pub const MaximumUnlockIdOfUser: u32 = 10;
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 50;
-	pub TangleFeeAccount: PalletId = TreasuryPalletId::get();
+	pub TangleFeeAccount: AccountId = TreasuryPalletId::get().into_account_truncating();
 }
 
 // Define a dummy struct that will implement the trait
@@ -1070,17 +1069,11 @@ impl tangle_lst_minting::Config for Runtime {
 	type ChannelCommission = ();
 	type MaxLockRecords = ConstU32<100>;
 	type RedeemFeeAccount = TangleFeeAccount;
-	type IncentivePoolAccount = TangleFeeAccount;
+	type IncentivePoolAccount = TreasuryPalletId;
 	type AssetIdMaps = AssetIdMaps<Runtime>;
 	type StakingAgent = Slp;
 	type AssetHandler = Assets;
 	type NftHandler = Nfts;
-}
-
-impl DataFeeder<CurrencyId, TimeStampedPrice, AccountId> for AggregatedDataProvider {
-	fn feed_value(_: Option<AccountId>, _: CurrencyId, _: TimeStampedPrice) -> DispatchResult {
-		Err("Not supported".into())
-	}
 }
 
 parameter_types! {
