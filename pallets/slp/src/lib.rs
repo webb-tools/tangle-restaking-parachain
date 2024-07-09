@@ -2291,9 +2291,32 @@ pub mod pallet {
 	}
 }
 
-// impl tangle_primitives::StakingAgentDelegator<AccountId, MultiLocation, CurrencyId, Balance, Error> for Pallet<T>{
+impl<T: Config>
+	tangle_primitives::staking::StakingAgentDelegator<
+		T::AccountId,
+		MultiLocation,
+		CurrencyIdOf<T>,
+		BalanceOf<T>,
+		DispatchError,
+	> for Pallet<T>
+{
+	/// Delegate to some validators.
+	fn delegate(
+		who: &T::AccountId,
+		targets: &Vec<MultiLocation>,
+		currency_id: CurrencyIdOf<T>,
+		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
+	) -> Result<QueryId, DispatchError> {
+		// TODO : Refactor this
+		let location =
+			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
 
-// }
+		let staking_agent = Self::get_currency_staking_agent(currency_id)?;
+		let query_id = staking_agent.delegate(&location, &targets, currency_id, weight_and_fee)?;
+		let query_id_hash = <T as frame_system::Config>::Hashing::hash(&query_id.encode());
+		Ok(query_id)
+	}
+}
 
 pub struct DerivativeAccountProvider<T, F>(PhantomData<(T, F)>);
 

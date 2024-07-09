@@ -173,7 +173,7 @@ pub mod pallet {
 			MultiLocation,
 			CurrencyId,
 			BalanceOf<Self>,
-			Error<Self>,
+			DispatchError,
 		>;
 
 		type AssetHandler: fungibles::Inspect<Self::AccountId> + fungibles::Create<Self::AccountId>;

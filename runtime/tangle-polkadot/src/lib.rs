@@ -27,7 +27,6 @@ use core::convert::TryInto;
 use frame_support::traits::AsEnsureOriginWithArg;
 use tangle_primitives::staking::QueryResponseManager;
 use tangle_primitives::SlpxOperator;
-use pallet_nfts::PalletFeatures;
 use tangle_slp::DerivativeAccountProvider;
 // A few exports that help ease life for downstream crates.
 pub use frame_support::{
@@ -795,7 +794,7 @@ pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLoca
 			}),
 		),
 		// Tangle Polkadot Native token
-		CurrencyId::Native(TokenSymbol::TNT) => xcm::v3::Location::new(
+		CurrencyId::Native(TokenSymbol::BNC) => xcm::v3::Location::new(
 			0,
 			xcm::v3::Junctions::X1(xcm::v3::Junction::AccountId32 {
 				network: None,
@@ -809,33 +808,34 @@ pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLoca
 		),
 		// Other sibling chains use the Tangle para account with "sibl"
 		_ => {
-			// get parachain id
-			if let Some(location) = TangleCurrencyIdConvert::<SelfParaChainId>::convert(currency_id)
-			{
-				if let Some(Parachain(para_id)) = location.interior().first() {
-					xcm::v3::Location::new(
-						1,
-						xcm::v3::Junctions::X2(
-							xcm::v3::Junction::Parachain(*para_id),
-							xcm::v3::Junction::AccountId32 {
-								network: None,
-								id: Utility::derivative_account_id(
-									polkadot_parachain_primitives::primitives::Sibling::from(
-										ParachainInfo::get(),
-									)
-									.into_account_truncating(),
-									index,
-								)
-								.into(),
-							},
-						),
-					)
-				} else {
-					xcm::v3::Location::default()
-				}
-			} else {
-				xcm::v3::Location::default()
-			}
+			// // get parachain id
+			// if let Some(location) =
+			// 	TangleCurrencyIdConvert::<SelfParaChainId>::convert(currency_id)
+			// {
+			// 	if let Some(Parachain(para_id)) = location.interior().first() {
+			// 		xcm::v3::Location::new(
+			// 			1,
+			// 			xcm::v3::Junctions::X2(
+			// 				xcm::v3::Junction::Parachain(*para_id),
+			// 				xcm::v3::Junction::AccountId32 {
+			// 					network: None,
+			// 					id: Utility::derivative_account_id(
+			// 						polkadot_parachain_primitives::primitives::Sibling::from(
+			// 							ParachainInfo::get(),
+			// 						)
+			// 						.into_account_truncating(),
+			// 						index,
+			// 					)
+			// 					.into(),
+			// 				},
+			// 			),
+			// 		)
+			// 	} else {
+			// 		xcm::v3::Location::default()
+			// 	}
+			// } else {
+			xcm::v3::Location::default()
+			//}
 		},
 	}
 }
@@ -1178,7 +1178,6 @@ where
 
 // zenlink runtime end
 
-
 parameter_types! {
 	pub const AssetDeposit: u128 = 1_000_000;
 	pub const MetadataDepositBase: u128 = 1_000_000;
@@ -1213,43 +1212,32 @@ impl pallet_assets::Config for Runtime {
 }
 
 parameter_types! {
-	pub NftsPalletFeatures: PalletFeatures = PalletFeatures::all_enabled();
-	pub const NftsMaxDeadlineDuration: BlockNumber = 12 * 30 * DAYS;
-	// re-use the Uniques deposits
-	pub const NftsCollectionDeposit: Balance = 1_000_000;
-	pub const NftsItemDeposit: Balance = 1_000_000;
-	pub const NftsMetadataDepositBase: Balance = 1_000_000;
-	pub const NftsAttributeDepositBase: Balance = 1_000_000;
-	pub const NftsDepositPerByte: Balance = 1_000_000;
+	pub const UniquesCollectionDeposit: Balance = TNT / 10; // 1 / 10 UNIT deposit to create a collection
+	pub const UniquesItemDeposit: Balance = TNT / 1_000; // 1 / 1000 UNIT deposit to mint an item
+	pub const UniquesMetadataDepositBase: Balance = deposit(1, 129);
+	pub const UniquesAttributeDepositBase: Balance = deposit(1, 0);
+	pub const UniquesDepositPerByte: Balance = deposit(0, 1);
 }
 
-impl pallet_nfts::Config for Runtime {
+impl pallet_uniques::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type CollectionId = u32;
 	type ItemId = u32;
 	type Currency = Balances;
-	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
 	type ForceOrigin = EnsureRoot<AccountId>;
-	type Locker = ();
-	type CollectionDeposit = NftsCollectionDeposit;
-	type ItemDeposit = NftsItemDeposit;
-	type MetadataDepositBase = NftsMetadataDepositBase;
-	type AttributeDepositBase = NftsAttributeDepositBase;
-	type DepositPerByte = NftsDepositPerByte;
-	type StringLimit = ConstU32<256>;
-	type KeyLimit = ConstU32<64>;
-	type ValueLimit = ConstU32<256>;
-	type ApprovalsLimit = ConstU32<20>;
-	type ItemAttributesApprovalsLimit = ConstU32<30>;
-	type MaxTips = ConstU32<10>;
-	type MaxDeadlineDuration = NftsMaxDeadlineDuration;
-	type MaxAttributesPerCall = ConstU32<10>;
-	type Features = NftsPalletFeatures;
-	type OffchainSignature = Signature;
-	type OffchainPublic = <Signature as Verify>::Signer;
+	type CollectionDeposit = UniquesCollectionDeposit;
+	type ItemDeposit = UniquesItemDeposit;
+	type MetadataDepositBase = UniquesMetadataDepositBase;
+	type AttributeDepositBase = UniquesAttributeDepositBase;
+	type DepositPerByte = UniquesDepositPerByte;
+	type StringLimit = ConstU32<128>;
+	type KeyLimit = ConstU32<32>;
+	type ValueLimit = ConstU32<64>;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
 	type Helper = ();
+	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
+	type Locker = ();
 }
 
 construct_runtime! {
@@ -1306,7 +1294,7 @@ construct_runtime! {
 		Slp: tangle_slp = 116,
 		XcmInterface: tangle_xcm_interface = 117,
 		Assets: pallet_assets = 118,
-		Nfts: pallet_nfts = 119
+		Nfts: pallet_uniques = 119
 	}
 }
 
