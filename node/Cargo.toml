@@ -53,6 +53,7 @@ sp-runtime = { workspace = true }
 sp-timestamp = { workspace = true }
 substrate-frame-rpc-system = { workspace = true }
 substrate-prometheus-endpoint = { workspace = true }
+polkadot-service = { workspace = true }
 
 # Polkadot
 polkadot-cli = { workspace = true , features = ["rococo-native"] }
@@ -85,6 +86,7 @@ runtime-benchmarks = [
 	"polkadot-primitives/runtime-benchmarks",
 	"sc-service/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
+	"polkadot-service/runtime-benchmarks",
 ]
 try-runtime = [
 	"tangle-polkadot-runtime/try-runtime",
