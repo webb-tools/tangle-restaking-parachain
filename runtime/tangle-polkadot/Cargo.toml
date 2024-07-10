@@ -123,7 +123,7 @@ tangle-xcm-interface = { workspace = true }
 tangle-parachain-staking = { workspace = true }
 
 [build-dependencies]
-substrate-wasm-builder = { workspace = true, optional = true }
+substrate-wasm-builder = { workspace = true }
 
 [features]
 default = ["std"]
@@ -132,7 +132,6 @@ std = [
 	"parity-scale-codec/std",
 	"scale-info/std",
 	"log/std",
-
 	"frame-benchmarking?/std",
 	"frame-executive/std",
 	"frame-support/std",
@@ -223,7 +222,9 @@ std = [
 	"tangle-lst-minting/std",
 	"tangle-parachain-staking/std",
 	"tangle-xcm-interface/std",
-	"substrate-wasm-builder"
+	"pallet-asset-rate/std",
+	"pallet-message-queue/std",
+	"polkadot-runtime-common/std",
 ]
 with-tracing = ["frame-executive/with-tracing"]
 
@@ -257,7 +258,8 @@ runtime-benchmarks = [
 	"pallet-sudo/runtime-benchmarks",
 	"pallet-assets/runtime-benchmarks",
 	"pallet-uniques/runtime-benchmarks",
-	"sp-api/disable-logging",
+	"cumulus-pallet-dmp-queue/runtime-benchmarks",
+	"cumulus-pallet-parachain-system/runtime-benchmarks"
 ]
 
 try-runtime = [

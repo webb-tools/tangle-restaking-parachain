@@ -120,6 +120,7 @@ parachain-info = { version = "0.8.0", package = "staging-parachain-info", defaul
 polkadot-core-primitives = { version = "8.0.0", default-features = false }
 polkadot-parachain-primitives = { version = "7.0.0", default-features = false }
 polkadot-primitives = { version = "8.0.0", default-features = false }
+polkadot-service = { version = "8.0.0", default-features = false }
 polkadot-runtime-common = { version = "8.0.0", default-features = false }
 polkadot-runtime-parachains = { version = "8.0.0", default-features = false }
 sp-api = { version = "27.0.0", default-features = false }
