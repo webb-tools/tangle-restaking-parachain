@@ -10,7 +10,9 @@ cargo-features = ["resolver"]
 
 [workspace]
 members = [
-	"node",
+	"node/cli",
+	"node/rpc",
+	"node/service",
 	"primitives",
 	"pallets/asset-registry",
 	"pallets/currencies",
@@ -27,6 +29,9 @@ resolver = "2"
 
 # Tangle Runtime
 tangle-polkadot-runtime = { path = "runtime/tangle-polkadot" }
+tangle-service = { path = "node/service", default-features = false }
+tangle-cli = { path = "node/cli" }
+tangle-rpc = { path = "node/rpc" }
 
 # Tangle pallets
 tangle-asset-registry = { path = "pallets/asset-registry", default-features = false }

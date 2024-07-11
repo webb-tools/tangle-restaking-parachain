@@ -40,10 +40,8 @@ std = [
 ]
 
 with-tangle-runtime = [
-	"with-tangle-kusama-runtime",
 	"with-tangle-polkadot-runtime",
 ]
-with-tangle-kusama-runtime = []
 with-tangle-polkadot-runtime = []
 with-all-runtime = ["with-tangle-runtime"]
 runtime-benchmarks = []
