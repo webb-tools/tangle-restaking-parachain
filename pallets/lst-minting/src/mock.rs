@@ -43,7 +43,7 @@ use tangle_primitives::{
 };
 use tangle_runtime_common::{micro, milli};
 use tangle_slp::{QueryId, QueryResponseManager};
-use tangle_ve_minting::{Point, LstMintingInterface};
+use tangle_ve_minting::{LstMintingInterface, Point};
 use xcm::{prelude::*, v3::Weight};
 use xcm_builder::{FixedWeightBounds, FrameTransactionalProcessor};
 use xcm_executor::XcmExecutor;
