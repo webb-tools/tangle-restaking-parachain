@@ -2302,7 +2302,7 @@ impl<T: Config>
 {
 	/// Delegate to some validators.
 	fn delegate(
-		who: &T::AccountId,
+		_who: &T::AccountId,
 		targets: &Vec<MultiLocation>,
 		currency_id: CurrencyIdOf<T>,
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
@@ -2313,7 +2313,7 @@ impl<T: Config>
 
 		let staking_agent = Self::get_currency_staking_agent(currency_id)?;
 		let query_id = staking_agent.delegate(&location, &targets, currency_id, weight_and_fee)?;
-		let query_id_hash = <T as frame_system::Config>::Hashing::hash(&query_id.encode());
+		let _query_id_hash = <T as frame_system::Config>::Hashing::hash(&query_id.encode());
 		Ok(query_id)
 	}
 }
