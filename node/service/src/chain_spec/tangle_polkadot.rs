@@ -17,17 +17,17 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::chain_spec::{get_account_id_from_seed, get_from_seed, RelayExtensions};
-use tangle_polkadot_runtime::{
-	constants::currency::DOLLARS, AccountId, Balance, BlockNumber, RuntimeGenesisConfig, SS58Prefix,
-};
-use tangle_primitives::{CurrencyId, CurrencyId::*, TokenInfo, TokenSymbol, DOT_TOKEN_ID};
-use tangle_runtime_common::AuraId;
 use cumulus_primitives_core::ParaId;
 use frame_benchmarking::{account, whitelisted_caller};
 use hex_literal::hex;
 use sc_chain_spec::Properties;
 use sc_service::ChainType;
 use sp_core::{crypto::UncheckedInto, sr25519};
+use tangle_polkadot_runtime::{
+	constants::currency::DOLLARS, AccountId, Balance, BlockNumber, RuntimeGenesisConfig, SS58Prefix,
+};
+use tangle_primitives::{CurrencyId, CurrencyId::*, TokenInfo, TokenSymbol, DOT_TOKEN_ID};
+use tangle_runtime_common::AuraId;
 
 const DEFAULT_PROTOCOL_ID: &str = "tangle_polkadot";
 

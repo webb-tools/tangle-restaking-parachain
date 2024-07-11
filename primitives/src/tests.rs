@@ -222,7 +222,7 @@ fn to_lst_should_work() {
 	assert_eq!(vstoken_eth.to_lst(), Err(()));
 	assert_eq!(vsbond_ksm.to_lst(), Err(()));
 	assert_eq!(token2_dot.to_lst(), Ok(CurrencyId::Lst2(DOT_TOKEN_ID)));
-	assert_eq!(Lst2_dot.to_lst(), Err(()));
+	assert_eq!(lst2_dot.to_lst(), Err(()));
 	assert_eq!(vstoken2_dot.to_lst(), Err(()));
 	assert_eq!(vsbond2_dot.to_lst(), Err(()));
 	assert_eq!(foreign_asset.to_lst(), Err(()));
@@ -257,7 +257,7 @@ fn to_token_should_work() {
 	assert_eq!(vstoken_eth.to_token(), Err(()));
 	assert_eq!(vsbond_ksm.to_token(), Err(()));
 	assert_eq!(token2_dot.to_token(), Err(()));
-	assert_eq!(Lst2_dot.to_token(), Ok(CurrencyId::Token2(DOT_TOKEN_ID)));
+	assert_eq!(lst2_dot.to_token(), Ok(CurrencyId::Token2(DOT_TOKEN_ID)));
 	assert_eq!(vstoken2_dot.to_token(), Err(()));
 	assert_eq!(vsbond2_dot.to_token(), Err(()));
 	assert_eq!(foreign_asset.to_token(), Err(()));
