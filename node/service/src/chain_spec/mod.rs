@@ -16,16 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#[cfg(any(feature = "with-bifrost-kusama-runtime", feature = "with-bifrost-runtime"))]
-pub mod tangle_kusama;
 #[cfg(any(feature = "with-bifrost-polkadot-runtime", feature = "with-bifrost-runtime"))]
 pub mod tangle_polkadot;
 
-pub use tangle_primitives::{AccountId, Block, Signature};
 use sc_chain_spec::ChainSpecExtension;
 use serde::{Deserialize, Serialize};
 use sp_core::{Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
+pub use tangle_primitives::{AccountId, Block, Signature};
 
 pub const TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 

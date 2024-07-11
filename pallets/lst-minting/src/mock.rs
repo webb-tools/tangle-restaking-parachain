@@ -43,7 +43,7 @@ use tangle_primitives::{
 };
 use tangle_runtime_common::{micro, milli};
 use tangle_slp::{QueryId, QueryResponseManager};
-use tangle_ve_minting::{Point, VeMintingInterface};
+use tangle_ve_minting::{Point, LstMintingInterface};
 use xcm::{prelude::*, v3::Weight};
 use xcm_builder::{FixedWeightBounds, FrameTransactionalProcessor};
 use xcm_executor::XcmExecutor;
@@ -222,7 +222,7 @@ impl lst_minting::Config for Runtime {
 	type IncentivePoolAccount = IncentivePoolAccount;
 	type TangleSlp = Slp;
 	type TangleSlpx = SlpxInterface;
-	type VeMinting = VeMinting;
+	type LstMinting = LstMinting;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;
 	type CurrencyIdRegister = AssetIdMaps<Runtime>;
@@ -465,9 +465,9 @@ pub fn run_to_block(n: BlockNumber) {
 
 use tangle_primitives::PoolId;
 use tangle_ve_minting::IncentiveConfig;
-// Mock VeMinting Struct
-pub struct VeMinting;
-impl VeMintingInterface<AccountId, CurrencyId, Balance, BlockNumber> for VeMinting {
+// Mock LstMinting Struct
+pub struct LstMinting;
+impl LstMintingInterface<AccountId, CurrencyId, Balance, BlockNumber> for LstMinting {
 	fn balance_of(_addr: &AccountId, _time: Option<BlockNumber>) -> Result<Balance, DispatchError> {
 		Ok(100)
 	}

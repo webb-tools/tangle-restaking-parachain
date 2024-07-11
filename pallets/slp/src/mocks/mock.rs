@@ -217,7 +217,7 @@ impl tangle_lst_minting::Config for Runtime {
 	type ChannelCommission = ();
 	type MaxLockRecords = ConstU32<100>;
 	type IncentivePoolAccount = IncentivePoolAccount;
-	type VeMinting = ();
+	type LstMinting = ();
 	type AssetIdMaps = AssetIdMaps<Runtime>;
 }
 
