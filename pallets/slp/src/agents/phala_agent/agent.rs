@@ -351,7 +351,7 @@ impl<T: Config>
 			ensure!(validators_set.contains(candidate), Error::<T>::ValidatorNotExist);
 
 			// if the delegator is new, create a ledger for it
-			if !DelegatorLedgers::<T>::contains_key(currency_id, who.clone()) {
+			if !DelegatorLedgers::<T>::contains_key(currency_id, *who) {
 				// Create a new delegator ledger\
 				let ledger = PhalaLedger::<BalanceOf<T>> {
 					account: *who,

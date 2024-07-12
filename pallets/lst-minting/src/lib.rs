@@ -46,6 +46,7 @@ use frame_support::{
 	transactional, BoundedVec, PalletId,
 };
 use frame_system::pallet_prelude::*;
+use sp_arithmetic::traits::AtLeast32BitUnsigned;
 
 use orml_traits::{MultiCurrency, MultiLockableCurrency};
 pub use pallet::*;
@@ -75,6 +76,7 @@ pub type UnlockId = u32;
 
 // incentive lock id for lst minted by user
 const INCENTIVE_LOCK_ID: LockIdentifier = *b"vmincntv";
+use frame_support::traits::nonfungibles::Mutate;
 
 #[frame_support::pallet]
 pub mod pallet {
@@ -178,8 +180,15 @@ pub mod pallet {
 
 		type AssetHandler: fungibles::Inspect<Self::AccountId> + fungibles::Create<Self::AccountId>;
 
-		type NftHandler: nonfungibles::Inspect<Self::AccountId>
-			+ nonfungibles::Create<Self::AccountId>;
+		type NftHandler: nonfungibles::Inspect<Self::AccountId, ItemId = Self::ItemId>
+			+ nonfungibles::Create<Self::AccountId>
+			+ nonfungibles::Mutate<Self::AccountId>;
+
+		type ItemId: Member + Parameter + MaxEncodedLen + Copy + AtLeast32BitUnsigned + Default;
+
+		type RedeemNftCollectionId: Get<
+			<Self::NftHandler as nonfungibles::Inspect<Self::AccountId>>::CollectionId,
+		>;
 
 		/// Set default weight.
 		type WeightInfo: WeightInfo;
@@ -427,6 +436,10 @@ pub mod pallet {
 		(BalanceOf<T>, BoundedVec<(BalanceOf<T>, BlockNumberFor<T>), T::MaxLockRecords>),
 		OptionQuery,
 	>;
+
+	#[pallet::storage]
+	#[pallet::getter(fn redeem_nft_item_id)]
+	pub type NextRedeemNftItemId<T: Config> = StorageValue<_, T::ItemId, ValueQuery>;
 
 	#[pallet::hooks]
 	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
@@ -1369,6 +1382,7 @@ pub mod pallet {
 			let redeem_fee = redeem_rate * lst_amount;
 			let lst_amount =
 				lst_amount.checked_sub(&redeem_fee).ok_or(Error::<T>::CalculationOverflow)?;
+
 			// Charging fees
 			T::MultiCurrency::transfer(
 				lst_id,
@@ -1485,6 +1499,12 @@ pub mod pallet {
 				*unlock_id = unlock_id.checked_add(1).ok_or(Error::<T>::CalculationOverflow)?;
 				Ok(())
 			})?;
+
+			// Minting NFT
+			// Incrementing and using redeem NFT item ID for minting
+			let nft_item_id = NextRedeemNftItemId::<T>::get();
+			T::NftHandler::mint_into(&T::RedeemNftCollectionId::get(), &nft_item_id, &exchanger)?;
+			NextRedeemNftItemId::<T>::mutate(|id| *id += 1_u32.into());
 
 			let extra_weight = T::OnRedeemSuccess::on_redeemed(
 				exchanger.clone(),

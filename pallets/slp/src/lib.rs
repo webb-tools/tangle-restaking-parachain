@@ -2312,7 +2312,7 @@ impl<T: Config>
 			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
 
 		let staking_agent = Self::get_currency_staking_agent(currency_id)?;
-		let query_id = staking_agent.delegate(&location, &targets, currency_id, weight_and_fee)?;
+		let query_id = staking_agent.delegate(&location, targets, currency_id, weight_and_fee)?;
 		let _query_id_hash = <T as frame_system::Config>::Hashing::hash(&query_id.encode());
 		Ok(query_id)
 	}
