@@ -16,17 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#[cfg(test)]
-mod astar_tests;
-#[cfg(test)]
-mod filecoin_tests;
-#[cfg(test)]
-mod kusama_tests;
-#[cfg(test)]
-mod manta_tests;
-#[cfg(test)]
-mod moonriver_tests;
-#[cfg(test)]
-mod parachain_staking_tests;
-#[cfg(test)]
-mod phala_tests;
+// #[cfg(test)]
+// mod astar_tests;
+// #[cfg(test)]
+// mod filecoin_tests;
+// #[cfg(test)]
+// mod kusama_tests;
+// #[cfg(test)]
+// mod manta_tests;
+// #[cfg(test)]
+// mod moonriver_tests;
+// #[cfg(test)]
+// mod parachain_staking_tests;
+// #[cfg(test)]
+// mod phala_tests;

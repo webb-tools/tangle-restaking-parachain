@@ -294,7 +294,9 @@ impl<T: Config> Pallet<T> {
 	pub(crate) fn convert_currency_to_refund_receiver(
 		currency_id: CurrencyId,
 	) -> xcm::v4::Junctions {
-		let interior = match currency_id {
+		
+
+		match currency_id {
 			KSM | DOT => xcm::v4::Junctions::from([xcm::v4::prelude::Parachain(
 				T::ParachainId::get().into(),
 			)]),
@@ -306,9 +308,7 @@ impl<T: Config> Pallet<T> {
 				network: None,
 				id: Sibling::from(T::ParachainId::get()).into_account_truncating(),
 			}]),
-		};
-
-		interior
+		}
 	}
 
 	pub(crate) fn prepare_send_as_subaccount_call(
