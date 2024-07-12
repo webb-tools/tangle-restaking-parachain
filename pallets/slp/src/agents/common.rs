@@ -294,8 +294,6 @@ impl<T: Config> Pallet<T> {
 	pub(crate) fn convert_currency_to_refund_receiver(
 		currency_id: CurrencyId,
 	) -> xcm::v4::Junctions {
-		
-
 		match currency_id {
 			KSM | DOT => xcm::v4::Junctions::from([xcm::v4::prelude::Parachain(
 				T::ParachainId::get().into(),

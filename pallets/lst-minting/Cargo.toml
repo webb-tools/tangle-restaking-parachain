@@ -39,7 +39,9 @@ xcm-builder = { workspace = true }
 pallet-xcm = { workspace = true }
 xcm = { workspace = true }
 tangle-asset-registry = { workspace = true }
+tangle-runtime-common = { workspace = true }
 env_logger = { workspace = true }
+tangle-slp = { workspace = true }
 
 [features]
 default = ["std"]

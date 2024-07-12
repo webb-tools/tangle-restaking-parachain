@@ -37,13 +37,13 @@ use sp_runtime::{
 	AccountId32, BuildStorage, DispatchError, DispatchResult,
 };
 use tangle_asset_registry::AssetIdMaps;
+use tangle_lst_minting::{LstMintingInterface, Point};
 use tangle_primitives::{
 	currency::{BNC, DOT, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR},
 	CurrencyId, CurrencyIdMapping, SlpxOperator, TokenSymbol,
 };
 use tangle_runtime_common::{micro, milli};
 use tangle_slp::{QueryId, QueryResponseManager};
-use tangle_ve_minting::{LstMintingInterface, Point};
 use xcm::{prelude::*, v3::Weight};
 use xcm_builder::{FixedWeightBounds, FrameTransactionalProcessor};
 use xcm_executor::XcmExecutor;
@@ -463,8 +463,8 @@ pub fn run_to_block(n: BlockNumber) {
 	}
 }
 
+use tangle_lst_minting::IncentiveConfig;
 use tangle_primitives::PoolId;
-use tangle_ve_minting::IncentiveConfig;
 // Mock LstMinting Struct
 pub struct LstMinting;
 impl LstMintingInterface<AccountId, CurrencyId, Balance, BlockNumber> for LstMinting {
