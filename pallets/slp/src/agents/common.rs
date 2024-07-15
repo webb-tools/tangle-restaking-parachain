@@ -229,11 +229,11 @@ impl<T: Config> Pallet<T> {
 
 		ensure!(!token_amount.is_zero(), Error::<T>::AmountZero);
 
-		// Check whether "who" is an existing delegator.
-		ensure!(
-			DelegatorLedgers::<T>::contains_key(currency_id, who),
-			Error::<T>::DelegatorNotBonded
-		);
+		// // Check whether "who" is an existing delegator.
+		// ensure!(
+		// 	DelegatorLedgers::<T>::contains_key(currency_id, who),
+		// 	Error::<T>::DelegatorNotBonded
+		// );
 
 		// Tune the Lst exchange rate.
 		T::LstMinting::increase_token_pool(currency_id, token_amount)

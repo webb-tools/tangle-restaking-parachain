@@ -280,10 +280,10 @@ impl<T: Config>
 		_weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
 		// Check if it is bonded already.
-		ensure!(
-			DelegatorLedgers::<T>::contains_key(currency_id, who),
-			Error::<T>::DelegatorNotBonded
-		);
+		// ensure!(
+		// 	DelegatorLedgers::<T>::contains_key(currency_id, who),
+		// 	Error::<T>::DelegatorNotBonded
+		// );
 
 		// Check if the delegator's ledger still has staking balance.
 		// It can be undelegated only if there is none.

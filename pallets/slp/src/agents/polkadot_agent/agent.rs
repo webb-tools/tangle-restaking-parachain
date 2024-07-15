@@ -449,10 +449,10 @@ impl<T: Config>
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
 		// Check if it is bonded already.
-		ensure!(
-			DelegatorLedgers::<T>::contains_key(currency_id, who),
-			Error::<T>::DelegatorNotBonded
-		);
+		// ensure!(
+		// 	DelegatorLedgers::<T>::contains_key(currency_id, who),
+		// 	Error::<T>::DelegatorNotBonded
+		// );
 
 		// Check if targets vec is empty.
 		let vec_len = targets.len() as u32;
@@ -521,10 +521,10 @@ impl<T: Config>
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
 		// Check if it is bonded already.
-		ensure!(
-			DelegatorLedgers::<T>::contains_key(currency_id, who),
-			Error::<T>::DelegatorNotBonded
-		);
+		// ensure!(
+		// 	DelegatorLedgers::<T>::contains_key(currency_id, who),
+		// 	Error::<T>::DelegatorNotBonded
+		// );
 
 		// Check if targets vec is empty.
 		let vec_len = targets.len() as u32;

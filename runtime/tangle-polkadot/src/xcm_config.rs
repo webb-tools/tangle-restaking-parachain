@@ -136,7 +136,7 @@ impl<T: Get<ParaId>> Convert<CurrencyId, Option<Location>> for TangleCurrencyIdC
 				1,
 				[
 					Parachain(parachains::moonbeam::ID),
-					PalletInstance(parachains::moonbeam::PALLET_ID.into()),
+					PalletInstance(parachains::moonbeam::PALLET_ID),
 				],
 			)),
 			_ => None,
@@ -596,7 +596,7 @@ parameter_type_with_key! {
 		match currency_id {
 			&CurrencyId::Native(TokenSymbol::TNT) => 10 * milli::<Runtime>(NativeCurrencyId::get()),   // 0.01 TNT
 			&CurrencyId::Token2(DOT_TOKEN_ID) => 1_000_000,  // DOT
-			&CurrencyId::LPToken(..) => 1 * micro::<Runtime>(NativeCurrencyId::get()),
+			&CurrencyId::LPToken(..) => micro::<Runtime>(NativeCurrencyId::get()),
 			CurrencyId::ForeignAsset(foreign_asset_id) => {
 				AssetIdMaps::<Runtime>::get_asset_metadata(AssetIds::ForeignAssetId(*foreign_asset_id)).
 					map_or(Balance::max_value(), |metatata| metatata.minimal_balance)
@@ -667,7 +667,7 @@ impl orml_tokens::Config for Runtime {
 parameter_types! {
 	pub SelfLocation: Location = Location::new(1, [Parachain(ParachainInfo::get().into())]);
 	pub SelfRelativeLocation: Location = Location::here();
-	pub const BaseXcmWeight: Weight = Weight::from_parts(1000_000_000u64, 0);
+	pub const BaseXcmWeight: Weight = Weight::from_parts(1_000_000_000_u64, 0);
 	pub const MaxAssetsForTransfer: usize = 2;
 }
 
@@ -713,10 +713,10 @@ impl tangle_xcm_interface::SalpHelper<AccountId, RuntimeCall, Balance> for Dummy
 	}
 
 	fn bind_query_id_and_contribution(
-		query_id: u64,
-		index: u32,
-		contributer: AccountId,
-		amount: Balance,
+		_query_id: u64,
+		_index: u32,
+		_contributer: AccountId,
+		_amount: Balance,
 	) {
 	}
 }
