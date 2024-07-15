@@ -29,9 +29,10 @@ use crate::{
 	},
 	AccountIdOf, BalanceOf, Config, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
-	Validators, ValidatorsByDelegatorUpdateEntry, BNC,
+	ValidatorsByDelegatorUpdateEntry, BNC,
 };
 use core::marker::PhantomData;
+
 use frame_support::{ensure, traits::Get};
 use orml_traits::MultiCurrency;
 use parity_scale_codec::{alloc::collections::BTreeMap, Encode};
@@ -111,13 +112,13 @@ impl<T: Config>
 		// Ensure amount is no less than delegation_amount_minimum.
 		ensure!(amount >= mins_maxs.delegation_amount_minimum, Error::<T>::LowerThanMinimum);
 
-		// check if the validator is in the white list.
-		let validator_list =
-			Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
-		validator_list
-			.iter()
-			.position(|va| va == &collator)
-			.ok_or(Error::<T>::ValidatorNotExist)?;
+		// // check if the validator is in the white list.
+		// let validator_list : BoundedVec<MultiLocation, T::MaxLengthLimit> =
+		// 	Validators::<T>::get(currency_id).unwrap_or_else(Default::default());
+		// validator_list
+		// 	.iter()
+		// 	.position(|va| va == &collator)
+		// 	.ok_or(Error::<T>::ValidatorNotExist)?;
 
 		let ledger_option = DelegatorLedgers::<T>::get(currency_id, who);
 		if let Some(Ledger::ParachainStaking(ledger)) = ledger_option {
@@ -332,9 +333,9 @@ impl<T: Config>
 		let collator = (*validator).ok_or(Error::<T>::ValidatorNotProvided)?;
 
 		// need to check if the validator is still in the validators list.
-		let validators =
-			Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
-		ensure!(validators.contains(&collator), Error::<T>::ValidatorError);
+		// let validators =
+		// 	Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		// ensure!(validators.contains(&collator), Error::<T>::ValidatorError);
 
 		let ledger_option = DelegatorLedgers::<T>::get(currency_id, who);
 		if let Some(Ledger::ParachainStaking(ledger)) = ledger_option {

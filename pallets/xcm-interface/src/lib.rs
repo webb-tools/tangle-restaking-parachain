@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 #![cfg_attr(not(feature = "std"), no_std)]
-
+#![allow(clippy::useless_conversion)]
 pub mod calls;
 pub mod traits;
 pub use calls::*;

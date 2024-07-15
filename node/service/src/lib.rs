@@ -51,8 +51,8 @@ impl IdentifyVariant for Box<dyn sc_service::ChainSpec> {
 	}
 }
 
-pub const tangle_KUSAMA_RUNTIME_NOT_AVAILABLE: &str =
+pub const TANGLE_KUSAMA_RUNTIME_NOT_AVAILABLE: &str =
 	"Bifrost runtime is not available. Please compile the node with `--features with-bifrost-kusama-runtime` to enable it.";
-pub const tangle_POLKADOT_RUNTIME_NOT_AVAILABLE: &str =
+pub const TANGLE_POLKADOT_RUNTIME_NOT_AVAILABLE: &str =
 	"Bifrost-polkadot runtime is not available. Please compile the node with `--features with-bifrost-polkadot-runtime` to enable it.";
 pub const UNKNOWN_RUNTIME: &str = "Unknown runtime";

@@ -25,7 +25,7 @@ use crate::{
 	},
 	AccountIdOf, BalanceOf, Config, CurrencyId, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, Hash, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
-	Validators, ValidatorsByDelegatorUpdateEntry,
+	ValidatorsByDelegatorUpdateEntry,
 };
 use core::marker::PhantomData;
 use frame_support::{ensure, traits::Get};
@@ -345,10 +345,10 @@ impl<T: Config>
 		} = candidate
 		{
 			// Ensure the candidate is in the validator whitelist.
-			let validators_set =
-				Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+			// let validators_set =
+			// 	Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
 
-			ensure!(validators_set.contains(candidate), Error::<T>::ValidatorNotExist);
+			// ensure!(validators_set.contains(candidate), Error::<T>::ValidatorNotExist);
 
 			// if the delegator is new, create a ledger for it
 			if !DelegatorLedgers::<T>::contains_key(currency_id, *who) {

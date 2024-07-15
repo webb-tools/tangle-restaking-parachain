@@ -90,7 +90,7 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
 					feature = "with-bifrost-polkadot-runtime",
 					feature = "with-bifrost-runtime"
 				)))]
-				return Err(service::tangle_POLKADOT_RUNTIME_NOT_AVAILABLE.into());
+				return Err(service::TANGLE_POLKADOT_RUNTIME_NOT_AVAILABLE.into());
 			} else if path.to_str().map(|s| s.contains("bifrost")) == Some(true) {
 				#[cfg(any(
 					feature = "with-bifrost-kusama-runtime",
@@ -103,7 +103,7 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
 					feature = "with-bifrost-kusama-runtime",
 					feature = "with-bifrost-runtime"
 				)))]
-				return Err(service::tangle_KUSAMA_RUNTIME_NOT_AVAILABLE.into());
+				return Err(service::TANGLE_KUSAMA_RUNTIME_NOT_AVAILABLE.into());
 			} else {
 				return Err(service::UNKNOWN_RUNTIME.into());
 			}
@@ -192,7 +192,7 @@ macro_rules! with_runtime_or_err {
 			$( $code )*
 
 			#[cfg(not(any(feature = "with-bifrost-kusama-runtime",feature = "with-bifrost-runtime")))]
-			return Err(service::tangle_KUSAMA_RUNTIME_NOT_AVAILABLE.into());
+			return Err(service::TANGLE_KUSAMA_RUNTIME_NOT_AVAILABLE.into());
 		} else if $chain_spec.is_tangle_polkadot() {
 			#[cfg(any(feature = "with-bifrost-polkadot-runtime", feature = "with-bifrost-runtime"))]
 			#[allow(unused_imports)]
@@ -202,7 +202,7 @@ macro_rules! with_runtime_or_err {
 			$( $code )*
 
 			#[cfg(not(any(feature = "with-bifrost-polkadot-runtime", feature = "with-bifrost-runtime")))]
-			return Err(service::tangle_POLKADOT_RUNTIME_NOT_AVAILABLE.into());
+			return Err(service::TANGLE_POLKADOT_RUNTIME_NOT_AVAILABLE.into());
 		} else {
 			return Err(service::UNKNOWN_RUNTIME.into());
 		}

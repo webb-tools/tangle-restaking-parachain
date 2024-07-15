@@ -242,15 +242,15 @@ impl<T: Config>
 		let worker = &targets[0];
 
 		// Need to check whether this validator is in the whitelist.
-		let validators_vec =
-			Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
-		ensure!(validators_vec.contains(worker), Error::<T>::ValidatorNotExist);
+		// let validators_vec =
+		// 	Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		// ensure!(validators_vec.contains(worker), Error::<T>::ValidatorNotExist);
 
-		// ensure the length of validators_vec does not exceed the MaxLengthLimit.
-		ensure!(
-			validators_vec.len() <= T::MaxLengthLimit::get() as usize,
-			Error::<T>::ExceedMaxLengthLimit
-		);
+		// // ensure the length of validators_vec does not exceed the MaxLengthLimit.
+		// ensure!(
+		// 	validators_vec.len() <= T::MaxLengthLimit::get() as usize,
+		// 	Error::<T>::ExceedMaxLengthLimit
+		// );
 
 		let validators_list =
 			BoundedVec::try_from(vec![*worker]).map_err(|_| Error::<T>::FailToConvert)?;

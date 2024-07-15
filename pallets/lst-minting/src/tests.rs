@@ -20,26 +20,26 @@
 
 #![cfg(test)]
 
-use crate::{mock::*, DispatchError::Module, *};
+use crate::{mock::*, *};
 use frame_support::{assert_noop, assert_ok, sp_runtime::Permill, BoundedVec};
-use sp_runtime::ModuleError;
-use tangle_primitives::currency::{BNC, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR};
+
+use tangle_primitives::currency::{BNC, KSM, MOVR, VBNC, VKSM, VMOVR};
 use tangle_slp::primitives::MinimumsMaximums;
-use xcm::v3::{prelude::*, MultiLocation, Weight};
+use xcm::v3::{prelude::*, MultiLocation};
 
 fn init_slp<T: tangle_slp::Config>() {
-	let mins_and_maxs = MinimumsMaximums::<Balance> {
-		delegator_bonded_minimum: 100_000_000_000,
-		bond_extra_minimum: 0,
-		unbond_minimum: 0,
-		rebond_minimum: 0,
-		unbond_record_maximum: 32,
-		validators_back_maximum: 36,
-		delegator_active_staking_maximum: 200_000_000_000_000,
-		validators_reward_maximum: 0,
-		delegation_amount_minimum: 0,
-		delegators_maximum: 100,
-		validators_maximum: 300,
+	let mins_and_maxs = MinimumsMaximums::<tangle_slp::BalanceOf<T>> {
+		delegator_bonded_minimum: 100_000_u32.into(),
+		bond_extra_minimum: 0_u32.into(),
+		unbond_minimum: 0_u32.into(),
+		rebond_minimum: 0_u32.into(),
+		unbond_record_maximum: 32_u32,
+		validators_back_maximum: 36_u32,
+		delegator_active_staking_maximum: 200_000_000_u32.into(),
+		validators_reward_maximum: 0_u32,
+		delegation_amount_minimum: 0_u32.into(),
+		delegators_maximum: 100_u16,
+		validators_maximum: 300_u16,
 	};
 
 	// Set minimums and maximums
@@ -129,6 +129,7 @@ fn mint() {
 fn redeem() {
 	ExtBuilder::default().one_hundred_for_alice_n_bob().build().execute_with(|| {
 		pub const FEE: Permill = Permill::from_percent(2);
+		init_slp::<Runtime>();
 		let validator =
 			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
 		assert_ok!(LstMinting::set_fees(RuntimeOrigin::root(), FEE, FEE));
@@ -217,6 +218,7 @@ fn redeem() {
 fn rebond() {
 	ExtBuilder::default().one_hundred_for_alice_n_bob().build().execute_with(|| {
 		pub const FEE: Permill = Permill::from_percent(0);
+		init_slp::<Runtime>();
 		assert_ok!(LstMinting::set_fees(RuntimeOrigin::root(), FEE, FEE));
 		assert_ok!(LstMinting::set_unlock_duration(
 			RuntimeOrigin::signed(ALICE),
@@ -283,7 +285,7 @@ fn rebond() {
 fn recreate_currency_ongoing_time_unit_should_work() {
 	ExtBuilder::default().one_hundred_for_alice_n_bob().build().execute_with(|| {
 		env_logger::try_init().unwrap_or(());
-
+		init_slp::<Runtime>();
 		// set KSM ongoing time unit to be Era(1)
 		OngoingTimeUnit::<Runtime>::insert(KSM, TimeUnit::Era(1));
 		assert_eq!(LstMinting::ongoing_time_unit(KSM), Some(TimeUnit::Era(1)));
