@@ -36,7 +36,7 @@ use hex_literal::hex;
 use orml_traits::{location::RelativeReserveProvider, parameter_type_with_key};
 use sp_runtime::{
 	traits::{ConstU32, IdentityLookup},
-	AccountId32, BuildStorage, DispatchError, DispatchResult,
+	AccountId32, BuildStorage,
 };
 use tangle_asset_registry::AssetIdMaps;
 use tangle_primitives::{
@@ -143,8 +143,8 @@ orml_traits::parameter_type_with_key! {
 			&VKSM => 0,
 			&FIL => 0,
 			&VFIL => 0,
-			&MOVR => 1 * micro::<Runtime>(MOVR),	// MOVR has a decimals of 10e18
-			&VMOVR => 1 * micro::<Runtime>(MOVR),	// MOVR has a decimals of 10e18
+			&MOVR => micro::<Runtime>(MOVR),	// MOVR has a decimals of 10e18
+			&VMOVR => micro::<Runtime>(MOVR),	// MOVR has a decimals of 10e18
 			&VBNC => 10 * milli::<Runtime>(NativeCurrencyId::get()),  // 0.01 BNC
 			_ => AssetIdMaps::<Runtime>::get_currency_metadata(*currency_id)
 				.map_or(Balance::max_value(), |metatata| metatata.minimal_balance)
@@ -173,7 +173,7 @@ parameter_type_with_key! {
 
 parameter_types! {
 	pub SelfRelativeLocation: Location = Location::here();
-	pub const BaseXcmWeight: Weight = Weight::from_parts(1000_000_000u64, 0);
+	pub const BaseXcmWeight: Weight = Weight::from_parts(1_000_000_000_u64, 0);
 	pub const MaxAssetsForTransfer: usize = 2;
 }
 
@@ -447,14 +447,9 @@ impl pallet_uniques::Config for Runtime {
 	type Locker = ();
 }
 
+#[derive(Default)]
 pub struct ExtBuilder {
 	endowed_accounts: Vec<(AccountId, CurrencyId, Balance)>,
-}
-
-impl Default for ExtBuilder {
-	fn default() -> Self {
-		Self { endowed_accounts: vec![] }
-	}
 }
 
 impl ExtBuilder {

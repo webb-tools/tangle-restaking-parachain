@@ -142,10 +142,10 @@ impl<T: Config> Pallet<T> {
 		currency_id: CurrencyId,
 	) -> DispatchResult {
 		// Check if the validator already exists.
-		let validators_set =
-			Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		// let validators_set =
+		// 	Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
 
-		ensure!(validators_set.contains(who), Error::<T>::ValidatorNotExist);
+		// ensure!(validators_set.contains(who), Error::<T>::ValidatorNotExist);
 
 		// Update corresponding storage.
 		Validators::<T>::mutate(currency_id, |validator_vec| {

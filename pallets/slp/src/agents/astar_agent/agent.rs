@@ -25,7 +25,6 @@ use crate::{
 	},
 	AccountIdOf, BalanceOf, Config, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
-	Validators,
 };
 use core::marker::PhantomData;
 use frame_support::{ensure, traits::Get};
@@ -97,12 +96,12 @@ impl<T: Config>
 		ensure!(amount >= mins_maxs.bond_extra_minimum, Error::<T>::LowerThanMinimum);
 
 		// check if the validator is in the white list.
-		let validator_list =
-			Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
-		validator_list
-			.iter()
-			.position(|va| va == &contract_multilocation)
-			.ok_or(Error::<T>::ValidatorNotExist)?;
+		// let validator_list =
+		// 	Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		// validator_list
+		// 	.iter()
+		// 	.position(|va| va == &contract_multilocation)
+		// 	.ok_or(Error::<T>::ValidatorNotExist)?;
 
 		if DelegatorLedgers::<T>::get(currency_id, who).is_none() {
 			// Check if the amount exceeds the minimum requirement. The first bond requires 500 ASTR
