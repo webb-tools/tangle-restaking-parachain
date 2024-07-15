@@ -2316,6 +2316,49 @@ impl<T: Config>
 		let _query_id_hash = <T as frame_system::Config>::Hashing::hash(&query_id.encode());
 		Ok(query_id)
 	}
+
+	/// Delegate to some validators.
+	fn undelegate(
+		_who: &T::AccountId,
+		targets: &Vec<MultiLocation>,
+		currency_id: CurrencyIdOf<T>,
+		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
+	) -> Result<QueryId, DispatchError> {
+		// TODO : Refactor this
+		let location =
+			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
+
+		let staking_agent = Self::get_currency_staking_agent(currency_id)?;
+		let query_id = staking_agent.undelegate(&location, targets, currency_id, weight_and_fee)?;
+		let _query_id_hash = <T as frame_system::Config>::Hashing::hash(&query_id.encode());
+		Ok(query_id)
+	}
+
+	/// Delegate to some validators.
+	fn liquidize(
+		_who: &T::AccountId,
+		targets: &Vec<MultiLocation>,
+		currency_id: CurrencyId,
+		_amount: Option<BalanceOf<T>>,
+		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
+	) -> Result<QueryId, DispatchError> {
+		// TODO : Refactor this
+		let location =
+			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
+
+		let staking_agent = Self::get_currency_staking_agent(currency_id)?;
+		let target_option: Option<MultiLocation> = targets.first().cloned();
+		let query_id = staking_agent.liquidize(
+			&location,
+			&None,
+			&target_option,
+			currency_id,
+			None,
+			weight_and_fee,
+		)?;
+		let _query_id_hash = <T as frame_system::Config>::Hashing::hash(&query_id.encode());
+		Ok(query_id)
+	}
 }
 
 pub struct DerivativeAccountProvider<T, F>(PhantomData<(T, F)>);
