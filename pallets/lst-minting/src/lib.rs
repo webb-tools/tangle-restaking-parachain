@@ -861,6 +861,22 @@ pub mod pallet {
 
 			Ok(())
 		}
+
+		#[pallet::call_index(17)]
+		#[pallet::weight(T::WeightInfo::set_incentive_coef())]
+		pub fn withdraw_redeemed(origin: OriginFor<T>, nft_id: CurrencyIdOf<T>) -> DispatchResult {
+			T::ControlOrigin::ensure_origin(origin)?;
+
+			// if let Some(new_coef) = new_coef_op {
+			// 	lstIncentiveCoef::<T>::insert(lst_id, new_coef);
+			// } else {
+			// 	lstIncentiveCoef::<T>::remove(lst_id);
+			// }
+
+			// Self::deposit_event(Event::lstIncentiveCoefSet { lst_id, coefficient: new_coef_op });
+
+			Ok(())
+		}
 	}
 
 	impl<T: Config> Pallet<T> {
