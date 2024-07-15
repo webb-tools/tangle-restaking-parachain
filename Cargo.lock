@@ -12905,6 +12905,8 @@ dependencies = [
  "tangle-asset-registry",
  "tangle-currencies",
  "tangle-primitives",
+ "tangle-runtime-common",
+ "tangle-slp",
 ]
 
 [[package]]
