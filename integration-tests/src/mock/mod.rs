@@ -18,7 +18,7 @@
 
 mod mock_message_queue;
 pub mod relaychain;
-pub mod tangle;
+pub mod tangle_runtime;
 
 use sp_io::TestExternalities;
 use sp_runtime::{AccountId32, BuildStorage};
@@ -59,16 +59,16 @@ decl_test_network! {
 	}
 }
 
-pub type tangleTokens = orml_tokens::Pallet<tangle::Runtime>;
-pub type tangleXTokens = orml_xtokens::Pallet<tangle::Runtime>;
-pub type tangleSlp = tangle_slp::Pallet<tangle::Runtime>;
+pub type tangleTokens = orml_tokens::Pallet<tangle_runtime::Runtime>;
+pub type tangleXTokens = orml_xtokens::Pallet<tangle_runtime::Runtime>;
+pub type tangleSlp = tangle_slp::Pallet<tangle_runtime::Runtime>;
 
 pub type RelayBalances = pallet_balances::Pallet<relaychain::Runtime>;
 pub type RelaySystem = frame_system::Pallet<relaychain::Runtime>;
 pub type RelayXcmPallet = pallet_xcm::Pallet<relaychain::Runtime>;
 
 pub fn para_ext(para_id: u32) -> TestExternalities {
-	use tangle::{MessageQueue, Runtime, System};
+	use tangle_runtime::{MessageQueue, Runtime, System};
 
 	let mut t = frame_system::GenesisConfig::<Runtime>::default().build_storage().unwrap();
 

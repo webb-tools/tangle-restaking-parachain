@@ -20,8 +20,9 @@
 
 #![cfg(test)]
 #![allow(non_upper_case_globals)]
-
+use crate as tangle_lst_minting;
 pub use cumulus_primitives_core::ParaId;
+use frame_support::traits::AsEnsureOriginWithArg;
 use frame_support::{
 	derive_impl, ord_parameter_types,
 	pallet_prelude::Get,
@@ -29,6 +30,7 @@ use frame_support::{
 	traits::{Everything, Nothing},
 	PalletId,
 };
+use frame_system::EnsureSigned;
 use frame_system::{EnsureRoot, EnsureSignedBy};
 use hex_literal::hex;
 use orml_traits::{location::RelativeReserveProvider, parameter_type_with_key};
@@ -37,13 +39,12 @@ use sp_runtime::{
 	AccountId32, BuildStorage, DispatchError, DispatchResult,
 };
 use tangle_asset_registry::AssetIdMaps;
-use tangle_lst_minting::{LstMintingInterface, Point};
 use tangle_primitives::{
 	currency::{BNC, DOT, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR},
 	CurrencyId, CurrencyIdMapping, SlpxOperator, TokenSymbol,
 };
+use tangle_primitives::{staking::QueryId, staking::QueryResponseManager};
 use tangle_runtime_common::{micro, milli};
-use tangle_slp::{QueryId, QueryResponseManager};
 use xcm::{prelude::*, v3::Weight};
 use xcm_builder::{FixedWeightBounds, FrameTransactionalProcessor};
 use xcm_executor::XcmExecutor;
@@ -71,6 +72,8 @@ frame_support::construct_runtime!(
 		Slp: tangle_slp,
 		AssetRegistry: tangle_asset_registry,
 		PolkadotXcm: pallet_xcm,
+		Assets: pallet_assets,
+		Uniques: pallet_uniques
 	}
 );
 
@@ -208,7 +211,7 @@ ord_parameter_types! {
 	pub const RelayCurrencyId: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 }
 
-impl lst_minting::Config for Runtime {
+impl tangle_lst_minting::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type MultiCurrency = Currencies;
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
@@ -222,7 +225,6 @@ impl lst_minting::Config for Runtime {
 	type IncentivePoolAccount = IncentivePoolAccount;
 	type TangleSlp = Slp;
 	type TangleSlpx = SlpxInterface;
-	type LstMinting = LstMinting;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;
 	type CurrencyIdRegister = AssetIdMaps<Runtime>;
@@ -233,6 +235,11 @@ impl lst_minting::Config for Runtime {
 	type MoonbeamParachainId = ConstU32<2023>;
 	type HydradxParachainId = ConstU32<2034>;
 	type MantaParachainId = ConstU32<2104>;
+	type StakingAgent = Slp;
+	type AssetHandler = Assets;
+	type NftHandler = Uniques;
+	type ItemId = u32;
+	type RedeemNftCollectionId = ConstU32<1>;
 	type InterlayParachainId = ConstU32<2032>;
 	type ChannelCommission = ();
 	type AssetIdMaps = AssetIdMaps<Runtime>;
@@ -307,7 +314,6 @@ impl tangle_slp::Config for Runtime {
 	type MaxLengthLimit = MaxLengthLimit;
 	type XcmWeightAndFeeHandler = ();
 	type ChannelCommission = ();
-	type StablePoolHandler = ();
 	type AssetIdMaps = AssetIdMaps<Runtime>;
 	type TreasuryAccount = TreasuryAccount;
 }
@@ -377,6 +383,68 @@ impl pallet_xcm::Config for Runtime {
 	type AdminOrigin = EnsureRoot<AccountId>;
 	type MaxRemoteLockConsumers = ConstU32<0>;
 	type RemoteLockConsumerIdentifier = ();
+}
+
+parameter_types! {
+	pub const AssetDeposit: u128 = 1_000_000;
+	pub const MetadataDepositBase: u128 = 1_000_000;
+	pub const MetadataDepositPerByte: u128 = 100_000;
+	pub const AssetAccountDeposit: u128 = 1_000_000;
+	pub const ApprovalDeposit: u128 = 1_000_000;
+	pub const AssetsStringLimit: u32 = 50;
+	pub const RemoveItemsLimit: u32 = 50;
+}
+
+impl pallet_assets::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Balance = Balance;
+	type AssetId = u32;
+	type Currency = Balances;
+	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
+	type ForceOrigin = EnsureRoot<AccountId>;
+	type AssetDeposit = AssetDeposit;
+	type MetadataDepositBase = MetadataDepositBase;
+	type MetadataDepositPerByte = MetadataDepositPerByte;
+	type AssetAccountDeposit = AssetAccountDeposit;
+	type ApprovalDeposit = ApprovalDeposit;
+	type StringLimit = AssetsStringLimit;
+	type Freezer = ();
+	type Extra = ();
+	type WeightInfo = ();
+	type RemoveItemsLimit = RemoveItemsLimit;
+	type AssetIdParameter = u32;
+	type CallbackHandle = ();
+	#[cfg(feature = "runtime-benchmarks")]
+	type BenchmarkHelper = ();
+}
+
+parameter_types! {
+	pub const UniquesCollectionDeposit: Balance = 10;
+	pub const UniquesItemDeposit: Balance = 1_000;
+	pub const UniquesMetadataDepositBase: Balance = 10;
+	pub const UniquesAttributeDepositBase: Balance = 10;
+	pub const UniquesDepositPerByte: Balance = 10;
+}
+
+impl pallet_uniques::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type CollectionId = u32;
+	type ItemId = u32;
+	type Currency = Balances;
+	type ForceOrigin = EnsureRoot<AccountId>;
+	type CollectionDeposit = UniquesCollectionDeposit;
+	type ItemDeposit = UniquesItemDeposit;
+	type MetadataDepositBase = UniquesMetadataDepositBase;
+	type AttributeDepositBase = UniquesAttributeDepositBase;
+	type DepositPerByte = UniquesDepositPerByte;
+	type StringLimit = ConstU32<128>;
+	type KeyLimit = ConstU32<32>;
+	type ValueLimit = ConstU32<64>;
+	type WeightInfo = ();
+	#[cfg(feature = "runtime-benchmarks")]
+	type Helper = ();
+	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
+	type Locker = ();
 }
 
 pub struct ExtBuilder {
@@ -460,101 +528,5 @@ pub fn run_to_block(n: BlockNumber) {
 		System::set_block_number(System::block_number() + 1);
 		System::on_initialize(System::block_number());
 		LstMinting::on_initialize(System::block_number());
-	}
-}
-
-use tangle_lst_minting::IncentiveConfig;
-use tangle_primitives::PoolId;
-// Mock LstMinting Struct
-pub struct LstMinting;
-impl LstMintingInterface<AccountId, CurrencyId, Balance, BlockNumber> for LstMinting {
-	fn balance_of(_addr: &AccountId, _time: Option<BlockNumber>) -> Result<Balance, DispatchError> {
-		Ok(100)
-	}
-
-	fn total_supply(_t: BlockNumber) -> Result<Balance, DispatchError> {
-		Ok(10000)
-	}
-
-	fn increase_amount_inner(_who: &AccountId, _position: u128, _value: Balance) -> DispatchResult {
-		Ok(())
-	}
-
-	fn deposit_for(_who: &AccountId, _position: u128, _value: Balance) -> DispatchResult {
-		Ok(())
-	}
-
-	fn withdraw_inner(_who: &AccountId, _position: u128) -> DispatchResult {
-		Ok(())
-	}
-
-	fn supply_at(_: Point<u128, u64>, _: u64) -> Result<u128, sp_runtime::DispatchError> {
-		todo!()
-	}
-
-	fn find_block_epoch(_: u64, _: sp_core::U256) -> sp_core::U256 {
-		todo!()
-	}
-
-	fn create_lock_inner(
-		_: &sp_runtime::AccountId32,
-		_: u128,
-		_: u64,
-	) -> Result<(), sp_runtime::DispatchError> {
-		todo!()
-	}
-
-	fn increase_unlock_time_inner(
-		_: &sp_runtime::AccountId32,
-		_: u128,
-		_: u64,
-	) -> Result<(), sp_runtime::DispatchError> {
-		todo!()
-	}
-
-	fn auto_notify_reward(
-		_: u32,
-		_: u64,
-		_: Vec<(CurrencyId, Balance)>,
-	) -> Result<(), sp_runtime::DispatchError> {
-		todo!()
-	}
-
-	fn update_reward(
-		_pool_id: PoolId,
-		_addr: Option<&AccountId>,
-		_share_info: Option<(Balance, Balance)>,
-	) -> DispatchResult {
-		Ok(())
-	}
-
-	fn get_rewards(
-		_pool_id: PoolId,
-		_addr: &AccountId,
-		_share_info: Option<(Balance, Balance)>,
-	) -> DispatchResult {
-		Ok(())
-	}
-
-	fn set_incentive(
-		_pool_id: PoolId,
-		_rewards_duration: Option<BlockNumber>,
-		_incentive_controller: Option<AccountId>,
-	) {
-	}
-	fn add_reward(
-		_addr: &AccountId,
-		_conf: &mut IncentiveConfig<CurrencyId, Balance, BlockNumber, AccountId>,
-		_rewards: &Vec<(CurrencyId, Balance)>,
-		_remaining: Balance,
-	) -> DispatchResult {
-		Ok(())
-	}
-	fn notify_reward(
-		_pool_id: u32,
-		_addr: &Option<AccountId>,
-		_rewards: Vec<(CurrencyId, Balance)>,
-	) -> DispatchResult {
-		Ok(())
 	}
 }

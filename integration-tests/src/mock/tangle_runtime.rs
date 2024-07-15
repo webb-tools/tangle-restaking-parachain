@@ -39,8 +39,8 @@ use tangle_polkadot_runtime::{
 	SelfParaChainId, SubAccountIndexMultiLocationConvertor, TangleCurrencyIdConvert,
 	TangleTreasuryAccount, XcmInterface,
 };
+use tangle_primitives::staking::QueryResponseManager;
 use tangle_primitives::CurrencyId;
-use tangle_slp::QueryResponseManager;
 use xcm::latest::prelude::*;
 use xcm_builder::{
 	AccountId32Aliases, AllowUnpaidExecutionFrom, EnsureXcmOrigin, FixedRateOfFungible,
@@ -303,7 +303,6 @@ impl tangle_slp::Config for Runtime {
 	type MaxLengthLimit = MaxLengthLimit;
 	type XcmWeightAndFeeHandler = XcmInterface;
 	type ChannelCommission = ();
-	type StablePoolHandler = ();
 	type AssetIdMaps = AssetIdMaps<Runtime>;
 	type TreasuryAccount = TangleTreasuryAccount;
 }
