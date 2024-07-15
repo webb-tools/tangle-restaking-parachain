@@ -15,6 +15,23 @@ pub trait StakingAgentDelegator<AccountId, MultiLocation, CurrencyId, Balance, E
 		currency_id: CurrencyId,
 		weight_and_fee: Option<(Weight, Balance)>,
 	) -> Result<QueryId, Error>;
+
+	/// Delegate to some validators.
+	fn undelegate(
+		who: &AccountId,
+		targets: &Vec<MultiLocation>,
+		currency_id: CurrencyId,
+		weight_and_fee: Option<(Weight, Balance)>,
+	) -> Result<QueryId, Error>;
+
+	/// Delegate to some validators.
+	fn liquidize(
+		who: &AccountId,
+		targets: &Vec<MultiLocation>,
+		currency_id: CurrencyId,
+		amount: Option<Balance>,
+		weight_and_fee: Option<(Weight, Balance)>,
+	) -> Result<QueryId, Error>;
 }
 
 /// Abstraction over a staking agent for a certain POS chain.

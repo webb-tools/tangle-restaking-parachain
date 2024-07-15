@@ -441,6 +441,11 @@ pub mod pallet {
 	#[pallet::getter(fn redeem_nft_item_id)]
 	pub type NextRedeemNftItemId<T: Config> = StorageValue<_, T::ItemId, ValueQuery>;
 
+	#[pallet::storage]
+	#[pallet::getter(fn redeem_nft_record)]
+	pub type NftRedeemRecord<T: Config> =
+		StorageMap<_, Blake2_128Concat, T::ItemId, (CurrencyIdOf<T>, UnlockId)>;
+
 	#[pallet::hooks]
 	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		fn on_initialize(_n: BlockNumberFor<T>) -> Weight {
@@ -864,17 +869,9 @@ pub mod pallet {
 
 		#[pallet::call_index(17)]
 		#[pallet::weight(T::WeightInfo::set_incentive_coef())]
-		pub fn withdraw_redeemed(origin: OriginFor<T>, _nft_id: CurrencyIdOf<T>) -> DispatchResult {
-			T::ControlOrigin::ensure_origin(origin)?;
-
-			// if let Some(new_coef) = new_coef_op {
-			// 	lstIncentiveCoef::<T>::insert(lst_id, new_coef);
-			// } else {
-			// 	lstIncentiveCoef::<T>::remove(lst_id);
-			// }
-
-			// Self::deposit_event(Event::lstIncentiveCoefSet { lst_id, coefficient: new_coef_op });
-
+		pub fn withdraw_redeemed(origin: OriginFor<T>, nft_id: T::ItemId) -> DispatchResult {
+			let exchanger = ensure_signed(origin)?;
+			Self::withdraw_redeem_inner(exchanger, nft_id);
 			Ok(())
 		}
 	}
@@ -1521,6 +1518,7 @@ pub mod pallet {
 			let nft_item_id = NextRedeemNftItemId::<T>::get();
 			T::NftHandler::mint_into(&T::RedeemNftCollectionId::get(), &nft_item_id, &exchanger)?;
 			NextRedeemNftItemId::<T>::mutate(|id| *id += 1_u32.into());
+			NftRedeemRecord::<T>::insert(nft_item_id, (token_id, next_id));
 
 			let extra_weight = T::OnRedeemSuccess::on_redeemed(
 				exchanger.clone(),
@@ -1541,6 +1539,33 @@ pub mod pallet {
 				unlock_id: next_id,
 			});
 			Ok(Some(T::WeightInfo::redeem() + extra_weight).into())
+		}
+
+		#[transactional]
+		pub fn withdraw_redeem_inner(
+			_exchanger: AccountIdOf<T>,
+			nft_id: T::ItemId,
+		) -> DispatchResultWithPostInfo {
+			//T::NftHandler::burn_from(&T::RedeemNftCollectionId::get(), &nft_id, &exchanger)?;
+
+			let (token_id, index) = NftRedeemRecord::<T>::take(nft_id).unwrap();
+
+			// attempt withdraw via agent
+			//T::StakingAgent::liquidize(&exchanger, &validators, token_id, None)?;
+
+			let (exchanger, token_amount, _result_time_unit, _redeem_type) =
+				TokenUnlockLedger::<T>::get(token_id, index).unwrap();
+
+			T::MultiCurrency::transfer(
+				token_id,
+				&T::EntranceAccount::get().into_account_truncating(),
+				&exchanger,
+				token_amount,
+			)?;
+
+			TokenUnlockLedger::<T>::remove(token_id, index);
+
+			Ok(Some(T::WeightInfo::redeem()).into())
 		}
 
 		pub fn token_to_lst_inner(
