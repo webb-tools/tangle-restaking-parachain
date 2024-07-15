@@ -1077,6 +1077,8 @@ impl tangle_lst_minting::Config for Runtime {
 	type AssetIdMaps = AssetIdMaps<Runtime>;
 	type StakingAgent = Slp;
 	type AssetHandler = Assets;
+	type ItemId = u32;
+	type RedeemNftCollectionId = ConstU32<1>;
 	type NftHandler = Nfts;
 }
 
