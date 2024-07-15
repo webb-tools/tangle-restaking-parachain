@@ -27,7 +27,7 @@ use core::convert::TryInto;
 use frame_support::traits::AsEnsureOriginWithArg;
 use tangle_primitives::staking::QueryResponseManager;
 use tangle_primitives::SlpxOperator;
-use tangle_slp::DerivativeAccountProvider;
+
 // A few exports that help ease life for downstream crates.
 pub use frame_support::{
 	construct_runtime, match_types, parameter_types,
@@ -46,25 +46,22 @@ pub use frame_support::{
 use frame_system::limits::{BlockLength, BlockWeights};
 pub use pallet_balances::Call as BalancesCall;
 pub use pallet_timestamp::Call as TimestampCall;
-use polkadot_runtime_common::impls::DealWithFees;
+
 use sp_api::impl_runtime_apis;
 use sp_arithmetic::Percent;
 use sp_core::{ConstBool, OpaqueMetadata};
 use sp_runtime::traits::Verify;
 use sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
-	traits::{
-		AccountIdConversion, AccountIdLookup, BlakeTwo256, Block as BlockT, StaticLookup, Zero,
-	},
+	traits::{AccountIdConversion, BlakeTwo256, Block as BlockT, Zero},
 	transaction_validity::{TransactionSource, TransactionValidity},
 	ApplyExtrinsicResult, DispatchError, DispatchResult, Perbill, Permill, RuntimeDebug,
-	SaturatedConversion,
 };
 use sp_std::{marker::PhantomData, prelude::*};
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
-use static_assertions::const_assert;
+
 pub use tangle_parachain_staking::{InflationInfo, Range};
 /// Constant values used within the runtime.
 pub mod constants;
@@ -73,20 +70,19 @@ pub mod weights;
 use tangle_asset_registry::AssetIdMaps;
 
 use constants::currency::*;
-use cumulus_pallet_parachain_system::{RelayNumberStrictlyIncreases, RelaychainDataProvider};
+use cumulus_pallet_parachain_system::RelayNumberStrictlyIncreases;
 use frame_support::{
 	dispatch::DispatchClass,
-	sp_runtime::traits::{Convert, ConvertInto},
+	sp_runtime::traits::Convert,
 	traits::{
 		fungible::HoldConsideration,
 		tokens::{PayFromAccount, UnityAssetBalanceConversion},
-		Currency, EitherOf, EitherOfDiverse, Get, Imbalance, LinearStoragePrice, LockIdentifier,
-		OnUnbalanced,
+		Currency, Get, Imbalance, LinearStoragePrice, OnUnbalanced,
 	},
 };
-use frame_system::{EnsureRoot, EnsureRootWithSuccess, EnsureSigned};
+use frame_system::{EnsureRoot, EnsureSigned};
 use hex_literal::hex;
-use orml_oracle::{DataFeeder, DataProvider, DataProviderExtended};
+use orml_oracle::DataProvider;
 use pallet_identity::legacy::IdentityInfo;
 use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
 use polkadot_runtime_common::prod_or_fast;
@@ -107,14 +103,14 @@ use tangle_slp::QueryId;
 
 // zenlink imports
 use zenlink_protocol::{
-	AssetBalance, AssetId as ZenlinkAssetId, LocalAssetHandler, MultiAssetsHandler, PairInfo,
-	PairLpGenerate, ZenlinkMultiAssets,
+	AssetBalance, AssetId as ZenlinkAssetId, LocalAssetHandler, MultiAssetsHandler, PairLpGenerate,
+	ZenlinkMultiAssets,
 };
-use zenlink_stable_amm::traits::{StableAmmApi, StablePoolLpCurrencyIdGenerate, ValidateCurrency};
+use zenlink_stable_amm::traits::{StablePoolLpCurrencyIdGenerate, ValidateCurrency};
 
 // xcm config
 pub mod xcm_config;
-use pallet_xcm::{EnsureResponse, QueryStatus};
+use pallet_xcm::QueryStatus;
 use sp_runtime::traits::IdentityLookup;
 use xcm::v3::prelude::*;
 pub use xcm_config::{
@@ -122,7 +118,7 @@ pub use xcm_config::{
 	SiblingParachainConvertsVia, TangleCurrencyIdConvert, TangleTreasuryAccount, XcmConfig,
 	XcmRouter,
 };
-use xcm_executor::{traits::QueryHandler, XcmExecutor};
+use xcm_executor::XcmExecutor;
 
 impl_opaque_keys! {
 	pub struct SessionKeys {
@@ -293,8 +289,8 @@ impl pallet_timestamp::Config for Runtime {
 
 parameter_types! {
 	pub ExistentialDeposit: Balance = 10 * MILLITNT;
-	pub TransferFee: Balance = 1 * MILLITNT;
-	pub CreationFee: Balance = 1 * MILLITNT;
+	pub TransferFee: Balance = MILLITNT;
+	pub CreationFee: Balance = MILLITNT;
 	pub TransactionByteFee: Balance = 16 * MICROTNT;
 }
 
@@ -542,11 +538,11 @@ parameter_types! {
 	pub ProposalBondMaximum: Balance = 500 * TNT;
 	pub const SpendPeriod: BlockNumber = 6 * DAYS;
 	pub const Burn: Permill = Permill::from_perthousand(0);
-	pub const TipCountdown: BlockNumber = 1 * DAYS;
+	pub const TipCountdown: BlockNumber = DAYS;
 	pub const TipFindersFee: Percent = Percent::from_percent(20);
-	pub TipReportDepositBase: Balance = 1 * TNT;
+	pub TipReportDepositBase: Balance = TNT;
 	pub DataDepositPerByte: Balance = 10 * cent::<Runtime>(NativeCurrencyId::get());
-	pub BountyDepositBase: Balance = 1 * TNT;
+	pub BountyDepositBase: Balance = TNT;
 	pub const BountyDepositPayoutDelay: BlockNumber = 4 * DAYS;
 	pub const BountyUpdatePeriod: BlockNumber = 90 * DAYS;
 	pub const MaximumReasonLength: u32 = 16384;
@@ -556,7 +552,7 @@ parameter_types! {
 	pub const MaxApprovals: u32 = 100;
 
 	pub const CuratorDepositMultiplier: Permill = Permill::from_percent(50);
-	pub CuratorDepositMin: Balance = 1 * TNT;
+	pub CuratorDepositMin: Balance = TNT;
 	pub CuratorDepositMax: Balance = 100 * TNT;
 	pub const MaxBalance: Balance = 800_000 * TNT;
 	pub const SpendLimit: Balance = 100 * TNT;
@@ -760,15 +756,15 @@ impl FeeGetter<RuntimeCall> for ExtraFeeMatcher {
 }
 
 parameter_types! {
-	pub TangleParachainAccountId20: [u8; 20] = cumulus_primitives_core::ParaId::from(ParachainInfo::get()).into_account_truncating();
+	pub TangleParachainAccountId20: [u8; 20] = ParachainInfo::get().into_account_truncating();
 }
 
 pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLocation {
 	match currency_id {
-		CurrencyId::Token2(GLMR_TOKEN_ID) => MultiLocation::new(
+		CurrencyId::Token2(_GLMR_TOKEN_ID) => MultiLocation::new(
 			1,
 			xcm::v3::Junctions::X2(
-				xcm::v3::Junction::Parachain(parachains::moonbeam::ID.into()),
+				xcm::v3::Junction::Parachain(parachains::moonbeam::ID),
 				xcm::v3::Junction::AccountKey20 {
 					network: None,
 					key: Slp::derivative_account_id_20(
@@ -783,7 +779,7 @@ pub fn create_x2_multilocation(index: u16, currency_id: CurrencyId) -> MultiLoca
 			),
 		),
 		// Only relay chain use the Tangle para account with "para"
-		CurrencyId::Token2(DOT_TOKEN_ID) => xcm::v3::Location::new(
+		CurrencyId::Token2(_DOT_TOKEN_ID) => xcm::v3::Location::new(
 			1,
 			xcm::v3::Junctions::X1(xcm::v3::Junction::AccountId32 {
 				network: None,
@@ -867,9 +863,9 @@ impl QueryResponseManager<QueryId, cumulus_primitives_core::Location, BlockNumbe
 	}
 
 	fn create_query_record(
-		responder: cumulus_primitives_core::Location,
-		call_back: Option<RuntimeCall>,
-		timeout: BlockNumber,
+		_responder: cumulus_primitives_core::Location,
+		_call_back: Option<RuntimeCall>,
+		_timeout: BlockNumber,
 	) -> u64 {
 		// if let Some(call_back) = call_back {
 		// 	PolkadotXcm::new_notify_query(responder.clone(), call_back, timeout, Here)
@@ -879,7 +875,7 @@ impl QueryResponseManager<QueryId, cumulus_primitives_core::Location, BlockNumbe
 		Default::default()
 	}
 
-	fn remove_query_record(query_id: QueryId) -> bool {
+	fn remove_query_record(_query_id: QueryId) -> bool {
 		// Temporarily banned. Querries from pallet_xcm cannot be removed unless it is in ready
 		// status. And we are not allowed to mannually change query status.
 		// So in the manual mode, it is not possible to remove the query at all.
@@ -892,7 +888,7 @@ impl QueryResponseManager<QueryId, cumulus_primitives_core::Location, BlockNumbe
 
 pub struct OnRefund;
 impl tangle_primitives::staking::OnRefund<AccountId, CurrencyId, Balance> for OnRefund {
-	fn on_refund(token_id: CurrencyId, to: AccountId, token_amount: Balance) -> u64 {
+	fn on_refund(_token_id: CurrencyId, _to: AccountId, _token_amount: Balance) -> u64 {
 		Zero::zero() // TODO : Fix later
 	}
 }
@@ -1016,16 +1012,16 @@ type MultiAssets = ZenlinkMultiAssets<ZenlinkProtocol, Balances, LocalAssetAdapt
 
 pub struct OnRedeemSuccess;
 impl tangle_lst_minting::OnRedeemSuccess<AccountId, CurrencyId, Balance> for OnRedeemSuccess {
-	fn on_redeem_success(token_id: CurrencyId, to: AccountId, token_amount: Balance) -> Weight {
+	fn on_redeem_success(_token_id: CurrencyId, _to: AccountId, _token_amount: Balance) -> Weight {
 		Default::default()
 	}
 
 	fn on_redeemed(
-		address: AccountId,
-		token_id: CurrencyId,
-		token_amount: Balance,
-		lst_amount: Balance,
-		fee: Balance,
+		_address: AccountId,
+		_token_id: CurrencyId,
+		_token_amount: Balance,
+		_lst_amount: Balance,
+		_fee: Balance,
 	) -> Weight {
 		Default::default()
 	}
@@ -1083,7 +1079,7 @@ impl tangle_lst_minting::Config for Runtime {
 }
 
 parameter_types! {
-	pub const ClearingDuration: u32 = prod_or_fast!(1 * DAYS, 10 * MINUTES);
+	pub const ClearingDuration: u32 = prod_or_fast!(DAYS, 10 * MINUTES);
 	pub const NameLengthLimit: u32 = 20;
 	pub TangleCommissionReceiver: AccountId = TreasuryPalletId::get().into_account_truncating();
 }
@@ -1097,7 +1093,7 @@ where
 {
 	fn local_balance_of(asset_id: ZenlinkAssetId, who: &AccountId) -> AssetBalance {
 		if let Ok(currency_id) = asset_id.try_into() {
-			return TryInto::<AssetBalance>::try_into(Local::free_balance(currency_id, &who))
+			return TryInto::<AssetBalance>::try_into(Local::free_balance(currency_id, who))
 				.unwrap_or_default();
 		}
 		AssetBalance::default()
@@ -1113,10 +1109,7 @@ where
 
 	fn local_is_exists(asset_id: ZenlinkAssetId) -> bool {
 		let currency_id: Result<CurrencyId, ()> = asset_id.try_into();
-		match currency_id {
-			Ok(_) => true,
-			Err(_) => false,
-		}
+		currency_id.is_ok()
 	}
 
 	fn local_transfer(
@@ -1128,8 +1121,8 @@ where
 		if let Ok(currency_id) = asset_id.try_into() {
 			Local::transfer(
 				currency_id,
-				&origin,
-				&target,
+				origin,
+				target,
 				amount
 					.try_into()
 					.map_err(|_| DispatchError::Other("convert amount in local transfer"))?,
@@ -1147,7 +1140,7 @@ where
 		if let Ok(currency_id) = asset_id.try_into() {
 			Local::deposit(
 				currency_id,
-				&origin,
+				origin,
 				amount
 					.try_into()
 					.map_err(|_| DispatchError::Other("convert amount in local deposit"))?,
@@ -1167,7 +1160,7 @@ where
 		if let Ok(currency_id) = asset_id.try_into() {
 			Local::withdraw(
 				currency_id,
-				&origin,
+				origin,
 				amount
 					.try_into()
 					.map_err(|_| DispatchError::Other("convert amount in local withdraw"))?,
@@ -1584,7 +1577,7 @@ impl cumulus_pallet_parachain_system::CheckInherents<Block> for CheckInherents {
 			.create_inherent_data()
 			.expect("Could not create the timestamp inherent data");
 
-		inherent_data.check_extrinsics(&block)
+		inherent_data.check_extrinsics(block)
 	}
 }
 

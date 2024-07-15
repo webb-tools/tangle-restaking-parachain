@@ -360,7 +360,7 @@ pub fn run() -> Result<()> {
 
 			// Switch on the concrete benchmark sub-command-
 			match cmd {
-				BenchmarkCmd::Pallet(cmd) => {
+				BenchmarkCmd::Pallet(_cmd) => {
 					if cfg!(feature = "runtime-benchmarks") {
 						with_runtime_or_err!(chain_spec, {
 							return runner.sync_run(|config| cmd.run::<Block, ()>(config));
@@ -371,7 +371,7 @@ pub fn run() -> Result<()> {
 							.into())
 					}
 				},
-				BenchmarkCmd::Block(cmd) => runner.sync_run(|config| {
+				BenchmarkCmd::Block(_cmd) => runner.sync_run(|config| {
 					with_runtime_or_err!(config.chain_spec, {
 						{
 							let partials = new_partial(&config, false)?;
@@ -380,14 +380,11 @@ pub fn run() -> Result<()> {
 					})
 				}),
 				#[cfg(not(feature = "runtime-benchmarks"))]
-				BenchmarkCmd::Storage(_) => {
-					return Err(sc_cli::Error::Input(
-						"Compile with --features=runtime-benchmarks \
+				BenchmarkCmd::Storage(_) => Err(sc_cli::Error::Input(
+					"Compile with --features=runtime-benchmarks \
 						to enable storage benchmarks."
-							.into(),
-					)
-					.into())
-				},
+						.into(),
+				)),
 				#[cfg(feature = "runtime-benchmarks")]
 				BenchmarkCmd::Storage(cmd) => runner.sync_run(|config| {
 					with_runtime_or_err!(config.chain_spec, {
@@ -411,10 +408,10 @@ pub fn run() -> Result<()> {
 		},
 		None => {
 			let runner = cli.create_runner(&cli.run.normalize())?;
-			let collator_options = cli.run.collator_options();
+			let _collator_options = cli.run.collator_options();
 
 			runner.run_node_until_exit(|config| async move {
-				let hwbench = (!cli.no_hardware_benchmarks)
+				let _hwbench = (!cli.no_hardware_benchmarks)
 					.then_some(config.database.path().map(|database_path| {
 						let _ = std::fs::create_dir_all(database_path);
 						sc_sysinfo::gather_hwbench(Some(database_path))
@@ -438,7 +435,7 @@ pub fn run() -> Result<()> {
 						&id,
 					);
 
-				let polkadot_config = SubstrateCli::create_configuration(
+				let _polkadot_config = SubstrateCli::create_configuration(
 					&polkadot_cli,
 					&polkadot_cli,
 					config.tokio_handle.clone(),

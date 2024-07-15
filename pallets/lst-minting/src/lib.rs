@@ -864,7 +864,7 @@ pub mod pallet {
 
 		#[pallet::call_index(17)]
 		#[pallet::weight(T::WeightInfo::set_incentive_coef())]
-		pub fn withdraw_redeemed(origin: OriginFor<T>, nft_id: CurrencyIdOf<T>) -> DispatchResult {
+		pub fn withdraw_redeemed(origin: OriginFor<T>, _nft_id: CurrencyIdOf<T>) -> DispatchResult {
 			T::ControlOrigin::ensure_origin(origin)?;
 
 			// if let Some(new_coef) = new_coef_op {

@@ -1,6 +1,6 @@
 use super::*;
 use frame_support::{pallet_prelude::*, storage_alias, traits::OnRuntimeUpgrade};
-use log;
+
 use parity_scale_codec::{Decode, Encode, EncodeLike, MaxEncodedLen};
 use sp_std::fmt::Debug;
 
@@ -84,7 +84,7 @@ pub mod v1 {
 	use sp_runtime::Deserialize;
 
 	/// The log target.
-	const TARGET: &'static str = "runtime::referenda::migration::v1";
+	const TARGET: &str = "runtime::referenda::migration::v1";
 
 	#[derive(Debug, Deserialize, Clone)]
 	struct ForeignReferendumInfo<AccountId, Balance> {

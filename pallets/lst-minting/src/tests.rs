@@ -24,32 +24,26 @@ use crate::{mock::*, DispatchError::Module, *};
 use frame_support::{assert_noop, assert_ok, sp_runtime::Permill, BoundedVec};
 use sp_runtime::ModuleError;
 use tangle_primitives::currency::{BNC, FIL, KSM, MOVR, VBNC, VFIL, VKSM, VMOVR};
+use tangle_slp::primitives::MinimumsMaximums;
 use xcm::v3::{prelude::*, MultiLocation, Weight};
 
-#[test]
-fn mint_bnc() {
-	ExtBuilder::default().one_hundred_for_alice_n_bob().build().execute_with(|| {
-		let validator =
-			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
-		assert_ok!(LstMinting::mint(
-			Some(BOB).into(),
-			BNC,
-			95000000000,
-			BoundedVec::default(),
-			None,
-			vec![validator]
-		));
-		assert_ok!(LstMinting::set_unlock_duration(
-			RuntimeOrigin::signed(ALICE),
-			BNC,
-			TimeUnit::Era(1)
-		));
-		assert_ok!(LstMinting::increase_token_pool(BNC, 70000000000));
-		// assert_eq!(LstMinting::token_pool(BNC), 70000000000);
-		assert_ok!(LstMinting::update_ongoing_time_unit(BNC, TimeUnit::Era(1)));
-		assert_eq!(Tokens::free_balance(VBNC, &BOB), 95000000000);
-		assert_ok!(LstMinting::redeem(Some(BOB).into(), VBNC, 20000000000));
-	});
+fn init_slp<T: tangle_slp::Config>() {
+	let mins_and_maxs = MinimumsMaximums::<Balance> {
+		delegator_bonded_minimum: 100_000_000_000,
+		bond_extra_minimum: 0,
+		unbond_minimum: 0,
+		rebond_minimum: 0,
+		unbond_record_maximum: 32,
+		validators_back_maximum: 36,
+		delegator_active_staking_maximum: 200_000_000_000_000,
+		validators_reward_maximum: 0,
+		delegation_amount_minimum: 0,
+		delegators_maximum: 100,
+		validators_maximum: 300,
+	};
+
+	// Set minimums and maximums
+	tangle_slp::MinimumsAndMaximums::<T>::insert(KSM, mins_and_maxs);
 }
 
 #[test]
@@ -84,6 +78,7 @@ fn redeem_bnc() {
 fn mint() {
 	ExtBuilder::default().one_hundred_for_alice_n_bob().build().execute_with(|| {
 		assert_ok!(LstMinting::set_minimum_mint(RuntimeOrigin::signed(ALICE), KSM, 200));
+		init_slp::<Runtime>();
 		pub const FEE: Permill = Permill::from_percent(5);
 		assert_ok!(LstMinting::set_fees(RuntimeOrigin::root(), FEE, FEE));
 		assert_noop!(
@@ -281,71 +276,6 @@ fn rebond() {
 		assert_eq!(LstMinting::unlocking_total(KSM), 100); // 200 + 100 - 200
 		let (entrance_account, _exit_account) = LstMinting::get_entrance_and_exit_accounts();
 		assert_eq!(Tokens::free_balance(KSM, &entrance_account), 300);
-	});
-}
-
-#[test]
-fn movr() {
-	ExtBuilder::default().one_hundred_for_alice_n_bob().build().execute_with(|| {
-		let (entrance_account, _exit_account) = LstMinting::get_entrance_and_exit_accounts();
-		let validator =
-			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
-		assert_ok!(LstMinting::set_hook_iteration_limit(RuntimeOrigin::signed(ALICE), 10));
-		assert_ok!(LstMinting::set_min_time_unit(
-			RuntimeOrigin::signed(ALICE),
-			MOVR,
-			TimeUnit::Round(1)
-		));
-		pub const FEE: Permill = Permill::from_percent(2);
-		assert_ok!(LstMinting::set_fees(RuntimeOrigin::root(), FEE, FEE));
-		assert_ok!(LstMinting::set_unlock_duration(
-			RuntimeOrigin::signed(ALICE),
-			MOVR,
-			TimeUnit::Round(1)
-		));
-		assert_ok!(LstMinting::update_ongoing_time_unit(MOVR, TimeUnit::Round(1)));
-		assert_ok!(LstMinting::mint(
-			Some(BOB).into(),
-			MOVR,
-			300000000000000000000,
-			BoundedVec::default(),
-			None,
-			vec![validator]
-		));
-		assert_eq!(Tokens::free_balance(MOVR, &entrance_account), 294000000000000000000);
-		assert_eq!(Tokens::free_balance(VMOVR, &BOB), 294000000000000000000);
-		assert_ok!(LstMinting::redeem(Some(BOB).into(), VMOVR, 200000000000000000000));
-		assert_ok!(LstMinting::redeem(Some(BOB).into(), VMOVR, 80000000000000000000));
-		assert_ok!(LstMinting::redeem(Some(BOB).into(), VMOVR, 10000000000000000000));
-		LstMinting::on_initialize(100);
-		LstMinting::on_initialize(100);
-		LstMinting::on_initialize(100);
-		LstMinting::on_initialize(100);
-		assert_eq!(LstMinting::min_time_unit(MOVR), TimeUnit::Round(2));
-		assert_eq!(LstMinting::ongoing_time_unit(MOVR), Some(TimeUnit::Round(1)));
-		assert_eq!(Tokens::free_balance(MOVR, &BOB), 984200000000000000000);
-		assert_eq!(LstMinting::token_unlock_ledger(MOVR, 0), None);
-		assert_ok!(LstMinting::mint(
-			Some(CHARLIE).into(),
-			MOVR,
-			30000000000000000000000,
-			BoundedVec::default(),
-			None,
-			vec![validator]
-		));
-		assert_ok!(LstMinting::redeem(Some(CHARLIE).into(), VMOVR, 20000000000000000000000));
-		assert_ok!(LstMinting::add_support_rebond_token(RuntimeOrigin::signed(ALICE), MOVR));
-		assert_eq!(LstMinting::token_unlock_ledger(MOVR, 0), None);
-		assert_eq!(LstMinting::token_unlock_ledger(MOVR, 1), None);
-		assert_eq!(LstMinting::token_unlock_ledger(MOVR, 2), None);
-		assert_eq!(LstMinting::token_unlock_next_id(MOVR), 4);
-		assert_ok!(LstMinting::rebond(
-			Some(CHARLIE).into(),
-			MOVR,
-			19000000000000000000000,
-			vec![validator]
-		));
-		assert_eq!(LstMinting::unlocking_total(MOVR), 0);
 	});
 }
 

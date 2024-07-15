@@ -30,10 +30,10 @@ pub const BOB: AccountId32 = AccountId32::new([1u8; 32]);
 pub type Amount = i128;
 
 decl_test_parachain! {
-	pub struct tangle {
-		Runtime = tangle::Runtime,
-		XcmpMessageHandler = tangle::MessageQueue,
-		DmpMessageHandler = tangle::MessageQueue,
+	pub struct Tangle {
+		Runtime = tangle_runtime::Runtime,
+		XcmpMessageHandler = tangle_runtime::MessageQueue,
+		DmpMessageHandler = tangle_runtime::MessageQueue,
 		new_ext = para_ext(2030),
 	}
 }
@@ -54,14 +54,14 @@ decl_test_network! {
 	pub struct TestNet {
 		relay_chain = Relay,
 		parachains = vec![
-			(2030, tangle),
+			(2030, Tangle),
 		],
 	}
 }
 
-pub type tangleTokens = orml_tokens::Pallet<tangle_runtime::Runtime>;
-pub type tangleXTokens = orml_xtokens::Pallet<tangle_runtime::Runtime>;
-pub type tangleSlp = tangle_slp::Pallet<tangle_runtime::Runtime>;
+pub type TangleTokens = orml_tokens::Pallet<tangle_runtime::Runtime>;
+pub type TangleXTokens = orml_xtokens::Pallet<tangle_runtime::Runtime>;
+pub type TangleSlp = tangle_slp::Pallet<tangle_runtime::Runtime>;
 
 pub type RelayBalances = pallet_balances::Pallet<relaychain::Runtime>;
 pub type RelaySystem = frame_system::Pallet<relaychain::Runtime>;

@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::mock::{bifrost, Relay, RelayBalances, RelayXcmPallet, Tangle, TangleSlp};
+use crate::mock::{tangle_runtime, Relay, RelayBalances, RelayXcmPallet, Tangle, TangleSlp};
 use frame_support::{assert_ok, traits::Currency};
 use sp_runtime::{
 	traits::{AccountIdConversion, Convert},
@@ -52,7 +52,7 @@ const KUSAMA_ALICE_STASH_MULTILOCATION: MultiLocation = MultiLocation {
 
 const DOT_DECIMALS: u128 = 10_000_000_000;
 
-fn cross_dot_to_bifrost(to: AccountId32, amount: u128) {
+fn cross_dot_to_tangle(to: AccountId32, amount: u128) {
 	Relay::execute_with(|| {
 		let _ = RelayBalances::deposit_creating(
 			&ParaId::from(2030).into_account_truncating(),
@@ -72,8 +72,8 @@ fn cross_dot_to_bifrost(to: AccountId32, amount: u128) {
 }
 
 fn slp_setup() {
-	cross_dot_to_bifrost(tangle_TREASURY_ACCOUNT.into(), 10000 * DOT_DECIMALS);
-	cross_dot_to_bifrost(ENTRANCE_ACCOUNT.into(), 10000 * DOT_DECIMALS);
+	cross_dot_to_tangle(tangle_TREASURY_ACCOUNT.into(), 10000 * DOT_DECIMALS);
+	cross_dot_to_tangle(ENTRANCE_ACCOUNT.into(), 10000 * DOT_DECIMALS);
 
 	let mins_and_maxs = MinimumsMaximums {
 		delegator_bonded_minimum: DOT_DECIMALS / 10,
@@ -91,26 +91,26 @@ fn slp_setup() {
 
 	Tangle::execute_with(|| {
 		assert_ok!(TangleSlp::set_minimums_and_maximums(
-			bifrost::RuntimeOrigin::root(),
+			tangle_runtime::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
 			Some(mins_and_maxs)
 		));
 
 		// set fee_source for ksm to be treasury
 		assert_ok!(TangleSlp::set_fee_source(
-			bifrost::RuntimeOrigin::root(),
+			tangle_runtime::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
 			Some((tangle_TREASURY_MULTILOCATION, 1 * DOT_DECIMALS))
 		));
 
 		assert_ok!(TangleSlp::initialize_delegator(
-			bifrost::RuntimeOrigin::root(),
+			tangle_runtime::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
 			None
 		));
 
 		assert_ok!(TangleSlp::add_validator(
-			bifrost::RuntimeOrigin::root(),
+			tangle_runtime::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
 			Box::new(KUSAMA_ALICE_STASH_MULTILOCATION),
 		));
@@ -126,7 +126,7 @@ fn relaychain_staking_bond() {
 			CurrencyId::Token2(0),
 		));
 		assert_ok!(TangleSlp::bond(
-			bifrost::RuntimeOrigin::root(),
+			tangle_runtime::RuntimeOrigin::root(),
 			CurrencyId::Token2(0),
 			Box::new(delegator),
 			50 * DOT_DECIMALS,
