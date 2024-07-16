@@ -3516,8 +3516,8 @@ export default {
 				channelId: 'Option<u32>',
 			},
 			redeem: {
-				lstId: 'TanglePrimitivesCurrencyCurrencyId',
-				lstAmount: 'u128',
+				LstId: 'TanglePrimitivesCurrencyCurrencyId',
+				LstAmount: 'u128',
 			},
 			rebond: {
 				tokenId: 'TanglePrimitivesCurrencyCurrencyId',
@@ -3989,7 +3989,7 @@ export default {
 			},
 			redeem: {
 				evmCaller: 'H160',
-				lstId: 'TanglePrimitivesCurrencyCurrencyId',
+				LstId: 'TanglePrimitivesCurrencyCurrencyId',
 				targetChain: 'TangleSlpxTargetChain',
 			},
 			stable_pool_swap: {
@@ -4177,7 +4177,7 @@ export default {
 			vote: {
 				lst: 'TanglePrimitivesCurrencyCurrencyId',
 				pollIndex: 'Compact<u32>',
-				lstVote: 'TangleLstVotingVoteAccountVote',
+				LstVote: 'TangleLstVotingVoteAccountVote',
 			},
 			unlock: {
 				lst: 'TanglePrimitivesCurrencyCurrencyId',
@@ -5216,7 +5216,7 @@ export default {
 				address: 'AccountId32',
 				tokenId: 'TanglePrimitivesCurrencyCurrencyId',
 				tokenAmount: 'u128',
-				lstAmount: 'u128',
+				LstAmount: 'u128',
 				fee: 'u128',
 				remark: 'Bytes',
 			},
@@ -5224,7 +5224,7 @@ export default {
 				address: 'AccountId32',
 				tokenId: 'TanglePrimitivesCurrencyCurrencyId',
 				tokenAmount: 'u128',
-				lstAmount: 'u128',
+				LstAmount: 'u128',
 				fee: 'u128',
 				unlockId: 'u32',
 			},
@@ -5238,14 +5238,14 @@ export default {
 				address: 'AccountId32',
 				tokenId: 'TanglePrimitivesCurrencyCurrencyId',
 				tokenAmount: 'u128',
-				lstAmount: 'u128',
+				LstAmount: 'u128',
 				fee: 'u128',
 			},
 			RebondedByUnlockId: {
 				address: 'AccountId32',
 				tokenId: 'TanglePrimitivesCurrencyCurrencyId',
 				tokenAmount: 'u128',
-				lstAmount: 'u128',
+				LstAmount: 'u128',
 				fee: 'u128',
 				unlockId: 'u32',
 			},
@@ -5665,14 +5665,14 @@ export default {
 			},
 			XcmRedeem: {
 				evmCaller: 'H160',
-				lstId: 'TanglePrimitivesCurrencyCurrencyId',
-				lstAmount: 'u128',
+				LstId: 'TanglePrimitivesCurrencyCurrencyId',
+				LstAmount: 'u128',
 				targetChain: 'TangleSlpxTargetChain',
 			},
 			XcmRedeemFailed: {
 				evmCaller: 'H160',
-				lstId: 'TanglePrimitivesCurrencyCurrencyId',
-				lstAmount: 'u128',
+				LstId: 'TanglePrimitivesCurrencyCurrencyId',
+				LstAmount: 'u128',
 				targetChain: 'TangleSlpxTargetChain',
 			},
 			SetTransferToFee: {
@@ -5697,7 +5697,7 @@ export default {
 				currencyId: 'TanglePrimitivesCurrencyCurrencyId',
 				tokenAmount: 'u128',
 				vcurrencyId: 'TanglePrimitivesCurrencyCurrencyId',
-				lstAmount: 'u128',
+				LstAmount: 'u128',
 			},
 			SetCurrencyToSupportXcmFee: {
 				currencyId: 'TanglePrimitivesCurrencyCurrencyId',
@@ -6462,7 +6462,7 @@ export default {
 	 **/
 	TangleParachainStakingDelayedPayout: {
 		roundIssuance: 'u128',
-		totalStakingReward: 'u128',
+		totaLstakingReward: 'u128',
 		collatorCommission: 'Perbill',
 	},
 	/**
@@ -7787,7 +7787,7 @@ export default {
 			'NotSetExecutionFee',
 			'FreeBalanceTooLow',
 			'ArgumentsError',
-			'ErrorConvertlst',
+			'ErrorConvertLst',
 			'ErrorValidating',
 			'ErrorDelivering',
 			'Unsupported',

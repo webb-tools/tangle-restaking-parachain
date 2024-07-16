@@ -14,8 +14,10 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use super::*;
+use cumulus_primitives_core::AggregateMessageOrigin;
 pub use cumulus_primitives_core::ParaId;
 use cumulus_primitives_core::ParaId as CumulusParaId;
+use frame_support::traits::TransformOrigin;
 use frame_support::{
 	ensure,
 	sp_runtime::traits::{CheckedConversion, Convert},
@@ -27,6 +29,7 @@ use orml_traits::{
 };
 pub use orml_traits::{location::AbsoluteReserveProvider, parameter_type_with_key, MultiCurrency};
 use pallet_xcm::XcmPassthrough;
+use parachains_common::message_queue::{NarrowOriginToSibling, ParaIdToSibling};
 use parity_scale_codec::{Decode, Encode};
 pub use polkadot_parachain_primitives::primitives::Sibling;
 use polkadot_runtime_common::xcm_sender::NoPriceForMessageDelivery;
@@ -37,6 +40,7 @@ use tangle_primitives::{
 	AccountId, CurrencyId, CurrencyIdMapping, TokenSymbol, DOT_TOKEN_ID, GLMR_TOKEN_ID,
 };
 pub use tangle_xcm_interface::traits::{parachains, XcmBaseWeight};
+use xcm::v4::{prelude::*, Asset, AssetId, InteriorLocation, Location};
 use xcm_builder::{
 	Account32Hash, DescribeAllTerminal, DescribeFamily, FrameTransactionalProcessor,
 	HashedDescription, TrailingSetTopicAsId,
@@ -49,7 +53,6 @@ pub use xcm_builder::{
 	SovereignSignedViaLocation, TakeRevenue, TakeWeightCredit,
 };
 use xcm_executor::traits::{MatchesFungible, Properties, ShouldExecute};
-
 // orml imports
 use tangle_currencies::BasicCurrencyAdapter;
 use tangle_runtime_common::currency_adapter::{
@@ -64,12 +67,12 @@ pub struct TangleAssetMatcher<CurrencyId, CurrencyIdConvert>(
 impl<CurrencyId, CurrencyIdConvert, Amount> MatchesFungible<Amount>
 	for TangleAssetMatcher<CurrencyId, CurrencyIdConvert>
 where
-	CurrencyIdConvert: Convert<MultiLocation, Option<CurrencyId>>,
+	CurrencyIdConvert: Convert<Location, Option<CurrencyId>>,
 	Amount: TryFrom<u128>,
 {
-	fn matches_fungible(a: &MultiAsset) -> Option<Amount> {
-		if let (Fungible(ref amount), Concrete(ref location)) = (&a.fun, &a.id) {
-			if CurrencyIdConvert::convert(*location).is_some() {
+	fn matches_fungible(a: &Asset) -> Option<Amount> {
+		if let (Fungible(ref amount), AssetId(ref location)) = (&a.fun, &a.id) {
+			if CurrencyIdConvert::convert(location.clone()).is_some() {
 				return CheckedConversion::checked_from(*amount);
 			}
 		}
@@ -80,11 +83,11 @@ where
 /// A `FilterAssetLocation` implementation. Filters multi native assets whose
 /// reserve is same with `origin`.
 pub struct MultiNativeAsset<ReserveProvider>(PhantomData<ReserveProvider>);
-impl<ReserveProvider> ContainsPair<MultiAsset, MultiLocation> for MultiNativeAsset<ReserveProvider>
+impl<ReserveProvider> ContainsPair<Asset, Location> for MultiNativeAsset<ReserveProvider>
 where
 	ReserveProvider: Reserve,
 {
-	fn contains(asset: &MultiAsset, origin: &MultiLocation) -> bool {
+	fn contains(asset: &Asset, origin: &Location) -> bool {
 		if let Some(ref reserve) = ReserveProvider::reserve(asset) {
 			if reserve == origin {
 				return true;
@@ -94,13 +97,13 @@ where
 	}
 }
 
-fn native_currency_location(id: CurrencyId) -> MultiLocation {
-	MultiLocation::new(0, X1(Junction::from(BoundedVec::try_from(id.encode()).unwrap())))
+fn native_currency_location(id: CurrencyId) -> Location {
+	Location::new(0, [Junction::from(BoundedVec::try_from(id.encode()).unwrap())])
 }
 
-impl<T: Get<ParaId>> Convert<MultiAsset, Option<CurrencyId>> for TangleCurrencyIdConvert<T> {
-	fn convert(asset: MultiAsset) -> Option<CurrencyId> {
-		if let MultiAsset { id: Concrete(id), fun: Fungible(_) } = asset {
+impl<T: Get<ParaId>> Convert<Asset, Option<CurrencyId>> for TangleCurrencyIdConvert<T> {
+	fn convert(asset: Asset) -> Option<CurrencyId> {
+		if let Asset { id: AssetId(id), fun: xcm::v4::Fungibility::Fungible(_) } = asset {
 			Self::convert(id)
 		} else {
 			None
@@ -108,89 +111,83 @@ impl<T: Get<ParaId>> Convert<MultiAsset, Option<CurrencyId>> for TangleCurrencyI
 	}
 }
 
-pub struct TangleAccountIdToMultiLocation;
-impl Convert<AccountId, MultiLocation> for TangleAccountIdToMultiLocation {
-	fn convert(account: AccountId) -> MultiLocation {
-		X1(AccountId32 { network: None, id: account.into() }).into()
+pub struct TangleAccountIdToLocation;
+impl Convert<AccountId, Location> for TangleAccountIdToLocation {
+	fn convert(account: AccountId) -> Location {
+		[AccountId32 { network: None, id: account.into() }].into()
 	}
 }
 
-pub struct TangleCurrencyIdConvert<T>(sp_std::marker::PhantomData<T>);
-impl<T: Get<ParaId>> Convert<CurrencyId, Option<MultiLocation>> for TangleCurrencyIdConvert<T> {
-	fn convert(id: CurrencyId) -> Option<MultiLocation> {
+pub struct TangleCurrencyIdConvert<T>(PhantomData<T>);
+impl<T: Get<ParaId>> Convert<CurrencyId, Option<Location>> for TangleCurrencyIdConvert<T> {
+	fn convert(id: CurrencyId) -> Option<Location> {
 		use CurrencyId::*;
 		use TokenSymbol::*;
 
-		if let Some(id) = AssetIdMaps::<Runtime>::get_multi_location(id) {
+		if let Some(id) = AssetIdMaps::<Runtime>::get_location(id) {
 			return Some(id);
 		}
 
 		match id {
-			Token2(DOT_TOKEN_ID) => Some(MultiLocation::parent()),
-			Native(TNT) => Some(native_currency_location(id)),
+			Token2(DOT_TOKEN_ID) => Some(Location::parent()),
+			Native(BNC) => Some(native_currency_location(id)),
 			// Moonbeam Native token
-			Token2(GLMR_TOKEN_ID) => Some(MultiLocation::new(
+			Token2(GLMR_TOKEN_ID) => Some(Location::new(
 				1,
-				X2(
+				[
 					Parachain(parachains::moonbeam::ID),
-					PalletInstance(parachains::moonbeam::PALLET_ID.into()),
-				),
+					PalletInstance(parachains::moonbeam::PALLET_ID),
+				],
 			)),
 			_ => None,
 		}
 	}
 }
 
-impl<T: Get<ParaId>> Convert<MultiLocation, Option<CurrencyId>> for TangleCurrencyIdConvert<T> {
-	fn convert(location: MultiLocation) -> Option<CurrencyId> {
+impl<T: Get<ParaId>> Convert<Location, Option<CurrencyId>> for TangleCurrencyIdConvert<T> {
+	fn convert(location: Location) -> Option<CurrencyId> {
 		use CurrencyId::*;
 		use TokenSymbol::*;
 
-		if location == MultiLocation::parent() {
+		if location == Location::parent() {
 			return Some(Token2(DOT_TOKEN_ID));
 		}
 
-		if let Some(currency_id) = AssetIdMaps::<Runtime>::get_currency_id(location) {
+		if let Some(currency_id) = AssetIdMaps::<Runtime>::get_currency_id(location.clone()) {
 			return Some(currency_id);
 		}
 
-		match location {
-			MultiLocation { parents: 1, interior } => match interior {
-				X2(Parachain(id), PalletInstance(index))
-					if ((id == parachains::moonbeam::ID)
-						&& (index == parachains::moonbeam::PALLET_ID)) =>
-				{
-					Some(Token2(GLMR_TOKEN_ID))
-				},
-				X2(Parachain(id), GeneralKey { data, length })
-					if (id == u32::from(ParachainInfo::parachain_id())) =>
-				{
-					let key = &data[..length as usize];
-					if let Ok(currency_id) = CurrencyId::decode(&mut &key[..]) {
-						match currency_id {
-							Native(TNT) => Some(currency_id),
-							_ => None,
-						}
-					} else {
-						None
-					}
-				},
-				_ => None,
+		match &location.unpack() {
+			(0, [Parachain(id), PalletInstance(index)])
+				if (*id == parachains::moonbeam::ID)
+					&& (*index == parachains::moonbeam::PALLET_ID) =>
+			{
+				Some(Token2(GLMR_TOKEN_ID))
 			},
-			MultiLocation { parents: 0, interior } => match interior {
-				X1(GeneralKey { data, length }) => {
-					// decode the general key
-					let key = &data[..length as usize];
-					if let Ok(currency_id) = CurrencyId::decode(&mut &key[..]) {
-						match currency_id {
-							Native(TNT) => Some(currency_id),
-							_ => None,
-						}
-					} else {
-						None
+			(0, [Parachain(id), GeneralKey { data, length }])
+				if *id == u32::from(ParachainInfo::parachain_id()) =>
+			{
+				let key = &data[..*length as usize];
+				if let Ok(currency_id) = CurrencyId::decode(&mut &key[..]) {
+					match currency_id {
+						Native(BNC) => Some(currency_id),
+						_ => None,
 					}
-				},
-				_ => None,
+				} else {
+					None
+				}
+			},
+			(0, [GeneralKey { data, length }]) => {
+				// decode the general key
+				let key = &data[..*length as usize];
+				if let Ok(currency_id) = CurrencyId::decode(&mut &key[..]) {
+					match currency_id {
+						Native(BNC) => Some(currency_id),
+						_ => None,
+					}
+				} else {
+					None
+				}
 			},
 			_ => None,
 		}
@@ -202,7 +199,7 @@ parameter_types! {
 	pub const RelayNetwork: NetworkId = NetworkId::Polkadot;
 	pub RelayChainOrigin: RuntimeOrigin = cumulus_pallet_xcm::Origin::Relay.into();
 	pub SelfParaChainId: CumulusParaId = ParachainInfo::parachain_id();
-	pub UniversalLocation: InteriorMultiLocation = X2(GlobalConsensus(RelayNetwork::get()), Parachain(ParachainInfo::parachain_id().into()));
+	pub UniversalLocation: InteriorLocation = [GlobalConsensus(RelayNetwork::get()), Parachain(ParachainInfo::parachain_id().into())].into();
 }
 
 /// Type for specifying how a `MultiLocation` can be converted into an `AccountId`. This is used
@@ -252,20 +249,13 @@ parameter_types! {
 	pub const MaxInstructions: u32 = 100;
 }
 
-match_types! {
-	pub type ParentOrParentsExecutivePlurality: impl Contains<MultiLocation> = {
-		MultiLocation { parents: 1, interior: Here } |
-		MultiLocation { parents: 1, interior: X1(Plurality { id: BodyId::Executive, .. }) }
-	};
-}
-
 /// Barrier allowing a top level paid message with DescendOrigin instruction
 pub const DEFAULT_PROOF_SIZE: u64 = 64 * 1024;
 pub const DEFAULT_REF_TIMR: u64 = 10_000_000_000;
 pub struct AllowTopLevelPaidExecutionDescendOriginFirst<T>(PhantomData<T>);
-impl<T: Contains<MultiLocation>> ShouldExecute for AllowTopLevelPaidExecutionDescendOriginFirst<T> {
+impl<T: Contains<Location>> ShouldExecute for AllowTopLevelPaidExecutionDescendOriginFirst<T> {
 	fn should_execute<Call>(
-		origin: &MultiLocation,
+		origin: &Location,
 		message: &mut [Instruction<Call>],
 		max_weight: Weight,
 		_weight_credit: &mut Properties,
@@ -341,38 +331,38 @@ pub type TangleAssetTransactor = MultiCurrencyAdapter<
 >;
 
 parameter_types! {
-	pub DotPerSecond: (AssetId,u128, u128) = (MultiLocation::parent().into(), dot_per_second::<Runtime>(),0);
+	pub DotPerSecond: (AssetId,u128, u128) = (Location::parent().into(), dot_per_second::<Runtime>(),0);
 	pub BncPerSecond: (AssetId,u128, u128) = (
-		MultiLocation::new(
+		Location::new(
 			1,
-			X2(Parachain(SelfParaId::get()), Junction::from(BoundedVec::try_from(NativeCurrencyId::get().encode()).unwrap())),
+			[xcm::v4::Junction::Parachain(SelfParaId::get()), xcm::v4::Junction::from(BoundedVec::try_from(NativeCurrencyId::get().encode()).unwrap())],
 		).into(),
-		// TNT:DOT = 80:1
+		// BNC:DOT = 80:1
 		dot_per_second::<Runtime>() * 80,
 		0
 	);
 	pub BncNewPerSecond: (AssetId,u128, u128) = (
-		MultiLocation::new(
+		Location::new(
 			0,
-			X1(Junction::from(BoundedVec::try_from(NativeCurrencyId::get().encode()).unwrap()))
+			[xcm::v4::Junction::from(BoundedVec::try_from(NativeCurrencyId::get().encode()).unwrap())]
 		).into(),
-		// TNT:DOT = 80:1
+		// BNC:DOT = 80:1
 		dot_per_second::<Runtime>() * 80,
 	0
 	);
 	pub ZlkPerSecond: (AssetId, u128,u128) = (
-		MultiLocation::new(
+		Location::new(
 			1,
-			X2(Parachain(SelfParaId::get()), Junction::from(BoundedVec::try_from(CurrencyId::Token(TokenSymbol::ZLK).encode()).unwrap()))
+			[xcm::v4::Junction::Parachain(SelfParaId::get()), xcm::v4::Junction::from(BoundedVec::try_from(CurrencyId::Token(TokenSymbol::ZLK).encode()).unwrap())]
 		).into(),
 		// ZLK:KSM = 150:1
 		dot_per_second::<Runtime>() * 150 * 1_000_000,
 	0
 	);
 	pub ZlkNewPerSecond: (AssetId, u128,u128) = (
-		MultiLocation::new(
+		Location::new(
 			0,
-			X1(Junction::from(BoundedVec::try_from(CurrencyId::Token(TokenSymbol::ZLK).encode()).unwrap()))
+			[xcm::v4::Junction::from(BoundedVec::try_from(CurrencyId::Token(TokenSymbol::ZLK).encode()).unwrap())]
 		).into(),
 		// ZLK:KSM = 150:1
 		dot_per_second::<Runtime>() * 150 * 1_000_000,
@@ -383,8 +373,10 @@ parameter_types! {
 
 pub struct ToTreasury;
 impl TakeRevenue for ToTreasury {
-	fn take_revenue(revenue: MultiAsset) {
-		if let MultiAsset { id: Concrete(location), fun: Fungible(amount) } = revenue {
+	fn take_revenue(revenue: Asset) {
+		if let Asset { id: AssetId(location), fun: xcm::v4::Fungibility::Fungible(amount) } =
+			revenue
+		{
 			if let Some(currency_id) = TangleCurrencyIdConvert::<SelfParaChainId>::convert(location)
 			{
 				let _ = Currencies::deposit(currency_id, &TangleTreasuryAccount::get(), amount);
@@ -443,16 +435,6 @@ impl Contains<RuntimeCall> for SafeCallFilter {
 				| pallet_identity::Call::remove_sub { .. }
 				| pallet_identity::Call::quit_sub { .. },
 			)
-			| RuntimeCall::Bounties(
-				pallet_bounties::Call::propose_bounty { .. }
-				| pallet_bounties::Call::approve_bounty { .. }
-				| pallet_bounties::Call::propose_curator { .. }
-				| pallet_bounties::Call::unassign_curator { .. }
-				| pallet_bounties::Call::accept_curator { .. }
-				| pallet_bounties::Call::award_bounty { .. }
-				| pallet_bounties::Call::claim_bounty { .. }
-				| pallet_bounties::Call::close_bounty { .. },
-			)
 			| RuntimeCall::PolkadotXcm(pallet_xcm::Call::limited_reserve_transfer_assets {
 				..
 			})
@@ -465,13 +447,11 @@ impl Contains<RuntimeCall> for SafeCallFilter {
 			| RuntimeCall::LstMinting(
 				tangle_lst_minting::Call::mint { .. }
 				| tangle_lst_minting::Call::rebond { .. }
-				| tangle_lst_minting::Call::rebond_by_unlock_id { .. }
 				| tangle_lst_minting::Call::redeem { .. },
 			)
 			| RuntimeCall::XcmInterface(tangle_xcm_interface::Call::transfer_statemine_assets {
 				..
 			})
-			| RuntimeCall::Slpx(..)
 			| RuntimeCall::ZenlinkProtocol(
 				zenlink_protocol::Call::add_liquidity { .. }
 				| zenlink_protocol::Call::remove_liquidity { .. }
@@ -482,28 +462,6 @@ impl Contains<RuntimeCall> for SafeCallFilter {
 	}
 }
 
-/// Matches foreign assets from a given origin.
-/// Foreign assets are assets bridged from other consensus systems. i.e parents > 1.
-pub struct IsForeignNativeAssetFrom<Origin>(PhantomData<Origin>);
-impl<Origin> ContainsPair<MultiAsset, MultiLocation> for IsForeignNativeAssetFrom<Origin>
-where
-	Origin: Get<MultiLocation>,
-{
-	fn contains(asset: &MultiAsset, origin: &MultiLocation) -> bool {
-		let loc = Origin::get();
-		&loc == origin
-			&& matches!(
-				asset,
-				MultiAsset { id: Concrete(MultiLocation { parents: 2, .. }), fun: Fungible(_) },
-			)
-	}
-}
-
-parameter_types! {
-  /// Location of Asset Hub
-  pub AssetHubLocation: MultiLocation = (Parent, Parachain(1000)).into();
-}
-
 pub struct XcmConfig;
 impl xcm_executor::Config for XcmConfig {
 	type AssetClaims = PolkadotXcm;
@@ -511,8 +469,7 @@ impl xcm_executor::Config for XcmConfig {
 	type AssetTrap = TangleDropAssets<ToTreasury>;
 	type Barrier = Barrier;
 	type RuntimeCall = RuntimeCall;
-	type IsReserve =
-		(IsForeignNativeAssetFrom<AssetHubLocation>, MultiNativeAsset<RelativeReserveProvider>);
+	type IsReserve = MultiNativeAsset<RelativeReserveProvider>;
 	type IsTeleporter = ();
 	type UniversalLocation = UniversalLocation;
 	type OriginConverter = XcmOriginToTransactDispatchOrigin;
@@ -585,22 +542,44 @@ impl cumulus_pallet_xcm::Config for Runtime {
 	type XcmExecutor = XcmExecutor<XcmConfig>;
 }
 
+parameter_types! {
+	pub const RelayOrigin: AggregateMessageOrigin = AggregateMessageOrigin::Parent;
+}
+
 impl cumulus_pallet_xcmp_queue::Config for Runtime {
 	type ChannelInfo = ParachainSystem;
 	type RuntimeEvent = RuntimeEvent;
 	type VersionWrapper = PolkadotXcm;
-	type XcmExecutor = XcmExecutor<XcmConfig>;
-	type ExecuteOverweightOrigin = EnsureRoot<AccountId>;
+	type XcmpQueue = TransformOrigin<MessageQueue, AggregateMessageOrigin, ParaId, ParaIdToSibling>;
+	type MaxInboundSuspended = ConstU32<1_000>;
 	type ControllerOrigin = EnsureRoot<AccountId>;
 	type ControllerOriginConverter = XcmOriginToTransactDispatchOrigin;
 	type WeightInfo = cumulus_pallet_xcmp_queue::weights::SubstrateWeight<Runtime>;
 	type PriceForSiblingDelivery = NoPriceForMessageDelivery<ParaId>;
 }
 
-impl cumulus_pallet_dmp_queue::Config for Runtime {
+parameter_types! {
+	pub MessageQueueServiceWeight: Weight = Perbill::from_percent(35) * RuntimeBlockWeights::get().max_block;
+}
+
+impl pallet_message_queue::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
-	type ExecuteOverweightOrigin = EnsureRoot<AccountId>;
-	type XcmExecutor = XcmExecutor<XcmConfig>;
+	type WeightInfo = pallet_message_queue::weights::SubstrateWeight<Self>;
+	#[cfg(feature = "runtime-benchmarks")]
+	type MessageProcessor =
+		pallet_message_queue::mock_helpers::NoopMessageProcessor<AggregateMessageOrigin>;
+	#[cfg(not(feature = "runtime-benchmarks"))]
+	type MessageProcessor = xcm_builder::ProcessXcmMessage<
+		AggregateMessageOrigin,
+		xcm_executor::XcmExecutor<XcmConfig>,
+		RuntimeCall,
+	>;
+	type Size = u32;
+	type QueueChangeHandler = NarrowOriginToSibling<XcmpQueue>;
+	type QueuePausedQuery = NarrowOriginToSibling<XcmpQueue>;
+	type HeapSize = ConstU32<{ 64 * 1024 }>;
+	type MaxStale = ConstU32<8>;
+	type ServiceWeight = MessageQueueServiceWeight;
 }
 
 // orml runtime start
@@ -617,7 +596,7 @@ parameter_type_with_key! {
 		match currency_id {
 			&CurrencyId::Native(TokenSymbol::TNT) => 10 * milli::<Runtime>(NativeCurrencyId::get()),   // 0.01 TNT
 			&CurrencyId::Token2(DOT_TOKEN_ID) => 1_000_000,  // DOT
-			&CurrencyId::LPToken(..) => 1 * micro::<Runtime>(NativeCurrencyId::get()),
+			&CurrencyId::LPToken(..) => micro::<Runtime>(NativeCurrencyId::get()),
 			CurrencyId::ForeignAsset(foreign_asset_id) => {
 				AssetIdMaps::<Runtime>::get_asset_metadata(AssetIds::ForeignAssetId(*foreign_asset_id)).
 					map_or(Balance::max_value(), |metatata| metatata.minimal_balance)
@@ -686,14 +665,14 @@ impl orml_tokens::Config for Runtime {
 }
 
 parameter_types! {
-	pub SelfLocation: MultiLocation = MultiLocation::new(1, X1(Parachain(ParachainInfo::get().into())));
-	pub SelfRelativeLocation: MultiLocation = MultiLocation::here();
-	pub const BaseXcmWeight: Weight = Weight::from_parts(1000_000_000u64, 0);
+	pub SelfLocation: Location = Location::new(1, [Parachain(ParachainInfo::get().into())]);
+	pub SelfRelativeLocation: Location = Location::here();
+	pub const BaseXcmWeight: Weight = Weight::from_parts(1_000_000_000_u64, 0);
 	pub const MaxAssetsForTransfer: usize = 2;
 }
 
 parameter_type_with_key! {
-	pub ParachainMinFee: |_location: MultiLocation| -> Option<u128> {
+	pub ParachainMinFee: |_location: Location| -> Option<u128> {
 		Some(u128::MAX)
 	};
 }
@@ -703,7 +682,7 @@ impl orml_xtokens::Config for Runtime {
 	type Balance = Balance;
 	type CurrencyId = CurrencyId;
 	type CurrencyIdConvert = TangleCurrencyIdConvert<ParachainInfo>;
-	type AccountIdToMultiLocation = TangleAccountIdToMultiLocation;
+	type AccountIdToLocation = TangleAccountIdToLocation;
 	type UniversalLocation = UniversalLocation;
 	type SelfLocation = SelfRelativeLocation;
 	type XcmExecutor = XcmExecutor<XcmConfig>;
@@ -711,8 +690,10 @@ impl orml_xtokens::Config for Runtime {
 	type BaseXcmWeight = BaseXcmWeight;
 	type MaxAssetsForTransfer = MaxAssetsForTransfer;
 	type MinXcmFee = ParachainMinFee;
-	type MultiLocationsFilter = Everything;
+	type LocationsFilter = Everything;
 	type ReserveProvider = RelativeReserveProvider;
+	type RateLimiter = ();
+	type RateLimiterId = ();
 }
 
 impl orml_unknown_tokens::Config for Runtime {
@@ -721,7 +702,7 @@ impl orml_unknown_tokens::Config for Runtime {
 
 impl orml_xcm::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
-	type SovereignOrigin = MoreThanHalfCouncil;
+	type SovereignOrigin = EnsureRoot<AccountId>;
 }
 
 pub struct DummySalpHelper;
@@ -732,10 +713,10 @@ impl tangle_xcm_interface::SalpHelper<AccountId, RuntimeCall, Balance> for Dummy
 	}
 
 	fn bind_query_id_and_contribution(
-		query_id: u64,
-		index: u32,
-		contributer: AccountId,
-		amount: Balance,
+		_query_id: u64,
+		_index: u32,
+		_contributer: AccountId,
+		_amount: Balance,
 	) {
 	}
 }
@@ -746,135 +727,15 @@ parameter_types! {
 
 impl tangle_xcm_interface::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
-	type UpdateOrigin = TechAdminOrCouncil;
+	type UpdateOrigin = EnsureRoot<AccountId>;
 	type MultiCurrency = Currencies;
 	type RelayNetwork = RelayNetwork;
 	type RelaychainCurrencyId = RelayCurrencyId;
 	type ParachainSovereignAccount = ParachainAccount;
 	type XcmExecutor = XcmExecutor<XcmConfig>;
-	type AccountIdToMultiLocation = TangleAccountIdToMultiLocation;
+	type AccountIdToLocation = TangleAccountIdToLocation;
 	type SalpHelper = DummySalpHelper;
 	type ParachainId = SelfParaChainId;
 	type CallBackTimeOut = ConstU32<10>;
 	type CurrencyIdConvert = AssetIdMaps<Runtime>;
-}
-
-#[cfg(test)]
-mod tests {
-	use hex_literal::hex;
-	use sp_core::crypto::Ss58Codec;
-	use xcm::{
-		prelude::{AccountId32, AccountKey20, Parachain, X2},
-		v3::{MultiLocation, NetworkId},
-	};
-	use xcm_builder::{DescribeAllTerminal, DescribeFamily};
-	use xcm_executor::traits::ConvertLocation;
-
-	use crate::AccountId;
-
-	#[test]
-	fn test_location_to_account() {
-		let moonbeam_slpx_origin_location = MultiLocation::new(
-			0,
-			X2(
-				Parachain(2004),
-				AccountKey20 {
-					network: None,
-					key: hex!["F1d4797E51a4640a76769A50b57abE7479ADd3d8"].into(),
-				},
-			),
-		);
-		let moonbeam_slpx_derived = xcm_builder::HashedDescription::<
-			AccountId,
-			DescribeFamily<DescribeAllTerminal>,
-		>::convert_location(&moonbeam_slpx_origin_location)
-		.unwrap();
-
-		let moonbeam_receiver_origin_location = MultiLocation::new(
-			0,
-			X2(
-				Parachain(2004),
-				AccountKey20 {
-					network: None,
-					key: hex!["64DC1E8b5E9515dE37b58b4d8629Bf89BcD1F576"].into(),
-				},
-			),
-		);
-		let moonbeam_receiver_derived = xcm_builder::HashedDescription::<
-			AccountId,
-			DescribeFamily<DescribeAllTerminal>,
-		>::convert_location(&moonbeam_receiver_origin_location)
-		.unwrap();
-
-		let moonriver_slpx_origin_location = MultiLocation::new(
-			0,
-			X2(
-				Parachain(2023),
-				AccountKey20 {
-					network: None,
-					key: hex!["6b0A44c64190279f7034b77c13a566E914FE5Ec4"].into(),
-				},
-			),
-		);
-		let moonriver_slpx_derived = xcm_builder::HashedDescription::<
-			AccountId,
-			DescribeFamily<DescribeAllTerminal>,
-		>::convert_location(&moonriver_slpx_origin_location)
-		.unwrap();
-
-		let astar_slpx_origin_location = MultiLocation::new(
-			0,
-			X2(
-				Parachain(2006),
-				AccountId32 {
-					network: Some(NetworkId::Polkadot),
-					id: hex!["b3d19dad606c8f323460d7bb64a147af60923b85d3c853596954c71d2cfe20e3"]
-						.into(),
-				},
-			),
-		);
-		let astar_slpx_derived = xcm_builder::HashedDescription::<
-			AccountId,
-			DescribeFamily<DescribeAllTerminal>,
-		>::convert_location(&astar_slpx_origin_location)
-		.unwrap();
-
-		let astar_receiver_origin_location = MultiLocation::new(
-			0,
-			X2(
-				Parachain(2006),
-				AccountId32 {
-					network: Some(NetworkId::Polkadot),
-					id: hex!["576dee92eedbd7ffe0695569ac7a8db30edd204f2c42f53f14e0e863702c597e"]
-						.into(),
-				},
-			),
-		);
-		let astar_receiver_derived = xcm_builder::HashedDescription::<
-			AccountId,
-			DescribeFamily<DescribeAllTerminal>,
-		>::convert_location(&astar_receiver_origin_location)
-		.unwrap();
-
-		assert_eq!(
-			moonbeam_slpx_derived,
-			AccountId::from_ss58check("dCCU6pkmwQEb29MSigvWjhvnWTtE3GaBqaAdxt4ppW7kUkw").unwrap()
-		);
-		assert_eq!(
-			moonbeam_receiver_derived,
-			AccountId::from_ss58check("fV6ngGNKkM1BUymusAMcZECxNu3fqhSnS4Jhz2RBk4NtZrw").unwrap()
-		);
-		assert_eq!(
-			moonriver_slpx_derived,
-			AccountId::from_ss58check("eVjSno5E5Teibbu3zdaZbBKhsFWU4QjpQXif2YiZ1jFbmEB").unwrap()
-		);
-		assert_eq!(
-			astar_slpx_derived,
-			AccountId::from_ss58check("fErAtK3KrBPZyAtd26DMQAmuAvo8YswQQBhexibCcqh3D1c").unwrap()
-		);
-		assert_eq!(
-			astar_receiver_derived,
-			AccountId::from_ss58check("cG6stm2jXgbreRNGxZEvaUn3jT17fxdFXUa6mwE4bSL1v1L").unwrap()
-		);
-	}
 }

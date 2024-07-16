@@ -1831,14 +1831,14 @@ pub mod api {
 				#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::kill_storage`]."]
-				pub struct KillStorage {
+				pub struct KilLstorage {
 					pub keys: kill_storage::Keys,
 				}
 				pub mod kill_storage {
 					use super::runtime_types;
 					pub type Keys = ::std::vec::Vec<::std::vec::Vec<::core::primitive::u8>>;
 				}
-				impl ::subxt::blocks::StaticExtrinsic for KillStorage {
+				impl ::subxt::blocks::StaticExtrinsic for KilLstorage {
 					const PALLET: &'static str = "System";
 					const CALL: &'static str = "kill_storage";
 				}
@@ -1985,11 +1985,11 @@ pub mod api {
 				pub fn kill_storage(
 					&self,
 					keys: types::kill_storage::Keys,
-				) -> ::subxt::tx::Payload<types::KillStorage> {
+				) -> ::subxt::tx::Payload<types::KilLstorage> {
 					::subxt::tx::Payload::new_static(
 						"System",
 						"kill_storage",
-						types::KillStorage { keys },
+						types::KilLstorage { keys },
 						[
 							73u8, 63u8, 196u8, 36u8, 144u8, 114u8, 34u8, 213u8, 108u8, 93u8, 209u8,
 							234u8, 153u8, 185u8, 33u8, 91u8, 187u8, 195u8, 223u8, 130u8, 58u8,
@@ -13842,7 +13842,7 @@ pub mod api {
 			#[doc = "A new term with new_members. This indicates that enough candidates existed to run"]
 			#[doc = "the election, not that enough have has been elected. The inner value must be examined"]
 			#[doc = "for this purpose. A `NewTerm(\\[\\])` indicates that some candidates got their bond"]
-			#[doc = "slashed and none were elected, whilst `EmptyTerm` means that no candidates existed to"]
+			#[doc = "slashed and none were elected, whiLst `EmptyTerm` means that no candidates existed to"]
 			#[doc = "begin with."]
 			pub struct NewTerm {
 				pub new_members: new_term::NewMembers,
@@ -48010,7 +48010,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct TokenRateHardcapConfigured {
-				pub lst: token_rate_hardcap_configured::Lst,
+				pub lst: token_rate_hardcap_configured::lst,
 				pub hardcap: token_rate_hardcap_configured::Hardcap,
 			}
 			pub mod token_rate_hardcap_configured {
@@ -48036,7 +48036,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct TokenRateHardcapRemoved {
-				pub lst: token_rate_hardcap_removed::Lst,
+				pub lst: token_rate_hardcap_removed::lst,
 			}
 			pub mod token_rate_hardcap_removed {
 				use super::runtime_types;
@@ -48690,7 +48690,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::config_lst_auto_refresh`]."]
 				pub struct ConfigLstAutoRefresh {
-					pub lst: config_lst_auto_refresh::Lst,
+					pub lst: config_lst_auto_refresh::lst,
 					pub hardcap: config_lst_auto_refresh::Hardcap,
 				}
 				pub mod config_lst_auto_refresh {
@@ -48717,7 +48717,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::remove_lst_auto_refresh`]."]
 				pub struct RemoveLstAutoRefresh {
-					pub lst: remove_lst_auto_refresh::Lst,
+					pub lst: remove_lst_auto_refresh::lst,
 				}
 				pub mod remove_lst_auto_refresh {
 					use super::runtime_types;
@@ -48936,7 +48936,7 @@ pub mod api {
 				#[doc = "See [`Pallet::config_lst_auto_refresh`]."]
 				pub fn config_lst_auto_refresh(
 					&self,
-					lst: types::config_lst_auto_refresh::Lst,
+					lst: types::config_lst_auto_refresh::lst,
 					hardcap: types::config_lst_auto_refresh::Hardcap,
 				) -> ::subxt::tx::Payload<types::ConfigLstAutoRefresh> {
 					::subxt::tx::Payload::new_static(
@@ -48953,12 +48953,12 @@ pub mod api {
 				#[doc = "See [`Pallet::remove_lst_auto_refresh`]."]
 				pub fn remove_lst_auto_refresh(
 					&self,
-					lst: types::remove_lst_auto_refresh::Lst,
+					lst: types::remove_lst_auto_refresh::lst,
 				) -> ::subxt::tx::Payload<types::RemoveLstAutoRefresh> {
 					::subxt::tx::Payload::new_static(
 						"StablePool",
 						"remove_lst_auto_refresh",
-						types::RemoveLstAutoRefresh { lst },
+						types::RemoveLstAutoRefresh { Lst },
 						[
 							2u8, 126u8, 22u8, 194u8, 152u8, 164u8, 46u8, 216u8, 156u8, 112u8,
 							231u8, 4u8, 249u8, 247u8, 187u8, 185u8, 104u8, 67u8, 15u8, 191u8, 77u8,
@@ -48997,7 +48997,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::vote`]."]
 				pub struct Vote {
-					pub lst: vote::Lst,
+					pub lst: vote::lst,
 					#[codec(compact)]
 					pub poll_index: vote::PollIndex,
 					pub lst_vote: vote::LstVote,
@@ -49029,7 +49029,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::unlock`]."]
 				pub struct Unlock {
-					pub lst: unlock::Lst,
+					pub lst: unlock::lst,
 					#[codec(compact)]
 					pub poll_index: unlock::PollIndex,
 				}
@@ -49057,7 +49057,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::remove_delegator_vote`]."]
 				pub struct RemoveDelegatorVote {
-					pub lst: remove_delegator_vote::Lst,
+					pub lst: remove_delegator_vote::lst,
 					#[codec(compact)]
 					pub poll_index: remove_delegator_vote::PollIndex,
 					#[codec(compact)]
@@ -49088,7 +49088,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::kill_referendum`]."]
 				pub struct KillReferendum {
-					pub lst: kill_referendum::Lst,
+					pub lst: kill_referendum::lst,
 					#[codec(compact)]
 					pub poll_index: kill_referendum::PollIndex,
 				}
@@ -49116,7 +49116,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::add_delegator`]."]
 				pub struct AddDelegator {
-					pub lst: add_delegator::Lst,
+					pub lst: add_delegator::lst,
 					#[codec(compact)]
 					pub derivative_index: add_delegator::DerivativeIndex,
 				}
@@ -49144,7 +49144,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::set_referendum_status`]."]
 				pub struct SetReferendumStatus {
-					pub lst: set_referendum_status::Lst,
+					pub lst: set_referendum_status::lst,
 					#[codec(compact)]
 					pub poll_index: set_referendum_status::PollIndex,
 					pub info: set_referendum_status::Info,
@@ -49177,7 +49177,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::set_vote_locking_period`]."]
 				pub struct SetVoteLockingPeriod {
-					pub lst: set_vote_locking_period::Lst,
+					pub lst: set_vote_locking_period::lst,
 					pub locking_period: set_vote_locking_period::LockingPeriod,
 				}
 				pub mod set_vote_locking_period {
@@ -49204,7 +49204,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::set_undeciding_timeout`]."]
 				pub struct SetUndecidingTimeout {
-					pub lst: set_undeciding_timeout::Lst,
+					pub lst: set_undeciding_timeout::lst,
 					pub undeciding_timeout: set_undeciding_timeout::UndecidingTimeout,
 				}
 				pub mod set_undeciding_timeout {
@@ -49285,7 +49285,7 @@ pub mod api {
 				#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 				#[doc = "See [`Pallet::set_vote_cap_ratio`]."]
 				pub struct SetVoteCapRatio {
-					pub lst: set_vote_cap_ratio::Lst,
+					pub lst: set_vote_cap_ratio::lst,
 					pub vote_cap_ratio: set_vote_cap_ratio::VoteCapRatio,
 				}
 				pub mod set_vote_cap_ratio {
@@ -49303,7 +49303,7 @@ pub mod api {
 				#[doc = "See [`Pallet::vote`]."]
 				pub fn vote(
 					&self,
-					lst: types::vote::Lst,
+					lst: types::vote::lst,
 					poll_index: types::vote::PollIndex,
 					lst_vote: types::vote::LstVote,
 				) -> ::subxt::tx::Payload<types::Vote> {
@@ -49322,7 +49322,7 @@ pub mod api {
 				#[doc = "See [`Pallet::unlock`]."]
 				pub fn unlock(
 					&self,
-					lst: types::unlock::Lst,
+					lst: types::unlock::lst,
 					poll_index: types::unlock::PollIndex,
 				) -> ::subxt::tx::Payload<types::Unlock> {
 					::subxt::tx::Payload::new_static(
@@ -49340,7 +49340,7 @@ pub mod api {
 				#[doc = "See [`Pallet::remove_delegator_vote`]."]
 				pub fn remove_delegator_vote(
 					&self,
-					lst: types::remove_delegator_vote::Lst,
+					lst: types::remove_delegator_vote::lst,
 					poll_index: types::remove_delegator_vote::PollIndex,
 					derivative_index: types::remove_delegator_vote::DerivativeIndex,
 				) -> ::subxt::tx::Payload<types::RemoveDelegatorVote> {
@@ -49358,7 +49358,7 @@ pub mod api {
 				#[doc = "See [`Pallet::kill_referendum`]."]
 				pub fn kill_referendum(
 					&self,
-					lst: types::kill_referendum::Lst,
+					lst: types::kill_referendum::lst,
 					poll_index: types::kill_referendum::PollIndex,
 				) -> ::subxt::tx::Payload<types::KillReferendum> {
 					::subxt::tx::Payload::new_static(
@@ -49375,7 +49375,7 @@ pub mod api {
 				#[doc = "See [`Pallet::add_delegator`]."]
 				pub fn add_delegator(
 					&self,
-					lst: types::add_delegator::Lst,
+					lst: types::add_delegator::lst,
 					derivative_index: types::add_delegator::DerivativeIndex,
 				) -> ::subxt::tx::Payload<types::AddDelegator> {
 					::subxt::tx::Payload::new_static(
@@ -49392,7 +49392,7 @@ pub mod api {
 				#[doc = "See [`Pallet::set_referendum_status`]."]
 				pub fn set_referendum_status(
 					&self,
-					lst: types::set_referendum_status::Lst,
+					lst: types::set_referendum_status::lst,
 					poll_index: types::set_referendum_status::PollIndex,
 					info: types::set_referendum_status::Info,
 				) -> ::subxt::tx::Payload<types::SetReferendumStatus> {
@@ -49411,7 +49411,7 @@ pub mod api {
 				#[doc = "See [`Pallet::set_vote_locking_period`]."]
 				pub fn set_vote_locking_period(
 					&self,
-					lst: types::set_vote_locking_period::Lst,
+					lst: types::set_vote_locking_period::lst,
 					locking_period: types::set_vote_locking_period::LockingPeriod,
 				) -> ::subxt::tx::Payload<types::SetVoteLockingPeriod> {
 					::subxt::tx::Payload::new_static(
@@ -49429,7 +49429,7 @@ pub mod api {
 				#[doc = "See [`Pallet::set_undeciding_timeout`]."]
 				pub fn set_undeciding_timeout(
 					&self,
-					lst: types::set_undeciding_timeout::Lst,
+					lst: types::set_undeciding_timeout::lst,
 					undeciding_timeout: types::set_undeciding_timeout::UndecidingTimeout,
 				) -> ::subxt::tx::Payload<types::SetUndecidingTimeout> {
 					::subxt::tx::Payload::new_static(
@@ -49482,7 +49482,7 @@ pub mod api {
 				#[doc = "See [`Pallet::set_vote_cap_ratio`]."]
 				pub fn set_vote_cap_ratio(
 					&self,
-					lst: types::set_vote_cap_ratio::Lst,
+					lst: types::set_vote_cap_ratio::lst,
 					vote_cap_ratio: types::set_vote_cap_ratio::VoteCapRatio,
 				) -> ::subxt::tx::Payload<types::SetVoteCapRatio> {
 					::subxt::tx::Payload::new_static(
@@ -49517,7 +49517,7 @@ pub mod api {
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct Voted {
 				pub who: voted::Who,
-				pub lst: voted::Lst,
+				pub lst: voted::lst,
 				pub poll_index: voted::PollIndex,
 				pub token_vote: voted::TokenVote,
 				pub delegator_vote: voted::DelegatorVote,
@@ -49551,7 +49551,7 @@ pub mod api {
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct Unlocked {
 				pub who: unlocked::Who,
-				pub lst: unlocked::Lst,
+				pub lst: unlocked::lst,
 				pub poll_index: unlocked::PollIndex,
 			}
 			pub mod unlocked {
@@ -49579,7 +49579,7 @@ pub mod api {
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct DelegatorVoteRemoved {
 				pub who: delegator_vote_removed::Who,
-				pub lst: delegator_vote_removed::Lst,
+				pub lst: delegator_vote_removed::lst,
 				pub derivative_index: delegator_vote_removed::DerivativeIndex,
 			}
 			pub mod delegator_vote_removed {
@@ -49606,7 +49606,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct DelegatorAdded {
-				pub lst: delegator_added::Lst,
+				pub lst: delegator_added::lst,
 				pub derivative_index: delegator_added::DerivativeIndex,
 			}
 			pub mod delegator_added {
@@ -49632,7 +49632,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct ReferendumInfoCreated {
-				pub lst: referendum_info_created::Lst,
+				pub lst: referendum_info_created::lst,
 				pub poll_index: referendum_info_created::PollIndex,
 				pub info: referendum_info_created::Info,
 			}
@@ -49663,7 +49663,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct ReferendumInfoSet {
-				pub lst: referendum_info_set::Lst,
+				pub lst: referendum_info_set::lst,
 				pub poll_index: referendum_info_set::PollIndex,
 				pub info: referendum_info_set::Info,
 			}
@@ -49694,7 +49694,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct VoteLockingPeriodSet {
-				pub lst: vote_locking_period_set::Lst,
+				pub lst: vote_locking_period_set::lst,
 				pub locking_period: vote_locking_period_set::LockingPeriod,
 			}
 			pub mod vote_locking_period_set {
@@ -49720,7 +49720,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct UndecidingTimeoutSet {
-				pub lst: undeciding_timeout_set::Lst,
+				pub lst: undeciding_timeout_set::lst,
 				pub undeciding_timeout: undeciding_timeout_set::UndecidingTimeout,
 			}
 			pub mod undeciding_timeout_set {
@@ -49746,7 +49746,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct ReferendumKilled {
-				pub lst: referendum_killed::Lst,
+				pub lst: referendum_killed::lst,
 				pub poll_index: referendum_killed::PollIndex,
 			}
 			pub mod referendum_killed {
@@ -49772,7 +49772,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct VoteNotified {
-				pub lst: vote_notified::Lst,
+				pub lst: vote_notified::lst,
 				pub poll_index: vote_notified::PollIndex,
 				pub success: vote_notified::Success,
 			}
@@ -49800,7 +49800,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct DelegatorVoteRemovedNotified {
-				pub lst: delegator_vote_removed_notified::Lst,
+				pub lst: delegator_vote_removed_notified::lst,
 				pub poll_index: delegator_vote_removed_notified::PollIndex,
 				pub success: delegator_vote_removed_notified::Success,
 			}
@@ -49856,7 +49856,7 @@ pub mod api {
 			#[decode_as_type(crate_path = ":: subxt :: ext :: scale_decode")]
 			#[encode_as_type(crate_path = ":: subxt :: ext :: scale_encode")]
 			pub struct VoteCapRatioSet {
-				pub lst: vote_cap_ratio_set::Lst,
+				pub lst: vote_cap_ratio_set::lst,
 				pub vote_cap_ratio: vote_cap_ratio_set::VoteCapRatio,
 			}
 			pub mod vote_cap_ratio_set {
@@ -56320,7 +56320,7 @@ pub mod api {
 					#[doc = "A new term with new_members. This indicates that enough candidates existed to run"]
 					#[doc = "the election, not that enough have has been elected. The inner value must be examined"]
 					#[doc = "for this purpose. A `NewTerm(\\[\\])` indicates that some candidates got their bond"]
-					#[doc = "slashed and none were elected, whilst `EmptyTerm` means that no candidates existed to"]
+					#[doc = "slashed and none were elected, whiLst `EmptyTerm` means that no candidates existed to"]
 					#[doc = "begin with."]
 					NewTerm {
 						new_members:
@@ -64277,7 +64277,7 @@ pub mod api {
 					#[codec(index = 0)]
 					Native(runtime_types::tangle_primitives::currency::TokenSymbol),
 					#[codec(index = 1)]
-					lst(runtime_types::tangle_primitives::currency::TokenSymbol),
+					Lst(runtime_types::tangle_primitives::currency::TokenSymbol),
 					#[codec(index = 2)]
 					Token(runtime_types::tangle_primitives::currency::TokenSymbol),
 					#[codec(index = 3)]
@@ -66029,7 +66029,7 @@ pub mod api {
 				#[doc = "The `Error` enum of this pallet."]
 				pub enum Error {
 					#[codec(index = 0)]
-					#[doc = "Token not found in lst minting"]
+					#[doc = "Token not found in Lst minting"]
 					TokenNotFoundInLstMinting,
 					#[codec(index = 1)]
 					#[doc = "Token not found in zenlink"]

@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -20,13 +23,10 @@ use crate::{
 		Ledger, QueryId, SubstrateLedger, SubstrateLedgerUpdateEntry,
 		SubstrateLedgerUpdateOperation, UnlockChunk, ValidatorsByDelegatorUpdateEntry,
 	},
-	traits::{QueryResponseManager, StakingAgent},
 	AccountIdOf, BalanceOf, Config, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
-	Validators,
 };
 use core::marker::PhantomData;
-pub use cumulus_primitives_core::ParaId;
 use frame_support::{ensure, traits::Get};
 use frame_system::pallet_prelude::BlockNumberFor;
 use parity_scale_codec::Encode;
@@ -35,11 +35,14 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
-use tangle_primitives::{CurrencyId, LstMintingOperator, XcmOperationType, ASTR_TOKEN_ID};
+use tangle_primitives::{
+	staking::{QueryResponseManager, StakingAgent},
+	CurrencyId, LstMintingOperator, XcmOperationType, ASTR_TOKEN_ID,
+};
 use xcm::{
 	opaque::v3::{Junction::Parachain, Junctions::X1, MultiLocation},
 	v3::prelude::*,
-	VersionedMultiAssets, VersionedMultiLocation,
+	VersionedAssets, VersionedLocation,
 };
 
 /// StakingAgent implementation for Astar
@@ -93,12 +96,12 @@ impl<T: Config>
 		ensure!(amount >= mins_maxs.bond_extra_minimum, Error::<T>::LowerThanMinimum);
 
 		// check if the validator is in the white list.
-		let validator_list =
-			Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
-		validator_list
-			.iter()
-			.position(|va| va == &contract_multilocation)
-			.ok_or(Error::<T>::ValidatorNotExist)?;
+		// let validator_list =
+		// 	Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		// validator_list
+		// 	.iter()
+		// 	.position(|va| va == &contract_multilocation)
+		// 	.ok_or(Error::<T>::ValidatorNotExist)?;
 
 		if DelegatorLedgers::<T>::get(currency_id, who).is_none() {
 			// Check if the amount exceeds the minimum requirement. The first bond requires 500 ASTR
@@ -150,8 +153,9 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-		send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
 	}
@@ -249,8 +253,9 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-		send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
 	}
@@ -324,7 +329,7 @@ impl<T: Config>
 		if validator == &MultiLocation::default() {
 			call = AstarCall::Staking(AstarDappsStakingCall::<T>::ClaimStakerRewards).encode();
 		} else {
-			let contract_h160 = Pallet::<T>::multilocation_to_h160_account(&validator)?;
+			let contract_h160 = Pallet::<T>::multilocation_to_h160_account(validator)?;
 			let smart_contract = SmartContract::<T::AccountId>::Evm(contract_h160);
 			call = AstarCall::Staking(AstarDappsStakingCall::<T>::ClaimBonusReward(smart_contract))
 				.encode()
@@ -392,8 +397,9 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-		send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
 	}
@@ -410,11 +416,11 @@ impl<T: Config>
 		Err(Error::<T>::Unsupported)
 	}
 
-	/// Make token transferred back to tangle chain account.
+	/// Make token transferred back to Tangle chain account.
 	fn transfer_back(
 		&self,
 		from: &MultiLocation,
-		to: &MultiLocation,
+		_to: &MultiLocation,
 		amount: BalanceOf<T>,
 		currency_id: CurrencyId,
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
@@ -426,32 +432,26 @@ impl<T: Config>
 		DelegatorsMultilocation2Index::<T>::get(currency_id, from)
 			.ok_or(Error::<T>::DelegatorNotExist)?;
 
-		// Make sure the receiving account is the Exit_account from lst-minting module.
-		let to_account_id = Pallet::<T>::multilocation_to_account(to)?;
-		let (_, exit_account) = T::LstMinting::get_entrance_and_exit_accounts();
-		ensure!(to_account_id == exit_account, Error::<T>::InvalidAccount);
+		// Make sure the receiving account is the entrance_account from Lst-minting module.
+		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 
 		// Prepare parameter dest and beneficiary.
-		let to_32: [u8; 32] = Pallet::<T>::multilocation_to_account_32(to)?;
-
-		let dest = Box::new(VersionedMultiLocation::from(MultiLocation::new(
+		let dest = Box::new(VersionedLocation::V3(MultiLocation::new(
 			1,
 			X1(Parachain(T::ParachainId::get().into())),
 		)));
 
-		let beneficiary =
-			Box::new(VersionedMultiLocation::from(MultiLocation::from(X1(AccountId32 {
-				network: None,
-				id: to_32,
-			}))));
+		let beneficiary = Box::new(VersionedLocation::V3(MultiLocation::from(X1(AccountId32 {
+			network: None,
+			id: entrance_account.encode().try_into().map_err(|_| Error::<T>::FailToConvert)?,
+		}))));
 
 		// Prepare parameter assets.
 		let asset = MultiAsset {
 			fun: Fungible(amount.unique_saturated_into()),
 			id: Concrete(MultiLocation { parents: 0, interior: Here }),
 		};
-		let assets: Box<VersionedMultiAssets> =
-			Box::new(VersionedMultiAssets::from(MultiAssets::from(asset)));
+		let assets: Box<VersionedAssets> = Box::new(VersionedAssets::V3(MultiAssets::from(asset)));
 
 		// Prepare parameter fee_asset_item.
 		let fee_asset_item: u32 = 0;
@@ -482,7 +482,7 @@ impl<T: Config>
 		Ok(())
 	}
 
-	/// Make token from tangle chain account to the staking chain account.
+	/// Make token from Tangle chain account to the staking chain account.
 	/// Receiving account must be one of the currency_id delegators.
 	fn transfer_to(
 		&self,
@@ -497,7 +497,7 @@ impl<T: Config>
 			Error::<T>::DelegatorNotExist
 		);
 
-		// Make sure from account is the entrance account of lst-minting module.
+		// Make sure from account is the entrance account of Lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
 		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);

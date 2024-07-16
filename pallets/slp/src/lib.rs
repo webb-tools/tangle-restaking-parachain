@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -24,7 +27,6 @@ pub use crate::{
 		Delays, LedgerUpdateEntry, MinimumsMaximums, QueryId, SubstrateLedger,
 		ValidatorsByDelegatorUpdateEntry,
 	},
-	traits::{OnRefund, QueryResponseManager, StakingAgent},
 	Junction::AccountId32,
 	Junctions::X1,
 };
@@ -40,30 +42,25 @@ pub use primitives::Ledger;
 use sp_arithmetic::{per_things::Permill, traits::Zero};
 use sp_core::{bounded::BoundedVec, H160};
 use sp_io::hashing::blake2_256;
-use sp_runtime::traits::{CheckedAdd, CheckedSub, Convert, TrailingZeroInput, UniqueSaturatedFrom};
+use sp_runtime::traits::{CheckedAdd, CheckedSub, Convert, TrailingZeroInput};
 use sp_std::{boxed::Box, vec, vec::Vec};
 use tangle_asset_registry::AssetMetadata;
 use tangle_parachain_staking::ParachainStakingInterface;
 use tangle_primitives::{
-	currency::{KSM, MANTA, MOVR, PHA, TNT},
+	currency::{BNC, KSM, MANTA, MOVR, PHA},
+	staking::{QueryResponseManager, StakingAgent},
 	traits::XcmDestWeightAndFeeHandler,
 	CurrencyId, CurrencyIdExt, CurrencyIdMapping, DerivativeAccountHandler, DerivativeIndex,
 	LstMintingOperator, SlpHostingFeeProvider, SlpOperator, TimeUnit, XcmOperationType, ASTR, DOT,
 	FIL, GLMR,
 };
-use tangle_stable_pool::traits::StablePoolHandler;
 pub use weights::WeightInfo;
-use xcm::{
-	prelude::*,
-	v3::{Junction, Junctions, MultiLocation, Xcm},
-};
+use xcm::v3::{Junction, Junctions, MultiLocation};
 
 mod agents;
-pub mod migrations;
 mod mocks;
 pub mod primitives;
 mod tests;
-pub mod traits;
 pub mod weights;
 
 #[cfg(feature = "runtime-benchmarks")]
@@ -97,7 +94,6 @@ pub mod pallet {
 	use frame_support::dispatch::GetDispatchInfo;
 	use orml_traits::XcmTransfer;
 	use pallet_xcm::ensure_response;
-	use tangle_primitives::{RedeemType, SlpxOperator};
 	use xcm::v3::{MaybeErrorCode, Response};
 
 	#[pallet::config]
@@ -124,8 +120,6 @@ pub mod pallet {
 			TimeUnit,
 		>;
 
-		type TangleSlpx: SlpxOperator<BalanceOf<Self>>;
-
 		/// xtokens xcm transfer interface
 		type XcmTransfer: XcmTransfer<AccountIdOf<Self>, BalanceOf<Self>, CurrencyIdOf<Self>>;
 
@@ -139,14 +133,10 @@ pub mod pallet {
 		/// Substrate response manager.
 		type SubstrateResponseManager: QueryResponseManager<
 			QueryId,
-			MultiLocation,
+			xcm::v4::Location,
 			BlockNumberFor<Self>,
 			<Self as pallet::Config>::RuntimeCall,
 		>;
-
-		/// Handler to notify the runtime when refund.
-		/// If you don't need it, you can specify the type `()`.
-		type OnRefund: OnRefund<AccountIdOf<Self>, CurrencyId, BalanceOf<Self>>;
 
 		type XcmWeightAndFeeHandler: XcmDestWeightAndFeeHandler<CurrencyId, BalanceOf<Self>>;
 
@@ -165,12 +155,6 @@ pub mod pallet {
 			CurrencyId,
 			BalanceOf<Self>,
 			AccountIdOf<Self>,
-		>;
-
-		type StablePoolHandler: StablePoolHandler<
-			Balance = BalanceOf<Self>,
-			AccountId = AccountIdOf<Self>,
-			CurrencyId = CurrencyId,
 		>;
 
 		// asset registry to get asset metadata
@@ -542,7 +526,7 @@ pub mod pallet {
 	const STORAGE_VERSION: StorageVersion = StorageVersion::new(3);
 
 	/// One operate origin(can be a multisig account) for a currency. An operating origins are
-	/// normal account in tangle chain.
+	/// normal account in Tangle chain.
 	#[pallet::storage]
 	#[pallet::getter(fn get_operate_origin)]
 	pub type OperateOrigins<T> = StorageMap<_, Blake2_128Concat, CurrencyId, AccountIdOf<T>>;
@@ -1243,219 +1227,11 @@ pub mod pallet {
 		#[pallet::call_index(18)]
 		#[pallet::weight(<T as Config>::WeightInfo::refund_currency_due_unbond())]
 		pub fn refund_currency_due_unbond(
-			origin: OriginFor<T>,
-			currency_id: CurrencyId,
+			_origin: OriginFor<T>,
+			_currency_id: CurrencyId,
 		) -> DispatchResultWithPostInfo {
-			// Ensure origin
-			Self::ensure_authorized(origin, currency_id)?;
-
-			// Get entrance_account and exit_account, as well as their currency balances.
-			let (entrance_account, exit_account) = T::LstMinting::get_entrance_and_exit_accounts();
-			let mut exit_account_balance =
-				T::MultiCurrency::free_balance(currency_id, &exit_account);
-
-			if exit_account_balance.is_zero() {
-				return Ok(().into());
-			}
-
-			// Get the currency due unlocking records
-			let time_unit = T::LstMinting::get_ongoing_time_unit(currency_id)
-				.ok_or(Error::<T>::TimeUnitNotExist)?;
-			let rs = T::LstMinting::get_unlock_records(currency_id, time_unit.clone());
-
-			let mut extra_weight = 0 as u64;
-
-			// Refund due unlocking records one by one.
-			if let Some((_locked_amount, idx_vec)) = rs {
-				let mut counter = 0;
-
-				for idx in idx_vec.iter() {
-					if counter >= T::MaxRefundPerBlock::get() {
-						break;
-					}
-					// get idx record amount
-					let idx_record_amount_op =
-						T::LstMinting::get_token_unlock_ledger(currency_id, *idx);
-
-					if let Some((user_account, idx_record_amount, _unlock_era, redeem_type)) =
-						idx_record_amount_op
-					{
-						let mut deduct_amount = idx_record_amount;
-						if exit_account_balance < idx_record_amount {
-							match redeem_type {
-								RedeemType::Native => {},
-								RedeemType::Astar(_)
-								| RedeemType::Moonbeam(_)
-								| RedeemType::Hydradx(_)
-								| RedeemType::Manta(_)
-								| RedeemType::Interlay(_) => break,
-							};
-							deduct_amount = exit_account_balance;
-						};
-						match redeem_type {
-							RedeemType::Native => {
-								// Transfer some amount from the exit_account to the user's account
-								T::MultiCurrency::transfer(
-									currency_id,
-									&exit_account,
-									&user_account,
-									deduct_amount,
-								)?;
-							},
-							RedeemType::Astar(receiver) => {
-								let dest = MultiLocation {
-									parents: 1,
-									interior: X2(
-										Parachain(T::LstMinting::get_astar_parachain_id()),
-										AccountId32 {
-											network: None,
-											id: receiver.encode().try_into().unwrap(),
-										},
-									),
-								};
-								T::XcmTransfer::transfer(
-									user_account.clone(),
-									currency_id,
-									deduct_amount,
-									dest,
-									Unlimited,
-								)?;
-							},
-							RedeemType::Hydradx(receiver) => {
-								let dest = MultiLocation {
-									parents: 1,
-									interior: X2(
-										Parachain(T::LstMinting::get_hydradx_parachain_id()),
-										AccountId32 {
-											network: None,
-											id: receiver.encode().try_into().unwrap(),
-										},
-									),
-								};
-								T::XcmTransfer::transfer(
-									user_account.clone(),
-									currency_id,
-									deduct_amount,
-									dest,
-									Unlimited,
-								)?;
-							},
-							RedeemType::Interlay(receiver) => {
-								let dest = MultiLocation {
-									parents: 1,
-									interior: X2(
-										Parachain(T::LstMinting::get_interlay_parachain_id()),
-										AccountId32 {
-											network: None,
-											id: receiver.encode().try_into().unwrap(),
-										},
-									),
-								};
-								T::XcmTransfer::transfer(
-									user_account.clone(),
-									currency_id,
-									deduct_amount,
-									dest,
-									Unlimited,
-								)?;
-							},
-							RedeemType::Manta(receiver) => {
-								let dest = MultiLocation {
-									parents: 1,
-									interior: X2(
-										Parachain(T::LstMinting::get_manta_parachain_id()),
-										AccountId32 {
-											network: None,
-											id: receiver.encode().try_into().unwrap(),
-										},
-									),
-								};
-								T::XcmTransfer::transfer(
-									user_account.clone(),
-									currency_id,
-									deduct_amount,
-									dest,
-									Unlimited,
-								)?;
-							},
-							RedeemType::Moonbeam(receiver) => {
-								let dest = MultiLocation {
-									parents: 1,
-									interior: X2(
-										Parachain(T::LstMinting::get_moonbeam_parachain_id()),
-										AccountKey20 {
-											network: None,
-											key: receiver.to_fixed_bytes(),
-										},
-									),
-								};
-								if currency_id == FIL {
-									let assets = vec![
-										(currency_id, deduct_amount),
-										(TNT, T::TangleSlpx::get_moonbeam_transfer_to_fee()),
-									];
-
-									T::XcmTransfer::transfer_multicurrencies(
-										user_account.clone(),
-										assets,
-										1,
-										dest,
-										Unlimited,
-									)?;
-								} else {
-									T::XcmTransfer::transfer(
-										user_account.clone(),
-										currency_id,
-										deduct_amount,
-										dest,
-										Unlimited,
-									)?;
-								}
-							},
-						};
-						// Delete the corresponding unlocking record storage.
-						T::LstMinting::deduct_unlock_amount(currency_id, *idx, deduct_amount)?;
-
-						extra_weight =
-							T::OnRefund::on_refund(currency_id, user_account, deduct_amount);
-
-						// Deposit event.
-						Pallet::<T>::deposit_event(Event::Refund {
-							currency_id,
-							time_unit: time_unit.clone(),
-							index: *idx,
-							amount: deduct_amount,
-						});
-
-						counter = counter.saturating_add(1);
-
-						exit_account_balance = exit_account_balance
-							.checked_sub(&deduct_amount)
-							.ok_or(Error::<T>::UnderFlow)?;
-						if exit_account_balance == Zero::zero() {
-							break;
-						}
-					}
-				}
-			} else {
-				// Automatically move the rest amount in exit account to entrance account.
-				T::MultiCurrency::transfer(
-					currency_id,
-					&exit_account,
-					&entrance_account,
-					exit_account_balance,
-				)?;
-			}
-
-			if extra_weight != 0 {
-				Ok(Some(
-					<T as Config>::WeightInfo::refund_currency_due_unbond()
-						+ Weight::from_parts(extra_weight, 0),
-				)
-				.into())
-			} else {
-				Ok(().into())
-			}
+			ensure!(false, Error::<T>::Unsupported);
+			Ok(().into())
 		}
 
 		#[pallet::call_index(19)]
@@ -1506,7 +1282,7 @@ pub mod pallet {
 			let (source_location, reserved_fee) =
 				FeeSources::<T>::get(currency_id).ok_or(Error::<T>::FeeSourceNotExist)?;
 
-			// If currency is TNT, transfer directly.
+			// If currency is BNC, transfer directly.
 			// Otherwise, call supplement_fee_reserve of StakingFeeManager trait.
 			if currency_id.is_native() {
 				let source_account = Self::native_multilocation_to_account(&source_location)?;
@@ -1540,7 +1316,7 @@ pub mod pallet {
 
 		#[pallet::call_index(20)]
 		#[pallet::weight(<T as Config>::WeightInfo::charge_host_fee_and_tune_lst_exchange_rate())]
-		/// Charge staking host fee, tune lst/token exchange rate, and update delegator ledger
+		/// Charge staking host fee, tune Lst/token exchange rate, and update delegator ledger
 		/// for single delegator.
 		pub fn charge_host_fee_and_tune_lst_exchange_rate(
 			origin: OriginFor<T>,
@@ -1608,7 +1384,7 @@ pub mod pallet {
 			staking_agent.tune_lst_exchange_rate(
 				&who,
 				value,
-				// Dummy value for lst amount
+				// Dummy value for Lst amount
 				Zero::zero(),
 				currency_id,
 			)?;
@@ -1831,7 +1607,7 @@ pub mod pallet {
 			Self::ensure_authorized(origin, currency_id)?;
 
 			// Update the ledger.
-			DelegatorLedgers::<T>::mutate_exists(currency_id, &*who, |old_ledger| {
+			DelegatorLedgers::<T>::mutate_exists(currency_id, *who, |old_ledger| {
 				*old_ledger = *ledger.clone();
 			});
 
@@ -1982,7 +1758,7 @@ pub mod pallet {
 			T::ControlOrigin::ensure_origin(origin)?;
 
 			let multi_hash = T::Hashing::hash(&who.encode());
-			if !SupplementFeeAccountWhitelist::<T>::contains_key(&currency_id) {
+			if !SupplementFeeAccountWhitelist::<T>::contains_key(currency_id) {
 				SupplementFeeAccountWhitelist::<T>::insert(
 					currency_id,
 					vec![(who.clone(), multi_hash)],
@@ -2028,7 +1804,7 @@ pub mod pallet {
 			T::ControlOrigin::ensure_origin(origin)?;
 
 			let multi_hash = T::Hashing::hash(&who.encode());
-			if !SupplementFeeAccountWhitelist::<T>::contains_key(&currency_id) {
+			if !SupplementFeeAccountWhitelist::<T>::contains_key(currency_id) {
 				Err(Error::<T>::WhiteListNotExist)?;
 			} else {
 				SupplementFeeAccountWhitelist::<T>::mutate_exists(
@@ -2393,50 +2169,6 @@ pub mod pallet {
 			Ok(())
 		}
 
-		#[pallet::call_index(47)]
-		#[pallet::weight(<T as Config>::WeightInfo::convert_treasury_lst())]
-		pub fn convert_treasury_lst(
-			origin: OriginFor<T>,
-			lst: CurrencyId,
-			amount: BalanceOf<T>,
-		) -> DispatchResult {
-			T::ControlOrigin::ensure_origin(origin)?;
-			ensure!(amount > Zero::zero(), Error::<T>::AmountZero);
-
-			let token = lst.to_token().map_err(|_| Error::<T>::NotSupportedCurrencyId)?;
-			let (pool_id, _, _) = T::StablePoolHandler::get_pool_id(&lst, &token)
-				.ok_or(Error::<T>::StablePoolNotFound)?;
-
-			let lst_index = T::StablePoolHandler::get_pool_token_index(pool_id, lst)
-				.ok_or(Error::<T>::StablePoolTokenIndexNotFound)?;
-			let token_index = T::StablePoolHandler::get_pool_token_index(pool_id, token)
-				.ok_or(Error::<T>::StablePoolTokenIndexNotFound)?;
-
-			// get the lst balance of the treasury account
-			let source_lst_balance =
-				T::MultiCurrency::free_balance(lst, &T::TreasuryAccount::get());
-
-			// max_amount is 1% of the lst balance of the treasury account
-			let percentage = Permill::from_percent(1);
-			let max_amount = percentage.mul_floor(source_lst_balance);
-
-			ensure!(
-				amount <= BalanceOf::<T>::unique_saturated_from(max_amount),
-				Error::<T>::ExceedLimit
-			);
-
-			// swap lst from treasury account for token
-			let treasury = T::TreasuryAccount::get();
-			T::StablePoolHandler::swap(
-				&treasury,
-				pool_id,
-				lst_index,
-				token_index,
-				amount,
-				Zero::zero(),
-			)
-		}
-
 		#[pallet::call_index(48)]
 		#[pallet::weight(<T as Config>::WeightInfo::clean_outdated_validator_boost_list())]
 		pub fn clean_outdated_validator_boost_list(
@@ -2528,7 +2260,7 @@ pub mod pallet {
 		) -> Result<StakingAgentBoxType<T>, Error<T>> {
 			match currency_id {
 				KSM | DOT => Ok(Box::new(PolkadotAgent::<T>::new())),
-				TNT | MOVR | GLMR | MANTA => Ok(Box::new(ParachainStakingAgent::<T>::new())),
+				BNC | MOVR | GLMR | MANTA => Ok(Box::new(ParachainStakingAgent::<T>::new())),
 				FIL => Ok(Box::new(FilecoinAgent::<T>::new())),
 				PHA => Ok(Box::new(PhalaAgent::<T>::new())),
 				ASTR => Ok(Box::new(AstarAgent::<T>::new())),
@@ -2556,6 +2288,76 @@ pub mod pallet {
 		fn all_delegation_requests_occupied(currency_id: CurrencyId) -> bool {
 			DelegationsOccupied::<T>::get(currency_id).unwrap_or_default()
 		}
+	}
+}
+
+impl<T: Config>
+	tangle_primitives::staking::StakingAgentDelegator<
+		T::AccountId,
+		MultiLocation,
+		CurrencyIdOf<T>,
+		BalanceOf<T>,
+		DispatchError,
+	> for Pallet<T>
+{
+	/// Delegate to some validators.
+	fn delegate(
+		_who: &T::AccountId,
+		targets: &Vec<MultiLocation>,
+		currency_id: CurrencyIdOf<T>,
+		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
+	) -> Result<QueryId, DispatchError> {
+		// TODO : Refactor this
+		let location =
+			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
+
+		let staking_agent = Self::get_currency_staking_agent(currency_id)?;
+		let query_id = staking_agent.delegate(&location, targets, currency_id, weight_and_fee)?;
+		let _query_id_hash = <T as frame_system::Config>::Hashing::hash(&query_id.encode());
+		Ok(query_id)
+	}
+
+	/// Delegate to some validators.
+	fn undelegate(
+		_who: &T::AccountId,
+		targets: &Vec<MultiLocation>,
+		currency_id: CurrencyIdOf<T>,
+		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
+	) -> Result<QueryId, DispatchError> {
+		// TODO : Refactor this
+		let location =
+			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
+
+		let staking_agent = Self::get_currency_staking_agent(currency_id)?;
+		let query_id = staking_agent.undelegate(&location, targets, currency_id, weight_and_fee)?;
+		let _query_id_hash = <T as frame_system::Config>::Hashing::hash(&query_id.encode());
+		Ok(query_id)
+	}
+
+	/// Delegate to some validators.
+	fn liquidize(
+		_who: &T::AccountId,
+		targets: &Vec<MultiLocation>,
+		currency_id: CurrencyId,
+		_amount: Option<BalanceOf<T>>,
+		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
+	) -> Result<QueryId, DispatchError> {
+		// TODO : Refactor this
+		let location =
+			MultiLocation { parents: 100, interior: X1(Junction::from(BoundedVec::default())) };
+
+		let staking_agent = Self::get_currency_staking_agent(currency_id)?;
+		let target_option: Option<MultiLocation> = targets.first().cloned();
+		let query_id = staking_agent.liquidize(
+			&location,
+			&None,
+			&target_option,
+			currency_id,
+			None,
+			weight_and_fee,
+		)?;
+		let _query_id_hash = <T as frame_system::Config>::Hashing::hash(&query_id.encode());
+		Ok(query_id)
 	}
 }
 
@@ -2616,7 +2418,7 @@ impl<T: Config, F: Contains<CurrencyIdOf<T>>>
 			currency_id,
 			&who,
 			Ledger::Substrate(SubstrateLedger {
-				account: Parent.into(),
+				account: xcm::v3::Parent.into(),
 				total: u32::MAX.into(),
 				active: u32::MAX.into(),
 				unlocking: vec![],

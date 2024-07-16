@@ -996,7 +996,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32,
 					tokenId: TanglePrimitivesCurrencyCurrencyId,
 					tokenAmount: u128,
-					lstAmount: u128,
+					LstAmount: u128,
 					fee: u128,
 					remark: Bytes,
 				],
@@ -1004,7 +1004,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32;
 					tokenId: TanglePrimitivesCurrencyCurrencyId;
 					tokenAmount: u128;
-					lstAmount: u128;
+					LstAmount: u128;
 					fee: u128;
 					remark: Bytes;
 				}
@@ -1020,14 +1020,14 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32,
 					tokenId: TanglePrimitivesCurrencyCurrencyId,
 					tokenAmount: u128,
-					lstAmount: u128,
+					LstAmount: u128,
 					fee: u128,
 				],
 				{
 					address: AccountId32;
 					tokenId: TanglePrimitivesCurrencyCurrencyId;
 					tokenAmount: u128;
-					lstAmount: u128;
+					LstAmount: u128;
 					fee: u128;
 				}
 			>;
@@ -1037,7 +1037,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32,
 					tokenId: TanglePrimitivesCurrencyCurrencyId,
 					tokenAmount: u128,
-					lstAmount: u128,
+					LstAmount: u128,
 					fee: u128,
 					unlockId: u32,
 				],
@@ -1045,7 +1045,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32;
 					tokenId: TanglePrimitivesCurrencyCurrencyId;
 					tokenAmount: u128;
-					lstAmount: u128;
+					LstAmount: u128;
 					fee: u128;
 					unlockId: u32;
 				}
@@ -1056,7 +1056,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32,
 					tokenId: TanglePrimitivesCurrencyCurrencyId,
 					tokenAmount: u128,
-					lstAmount: u128,
+					LstAmount: u128,
 					fee: u128,
 					unlockId: u32,
 				],
@@ -1064,7 +1064,7 @@ declare module '@polkadot/api-base/types/events' {
 					address: AccountId32;
 					tokenId: TanglePrimitivesCurrencyCurrencyId;
 					tokenAmount: u128;
-					lstAmount: u128;
+					LstAmount: u128;
 					fee: u128;
 					unlockId: u32;
 				}
@@ -1762,7 +1762,7 @@ declare module '@polkadot/api-base/types/events' {
 			 * A new term with new_members. This indicates that enough candidates existed to run
 			 * the election, not that enough have has been elected. The inner value must be examined
 			 * for this purpose. A `NewTerm(\[\])` indicates that some candidates got their bond
-			 * slashed and none were elected, whilst `EmptyTerm` means that no candidates existed to
+			 * slashed and none were elected, whiLst `EmptyTerm` means that no candidates existed to
 			 * begin with.
 			 **/
 			NewTerm: AugmentedEvent<
@@ -2935,14 +2935,14 @@ declare module '@polkadot/api-base/types/events' {
 				ApiType,
 				[
 					evmCaller: H160,
-					lstId: TanglePrimitivesCurrencyCurrencyId,
-					lstAmount: u128,
+					LstId: TanglePrimitivesCurrencyCurrencyId,
+					LstAmount: u128,
 					targetChain: TangleSlpxTargetChain,
 				],
 				{
 					evmCaller: H160;
-					lstId: TanglePrimitivesCurrencyCurrencyId;
-					lstAmount: u128;
+					LstId: TanglePrimitivesCurrencyCurrencyId;
+					LstAmount: u128;
 					targetChain: TangleSlpxTargetChain;
 				}
 			>;
@@ -2950,14 +2950,14 @@ declare module '@polkadot/api-base/types/events' {
 				ApiType,
 				[
 					evmCaller: H160,
-					lstId: TanglePrimitivesCurrencyCurrencyId,
-					lstAmount: u128,
+					LstId: TanglePrimitivesCurrencyCurrencyId,
+					LstAmount: u128,
 					targetChain: TangleSlpxTargetChain,
 				],
 				{
 					evmCaller: H160;
-					lstId: TanglePrimitivesCurrencyCurrencyId;
-					lstAmount: u128;
+					LstId: TanglePrimitivesCurrencyCurrencyId;
+					LstAmount: u128;
 					targetChain: TangleSlpxTargetChain;
 				}
 			>;
@@ -2967,13 +2967,13 @@ declare module '@polkadot/api-base/types/events' {
 					currencyId: TanglePrimitivesCurrencyCurrencyId,
 					tokenAmount: u128,
 					vcurrencyId: TanglePrimitivesCurrencyCurrencyId,
-					lstAmount: u128,
+					LstAmount: u128,
 				],
 				{
 					currencyId: TanglePrimitivesCurrencyCurrencyId;
 					tokenAmount: u128;
 					vcurrencyId: TanglePrimitivesCurrencyCurrencyId;
-					lstAmount: u128;
+					LstAmount: u128;
 				}
 			>;
 			XcmStablePoolSwap: AugmentedEvent<

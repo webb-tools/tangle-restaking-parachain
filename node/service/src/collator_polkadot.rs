@@ -1,4 +1,7 @@
-// This file is part of Tangle.
+// This file is part of Bifrost.
+
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,7 +24,7 @@ use cumulus_client_collator::service::CollatorService;
 use cumulus_client_consensus_aura::collators::basic::{
 	self as basic_aura, Params as BasicAuraParams,
 };
-#[cfg(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime"))]
+#[cfg(any(feature = "with-bifrost-polkadot-runtime", feature = "with-bifrost-runtime"))]
 pub use tangle_polkadot_runtime;
 use tangle_polkadot_runtime::RuntimeApi;
 
@@ -53,21 +56,6 @@ type HostFunctions = sp_io::SubstrateHostFunctions;
 #[cfg(feature = "runtime-benchmarks")]
 type HostFunctions =
 	(sp_io::SubstrateHostFunctions, frame_benchmarking::benchmarking::HostFunctions);
-
-#[cfg(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime"))]
-pub struct TanglePolkadotExecutor;
-#[cfg(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime"))]
-impl sc_executor::NativeExecutionDispatch for TanglePolkadotExecutor {
-	type ExtendHostFunctions = frame_benchmarking::benchmarking::HostFunctions;
-
-	fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
-		tangle_polkadot_runtime::api::dispatch(method, data)
-	}
-
-	fn native_version() -> sc_executor::NativeVersion {
-		tangle_polkadot_runtime::native_version()
-	}
-}
 
 pub type FullBackend = TFullBackend<Block>;
 pub type FullClient = TFullClient<Block, RuntimeApi, WasmExecutor<HostFunctions>>;

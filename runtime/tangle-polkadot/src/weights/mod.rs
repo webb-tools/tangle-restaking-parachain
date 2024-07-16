@@ -23,8 +23,4 @@ pub mod pallet_xcm;
 pub mod tangle_asset_registry;
 pub mod tangle_currencies;
 pub mod tangle_lst_minting;
-pub mod tangle_lst_voting;
 pub mod tangle_slp;
-pub mod tangle_slpx;
-pub mod tangle_stable_pool;
-pub mod tangle_token_issuer;

@@ -16,17 +16,12 @@
 
 //! Test utilities
 use frame_support::{
-	construct_runtime, parameter_types,
-	traits::{
-		Everything, LockIdentifier, LockableCurrency, OnFinalize, OnInitialize, ReservableCurrency,
-	},
+	construct_runtime, derive_impl, parameter_types,
+	traits::{LockIdentifier, LockableCurrency, OnFinalize, OnInitialize, ReservableCurrency},
 	PalletId,
 };
-use sp_core::{ConstU32, H256};
-use sp_runtime::{
-	traits::{BlakeTwo256, IdentityLookup},
-	Perbill, Percent,
-};
+use sp_core::ConstU32;
+use sp_runtime::{traits::IdentityLookup, Perbill, Percent};
 
 use crate as pallet_parachain_staking;
 use crate::{
@@ -56,30 +51,12 @@ parameter_types! {
 	pub const AvailableBlockRatio: Perbill = Perbill::one();
 	pub const SS58Prefix: u8 = 42;
 }
+#[derive_impl(frame_system::config_preludes::TestDefaultConfig as frame_system::DefaultConfig)]
 impl frame_system::Config for Test {
-	type BaseCallFilter = Everything;
-	type DbWeight = ();
-	type RuntimeOrigin = RuntimeOrigin;
-	type Nonce = u32;
 	type Block = Block;
-	type RuntimeCall = RuntimeCall;
-	type Hash = H256;
-	type Hashing = BlakeTwo256;
 	type AccountId = AccountId;
 	type Lookup = IdentityLookup<Self::AccountId>;
-	type RuntimeEvent = RuntimeEvent;
-	type BlockHashCount = BlockHashCount;
-	type Version = ();
-	type PalletInfo = PalletInfo;
 	type AccountData = pallet_balances::AccountData<Balance>;
-	type OnNewAccount = ();
-	type OnKilledAccount = ();
-	type SystemWeightInfo = ();
-	type BlockWeights = ();
-	type BlockLength = ();
-	type SS58Prefix = SS58Prefix;
-	type OnSetCode = ();
-	type MaxConsumers = frame_support::traits::ConstU32<16>;
 }
 parameter_types! {
 	pub const ExistentialDeposit: u128 = 1;
@@ -97,7 +74,6 @@ impl pallet_balances::Config for Test {
 	type RuntimeHoldReason = RuntimeHoldReason;
 	type RuntimeFreezeReason = RuntimeFreezeReason;
 	type FreezeIdentifier = ();
-	type MaxHolds = ConstU32<0>;
 	type MaxFreezes = ConstU32<0>;
 }
 parameter_types! {
@@ -412,7 +388,7 @@ pub(crate) fn set_author(round: u32, acc: u64, pts: u32) {
 
 /// fn to query the lock amount
 pub(crate) fn query_lock_amount(account_id: u64, id: LockIdentifier) -> Option<Balance> {
-	for lock in Balances::locks(&account_id) {
+	for lock in Balances::locks(account_id) {
 		if lock.id == id {
 			return Some(lock.amount);
 		}
@@ -423,10 +399,10 @@ pub(crate) fn query_lock_amount(account_id: u64, id: LockIdentifier) -> Option<B
 /// fn to reverse-migrate a delegator account from locks back to reserve.
 /// This is used to test the reserve -> lock migration.
 pub(crate) fn unmigrate_delegator_from_lock_to_reserve(account_id: u64) {
-	<DelegatorReserveToLockMigrations<Test>>::remove(&account_id);
+	<DelegatorReserveToLockMigrations<Test>>::remove(account_id);
 	Balances::remove_lock(DELEGATOR_LOCK_ID, &account_id);
 
-	if let Some(delegator_state) = <DelegatorState<Test>>::get(&account_id) {
+	if let Some(delegator_state) = <DelegatorState<Test>>::get(account_id) {
 		Balances::reserve(&account_id, delegator_state.total()).expect("reserve() failed");
 	}
 }
@@ -434,10 +410,10 @@ pub(crate) fn unmigrate_delegator_from_lock_to_reserve(account_id: u64) {
 /// fn to reverse-migrate a collator account from locks back to reserve.
 /// This is used to test the reserve -> lock migration.
 pub(crate) fn unmigrate_collator_from_lock_to_reserve(account_id: u64) {
-	<CollatorReserveToLockMigrations<Test>>::remove(&account_id);
+	<CollatorReserveToLockMigrations<Test>>::remove(account_id);
 	Balances::remove_lock(COLLATOR_LOCK_ID, &account_id);
 
-	if let Some(collator_state) = <CandidateInfo<Test>>::get(&account_id) {
+	if let Some(collator_state) = <CandidateInfo<Test>>::get(account_id) {
 		Balances::reserve(&account_id, collator_state.bond).expect("reserve() failed");
 	}
 }

@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,13 +18,11 @@
 use crate::{
 	pallet::{Error, Event},
 	primitives::{FilecoinLedger, Ledger},
-	traits::StakingAgent,
 	AccountIdOf, BalanceOf, BoundedVec, Config, DelegatorLatestTuneRecord, DelegatorLedgers,
-	LedgerUpdateEntry, MinimumsAndMaximums, MultiLocation, Pallet, TimeUnit, Validators,
-	ValidatorsByDelegator, ValidatorsByDelegatorUpdateEntry,
+	LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit, Validators, ValidatorsByDelegator,
+	ValidatorsByDelegatorUpdateEntry,
 };
 use core::marker::PhantomData;
-pub use cumulus_primitives_core::ParaId;
 use frame_support::ensure;
 use orml_traits::MultiCurrency;
 use sp_core::Get;
@@ -30,7 +31,7 @@ use sp_runtime::{
 	DispatchResult,
 };
 use sp_std::prelude::*;
-use tangle_primitives::{CurrencyId, LstMintingOperator};
+use tangle_primitives::{staking::StakingAgent, CurrencyId, LstMintingOperator};
 use xcm::v3::prelude::*;
 
 /// StakingAgent implementation for Filecoin
@@ -241,15 +242,15 @@ impl<T: Config>
 		let worker = &targets[0];
 
 		// Need to check whether this validator is in the whitelist.
-		let validators_vec =
-			Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
-		ensure!(validators_vec.contains(worker), Error::<T>::ValidatorNotExist);
+		// let validators_vec =
+		// 	Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		// ensure!(validators_vec.contains(worker), Error::<T>::ValidatorNotExist);
 
-		// ensure the length of validators_vec does not exceed the MaxLengthLimit.
-		ensure!(
-			validators_vec.len() <= T::MaxLengthLimit::get() as usize,
-			Error::<T>::ExceedMaxLengthLimit
-		);
+		// // ensure the length of validators_vec does not exceed the MaxLengthLimit.
+		// ensure!(
+		// 	validators_vec.len() <= T::MaxLengthLimit::get() as usize,
+		// 	Error::<T>::ExceedMaxLengthLimit
+		// );
 
 		let validators_list =
 			BoundedVec::try_from(vec![*worker]).map_err(|_| Error::<T>::FailToConvert)?;
@@ -279,10 +280,10 @@ impl<T: Config>
 		_weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
 		// Check if it is bonded already.
-		ensure!(
-			DelegatorLedgers::<T>::contains_key(currency_id, who),
-			Error::<T>::DelegatorNotBonded
-		);
+		// ensure!(
+		// 	DelegatorLedgers::<T>::contains_key(currency_id, who),
+		// 	Error::<T>::DelegatorNotBonded
+		// );
 
 		// Check if the delegator's ledger still has staking balance.
 		// It can be undelegated only if there is none.
@@ -360,7 +361,7 @@ impl<T: Config>
 		Err(Error::<T>::Unsupported)
 	}
 
-	/// Make token transferred back to tangle chain account.
+	/// Make token transferred back to Tangle chain account.
 	fn transfer_back(
 		&self,
 		_from: &MultiLocation,
@@ -433,7 +434,7 @@ impl<T: Config>
 		let current_time_unit = T::LstMinting::get_ongoing_time_unit(currency_id)
 			.ok_or(Error::<T>::TimeUnitNotExist)?;
 		// Get DelegatorLatestTuneRecord for the currencyId.
-		let latest_time_unit_op = DelegatorLatestTuneRecord::<T>::get(currency_id, &who);
+		let latest_time_unit_op = DelegatorLatestTuneRecord::<T>::get(currency_id, who);
 		// ensure each delegator can only tune once per TimeUnit at most.
 		ensure!(
 			latest_time_unit_op != Some(current_time_unit.clone()),
@@ -451,7 +452,7 @@ impl<T: Config>
 			token_amount.checked_sub(&fee_to_charge).ok_or(Error::<T>::UnderFlow)?;
 
 		if amount_to_increase > Zero::zero() {
-			// Tune the lst exchange rate.
+			// Tune the Lst exchange rate.
 			T::LstMinting::increase_token_pool(currency_id, amount_to_increase)
 				.map_err(|_| Error::<T>::IncreaseTokenPoolError)?;
 

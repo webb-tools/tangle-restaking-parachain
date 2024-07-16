@@ -1,4 +1,7 @@
-// This file is part of Tangle.
+// This file is part of tangle.
+
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -109,10 +112,10 @@ pub trait LstMintingOperator<CurrencyId, Balance, AccountId, TimeUnit> {
 	/// Get the currency tokenpool amount.
 	fn get_token_pool(currency_id: CurrencyId) -> Balance;
 
-	/// Increase the token amount for the storage "token_pool" in the lstMining module.
+	/// Increase the token amount for the storage "token_pool" in the LstMining module.
 	fn increase_token_pool(currency_id: CurrencyId, token_amount: Balance) -> DispatchResult;
 
-	/// Decrease the token amount for the storage "token_pool" in the lstMining module.
+	/// Decrease the token amount for the storage "token_pool" in the LstMining module.
 	fn decrease_token_pool(currency_id: CurrencyId, token_amount: Balance) -> DispatchResult;
 
 	/// Update the ongoing era for a CurrencyId.
@@ -149,12 +152,12 @@ pub trait LstMintingOperator<CurrencyId, Balance, AccountId, TimeUnit> {
 	fn get_manta_parachain_id() -> u32;
 }
 
-/// Trait for lst-Minting module to check whether accept redeeming or not.
+/// Trait for Lst-Minting module to check whether accept redeeming or not.
 pub trait SlpOperator<CurrencyId> {
 	fn all_delegation_requests_occupied(currency_id: CurrencyId) -> bool;
 }
 
-/// Trait for lst-Minting module to check whether accept redeeming or not.
+/// Trait for Lst-Minting module to check whether accept redeeming or not.
 pub trait SlpxOperator<Balance> {
 	fn get_moonbeam_transfer_to_fee() -> Balance;
 }
@@ -165,15 +168,20 @@ pub trait CurrencyIdMapping<CurrencyId, MultiLocation, AssetMetadata> {
 	fn get_asset_metadata(asset_ids: AssetIds) -> Option<AssetMetadata>;
 	/// Returns the AssetMetadata associated with a given `CurrencyId`.
 	fn get_currency_metadata(currency_id: CurrencyId) -> Option<AssetMetadata>;
-	/// Returns the MultiLocation associated with a given CurrencyId.
-	fn get_multi_location(currency_id: CurrencyId) -> Option<MultiLocation>;
-	/// Returns the CurrencyId associated with a given MultiLocation.
-	fn get_currency_id(multi_location: MultiLocation) -> Option<CurrencyId>;
+	/// Returns the Location associated with a given CurrencyId.
+	fn get_location(currency_id: CurrencyId) -> Option<xcm::v4::Location>;
+	/// Returns the CurrencyId associated with a given Location.
+	fn get_currency_id(multi_location: xcm::v4::Location) -> Option<CurrencyId>;
+	/// Returns all currencies in currencyMetadata.
+	fn get_all_currency() -> Vec<CurrencyId>;
 }
 
-pub trait CurrencyIdConversion<CurrencyId> {
+pub trait CurrencyIdConversion<CurrencyId, MultiLocation> {
 	fn convert_to_token(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
-	fn convert_to_lst(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
+	fn convert_to_lst(
+		currency_id: CurrencyId,
+		validators: Option<Vec<MultiLocation>>,
+	) -> Result<CurrencyId, ()>;
 	fn convert_to_vstoken(currency_id: CurrencyId) -> Result<CurrencyId, ()>;
 	fn convert_to_vsbond(
 		currency_id: CurrencyId,
@@ -506,13 +514,13 @@ pub trait LstSupplyProvider<CurrencyId, Balance> {
 
 // traits for pallet channel-commission
 pub trait LstMintRedeemProvider<CurrencyId, Balance> {
-	// record the mint amount of lst
+	// record the mint amount of Lst
 	fn record_mint_amount(
 		channel_id: Option<u32>,
 		lst: CurrencyId,
 		amount: Balance,
 	) -> Result<(), DispatchError>;
-	// record the redeem amount of lst
+	// record the redeem amount of Lst
 	fn record_redeem_amount(lst: CurrencyId, amount: Balance) -> Result<(), DispatchError>;
 }
 

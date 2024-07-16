@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -21,7 +24,7 @@ use crate as tangle_slp;
 use crate::{Config, DispatchResult, QueryResponseManager};
 pub use cumulus_primitives_core::ParaId;
 use frame_support::{
-	construct_runtime, ord_parameter_types,
+	construct_runtime, derive_impl, ord_parameter_types,
 	pallet_prelude::Get,
 	parameter_types,
 	traits::{ConstU128, ConstU32, Everything, Nothing, ProcessMessageError},
@@ -31,8 +34,8 @@ use frame_system::{EnsureRoot, EnsureSignedBy};
 use hex_literal::hex;
 use orml_traits::{location::RelativeReserveProvider, parameter_type_with_key};
 use parity_scale_codec::{Decode, Encode};
-use sp_core::{bounded::BoundedVec, hashing::blake2_256, H256};
-pub use sp_runtime::{testing::Header, Perbill};
+use sp_core::{bounded::BoundedVec, hashing::blake2_256};
+pub use sp_runtime::Perbill;
 use sp_runtime::{
 	traits::{AccountIdConversion, Convert, TrailingZeroInput},
 	AccountId32, BuildStorage, Percent,
@@ -40,7 +43,7 @@ use sp_runtime::{
 use sp_std::{boxed::Box, vec::Vec};
 use tangle_asset_registry::AssetIdMaps;
 use tangle_primitives::{
-	currency::{KSM, MANTA, TNT, VKSM},
+	currency::{BNC, KSM, MANTA, VKSM},
 	Amount, Balance, CurrencyId, DoNothingExecuteXcm, DoNothingRouter, SlpxOperator, TokenSymbol,
 	XcmDestWeightAndFeeHandler, XcmOperationType,
 };
@@ -53,9 +56,6 @@ pub type Block = frame_system::mocking::MockBlock<Runtime>;
 
 pub const ALICE: AccountId = AccountId32::new([1u8; 32]);
 pub const BOB: AccountId = AccountId32::new([2u8; 32]);
-pub const CHARLIE: AccountId = AccountId32::new([3u8; 32]);
-pub const DAVE: AccountId = AccountId32::new([4u8; 32]);
-pub const EDDIE: AccountId = AccountId32::new([5u8; 32]);
 
 construct_runtime!(
 	pub enum Runtime {
@@ -114,7 +114,7 @@ impl tangle_stable_asset::Config for Runtime {
 }
 
 parameter_types! {
-	pub const NativeCurrencyId: CurrencyId = TNT;
+	pub const NativeCurrencyId: CurrencyId = BNC;
 	pub const RelayCurrencyId: CurrencyId = KSM;
 }
 
@@ -129,30 +129,12 @@ parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 }
 
+#[derive_impl(frame_system::config_preludes::TestDefaultConfig as frame_system::DefaultConfig)]
 impl frame_system::Config for Runtime {
-	type RuntimeOrigin = RuntimeOrigin;
-	type Nonce = u32;
 	type Block = Block;
-	type RuntimeCall = RuntimeCall;
-	type Hash = H256;
-	type Hashing = ::sp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
 	type Lookup = Indices;
-	type RuntimeEvent = RuntimeEvent;
-	type BlockHashCount = BlockHashCount;
-	type BlockWeights = ();
-	type BlockLength = ();
-	type Version = ();
-	type PalletInfo = PalletInfo;
 	type AccountData = pallet_balances::AccountData<Balance>;
-	type OnNewAccount = ();
-	type OnKilledAccount = ();
-	type DbWeight = ();
-	type BaseCallFilter = frame_support::traits::Everything;
-	type SystemWeightInfo = ();
-	type SS58Prefix = ();
-	type OnSetCode = ();
-	type MaxConsumers = frame_support::traits::ConstU32<16>;
 }
 
 parameter_types! {
@@ -188,7 +170,6 @@ impl pallet_balances::Config for Runtime {
 	type RuntimeHoldReason = RuntimeHoldReason;
 	type RuntimeFreezeReason = RuntimeFreezeReason;
 	type FreezeIdentifier = ();
-	type MaxHolds = ConstU32<0>;
 	type MaxFreezes = ConstU32<0>;
 }
 
@@ -212,23 +193,23 @@ impl orml_tokens::Config for Runtime {
 	type CurrencyHooks = ();
 }
 
-pub type tangleToken = tangle_currencies::BasicCurrencyAdapter<Runtime, Balances, Amount, u64>;
+pub type TangleToken = tangle_currencies::BasicCurrencyAdapter<Runtime, Balances, Amount, u64>;
 
 impl tangle_currencies::Config for Runtime {
 	type GetNativeCurrencyId = NativeCurrencyId;
 	type MultiCurrency = Tokens;
-	type NativeCurrency = tangleToken;
+	type NativeCurrency = TangleToken;
 	type WeightInfo = ();
 }
 
 parameter_type_with_key! {
-	pub ParachainMinFee: |_location: MultiLocation| -> Option<u128> {
+	pub ParachainMinFee: |_location: xcm::v4::Location| -> Option<u128> {
 		Some(u128::MAX)
 	};
 }
 
 parameter_types! {
-	pub SelfRelativeLocation: MultiLocation = MultiLocation::here();
+	pub SelfRelativeLocation: xcm::v4::Location = xcm::v4::Location::here();
 	pub const BaseXcmWeight: Weight = Weight::from_parts(1000_000_000u64, 0);
 	pub const MaxAssetsForTransfer: usize = 2;
 }
@@ -238,7 +219,7 @@ impl orml_xtokens::Config for Runtime {
 	type Balance = Balance;
 	type CurrencyId = CurrencyId;
 	type CurrencyIdConvert = TangleCurrencyIdConvert;
-	type AccountIdToMultiLocation = ();
+	type AccountIdToLocation = ();
 	type UniversalLocation = UniversalLocation;
 	type SelfLocation = SelfRelativeLocation;
 	type XcmExecutor = DoNothingExecuteXcm;
@@ -246,16 +227,19 @@ impl orml_xtokens::Config for Runtime {
 	type BaseXcmWeight = BaseXcmWeight;
 	type MaxAssetsForTransfer = MaxAssetsForTransfer;
 	type MinXcmFee = ParachainMinFee;
-	type MultiLocationsFilter = Everything;
+	type LocationsFilter = Everything;
 	type ReserveProvider = RelativeReserveProvider;
+	type RateLimiter = ();
+	type RateLimiterId = ();
 }
 
 parameter_types! {
 	pub const MaximumUnlockIdOfUser: u32 = 10;
 	pub const MaximumUnlockIdOfTimeUnit: u32 = 50;
-	pub tangleEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
-	pub tangleExitAccount: PalletId = PalletId(*b"bf/vtout");
+	pub TangleEntranceAccount: PalletId = PalletId(*b"bf/vtkin");
+	pub TangleExitAccount: PalletId = PalletId(*b"bf/vtout");
 	pub TangleFeeAccount: AccountId = hex!["e4da05f08e89bf6c43260d96f26fffcfc7deae5b465da08669a9d008e64c2c63"].into();
+	pub IncentivePoolAccount: PalletId = PalletId(*b"bf/inpoo");
 }
 
 pub struct SlpxInterface;
@@ -271,9 +255,10 @@ impl tangle_lst_minting::Config for Runtime {
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
 	type MaximumUnlockIdOfUser = MaximumUnlockIdOfUser;
 	type MaximumUnlockIdOfTimeUnit = MaximumUnlockIdOfTimeUnit;
-	type EntranceAccount = tangleEntranceAccount;
-	type ExitAccount = tangleExitAccount;
+	type EntranceAccount = TangleEntranceAccount;
+	type ExitAccount = TangleExitAccount;
 	type FeeAccount = TangleFeeAccount;
+	type RedeemFeeAccount = TangleFeeAccount;
 	type RelayChainToken = RelayCurrencyId;
 	type CurrencyIdConversion = AssetIdMaps<Runtime>;
 	type CurrencyIdRegister = AssetIdMaps<Runtime>;
@@ -288,6 +273,10 @@ impl tangle_lst_minting::Config for Runtime {
 	type MantaParachainId = ConstU32<2104>;
 	type InterlayParachainId = ConstU32<2032>;
 	type ChannelCommission = ();
+	type MaxLockRecords = ConstU32<100>;
+	type IncentivePoolAccount = IncentivePoolAccount;
+	type LstMinting = ();
+	type AssetIdMaps = AssetIdMaps<Runtime>;
 }
 
 parameter_types! {
@@ -368,7 +357,7 @@ pub struct SubAccountIndexMultiLocationConvertor;
 impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationConvertor {
 	fn convert((sub_account_index, currency_id): (u16, CurrencyId)) -> MultiLocation {
 		match currency_id {
-			// AccountKey20 format of tangle sibling para account
+			// AccountKey20 format of Tangle sibling para account
 			CurrencyId::Token(TokenSymbol::MOVR) => MultiLocation::new(
 				1,
 				X2(
@@ -383,7 +372,7 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 					},
 				),
 			),
-			// Only relay chain use the tangle para account with "para"
+			// Only relay chain use the Tangle para account with "para"
 			CurrencyId::Token(TokenSymbol::KSM) => MultiLocation::new(
 				1,
 				X1(Junction::AccountId32 {
@@ -395,8 +384,8 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 					.into(),
 				}),
 			),
-			// tangle Kusama Native token
-			CurrencyId::Native(TokenSymbol::TNT) => MultiLocation::new(
+			// Tangle Kusama Native token
+			CurrencyId::Native(TokenSymbol::BNC) => MultiLocation::new(
 				0,
 				X1(Junction::AccountId32 {
 					network: None,
@@ -411,7 +400,8 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 			MANTA => {
 				// get parachain id
 				if let Some(location) = TangleCurrencyIdConvert::convert(currency_id) {
-					if let Some(Parachain(para_id)) = location.interior().first() {
+					let v3_location = xcm::v3::Location::try_from(location).unwrap();
+					if let Some(Parachain(para_id)) = v3_location.interior().first() {
 						MultiLocation::new(
 							1,
 							X2(
@@ -436,11 +426,12 @@ impl Convert<(u16, CurrencyId), MultiLocation> for SubAccountIndexMultiLocationC
 					MultiLocation::default()
 				}
 			},
-			// Other sibling chains use the tangle para account with "sibl"
+			// Other sibling chains use the Tangle para account with "sibl"
 			_ => {
 				// get parachain id
 				if let Some(location) = TangleCurrencyIdConvert::convert(currency_id) {
-					if let Some(Parachain(para_id)) = location.interior().first() {
+					let v3_location = xcm::v3::Location::try_from(location).unwrap();
+					if let Some(Parachain(para_id)) = v3_location.interior().first() {
 						MultiLocation::new(
 							1,
 							X2(
@@ -492,32 +483,37 @@ parameter_types! {
 }
 
 pub struct TangleCurrencyIdConvert;
-impl Convert<CurrencyId, Option<MultiLocation>> for TangleCurrencyIdConvert {
-	fn convert(id: CurrencyId) -> Option<MultiLocation> {
+impl Convert<CurrencyId, Option<xcm::v4::Location>> for TangleCurrencyIdConvert {
+	fn convert(id: CurrencyId) -> Option<xcm::v4::Location> {
 		use CurrencyId::*;
 		use TokenSymbol::*;
 
 		match id {
-			Token(MOVR) => Some(MultiLocation::new(1, X2(Parachain(2023), PalletInstance(10)))),
-			Token(KSM) => Some(MultiLocation::parent()),
-			Native(TNT) => Some(MultiLocation::new(
-				0,
-				X1(Junction::from(BoundedVec::try_from("0x0001".encode()).unwrap())),
+			Token(MOVR) => Some(xcm::v4::Location::new(
+				1,
+				[xcm::v4::Junction::Parachain(2023), xcm::v4::Junction::PalletInstance(10)],
 			)),
-			Token(PHA) => Some(MultiLocation::new(1, X1(Parachain(2004)))),
-			MANTA => Some(MultiLocation::new(1, X1(Parachain(2104)))),
+			Token(KSM) => Some(xcm::v4::Location::parent()),
+			Native(BNC) => Some(xcm::v4::Location::new(
+				0,
+				[xcm::v4::Junction::from(BoundedVec::try_from("0x0001".encode()).unwrap())],
+			)),
+			Token(PHA) => Some(xcm::v4::Location::new(1, [xcm::v4::Junction::Parachain(2004)])),
+			MANTA => Some(xcm::v4::Location::new(1, [xcm::v4::Junction::Parachain(2104)])),
 			_ => None,
 		}
 	}
 }
 
 pub struct SubstrateResponseManager;
-impl QueryResponseManager<QueryId, MultiLocation, u64, RuntimeCall> for SubstrateResponseManager {
+impl QueryResponseManager<QueryId, xcm::v4::Location, u64, RuntimeCall>
+	for SubstrateResponseManager
+{
 	fn get_query_response_record(_query_id: QueryId) -> bool {
 		Default::default()
 	}
 	fn create_query_record(
-		_responder: &MultiLocation,
+		_responder: xcm::v4::Location,
 		_call_back: Option<RuntimeCall>,
 		_timeout: u64,
 	) -> u64 {
@@ -540,13 +536,11 @@ impl Config for Runtime {
 	type ControlOrigin = EnsureSignedBy<One, AccountId>;
 	type WeightInfo = ();
 	type LstMinting = LstMinting;
-	type TangleSlpx = SlpxInterface;
 	type AccountConverter = SubAccountIndexMultiLocationConvertor;
 	type ParachainId = ParachainId;
 	type SubstrateResponseManager = SubstrateResponseManager;
 	type MaxTypeEntryPerBlock = MaxTypeEntryPerBlock;
 	type MaxRefundPerBlock = MaxRefundPerBlock;
-	type OnRefund = ();
 	type ParachainStaking = ParachainStaking;
 	type XcmTransfer = XTokens;
 	type MaxLengthLimit = MaxLengthLimit;
@@ -580,14 +574,14 @@ parameter_types! {
 	// One XCM operation is 200_000_000 XcmWeight, cross-chain transfer ~= 2x of transfer = 3_000_000_000
 	pub UnitWeightCost: Weight = Weight::from_parts(200_000_000, 0);
 	pub const MaxInstructions: u32 = 100;
-	pub UniversalLocation: InteriorMultiLocation = X1(Parachain(2001));
+	pub UniversalLocation: xcm::v4::InteriorLocation = xcm::v4::Junction::Parachain(2001).into();
 }
 
 pub struct Barrier;
 impl ShouldExecute for Barrier {
 	fn should_execute<Call>(
-		_origin: &MultiLocation,
-		_message: &mut [Instruction<Call>],
+		_origin: &xcm::v4::Location,
+		_message: &mut [xcm::v4::Instruction<Call>],
 		_max_weight: Weight,
 		_weight_credit: &mut Properties,
 	) -> Result<(), ProcessMessageError> {
@@ -626,7 +620,7 @@ impl xcm_executor::Config for XcmConfig {
 
 #[cfg(feature = "runtime-benchmarks")]
 parameter_types! {
-	pub ReachableDest: Option<MultiLocation> = Some(Parent.into());
+	pub ReachableDest: Option<Location> = Some(Parent.into());
 }
 
 impl pallet_xcm::Config for Runtime {
@@ -650,8 +644,6 @@ impl pallet_xcm::Config for Runtime {
 	type SovereignAccountOf = ();
 	type MaxLockers = ConstU32<8>;
 	type WeightInfo = pallet_xcm::TestWeightInfo;
-	#[cfg(feature = "runtime-benchmarks")]
-	type ReachableDest = ReachableDest;
 	type AdminOrigin = EnsureRoot<AccountId>;
 	type MaxRemoteLockConsumers = ConstU32<0>;
 	type RemoteLockConsumerIdentifier = ();
@@ -674,7 +666,7 @@ impl ExtBuilder {
 	}
 
 	pub fn one_hundred_for_alice(self) -> Self {
-		self.balances(vec![(ALICE, TNT, 100), (ALICE, KSM, 100), (ALICE, VKSM, 100)])
+		self.balances(vec![(ALICE, BNC, 100), (ALICE, KSM, 100), (ALICE, VKSM, 100)])
 	}
 
 	pub fn build(self) -> sp_io::TestExternalities {
@@ -685,7 +677,7 @@ impl ExtBuilder {
 				.endowed_accounts
 				.clone()
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id == TNT)
+				.filter(|(_, currency_id, _)| *currency_id == BNC)
 				.map(|(account_id, _, initial_balance)| (account_id, initial_balance))
 				.collect::<Vec<_>>(),
 		}
@@ -696,7 +688,7 @@ impl ExtBuilder {
 			balances: self
 				.endowed_accounts
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id != TNT)
+				.filter(|(_, currency_id, _)| *currency_id != BNC)
 				.collect::<Vec<_>>(),
 		}
 		.assimilate_storage(&mut t)

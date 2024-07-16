@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -13,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Low-level types used throughout the tangle code.
+//! Low-level types used throughout the Tangle code.
 
 use bstringify::bstringify;
 use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
@@ -33,8 +36,8 @@ use crate::{
 
 pub const MOVR: CurrencyId = CurrencyId::Token(TokenSymbol::MOVR);
 pub const VMOVR: CurrencyId = CurrencyId::Lst(TokenSymbol::MOVR);
-pub const TNT: CurrencyId = CurrencyId::Native(TokenSymbol::TNT);
-pub const VTNT: CurrencyId = CurrencyId::Lst(TokenSymbol::TNT);
+pub const BNC: CurrencyId = CurrencyId::Native(TokenSymbol::BNC);
+pub const VBNC: CurrencyId = CurrencyId::Lst(TokenSymbol::BNC);
 pub const KSM: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
 pub const VKSM: CurrencyId = CurrencyId::Lst(TokenSymbol::KSM);
 pub const VSKSM: CurrencyId = CurrencyId::VSToken(TokenSymbol::KSM);
@@ -58,7 +61,9 @@ pub const VFIL: CurrencyId = CurrencyId::Lst2(FIL_TOKEN_ID);
 pub const MANTA_TOKEN_ID: u8 = 8u8;
 pub const MANTA: CurrencyId = CurrencyId::Token2(MANTA_TOKEN_ID);
 pub const VMANTA: CurrencyId = CurrencyId::Lst2(MANTA_TOKEN_ID);
-pub const VSBOND_BNC_2001_0_8: CurrencyId = CurrencyId::VSBond(TokenSymbol::TNT, 2001, 0, 8);
+pub const VSBOND_BNC_2001_0_8: CurrencyId = CurrencyId::VSBond(TokenSymbol::BNC, 2001, 0, 8);
+pub const CLOUD_TOKEN_ID: u8 = 12u8;
+pub const CLOUD: CurrencyId = CurrencyId::Token2(CLOUD_TOKEN_ID);
 
 pub const LDOT: CurrencyId = CurrencyId::Lend(0);
 pub const LKSM: CurrencyId = CurrencyId::Lend(1);
@@ -227,7 +232,7 @@ macro_rules! create_currency_id {
     }
 }
 
-// tangle Tokens list
+// Tangle Tokens list
 create_currency_id! {
 	// Represent a Token symbol with 8 bit
 	// Bit 8 : 0 for Pokladot Ecosystem, 1 for Kusama Ecosystem
@@ -237,7 +242,7 @@ create_currency_id! {
 	#[repr(u8)]
 	pub enum TokenSymbol {
 		ASG("Asgard", 12) = 0,
-		TNT("tangle", 12) = 1,
+		BNC("Tangle", 12) = 1,
 		KUSD("Karura Dollar", 12) = 2,
 		DOT("Polkadot", 10) = 3,
 		KSM("Kusama", 12) = 4,
@@ -247,12 +252,13 @@ create_currency_id! {
 		PHA("Phala Native Token", 12) = 8,
 		RMRK("RMRK Token",10) = 9,
 		MOVR("Moonriver Native Token",18) = 10,
+		TNT("Tangle", 18) = 11,
 	}
 }
 
 impl Default for TokenSymbol {
 	fn default() -> Self {
-		Self::TNT
+		Self::BNC
 	}
 }
 
@@ -319,7 +325,7 @@ impl CurrencyId {
 
 		let vsbond_fixed = match vsbond_origin {
 			Self::VSBond(TokenSymbol::KSM, 2001, 13, 20) => {
-				Self::VSBond(TokenSymbol::TNT, 2001, 13, 20)
+				Self::VSBond(TokenSymbol::BNC, 2001, 13, 20)
 			},
 			_ => vsbond_origin,
 		};
@@ -329,7 +335,7 @@ impl CurrencyId {
 
 	pub fn to_token(&self) -> Result<Self, ()> {
 		match self {
-			Self::Lst(TokenSymbol::TNT) => Ok(Self::Native(TokenSymbol::TNT)),
+			Self::Lst(TokenSymbol::BNC) => Ok(Self::Native(TokenSymbol::BNC)),
 			Self::Lst(symbol) => Ok(Self::Token(*symbol)),
 			Self::Lst2(id) => Ok(Self::Token2(*id)),
 			_ => Err(()),
@@ -340,7 +346,7 @@ impl CurrencyId {
 		match self {
 			Self::Token(symbol) => Ok(Self::Lst(*symbol)),
 			Self::Token2(id) => Ok(Self::Lst2(*id)),
-			Self::Native(TokenSymbol::TNT) => Ok(Self::Lst(TokenSymbol::TNT)),
+			Self::Native(TokenSymbol::BNC) => Ok(Self::Lst(TokenSymbol::BNC)),
 			_ => Err(()),
 		}
 	}
@@ -400,7 +406,7 @@ impl TryFrom<u64> for CurrencyId {
 	fn try_from(id: u64) -> Result<Self, Self::Error> {
 		let c_discr = ((id & 0x0000_0000_0000_ff00) >> 8) as u8;
 
-		let t_discr = ((id & 0x0000_0000_0000_00ff) >> 00) as u8;
+		let t_discr = (id & 0x0000_0000_0000_00ff) as u8;
 
 		let pid = ((id & 0xffff_0000_0000_0000) >> 48) as u32;
 		let lp1 = ((id & 0x0000_ffff_0000_0000) >> 32) as u32;

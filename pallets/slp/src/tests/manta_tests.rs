@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -1644,7 +1647,7 @@ fn charge_host_fee_and_tune_lst_exchange_rate_works() {
 		// Set delegator ledger
 		DelegatorLedgers::<Runtime>::insert(MANTA, subaccount_0_location, ledger);
 
-		// Set the hosting fee to be 20%, and the beneficiary to be tangle treasury account.
+		// Set the hosting fee to be 20%, and the beneficiary to be bifrost treasury account.
 		let pct = Permill::from_percent(20);
 		let treasury_location = MultiLocation {
 			parents: 0,
@@ -1664,7 +1667,7 @@ fn charge_host_fee_and_tune_lst_exchange_rate_works() {
 			Some((1, pct_100))
 		));
 
-		// First set base lst exchange rate. Should be 1:1.
+		// First set base Lst exchange rate. Should be 1:1.
 		assert_ok!(Currencies::deposit(VMANTA, &ALICE, 100));
 		assert_ok!(Slp::increase_token_pool(RuntimeOrigin::signed(ALICE), MANTA, 100));
 

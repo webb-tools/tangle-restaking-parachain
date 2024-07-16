@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -20,13 +23,11 @@ use crate::{
 	primitives::{
 		Ledger, PhalaLedger, QueryId, SubstrateLedgerUpdateEntry, SubstrateLedgerUpdateOperation,
 	},
-	traits::{QueryResponseManager, StakingAgent},
 	AccountIdOf, BalanceOf, Config, CurrencyId, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, Hash, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
-	Validators, ValidatorsByDelegatorUpdateEntry,
+	ValidatorsByDelegatorUpdateEntry,
 };
 use core::marker::PhantomData;
-pub use cumulus_primitives_core::ParaId;
 use frame_support::{ensure, traits::Get};
 use frame_system::pallet_prelude::BlockNumberFor;
 use parity_scale_codec::Encode;
@@ -36,7 +37,10 @@ use sp_runtime::{
 	DispatchResult, SaturatedConversion,
 };
 use sp_std::prelude::*;
-use tangle_primitives::{LstMintingOperator, TokenSymbol, XcmOperationType};
+use tangle_primitives::{
+	staking::{QueryResponseManager, StakingAgent},
+	LstMintingOperator, TokenSymbol, XcmOperationType,
+};
 use xcm::{
 	opaque::v3::{Junction::GeneralIndex, MultiLocation},
 	v3::prelude::*,
@@ -168,8 +172,9 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-		send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
 	}
@@ -278,8 +283,9 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-		send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
 	}
@@ -339,13 +345,13 @@ impl<T: Config>
 		} = candidate
 		{
 			// Ensure the candidate is in the validator whitelist.
-			let validators_set =
-				Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+			// let validators_set =
+			// 	Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
 
-			ensure!(validators_set.contains(candidate), Error::<T>::ValidatorNotExist);
+			// ensure!(validators_set.contains(candidate), Error::<T>::ValidatorNotExist);
 
 			// if the delegator is new, create a ledger for it
-			if !DelegatorLedgers::<T>::contains_key(currency_id, &who.clone()) {
+			if !DelegatorLedgers::<T>::contains_key(currency_id, *who) {
 				// Create a new delegator ledger\
 				let ledger = PhalaLedger::<BalanceOf<T>> {
 					account: *who,
@@ -454,7 +460,7 @@ impl<T: Config>
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
 		let targets = targets.as_ref().ok_or(Error::<T>::ValidatorNotProvided)?;
-		Self::delegate(self, who, &targets, currency_id, weight_and_fee)
+		Self::delegate(self, who, targets, currency_id, weight_and_fee)
 	}
 
 	/// Corresponds to the `check_and_maybe_force_withdraw` funtion of PhalaVault pallet.
@@ -506,8 +512,9 @@ impl<T: Config>
 		Pallet::<T>::burn_fee_from_source_account(fee, currency_id)?;
 
 		// Send out the xcm message.
-		let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-		send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
 	}
@@ -568,7 +575,7 @@ impl<T: Config>
 		Err(Error::<T>::Unsupported)
 	}
 
-	/// Make token transferred back to tangle chain account.
+	/// Make token transferred back to Tangle chain account.
 	fn transfer_back(
 		&self,
 		from: &MultiLocation,
@@ -586,10 +593,14 @@ impl<T: Config>
 			T::ParachainId::get().into(),
 		)?;
 
-		let locat = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		let dest_location =
+			xcm::v3::Location::try_from(dest_location).map_err(|_| Error::<T>::FailToConvert)?;
 		// Prepare parameter assets.
-		let asset =
-			MultiAsset { fun: Fungible(amount.unique_saturated_into()), id: Concrete(locat) };
+		let asset = MultiAsset {
+			fun: Fungible(amount.unique_saturated_into()),
+			id: Concrete(dest_location),
+		};
 
 		// Construct xcm message.
 		let call: PhalaCall<T> =
@@ -612,7 +623,7 @@ impl<T: Config>
 		Ok(())
 	}
 
-	/// Make token from tangle chain account to the staking chain account.
+	/// Make token from Tangle chain account to the staking chain account.
 	/// Receiving account must be one of the currency_id delegators.
 	fn transfer_to(
 		&self,
@@ -627,7 +638,7 @@ impl<T: Config>
 			Error::<T>::DelegatorNotExist
 		);
 
-		// Make sure from account is the entrance account of lst-minting module.
+		// Make sure from account is the entrance account of Lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
 		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
@@ -688,8 +699,9 @@ impl<T: Config>
 		Pallet::<T>::burn_fee_from_source_account(fee, currency_id)?;
 
 		// Send out the xcm message.
-		let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-		send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
 	}
@@ -911,10 +923,7 @@ impl<T: Config> PhalaAgent<T> {
 		DelegatorLedgerXcmUpdateQueue::<T>::remove(query_id);
 
 		// Delete the query in pallet_xcm.
-		ensure!(
-			T::SubstrateResponseManager::remove_query_record(query_id),
-			Error::<T>::QueryResponseRemoveError
-		);
+		T::SubstrateResponseManager::remove_query_record(query_id);
 
 		Ok(())
 	}
@@ -928,7 +937,7 @@ impl<T: Config> PhalaAgent<T> {
 		let shares: u128 = U256::from((*total_shares).saturated_into::<u128>())
 			.saturating_mul(amount.saturated_into::<u128>().into())
 			.checked_div((*total_value).saturated_into::<u128>().into())
-			.map(|x| u128::try_from(x))
+			.map(u128::try_from)
 			.ok_or(Error::<T>::OverFlow)?
 			.map_err(|_| Error::<T>::OverFlow)?;
 

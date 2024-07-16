@@ -1,6 +1,7 @@
 // This file is part of Tangle.
 
-
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,14 +26,14 @@
 //!
 //! THIS FILE WAS AUTO-GENERATED USING THE SUBSTRATE BENCHMARK CLI VERSION 4.0.0-dev
 //! DATE: 2023-09-14, STEPS: `50`, REPEAT: 20, LOW RANGE: `[]`, HIGH RANGE: `[]`
-//! HOSTNAME: `tangle-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
-//! WASM-EXECUTION: Compiled, CHAIN: Some("tangle-kusama-local"), DB CACHE: 1024
+//! HOSTNAME: `bifrost-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
+//! WASM-EXECUTION: Compiled, CHAIN: Some("bifrost-kusama-local"), DB CACHE: 1024
 
 // Executed Command:
-// target/release/tangle
+// target/release/bifrost
 // benchmark
 // pallet
-// --chain=tangle-kusama-local
+// --chain=bifrost-kusama-local
 // --steps=50
 // --repeat=20
 // --pallet=tangle_slp

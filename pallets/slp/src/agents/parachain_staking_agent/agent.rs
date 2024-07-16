@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -24,16 +27,15 @@ use crate::{
 		OneToManyScheduledRequest, ParachainStakingLedgerUpdateEntry,
 		ParachainStakingLedgerUpdateOperation, QueryId,
 	},
-	traits::{QueryResponseManager, StakingAgent},
 	AccountIdOf, BalanceOf, Config, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
-	Validators, ValidatorsByDelegatorUpdateEntry, TNT,
+	ValidatorsByDelegatorUpdateEntry, BNC,
 };
 use core::marker::PhantomData;
-pub use cumulus_primitives_core::ParaId;
+
 use frame_support::{ensure, traits::Get};
 use orml_traits::MultiCurrency;
-use parity_scale_codec::alloc::collections::BTreeMap;
+use parity_scale_codec::{alloc::collections::BTreeMap, Encode};
 use sp_arithmetic::Percent;
 use sp_runtime::{
 	traits::{CheckedAdd, CheckedSub, Convert, UniqueSaturatedInto, Zero},
@@ -43,15 +45,16 @@ use sp_std::prelude::*;
 use tangle_parachain_staking::ParachainStakingInterface;
 use tangle_primitives::{
 	currency::{GLMR, MANTA, MOVR},
+	staking::{QueryResponseManager, StakingAgent},
 	CurrencyId, LstMintingOperator, XcmOperationType,
 };
 use xcm::{
 	opaque::v3::{
 		Junction::{AccountId32, Parachain},
-		MultiLocation, WeightLimit,
+		MultiLocation,
 	},
 	v3::prelude::*,
-	VersionedMultiLocation,
+	VersionedLocation,
 };
 
 /// StakingAgent implementation for Moonriver/Moonbeam
@@ -107,15 +110,15 @@ impl<T: Config>
 		let collator = validator.ok_or(Error::<T>::ValidatorNotProvided)?;
 		let mins_maxs = MinimumsAndMaximums::<T>::get(currency_id).ok_or(Error::<T>::NotExist)?;
 		// Ensure amount is no less than delegation_amount_minimum.
-		ensure!(amount >= mins_maxs.delegation_amount_minimum.into(), Error::<T>::LowerThanMinimum);
+		ensure!(amount >= mins_maxs.delegation_amount_minimum, Error::<T>::LowerThanMinimum);
 
-		// check if the validator is in the white list.
-		let validator_list =
-			Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
-		validator_list
-			.iter()
-			.position(|va| va == &collator)
-			.ok_or(Error::<T>::ValidatorNotExist)?;
+		// // check if the validator is in the white list.
+		// let validator_list : BoundedVec<MultiLocation, T::MaxLengthLimit> =
+		// 	Validators::<T>::get(currency_id).unwrap_or_else(Default::default());
+		// validator_list
+		// 	.iter()
+		// 	.position(|va| va == &collator)
+		// 	.ok_or(Error::<T>::ValidatorNotExist)?;
 
 		let ledger_option = DelegatorLedgers::<T>::get(currency_id, who);
 		if let Some(Ledger::ParachainStaking(ledger)) = ledger_option {
@@ -180,7 +183,7 @@ impl<T: Config>
 		let validator_multilocation = validator.as_ref().ok_or(Error::<T>::Unexpected)?;
 
 		let mut query_index = 0;
-		if currency_id == TNT {
+		if currency_id == BNC {
 			let validator_account_id =
 				Pallet::<T>::multilocation_to_account(validator_multilocation)?;
 			let delegator_account_id = Pallet::<T>::multilocation_to_account(who)?;
@@ -259,7 +262,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				MANTA => {
 					let validator_multilocation =
@@ -273,7 +275,6 @@ impl<T: Config>
 						delegation_count,
 					))
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -305,8 +306,9 @@ impl<T: Config>
 			)?;
 
 			// Send out the xcm message.
-			let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-			send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+			let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+			xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+				.map_err(|_e| Error::<T>::XcmFailure)?;
 
 			query_index = query_id;
 		}
@@ -331,9 +333,9 @@ impl<T: Config>
 		let collator = (*validator).ok_or(Error::<T>::ValidatorNotProvided)?;
 
 		// need to check if the validator is still in the validators list.
-		let validators =
-			Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
-		ensure!(validators.contains(&collator), Error::<T>::ValidatorError);
+		// let validators =
+		// 	Validators::<T>::get(currency_id).ok_or(Error::<T>::ValidatorSetNotExist)?;
+		// ensure!(validators.contains(&collator), Error::<T>::ValidatorError);
 
 		let ledger_option = DelegatorLedgers::<T>::get(currency_id, who);
 		if let Some(Ledger::ParachainStaking(ledger)) = ledger_option {
@@ -356,7 +358,7 @@ impl<T: Config>
 		}
 
 		let mut query_index = 0;
-		if currency_id == TNT {
+		if currency_id == BNC {
 			// bond extra amount to the existing delegation.
 			let validator_multilocation = validator.as_ref().ok_or(Error::<T>::Unexpected)?;
 			let validator_account_id =
@@ -412,7 +414,6 @@ impl<T: Config>
 						amount,
 					))
 					.encode()
-					.into()
 				},
 				MANTA => {
 					let validator_account = Pallet::<T>::multilocation_to_account(&collator)?;
@@ -421,7 +422,6 @@ impl<T: Config>
 						amount,
 					))
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -453,8 +453,9 @@ impl<T: Config>
 			)?;
 
 			// Send out the xcm message.
-			let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-			send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+			let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+			xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+				.map_err(|_e| Error::<T>::XcmFailure)?;
 			query_index = query_id;
 		}
 
@@ -493,7 +494,7 @@ impl<T: Config>
 			let delegated_amount_after =
 				old_delegate_amount.checked_sub(&amount).ok_or(Error::<T>::UnderFlow)?;
 			ensure!(
-				delegated_amount_after >= mins_maxs.delegation_amount_minimum.into(),
+				delegated_amount_after >= mins_maxs.delegation_amount_minimum,
 				Error::<T>::LowerThanMinimum
 			);
 
@@ -511,7 +512,7 @@ impl<T: Config>
 		}
 
 		let mut query_index = 0;
-		if currency_id == TNT {
+		if currency_id == BNC {
 			let validator_multilocation = validator.as_ref().ok_or(Error::<T>::Unexpected)?;
 			let validator_account_id =
 				Pallet::<T>::multilocation_to_account(validator_multilocation)?;
@@ -574,7 +575,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				MANTA => {
 					let validator_account = Pallet::<T>::multilocation_to_account(&collator)?;
@@ -585,7 +585,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -617,8 +616,9 @@ impl<T: Config>
 			)?;
 
 			// Send out the xcm message.
-			let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-			send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+			let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+			xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+				.map_err(|_e| Error::<T>::XcmFailure)?;
 			query_index = query_id;
 		}
 
@@ -633,7 +633,7 @@ impl<T: Config>
 		currency_id: CurrencyId,
 		_weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
-		ensure!(currency_id == TNT, Error::<T>::Unsupported);
+		ensure!(currency_id == BNC, Error::<T>::Unsupported);
 
 		// check if the delegator exists.
 		let ledger_option = DelegatorLedgers::<T>::get(currency_id, who);
@@ -721,7 +721,7 @@ impl<T: Config>
 			let active =
 				ledger.total.checked_sub(&ledger.less_total).ok_or(Error::<T>::UnderFlow)?;
 			let rebond_after_amount =
-				active.checked_add(&rebond_amount).ok_or(Error::<T>::OverFlow)?;
+				active.checked_add(rebond_amount).ok_or(Error::<T>::OverFlow)?;
 
 			// ensure the rebond after amount meet the delegator bond requirement.
 			ensure!(
@@ -733,7 +733,7 @@ impl<T: Config>
 		}
 
 		let mut query_index = 0;
-		if currency_id == TNT {
+		if currency_id == BNC {
 			let validator_multilocation = validator.as_ref().ok_or(Error::<T>::Unexpected)?;
 			let validator_account_id =
 				Pallet::<T>::multilocation_to_account(validator_multilocation)?;
@@ -762,7 +762,7 @@ impl<T: Config>
 
 						old_ledger.less_total = old_ledger
 							.less_total
-							.checked_sub(&cancel_amount)
+							.checked_sub(cancel_amount)
 							.ok_or(Error::<T>::UnderFlow)?;
 
 						let request_index = old_ledger
@@ -793,7 +793,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				MANTA => {
 					let validator_account = Pallet::<T>::multilocation_to_account(&collator)?;
@@ -801,7 +800,6 @@ impl<T: Config>
 						MantaParachainStakingCall::<T>::CancelDelegationRequest(validator_account),
 					)
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -833,8 +831,9 @@ impl<T: Config>
 			)?;
 
 			// Send out the xcm message.
-			let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-			send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+			let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+			xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+				.map_err(|_e| Error::<T>::XcmFailure)?;
 			query_index = query_id;
 		}
 
@@ -877,7 +876,7 @@ impl<T: Config>
 		}
 
 		let mut query_index = 0;
-		if currency_id == TNT {
+		if currency_id == BNC {
 			let validator_account_id = Pallet::<T>::multilocation_to_account(validator)?;
 			let delegator_account_id = Pallet::<T>::multilocation_to_account(who)?;
 
@@ -902,7 +901,7 @@ impl<T: Config>
 
 						old_ledger.less_total = old_ledger
 							.less_total
-							.checked_add(&revoke_amount)
+							.checked_add(revoke_amount)
 							.ok_or(Error::<T>::OverFlow)?;
 
 						let unlock_time_unit =
@@ -934,22 +933,20 @@ impl<T: Config>
 			let call: Vec<u8> = match currency_id {
 				MOVR | GLMR => {
 					let validator_h160_account =
-						Pallet::<T>::multilocation_to_h160_account(&validator)?;
+						Pallet::<T>::multilocation_to_h160_account(validator)?;
 					MoonbeamCall::Staking(
 						MoonbeamParachainStakingCall::<T>::ScheduleRevokeDelegation(
 							validator_h160_account,
 						),
 					)
 					.encode()
-					.into()
 				},
 				MANTA => {
-					let validator_account = Pallet::<T>::multilocation_to_account(&validator)?;
+					let validator_account = Pallet::<T>::multilocation_to_account(validator)?;
 					MantaCall::ParachainStaking(
 						MantaParachainStakingCall::<T>::ScheduleRevokeDelegation(validator_account),
 					)
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -981,8 +978,9 @@ impl<T: Config>
 			)?;
 
 			// Send out the xcm message.
-			let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-			send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+			let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+			xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+				.map_err(|_e| Error::<T>::XcmFailure)?;
 
 			query_index = query_id;
 		}
@@ -997,7 +995,7 @@ impl<T: Config>
 		currency_id: CurrencyId,
 		_weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
-		ensure!(currency_id == TNT, Error::<T>::Unsupported);
+		ensure!(currency_id == BNC, Error::<T>::Unsupported);
 
 		// first check if the delegator exists.
 		let ledger_option = DelegatorLedgers::<T>::get(currency_id, who);
@@ -1091,7 +1089,7 @@ impl<T: Config>
 		}
 
 		let mut query_index = 0;
-		if currency_id == TNT {
+		if currency_id == BNC {
 			let validator_multilocation = validator.as_ref().ok_or(Error::<T>::Unexpected)?;
 			let validator_account_id =
 				Pallet::<T>::multilocation_to_account(validator_multilocation)?;
@@ -1272,7 +1270,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				MANTA => {
 					let delegator_account = Pallet::<T>::multilocation_to_account(who)?;
@@ -1284,7 +1281,6 @@ impl<T: Config>
 						),
 					)
 					.encode()
-					.into()
 				},
 				_ => Err(Error::<T>::Unsupported)?,
 			};
@@ -1326,8 +1322,9 @@ impl<T: Config>
 			}
 
 			// Send out the xcm message.
-			let dest = Pallet::<T>::get_para_multilocation_by_currency_id(currency_id)?;
-			send_xcm::<T::XcmRouter>(dest, xcm_message).map_err(|_e| Error::<T>::XcmFailure)?;
+			let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+			xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
+				.map_err(|_e| Error::<T>::XcmFailure)?;
 
 			query_index = query_id;
 		}
@@ -1344,11 +1341,11 @@ impl<T: Config>
 		Err(Error::<T>::Unsupported)
 	}
 
-	/// Make token transferred back to tangle chain account.
+	/// Make token transferred back to Tangle chain account.
 	fn transfer_back(
 		&self,
 		from: &MultiLocation,
-		to: &MultiLocation,
+		_to: &MultiLocation,
 		amount: BalanceOf<T>,
 		currency_id: CurrencyId,
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
@@ -1360,24 +1357,26 @@ impl<T: Config>
 		DelegatorsMultilocation2Index::<T>::get(currency_id, from)
 			.ok_or(Error::<T>::DelegatorNotExist)?;
 
-		// Make sure the receiving account is the Exit_account from lst-minting module.
-		let to_account_id = Pallet::<T>::multilocation_to_account(&to)?;
+		// Make sure the receiving account is the Exit_account from Lst-minting module.
+		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 
-		let (_, exit_account) = T::LstMinting::get_entrance_and_exit_accounts();
-		ensure!(to_account_id == exit_account, Error::<T>::InvalidAccount);
-
-		if currency_id == TNT {
+		if currency_id == BNC {
 			let from_account = Pallet::<T>::multilocation_to_account(from)?;
-			T::MultiCurrency::transfer(currency_id, &from_account, &to_account_id, amount)
+			T::MultiCurrency::transfer(currency_id, &from_account, &entrance_account, amount)
 				.map_err(|_| Error::<T>::Unexpected)?;
 		} else {
 			// Prepare parameter dest and beneficiary.
-			let to_32: [u8; 32] = Pallet::<T>::multilocation_to_account_32(&to)?;
-			let dest = Box::new(VersionedMultiLocation::from(MultiLocation {
+			let dest = Box::new(VersionedLocation::V3(MultiLocation {
 				parents: 1,
 				interior: X2(
 					Parachain(T::ParachainId::get().into()),
-					AccountId32 { network: None, id: to_32 },
+					AccountId32 {
+						network: None,
+						id: entrance_account
+							.encode()
+							.try_into()
+							.map_err(|_| Error::<T>::FailToConvert)?,
+					},
 				),
 			}));
 
@@ -1387,18 +1386,16 @@ impl<T: Config>
 					MoonbeamCurrencyId::SelfReserve,
 					amount.unique_saturated_into(),
 					dest,
-					WeightLimit::Unlimited,
+					Unlimited,
 				))
-				.encode()
-				.into(),
+				.encode(),
 				MANTA => MantaCall::Xtokens(MantaXtokensCall::<T>::Transfer(
 					MantaCurrencyId::MantaCurrency(1),
 					amount.unique_saturated_into(),
 					dest,
-					WeightLimit::Unlimited,
+					Unlimited,
 				))
-				.encode()
-				.into(),
+				.encode(),
 				_ => Err(Error::<T>::Unsupported)?,
 			};
 
@@ -1420,7 +1417,7 @@ impl<T: Config>
 		Ok(())
 	}
 
-	/// Make token from tangle chain account to the staking chain account.
+	/// Make token from Tangle chain account to the staking chain account.
 	/// Receiving account must be one of the MOVR/GLMR delegators.
 	fn transfer_to(
 		&self,
@@ -1435,12 +1432,12 @@ impl<T: Config>
 			Error::<T>::DelegatorNotExist
 		);
 
-		// Make sure from account is the entrance account of lst-minting module.
-		let from_account_id = Pallet::<T>::multilocation_to_account(&from)?;
+		// Make sure from account is the entrance account of Lst-minting module.
+		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
 		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);
 
-		if currency_id == TNT {
+		if currency_id == BNC {
 			let to_account = Pallet::<T>::multilocation_to_account(to)?;
 			T::MultiCurrency::transfer(currency_id, &from_account_id, &to_account, amount)
 				.map_err(|_| Error::<T>::Unexpected)?;
@@ -1480,7 +1477,7 @@ impl<T: Config>
 	) -> Result<(), Error<T>> {
 		ensure!(!token_amount.is_zero(), Error::<T>::AmountZero);
 
-		// Tune the lst exchange rate.
+		// Tune the Lst exchange rate.
 		T::LstMinting::increase_token_pool(currency_id, token_amount)
 			.map_err(|_| Error::<T>::IncreaseTokenPoolError)?;
 
@@ -1529,7 +1526,7 @@ impl<T: Config>
 		to: &MultiLocation,
 		currency_id: CurrencyId,
 	) -> Result<(), Error<T>> {
-		if currency_id == TNT {
+		if currency_id == BNC {
 			ensure!(!amount.is_zero(), Error::<T>::AmountZero);
 			let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
 			let to_account_id = Pallet::<T>::multilocation_to_account(to)?;
@@ -1549,7 +1546,7 @@ impl<T: Config>
 		manual_mode: bool,
 		currency_id: CurrencyId,
 	) -> Result<bool, Error<T>> {
-		ensure!(currency_id != TNT, Error::<T>::Unsupported);
+		ensure!(currency_id != BNC, Error::<T>::Unsupported);
 		// If this is manual mode, it is always updatable.
 		let should_update = if manual_mode {
 			true
@@ -1702,7 +1699,7 @@ impl<T: Config> ParachainStakingAgent<T> {
 
 								old_ledger.less_total = old_ledger
 									.less_total
-									.checked_add(&revoke_amount)
+									.checked_add(revoke_amount)
 									.ok_or(Error::<T>::OverFlow)?;
 
 								let unlock_time_unit =
@@ -1738,7 +1735,7 @@ impl<T: Config> ParachainStakingAgent<T> {
 
 								old_ledger.less_total = old_ledger
 									.less_total
-									.checked_sub(&cancel_amount)
+									.checked_sub(cancel_amount)
 									.ok_or(Error::<T>::UnderFlow)?;
 
 								let request_index = old_ledger

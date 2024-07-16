@@ -1816,7 +1816,7 @@ declare module '@polkadot/api-base/types/submittable' {
 			 **/
 			redeem: AugmentedSubmittable<
 				(
-					lstId:
+					LstId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
 						| { lst: any }
@@ -1835,7 +1835,7 @@ declare module '@polkadot/api-base/types/submittable' {
 						| { Lend: any }
 						| string
 						| Uint8Array,
-					lstAmount: u128 | AnyNumber | Uint8Array,
+					LstAmount: u128 | AnyNumber | Uint8Array,
 				) => SubmittableExtrinsic<ApiType>,
 				[TanglePrimitivesCurrencyCurrencyId, u128]
 			>;
@@ -2340,7 +2340,7 @@ declare module '@polkadot/api-base/types/submittable' {
 						| string
 						| Uint8Array,
 					pollIndex: Compact<u32> | AnyNumber | Uint8Array,
-					lstVote:
+					LstVote:
 						| TangleLstVotingVoteAccountVote
 						| { Standard: any }
 						| { Split: any }
@@ -4287,7 +4287,7 @@ declare module '@polkadot/api-base/types/submittable' {
 			/**
 			 * See [`Pallet::convert_treasury_lst`].
 			 **/
-			convertTreasuryLst: AugmentedSubmittable<
+			convertTreasurylst: AugmentedSubmittable<
 				(
 					lst:
 						| TanglePrimitivesCurrencyCurrencyId
@@ -5668,7 +5668,7 @@ declare module '@polkadot/api-base/types/submittable' {
 			redeem: AugmentedSubmittable<
 				(
 					evmCaller: H160 | string | Uint8Array,
-					lstId:
+					LstId:
 						| TanglePrimitivesCurrencyCurrencyId
 						| { Native: any }
 						| { lst: any }
@@ -6228,7 +6228,7 @@ declare module '@polkadot/api-base/types/submittable' {
 			/**
 			 * See [`Pallet::kill_storage`].
 			 **/
-			killStorage: AugmentedSubmittable<
+			kilLstorage: AugmentedSubmittable<
 				(keys: Vec<Bytes> | (Bytes | string | Uint8Array)[]) => SubmittableExtrinsic<ApiType>,
 				[Vec<Bytes>]
 			>;

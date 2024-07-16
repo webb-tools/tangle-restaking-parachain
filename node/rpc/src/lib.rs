@@ -1,4 +1,7 @@
-// This file is part of Tangle.
+// This file is part of Bifrost.
+
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -38,8 +41,7 @@ use sp_block_builder::BlockBuilder;
 use sp_blockchain::{Error as BlockChainError, HeaderBackend, HeaderMetadata};
 use sp_runtime::traits::BlockIdTo;
 use substrate_frame_rpc_system::{System, SystemApiServer};
-use tangle_primitives::{AccountId, Balance, Block, CurrencyId, Nonce, ParaId, PoolId};
-
+use tangle_primitives::{AccountId, Balance, Block, Nonce};
 /// Full client dependencies.
 pub struct FullDeps<C, P> {
 	/// The client instance to use.
@@ -53,7 +55,7 @@ pub struct FullDeps<C, P> {
 /// A IO handler that uses all Full RPC extensions.
 pub type RpcExtension = jsonrpsee::RpcModule<()>;
 
-/// RPC of tangle-kusama runtime.
+/// RPC of bifrost-kusama runtime.
 pub fn create_full<C, P>(
 	deps: FullDeps<C, P>,
 ) -> Result<RpcExtension, Box<dyn std::error::Error + Send + Sync>>
@@ -78,7 +80,7 @@ where
 	Ok(module)
 }
 
-/// RPC of tangle-polkadot runtime.
+/// RPC of bifrost-polkadot runtime.
 pub fn create_full_polkadot<C, P>(
 	deps: FullDeps<C, P>,
 ) -> Result<RpcExtension, Box<dyn std::error::Error + Send + Sync>>
