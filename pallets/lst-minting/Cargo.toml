@@ -1,7 +1,6 @@
 [package]
 name = "tangle-lst-minting"
 version = "0.8.0"
-authors = ["Kadokura <ymlll0508@gmail.com>"]
 edition = "2021"
 
 [package.metadata.docs.rs]
@@ -22,11 +21,15 @@ pallet-balances = { workspace = true }
 xcm = { workspace = true }
 cumulus-primitives-core = { workspace = true }
 sp-core = { workspace = true }
+sp-runtime = { workspace = true }
+sp-arithmetic = { workspace = true }
+tangle-asset-registry = { workspace = true }
+parachains-common = { workspace = true }
 
 [dev-dependencies]
 orml-tokens = { workspace = true }
 tangle-currencies = { workspace = true }
-orml-xtokens = { workspace = true }
+orml-xtokens = { workspace = true}
 orml-traits = { workspace = true }
 sp-io = { workspace = true }
 sp-runtime = { workspace = true }
@@ -35,10 +38,12 @@ xcm-executor = { workspace = true }
 xcm-builder = { workspace = true }
 pallet-xcm = { workspace = true }
 xcm = { workspace = true }
-tangle-slp = { workspace = true }
+pallet-assets = { workspace = true }
+pallet-uniques = { workspace = true }
 tangle-asset-registry = { workspace = true }
 tangle-runtime-common = { workspace = true }
 env_logger = { workspace = true }
+tangle-slp = { workspace = true }
 
 [features]
 default = ["std"]
@@ -47,12 +52,17 @@ std = [
 	"scale-info/std",
 	"frame-support/std",
 	"frame-system/std",
-	"frame-benchmarking/std",
+	"frame-benchmarking?/std",
 	"tangle-primitives/std",
 	"orml-traits/std",
-	"tangle-slp/std",
+	"sp-std/std",
+	"pallet-balances/std",
+	"xcm/std",
+	"cumulus-primitives-core/std",
+	"sp-core/std",
+	"sp-runtime/std",
 	"tangle-asset-registry/std",
-	"tangle-runtime-common/std",
+	"parachains-common/std"
 ]
 
 runtime-benchmarks = [

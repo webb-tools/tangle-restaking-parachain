@@ -79,15 +79,21 @@ cumulus-primitives-timestamp = { workspace = true }
 cumulus-primitives-utility = { workspace = true }
 pallet-collator-selection  = { workspace = true }
 parachain-info = { workspace = true }
+pallet-sudo = { workspace = true }
+pallet-assets = { workspace = true }
+pallet-uniques = { workspace = true }
+
 
 # Polkadot dependencies
 pallet-xcm = { workspace = true }
+pallet-message-queue = { workspace = true }
 polkadot-parachain-primitives = { workspace = true }
 polkadot-primitives = { workspace = true }
 polkadot-runtime-common = { workspace = true }
 xcm = { workspace = true }
 xcm-builder = { workspace = true }
 xcm-executor = { workspace = true }
+parachains-common = { workspace = true }
 
 # orml
 orml-tokens = { workspace = true }
@@ -106,27 +112,18 @@ zenlink-stable-amm = { workspace = true }
 zenlink-stable-amm-runtime-api = { workspace = true }
 zenlink-swap-router = { workspace = true }
 
-# Nuts Finance
-tangle-stable-asset = { workspace = true }
-
 # tangle
 tangle-asset-registry = { workspace = true }
 tangle-currencies = { workspace = true }
 tangle-primitives = { workspace = true }
 tangle-runtime-common = { workspace = true }
 tangle-slp = { workspace = true }
-tangle-slpx = { workspace = true }
-tangle-stable-pool = { workspace = true }
-tangle-stable-pool-rpc-runtime-api = { workspace = true }
-tangle-token-issuer = { workspace = true }
 tangle-lst-minting = { workspace = true }
-tangle-lst-voting = { workspace = true, features = [ "polkadot" ] }
 tangle-xcm-interface = { workspace = true }
 tangle-parachain-staking = { workspace = true }
-pallet-prices = { workspace = true }
 
 [build-dependencies]
-substrate-wasm-builder = { workspace = true, optional = true }
+substrate-wasm-builder = { workspace = true }
 
 [features]
 default = ["std"]
@@ -135,7 +132,6 @@ std = [
 	"parity-scale-codec/std",
 	"scale-info/std",
 	"log/std",
-
 	"frame-benchmarking?/std",
 	"frame-executive/std",
 	"frame-support/std",
@@ -182,7 +178,7 @@ std = [
 	"sp-std/std",
 	"sp-transaction-pool/std",
 	"sp-version/std",
-
+	"parachains-common/std",
 	"cumulus-pallet-aura-ext/std",
 	"cumulus-pallet-dmp-queue/std",
 	"cumulus-pallet-parachain-system/std",
@@ -193,7 +189,9 @@ std = [
 	"cumulus-primitives-utility/std",
 	"pallet-collator-selection/std",
 	"parachain-info/std",
-
+	"pallet-sudo/std",
+	"pallet-assets/std",
+	"pallet-uniques/std",
 	"pallet-xcm/std",
 	"polkadot-parachain-primitives/std",
 	"polkadot-primitives/std",
@@ -221,17 +219,12 @@ std = [
 	"tangle-currencies/std",
 	"tangle-runtime-common/std",
 	"tangle-slp/std",
-	"tangle-slpx/std",
-	"tangle-stable-pool-rpc-runtime-api/std",
-	"tangle-stable-pool/std",
-	"tangle-token-issuer/std",
 	"tangle-lst-minting/std",
-	"tangle-lst-voting/std",
-	"pallet-prices/std",
-	"tangle-stable-asset/std",
 	"tangle-parachain-staking/std",
 	"tangle-xcm-interface/std",
-	"substrate-wasm-builder"
+	"pallet-asset-rate/std",
+	"pallet-message-queue/std",
+	"polkadot-runtime-common/std",
 ]
 with-tracing = ["frame-executive/with-tracing"]
 
@@ -258,15 +251,15 @@ runtime-benchmarks = [
 	"pallet-whitelist/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
 	"xcm-builder/runtime-benchmarks",
-	"tangle-token-issuer/runtime-benchmarks",
 	"tangle-lst-minting/runtime-benchmarks",
 	"tangle-slp/runtime-benchmarks",
 	"tangle-asset-registry/runtime-benchmarks",
 	"tangle-parachain-staking/runtime-benchmarks",
-	"sp-api/disable-logging",
-	"tangle-slpx/runtime-benchmarks",
-	"tangle-stable-pool/runtime-benchmarks",
-	"tangle-lst-voting/runtime-benchmarks",
+	"pallet-sudo/runtime-benchmarks",
+	"pallet-assets/runtime-benchmarks",
+	"pallet-uniques/runtime-benchmarks",
+	"cumulus-pallet-dmp-queue/runtime-benchmarks",
+	"cumulus-pallet-parachain-system/runtime-benchmarks"
 ]
 
 try-runtime = [
@@ -317,16 +310,10 @@ try-runtime = [
 	"merkle-distributor/try-runtime",
 	"zenlink-stable-amm/try-runtime",
 	"zenlink-swap-router/try-runtime",
-	"tangle-token-issuer/try-runtime",
 	"tangle-asset-registry/try-runtime",
 	"tangle-lst-minting/try-runtime",
 	"tangle-slp/try-runtime",
 	"tangle-xcm-interface/try-runtime",
-	"tangle-slpx/try-runtime",
-	"tangle-stable-asset/try-runtime",
-	"tangle-stable-pool/try-runtime",
-	"pallet-prices/try-runtime",
-	"tangle-lst-voting/try-runtime",
 ]
 
 # When enabled, the runtime API will not be build.

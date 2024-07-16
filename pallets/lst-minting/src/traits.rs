@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -16,6 +19,25 @@
 // Ensure we're `no_std` when compiling for Wasm.
 
 use frame_support::pallet_prelude::Weight;
+use parity_scale_codec::{Decode, Encode};
+use sp_core::H160;
+use sp_runtime::RuntimeDebug;
+
+#[derive(PartialEq, Eq, Clone, Encode, Decode, RuntimeDebug, scale_info::TypeInfo)]
+pub enum RedeemTo<AccountId> {
+	/// Native chain.
+	Native(AccountId),
+	/// Astar chain.
+	Astar(AccountId),
+	/// Moonbeam chain.
+	Moonbeam(H160),
+	/// Hydradx chain.
+	Hydradx(AccountId),
+	/// Interlay chain.
+	Interlay(AccountId),
+	/// Manta chain.
+	Manta(AccountId),
+}
 
 pub trait OnRedeemSuccess<AccountId, CurrencyId, Balance> {
 	fn on_redeem_success(

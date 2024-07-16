@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -13,11 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::{agents::BalancesCall, BalanceOf, Config, MultiLocation};
+use crate::{agents::BalancesCall, BalanceOf, Config};
 use parity_scale_codec::{Decode, Encode};
 use sp_runtime::RuntimeDebug;
 use sp_std::{boxed::Box, vec::Vec};
-use xcm::{opaque::v3::MultiAsset, v3::Weight as XCMWeight};
+use xcm::{
+	opaque::v3::MultiAsset,
+	v3::{MultiLocation, Weight as XCMWeight},
+};
 
 #[derive(Encode, Decode, RuntimeDebug)]
 pub enum PhalaCall<T: Config> {

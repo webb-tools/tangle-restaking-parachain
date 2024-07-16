@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -21,7 +24,7 @@ use frame_benchmarking::v2::*;
 use frame_support::{assert_ok, PalletId};
 use frame_system::RawOrigin as SystemOrigin;
 use sp_runtime::traits::{AccountIdConversion, StaticLookup, UniqueSaturatedFrom};
-use tangle_primitives::{DOT, VDOT, VKSM};
+use tangle_primitives::{DOT, VDOT};
 
 const DELEGATOR1: MultiLocation =
 	MultiLocation { parents: 1, interior: X1(AccountId32 { network: None, id: [1u8; 32] }) };
@@ -172,7 +175,7 @@ pub fn init_bond<T: Config>(origin: <T as frame_system::Config>::RuntimeOrigin) 
 		Box::new(DELEGATOR1),
 		10u32.into(),
 		None,
-		Some((100.into(), 100u32.into()))
+		Some((Weight::from_parts(4000000000, 100000), 100u32.into()))
 	));
 }
 
@@ -245,7 +248,7 @@ mod benchmarks {
 			Box::new(DELEGATOR1),
 			10u32.into(),
 			None,
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -270,7 +273,7 @@ mod benchmarks {
 			Box::new(DELEGATOR1),
 			None,
 			10u32.into(),
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -296,7 +299,7 @@ mod benchmarks {
 			Box::new(DELEGATOR1),
 			None,
 			0u32.into(),
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -320,7 +323,7 @@ mod benchmarks {
 			origin as <T as frame_system::Config>::RuntimeOrigin,
 			KSM,
 			Box::new(DELEGATOR1),
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -346,7 +349,7 @@ mod benchmarks {
 			Box::new(DELEGATOR1),
 			None,
 			Some(0u32.into()),
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -371,7 +374,7 @@ mod benchmarks {
 			KSM,
 			Box::new(DELEGATOR1),
 			vec![DELEGATOR1],
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -400,7 +403,7 @@ mod benchmarks {
 			KSM,
 			Box::new(DELEGATOR1),
 			vec![DELEGATOR1],
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -425,7 +428,7 @@ mod benchmarks {
 			KSM,
 			Box::new(DELEGATOR1),
 			Some(vec![DELEGATOR1]),
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -462,7 +465,7 @@ mod benchmarks {
 			Box::new(DELEGATOR1),
 			Box::new(DELEGATOR1),
 			Some(TimeUnit::Era(0)),
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -501,7 +504,7 @@ mod benchmarks {
 			Some(TimeUnit::SlashingSpan(0)),
 			None,
 			None,
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -525,7 +528,7 @@ mod benchmarks {
 			origin as <T as frame_system::Config>::RuntimeOrigin,
 			KSM,
 			Box::new(DELEGATOR1),
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -567,7 +570,7 @@ mod benchmarks {
 			Box::new(DELEGATOR1),
 			Box::new(to),
 			10u32.into(),
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -659,7 +662,7 @@ mod benchmarks {
 			Box::new(DELEGATOR1),
 			10u32.into(),
 			true,
-			Some((100.into(), 100u32.into())),
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into())),
 		);
 
 		Ok(())
@@ -703,26 +706,6 @@ mod benchmarks {
 
 		#[extrinsic_call]
 		_(origin as <T as frame_system::Config>::RuntimeOrigin, KSM, TimeUnit::Era(0));
-
-		Ok(())
-	}
-
-	#[benchmark]
-	fn refund_currency_due_unbond() -> Result<(), BenchmarkError> {
-		let origin = <T as Config>::ControlOrigin::try_successful_origin()
-			.map_err(|_| BenchmarkError::Weightless)?;
-		init_ongoing_time::<T>(origin.clone());
-
-		let (_, exit_account) = <T as Config>::LstMinting::get_entrance_and_exit_accounts();
-		orml_tokens::Pallet::<T>::deposit(
-			KSM,
-			&exit_account,
-			<T as orml_tokens::Config>::Balance::saturated_from(1_000_000_000_000u128),
-		)
-		.unwrap();
-
-		#[extrinsic_call]
-		_(origin as <T as frame_system::Config>::RuntimeOrigin, KSM);
 
 		Ok(())
 	}
@@ -1065,7 +1048,7 @@ mod benchmarks {
 			KSM,
 			Box::new(DELEGATOR1),
 			vec![DELEGATOR1],
-			Some((100.into(), 100u32.into()))
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into()))
 		));
 		ValidatorsByDelegatorXcmUpdateQueue::<T>::insert(
 			1u64,
@@ -1104,7 +1087,7 @@ mod benchmarks {
 			KSM,
 			Box::new(DELEGATOR1),
 			vec![DELEGATOR1],
-			Some((100.into(), 100u32.into()))
+			Some((Weight::from_parts(4000000000, 100000), 100u32.into()))
 		));
 		ValidatorsByDelegatorXcmUpdateQueue::<T>::insert(
 			1u64,
@@ -1250,7 +1233,7 @@ mod benchmarks {
 		Ok(())
 	}
 
-	//   `cargo test -p tangle-slp --all-features`
+	//   `cargo test -p bifrost-slp --all-features`
 	impl_benchmark_test_suite!(
 		Pallet,
 		crate::mocks::mock_kusama::ExtBuilder::default().build(),

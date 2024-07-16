@@ -1,5 +1,5 @@
 [package]
-authors = ["Parallel Team", "Liebi Technologies <tangle@liebi.com>"]
+authors = ["Parallel Team", "Liebi Technologies <bifrost@liebi.com>"]
 edition = "2021"
 name = "pallet-traits"
 version = "0.8.0"
@@ -15,7 +15,7 @@ log = { workspace = true }
 num-bigint = { workspace = true }
 num-traits = { workspace = true }
 impl-trait-for-tuples = { workspace = true }
-tangle-primitives = { workspace = true }
+bifrost-primitives = { workspace = true }
 scale-info = { workspace = true, features = ["derive"] }
 serde = { workspace = true, features = ['derive'], optional = true }
 sp-core = { workspace = true }
@@ -39,7 +39,7 @@ std = [
 	'sp-runtime/std',
 	'scale-info/std',
 	'sp-std/std',
-	'tangle-primitives/std',
+	'bifrost-primitives/std',
 	'num-bigint/std',
 	'num-traits/std',
 	'sp-core/std',

@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -16,7 +19,7 @@ use crate::{BalanceOf, Config, Decode, Encode};
 use scale_info::TypeInfo;
 use sp_runtime::{traits::StaticLookup, RuntimeDebug};
 use sp_std::{boxed::Box, vec::Vec};
-use xcm::{opaque::v3::WeightLimit, VersionedMultiLocation};
+use xcm::{opaque::v3::WeightLimit, VersionedLocation};
 
 #[derive(Encode, Decode, RuntimeDebug)]
 pub enum MantaCall<T: Config> {
@@ -83,7 +86,7 @@ pub enum MantaParachainStakingCall<T: Config> {
 #[derive(Encode, Decode, RuntimeDebug, Clone)]
 pub enum MantaXtokensCall<T: Config> {
 	#[codec(index = 0)]
-	Transfer(MantaCurrencyId, BalanceOf<T>, Box<VersionedMultiLocation>, WeightLimit),
+	Transfer(MantaCurrencyId, BalanceOf<T>, Box<VersionedLocation>, WeightLimit),
 }
 
 #[derive(Clone, Eq, Debug, PartialEq, Ord, PartialOrd, Encode, Decode, TypeInfo)]

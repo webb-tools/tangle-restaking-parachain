@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -17,21 +20,13 @@ use crate::{
 	Pallet, TrailingZeroInput, Validators, ValidatorsByDelegatorUpdateEntry, ASTR, DOT, GLMR, H160,
 	KSM, MANTA, MOVR, PHA,
 };
-pub use cumulus_primitives_core::ParaId;
 use frame_support::ensure;
 use parity_scale_codec::Encode;
 use sp_core::Get;
 use sp_std::prelude::*;
 use tangle_primitives::CurrencyId;
 use tangle_xcm_interface::traits::parachains;
-use xcm::{
-	opaque::v3::{
-		Junction::{AccountId32, Parachain},
-		Junctions::X1,
-		MultiLocation,
-	},
-	v3::prelude::*,
-};
+use xcm::v3::{prelude::*, MultiLocation};
 
 // Some untilities.
 impl<T: Config> Pallet<T> {
@@ -63,8 +58,8 @@ impl<T: Config> Pallet<T> {
 		let mut validators_list: Vec<MultiLocation> = vec![];
 		for validator in validators.iter() {
 			// Check if the validator is in the validator whitelist
-			ensure!(validators_set.contains(&validator), Error::<T>::ValidatorNotExist);
-			if !validators_list.contains(&validator) {
+			ensure!(validators_set.contains(validator), Error::<T>::ValidatorNotExist);
+			if !validators_list.contains(validator) {
 				validators_list.push(*validator);
 			}
 		}
@@ -323,24 +318,28 @@ impl<T: Config> Pallet<T> {
 		H160::from_slice(sub_id.as_slice())
 	}
 
-	pub fn get_para_multilocation_by_currency_id(
+	pub fn convert_currency_to_dest_location(
 		currency_id: CurrencyId,
-	) -> Result<MultiLocation, Error<T>> {
+	) -> Result<xcm::v4::Location, Error<T>> {
 		match currency_id {
-			KSM | DOT => Ok(MultiLocation::parent()),
-			MOVR => {
-				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::moonriver::ID)) })
-			},
-			GLMR => {
-				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::moonbeam::ID)) })
-			},
+			KSM | DOT => Ok(xcm::v4::Location::parent()),
+			MOVR => Ok(xcm::v4::Location::new(
+				1,
+				[xcm::v4::prelude::Parachain(parachains::moonriver::ID)],
+			)),
+			GLMR => Ok(xcm::v4::Location::new(
+				1,
+				[xcm::v4::prelude::Parachain(parachains::moonbeam::ID)],
+			)),
 			ASTR => {
-				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::astar::ID)) })
+				Ok(xcm::v4::Location::new(1, [xcm::v4::prelude::Parachain(parachains::astar::ID)]))
 			},
 			MANTA => {
-				Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::manta::ID)) })
+				Ok(xcm::v4::Location::new(1, [xcm::v4::prelude::Parachain(parachains::manta::ID)]))
 			},
-			PHA => Ok(MultiLocation { parents: 1, interior: X1(Parachain(parachains::phala::ID)) }),
+			PHA => {
+				Ok(xcm::v4::Location::new(1, [xcm::v4::prelude::Parachain(parachains::phala::ID)]))
+			},
 			_ => Err(Error::<T>::NotSupportedCurrencyId),
 		}
 	}
@@ -370,18 +369,17 @@ impl<T: Config> Pallet<T> {
 		}
 	}
 
-	pub fn get_currency_local_multilocation(currency_id: CurrencyId) -> MultiLocation {
+	pub fn convert_currency_to_remote_fee_location(currency_id: CurrencyId) -> xcm::v4::Location {
 		match currency_id {
-			KSM | DOT | PHA | MANTA | ASTR => MultiLocation::here(),
-			MOVR => MultiLocation {
-				parents: 0,
-				interior: X1(PalletInstance(parachains::moonriver::PALLET_ID)),
-			},
-			GLMR => MultiLocation {
-				parents: 0,
-				interior: X1(PalletInstance(parachains::moonbeam::PALLET_ID)),
-			},
-			_ => MultiLocation::here(),
+			MOVR => xcm::v4::Location::new(
+				0,
+				[xcm::v4::prelude::PalletInstance(parachains::moonriver::PALLET_ID)],
+			),
+			GLMR => xcm::v4::Location::new(
+				0,
+				[xcm::v4::prelude::PalletInstance(parachains::moonbeam::PALLET_ID)],
+			),
+			_ => xcm::v4::Location::here(),
 		}
 	}
 }

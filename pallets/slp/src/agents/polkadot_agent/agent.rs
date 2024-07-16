@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -21,25 +24,25 @@ use crate::{
 		SubstrateLedgerUpdateOperation, SubstrateValidatorsByDelegatorUpdateEntry, UnlockChunk,
 		ValidatorsByDelegatorUpdateEntry,
 	},
-	traits::{QueryResponseManager, StakingAgent},
 	AccountIdOf, BalanceOf, BoundedVec, Config, DelegatorLedgerXcmUpdateQueue, DelegatorLedgers,
 	DelegatorsMultilocation2Index, LedgerUpdateEntry, MinimumsAndMaximums, Pallet, TimeUnit,
 	ValidatorsByDelegator, ValidatorsByDelegatorXcmUpdateQueue,
 };
 use core::marker::PhantomData;
-pub use cumulus_primitives_core::ParaId;
 use frame_support::{ensure, traits::Get};
 use frame_system::pallet_prelude::BlockNumberFor;
+use parity_scale_codec::Encode;
 use sp_runtime::{
 	traits::{CheckedAdd, CheckedSub, Convert, StaticLookup, UniqueSaturatedInto, Zero},
 	DispatchResult,
 };
 use sp_std::prelude::*;
 use tangle_primitives::{
-	currency::KSM, CurrencyId, LstMintingOperator, XcmDestWeightAndFeeHandler, XcmOperationType,
-	DOT,
+	currency::KSM,
+	staking::{QueryResponseManager, StakingAgent},
+	CurrencyId, LstMintingOperator, XcmDestWeightAndFeeHandler, XcmOperationType, DOT,
 };
-use xcm::{opaque::v3::MultiLocation, v3::prelude::*, VersionedMultiAssets};
+use xcm::{opaque::v3::MultiLocation, v3::prelude::*, VersionedAssets, VersionedLocation};
 
 /// StakingAgent implementation for Kusama/Polkadot
 pub struct PolkadotAgent<T>(PhantomData<T>);
@@ -152,7 +155,8 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
 			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
@@ -221,7 +225,8 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
 			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
@@ -298,7 +303,8 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
 			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
@@ -351,7 +357,8 @@ impl<T: Config>
 			)?;
 
 			// Send out the xcm message.
-			send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+			let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+			xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
 				.map_err(|_e| Error::<T>::XcmFailure)?;
 
 			Ok(query_id)
@@ -426,7 +433,8 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
 			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
@@ -441,10 +449,10 @@ impl<T: Config>
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
 		// Check if it is bonded already.
-		ensure!(
-			DelegatorLedgers::<T>::contains_key(currency_id, who),
-			Error::<T>::DelegatorNotBonded
-		);
+		// ensure!(
+		// 	DelegatorLedgers::<T>::contains_key(currency_id, who),
+		// 	Error::<T>::DelegatorNotBonded
+		// );
 
 		// Check if targets vec is empty.
 		let vec_len = targets.len() as u32;
@@ -497,7 +505,8 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
 			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
@@ -512,10 +521,10 @@ impl<T: Config>
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
 	) -> Result<QueryId, Error<T>> {
 		// Check if it is bonded already.
-		ensure!(
-			DelegatorLedgers::<T>::contains_key(currency_id, who),
-			Error::<T>::DelegatorNotBonded
-		);
+		// ensure!(
+		// 	DelegatorLedgers::<T>::contains_key(currency_id, who),
+		// 	Error::<T>::DelegatorNotBonded
+		// );
 
 		// Check if targets vec is empty.
 		let vec_len = targets.len() as u32;
@@ -534,7 +543,7 @@ impl<T: Config>
 		}
 
 		// Ensure new set is not empty.
-		ensure!(new_set.len() > 0, Error::<T>::VectorEmpty);
+		ensure!(!new_set.is_empty(), Error::<T>::VectorEmpty);
 
 		// Convert new targets into account vec.
 		let mut accounts = vec![];
@@ -575,7 +584,8 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
 			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
@@ -705,7 +715,8 @@ impl<T: Config>
 		)?;
 
 		// Send out the xcm message.
-		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
 			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
@@ -769,17 +780,18 @@ impl<T: Config>
 		}
 
 		// Send out the xcm message.
-		send_xcm::<T::XcmRouter>(Parent.into(), xcm_message)
+		let dest_location = Pallet::<T>::convert_currency_to_dest_location(currency_id)?;
+		xcm::v4::send_xcm::<T::XcmRouter>(dest_location, xcm_message)
 			.map_err(|_e| Error::<T>::XcmFailure)?;
 
 		Ok(query_id)
 	}
 
-	/// Make token transferred back to tangle chain account.
+	/// Make token transferred back to Tangle chain account.
 	fn transfer_back(
 		&self,
 		from: &MultiLocation,
-		to: &MultiLocation,
+		_to: &MultiLocation,
 		amount: BalanceOf<T>,
 		currency_id: CurrencyId,
 		weight_and_fee: Option<(Weight, BalanceOf<T>)>,
@@ -787,16 +799,29 @@ impl<T: Config>
 		// Ensure amount is greater than zero.
 		ensure!(!amount.is_zero(), Error::<T>::AmountZero);
 
-		let (dest, beneficiary) =
-			Pallet::<T>::get_transfer_back_dest_and_beneficiary(from, to, currency_id)?;
+		// Check if from is one of our delegators. If not, return error.
+		DelegatorsMultilocation2Index::<T>::get(currency_id, from)
+			.ok_or(Error::<T>::DelegatorNotExist)?;
+
+		// Make sure the receiving account is the Exit_account from Lst-minting module.
+		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
+
+		// Prepare parameter dest and beneficiary.
+		let dest = Box::new(VersionedLocation::V3(Location::from([Parachain(
+			T::ParachainId::get().into(),
+		)])));
+
+		let beneficiary = Box::new(VersionedLocation::V3(Location::from([AccountId32 {
+			network: None,
+			id: entrance_account.encode().try_into().map_err(|_| Error::<T>::FailToConvert)?,
+		}])));
 
 		// Prepare parameter assets.
 		let asset = MultiAsset {
 			fun: Fungible(amount.unique_saturated_into()),
 			id: Concrete(MultiLocation { parents: 0, interior: Here }),
 		};
-		let assets: Box<VersionedMultiAssets> =
-			Box::new(VersionedMultiAssets::from(MultiAssets::from(asset)));
+		let assets: Box<VersionedAssets> = Box::new(VersionedAssets::V3(MultiAssets::from(asset)));
 
 		// Prepare parameter fee_asset_item.
 		let fee_asset_item: u32 = 0;
@@ -845,7 +870,7 @@ impl<T: Config>
 		Ok(())
 	}
 
-	/// Make token from tangle chain account to the staking chain account.
+	/// Make token from Tangle chain account to the staking chain account.
 	/// Receiving account must be one of the currency_id delegators.
 	fn transfer_to(
 		&self,
@@ -860,7 +885,7 @@ impl<T: Config>
 			Error::<T>::DelegatorNotExist
 		);
 
-		// Make sure from account is the entrance account of lst-minting module.
+		// Make sure from account is the entrance account of Lst-minting module.
 		let from_account_id = Pallet::<T>::multilocation_to_account(from)?;
 		let (entrance_account, _) = T::LstMinting::get_entrance_and_exit_accounts();
 		ensure!(from_account_id == entrance_account, Error::<T>::InvalidAccount);

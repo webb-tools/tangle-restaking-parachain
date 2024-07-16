@@ -116,7 +116,7 @@ impl<T: Config> OnRuntimeUpgrade for InitGenesisMigration<T> {
 		// Snapshot total stake
 		<Staked<T>>::insert(1u32, <Total<T>>::get());
 		let db_weight = T::DbWeight::get();
-		db_weight.reads(5) + db_weight.writes(2) + Weight::from_parts(250_000_000_000 as u64, 0)
+		db_weight.reads(5) + db_weight.writes(2) + Weight::from_parts(250_000_000_000_u64, 0)
 	}
 
 	#[cfg(feature = "try-runtime")]

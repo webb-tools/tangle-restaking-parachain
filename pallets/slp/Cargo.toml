@@ -32,8 +32,7 @@ tangle-xcm-interface = { workspace = true }
 tangle-lst-minting = { workspace = true }
 tangle-asset-registry = { workspace = true }
 tangle-parachain-staking = { workspace = true }
-tangle-stable-pool = { workspace = true }
-tangle-stable-asset = { workspace = true }
+
 
 [dev-dependencies]
 hex = "0.4.3"
@@ -74,7 +73,6 @@ std = [
     "tangle-asset-registry/std",
     "tangle-parachain-staking/std",
     "orml-xtokens/std",
-    "tangle-stable-pool/std",
 ]
 
 runtime-benchmarks = [

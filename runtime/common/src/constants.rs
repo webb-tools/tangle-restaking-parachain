@@ -1,4 +1,7 @@
-// This file is part of Tangle.
+// This file is part of tangle.
+
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,6 +45,6 @@ pub mod time {
 	// The `LeasePeriod` defination from `polkadot`.
 	pub const POLKA_LEASE_PERIOD: BlockNumber = 12 * WEEKS;
 	pub const KUSAMA_LEASE_PERIOD: BlockNumber = 6 * WEEKS;
-	pub const ROCOCO_LEASE_PERIOD: BlockNumber = 1 * DAYS;
+	pub const ROCOCO_LEASE_PERIOD: BlockNumber = DAYS;
 	pub const WESTEND_LEASE_PERIOD: BlockNumber = 28 * DAYS;
 }

@@ -1,4 +1,7 @@
-// This file is part of Tangle.
+// This file is part of tangle.
+
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,11 +28,12 @@ mod tests;
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
 
-pub mod migration;
 pub mod traits;
 pub mod weights;
 pub use weights::WeightInfo;
 
+use frame_support::traits::fungibles;
+use frame_support::traits::nonfungibles;
 use frame_support::{
 	pallet_prelude::*,
 	sp_runtime::{
@@ -38,20 +42,27 @@ use frame_support::{
 		},
 		ArithmeticError, DispatchError, Permill, SaturatedConversion,
 	},
+	traits::LockIdentifier,
 	transactional, BoundedVec, PalletId,
 };
 use frame_system::pallet_prelude::*;
-use log;
-use orml_traits::MultiCurrency;
+use sp_arithmetic::traits::AtLeast32BitUnsigned;
+
+use orml_traits::{MultiCurrency, MultiLockableCurrency};
 pub use pallet::*;
 use sp_core::U256;
 use sp_std::{vec, vec::Vec};
+use tangle_asset_registry::AssetMetadata;
+use tangle_primitives::staking::StakingAgentDelegator;
+
 use tangle_primitives::{
-	CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdRegister, LstMintRedeemProvider,
-	LstMintingInterface, LstMintingOperator, LstSupplyProvider, RedeemType, SlpOperator,
-	SlpxOperator, TimeUnit,
+	CurrencyId, CurrencyIdConversion, CurrencyIdExt, CurrencyIdMapping, CurrencyIdRegister,
+	LstMintRedeemProvider, LstMintingInterface, LstMintingOperator, LstSupplyProvider, RedeemType,
+	SlpOperator, SlpxOperator, TimeUnit,
 };
+
 pub use traits::*;
+use xcm::v3::MultiLocation;
 
 pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
 
@@ -63,13 +74,17 @@ pub type BalanceOf<T> = <<T as Config>::MultiCurrency as MultiCurrency<AccountId
 
 pub type UnlockId = u32;
 
+// incentive lock id for lst minted by user
+const INCENTIVE_LOCK_ID: LockIdentifier = *b"vmincntv";
+use frame_support::traits::nonfungibles::Mutate;
+
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
 	use frame_support::pallet_prelude::DispatchResultWithPostInfo;
 	use orml_traits::XcmTransfer;
-	use tangle_primitives::{currency::TNT, FIL};
-	use xcm::{prelude::*, v3::MultiLocation};
+	use tangle_primitives::{currency::BNC, FIL};
+	use xcm::{prelude::*, v4::Location};
 
 	#[pallet::pallet]
 	pub struct Pallet<T>(_);
@@ -78,8 +93,8 @@ pub mod pallet {
 	pub trait Config: frame_system::Config {
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 
-		type MultiCurrency: MultiCurrency<AccountIdOf<Self>, CurrencyId = CurrencyId>;
-		// + MultiReservableCurrency<AccountIdOf<Self>, CurrencyId = CurrencyId>;
+		type MultiCurrency: MultiCurrency<AccountIdOf<Self>, CurrencyId = CurrencyId>
+			+ MultiLockableCurrency<AccountIdOf<Self>>;
 
 		/// The only origin that can edit token issuer list
 		type ControlOrigin: EnsureOrigin<Self::RuntimeOrigin>;
@@ -102,6 +117,10 @@ pub mod pallet {
 		#[pallet::constant]
 		type MaximumUnlockIdOfTimeUnit: Get<u32>;
 
+		// maximum unlocked lst records minted in an incentive mode
+		#[pallet::constant]
+		type MaxLockRecords: Get<u32>;
+
 		#[pallet::constant]
 		type EntranceAccount: Get<PalletId>;
 
@@ -110,6 +129,12 @@ pub mod pallet {
 
 		#[pallet::constant]
 		type FeeAccount: Get<Self::AccountId>;
+
+		#[pallet::constant]
+		type RedeemFeeAccount: Get<Self::AccountId>;
+
+		#[pallet::constant]
+		type IncentivePoolAccount: Get<PalletId>;
 
 		#[pallet::constant]
 		type RelayChainToken: Get<CurrencyId>;
@@ -133,11 +158,37 @@ pub mod pallet {
 
 		type TangleSlpx: SlpxOperator<BalanceOf<Self>>;
 
-		type CurrencyIdConversion: CurrencyIdConversion<CurrencyId>;
+		type CurrencyIdConversion: CurrencyIdConversion<CurrencyId, MultiLocation>;
 
 		type CurrencyIdRegister: CurrencyIdRegister<CurrencyId>;
 
 		type ChannelCommission: LstMintRedeemProvider<CurrencyId, BalanceOf<Self>>;
+
+		type AssetIdMaps: CurrencyIdMapping<
+			CurrencyId,
+			MultiLocation,
+			AssetMetadata<BalanceOf<Self>>,
+		>;
+
+		type StakingAgent: StakingAgentDelegator<
+			Self::AccountId,
+			MultiLocation,
+			CurrencyId,
+			BalanceOf<Self>,
+			DispatchError,
+		>;
+
+		type AssetHandler: fungibles::Inspect<Self::AccountId> + fungibles::Create<Self::AccountId>;
+
+		type NftHandler: nonfungibles::Inspect<Self::AccountId, ItemId = Self::ItemId>
+			+ nonfungibles::Create<Self::AccountId>
+			+ nonfungibles::Mutate<Self::AccountId>;
+
+		type ItemId: Member + Parameter + MaxEncodedLen + Copy + AtLeast32BitUnsigned + Default;
+
+		type RedeemNftCollectionId: Get<
+			<Self::NftHandler as nonfungibles::Inspect<Self::AccountId>>::CollectionId,
+		>;
 
 		/// Set default weight.
 		type WeightInfo: WeightInfo;
@@ -165,7 +216,7 @@ pub mod pallet {
 		RedeemSuccess {
 			unlock_id: UnlockId,
 			token_id: CurrencyIdOf<T>,
-			to: AccountIdOf<T>,
+			to: RedeemTo<AccountIdOf<T>>,
 			token_amount: BalanceOf<T>,
 		},
 		Rebonded {
@@ -225,6 +276,21 @@ pub mod pallet {
 			token_id: CurrencyIdOf<T>,
 			time_unit: TimeUnit,
 		},
+		IncentivizedMinting {
+			address: AccountIdOf<T>,
+			token_id: CurrencyIdOf<T>,
+			token_amount: BalanceOf<T>,
+			locked_lst_amount: BalanceOf<T>,
+			incentive_lst_amount: BalanceOf<T>,
+		},
+		lstIncentiveCoefSet {
+			lst_id: CurrencyIdOf<T>,
+			coefficient: Option<u128>,
+		},
+		lstIncentiveLockBlocksSet {
+			lst_id: CurrencyIdOf<T>,
+			blocks: Option<BlockNumberFor<T>>,
+		},
 	}
 
 	#[pallet::error]
@@ -248,6 +314,15 @@ pub mod pallet {
 		TooManyRedeems,
 		CanNotRedeem,
 		CanNotRebond,
+		NotEnoughBalance,
+		VeBNCCheckingError,
+		IncentiveCoefNotFound,
+		TooManyLocks,
+		ConvertError,
+		NoUnlockRecord,
+		FailToRemoveLock,
+		BalanceZero,
+		IncentiveLockBlocksNotSet,
 	}
 
 	#[pallet::storage]
@@ -336,6 +411,41 @@ pub mod pallet {
 	#[pallet::getter(fn hook_iteration_limit)]
 	pub type HookIterationLimit<T: Config> = StorageValue<_, u32, ValueQuery>;
 
+	//【lst -> Blocks】, the locked blocks for each lst when minted in an incentive mode
+	#[pallet::storage]
+	#[pallet::getter(fn get_mint_with_lock_blocks)]
+	pub type MintWithLockBlocks<T: Config> =
+		StorageMap<_, Blake2_128Concat, CurrencyId, BlockNumberFor<T>>;
+
+	//【lst -> incentive coefficient】,the incentive coefficient for each lst when minted in
+	// an incentive mode
+	#[pallet::storage]
+	#[pallet::getter(fn get_lst_incentive_coef)]
+	pub type lstIncentiveCoef<T: Config> = StorageMap<_, Blake2_128Concat, CurrencyId, u128>;
+
+	//【user + lst -> (total_locked, vec[(locked_amount, due_block_num)])】, the locked lst
+	// records for each user
+	#[pallet::storage]
+	#[pallet::getter(fn get_lst_lock_ledger)]
+	pub type lstLockLedger<T: Config> = StorageDoubleMap<
+		_,
+		Blake2_128Concat,
+		AccountIdOf<T>,
+		Blake2_128Concat,
+		CurrencyId,
+		(BalanceOf<T>, BoundedVec<(BalanceOf<T>, BlockNumberFor<T>), T::MaxLockRecords>),
+		OptionQuery,
+	>;
+
+	#[pallet::storage]
+	#[pallet::getter(fn redeem_nft_item_id)]
+	pub type NextRedeemNftItemId<T: Config> = StorageValue<_, T::ItemId, ValueQuery>;
+
+	#[pallet::storage]
+	#[pallet::getter(fn redeem_nft_record)]
+	pub type NftRedeemRecord<T: Config> =
+		StorageMap<_, Blake2_128Concat, T::ItemId, (CurrencyIdOf<T>, UnlockId)>;
+
 	#[pallet::hooks]
 	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 		fn on_initialize(_n: BlockNumberFor<T>) -> Weight {
@@ -365,10 +475,12 @@ pub mod pallet {
 			token_amount: BalanceOf<T>,
 			remark: BoundedVec<u8, ConstU32<32>>,
 			channel_id: Option<u32>,
+			validators: Vec<MultiLocation>,
 		) -> DispatchResult {
 			// Check origin
 			let exchanger = ensure_signed(origin)?;
-			Self::mint_inner(exchanger, token_id, token_amount, remark, channel_id).map(|_| ())
+			Self::mint_inner(exchanger, token_id, token_amount, remark, channel_id, validators)
+				.map(|_| ())
 		}
 
 		#[pallet::call_index(1)]
@@ -388,9 +500,10 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			token_id: CurrencyIdOf<T>,
 			token_amount: BalanceOf<T>,
+			validators: Vec<MultiLocation>,
 		) -> DispatchResult {
 			let exchanger = ensure_signed(origin)?;
-			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id)
+			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id, Some(validators))
 				.map_err(|_| Error::<T>::NotSupportTokenType)?;
 			let _token_amount_to_rebond =
 				Self::token_to_rebond(token_id).ok_or(Error::<T>::InvalidRebondToken)?;
@@ -411,11 +524,11 @@ pub mod pallet {
 						{
 							if tmp_amount >= unlock_amount {
 								if let Some((_, _, time_unit, _)) =
-									TokenUnlockLedger::<T>::take(&token_id, &index)
+									TokenUnlockLedger::<T>::take(token_id, index)
 								{
 									TimeUnitUnlockLedger::<T>::mutate_exists(
-										&time_unit,
-										&token_id,
+										time_unit,
+										token_id,
 										|value| -> Result<(), Error<T>> {
 											if let Some((
 												total_locked_origin,
@@ -441,13 +554,13 @@ pub mod pallet {
 									)?;
 									tmp_amount = tmp_amount.saturating_sub(unlock_amount);
 								} else {
-									return Err(Error::<T>::TokenUnlockLedgerNotFound.into());
+									return Err(Error::<T>::TokenUnlockLedgerNotFound);
 								}
 								Ok((index, false))
 							} else {
 								TokenUnlockLedger::<T>::mutate_exists(
-									&token_id,
-									&index,
+									token_id,
+									index,
 									|value| -> Result<(), Error<T>> {
 										if let Some((_, total_locked_origin, _, _)) = value {
 											if total_locked_origin == &tmp_amount {
@@ -464,8 +577,8 @@ pub mod pallet {
 									},
 								)?;
 								TimeUnitUnlockLedger::<T>::mutate_exists(
-									&time_unit,
-									&token_id,
+									time_unit,
+									token_id,
 									|value| -> Result<(), Error<T>> {
 										if let Some((total_locked_origin, _, _)) = value {
 											if total_locked_origin == &tmp_amount {
@@ -497,14 +610,14 @@ pub mod pallet {
 					BoundedVec::<UnlockId, T::MaximumUnlockIdOfUser>::try_from(ledger_list_tmp)
 						.map_err(|_| Error::<T>::ExceedMaximumUnlockId)?;
 
-				UnlockingTotal::<T>::mutate(&token_id, |pool| -> Result<(), Error<T>> {
+				UnlockingTotal::<T>::mutate(token_id, |pool| -> Result<(), Error<T>> {
 					*pool =
 						pool.checked_sub(&token_amount).ok_or(Error::<T>::CalculationOverflow)?;
 					Ok(())
 				})?;
 				UserUnlockLedger::<T>::mutate_exists(
 					&exchanger,
-					&token_id,
+					token_id,
 					|value| -> Result<(), Error<T>> {
 						if let Some((total_locked_origin, ledger_list_origin)) = value {
 							if total_locked_origin == &token_amount {
@@ -526,9 +639,9 @@ pub mod pallet {
 			}
 
 			let (_, lst_amount, fee) =
-				Self::mint_without_tranfer(&exchanger, lst_id, token_id, token_amount)?;
+				Self::mint_without_transfer(&exchanger, lst_id, token_id, token_amount, vec![])?;
 
-			TokenToRebond::<T>::mutate(&token_id, |value| -> Result<(), Error<T>> {
+			TokenToRebond::<T>::mutate(token_id, |value| -> Result<(), Error<T>> {
 				if let Some(value_info) = value {
 					*value_info = value_info
 						.checked_add(&token_amount)
@@ -545,100 +658,6 @@ pub mod pallet {
 				token_amount,
 				lst_amount,
 				fee,
-			});
-			Ok(())
-		}
-
-		#[pallet::call_index(3)]
-		#[pallet::weight(T::WeightInfo::rebond_by_unlock_id())]
-		pub fn rebond_by_unlock_id(
-			origin: OriginFor<T>,
-			token_id: CurrencyIdOf<T>,
-			unlock_id: UnlockId,
-		) -> DispatchResult {
-			let exchanger = ensure_signed(origin)?;
-
-			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id)
-				.map_err(|_| Error::<T>::NotSupportTokenType)?;
-			let _token_amount_to_rebond =
-				Self::token_to_rebond(token_id).ok_or(Error::<T>::InvalidRebondToken)?;
-
-			let unlock_amount = match Self::token_unlock_ledger(token_id, unlock_id) {
-				Some((who, unlock_amount, time_unit, _)) => {
-					ensure!(who == exchanger, Error::<T>::CanNotRebond);
-					TimeUnitUnlockLedger::<T>::mutate_exists(
-						&time_unit,
-						&token_id,
-						|value| -> Result<(), Error<T>> {
-							if let Some((total_locked_origin, ledger_list_origin, _)) = value {
-								if total_locked_origin == &unlock_amount {
-									*value = None;
-									return Ok(());
-								}
-								*total_locked_origin = total_locked_origin
-									.checked_sub(&unlock_amount)
-									.ok_or(Error::<T>::CalculationOverflow)?;
-								ledger_list_origin.retain(|&x| x != unlock_id);
-							} else {
-								return Err(Error::<T>::TimeUnitUnlockLedgerNotFound);
-							}
-							Ok(())
-						},
-					)?;
-
-					UserUnlockLedger::<T>::mutate_exists(
-						&who,
-						&token_id,
-						|value| -> Result<(), Error<T>> {
-							if let Some((total_locked_origin, ledger_list_origin)) = value {
-								if total_locked_origin == &unlock_amount {
-									*value = None;
-									return Ok(());
-								}
-								*total_locked_origin = total_locked_origin
-									.checked_sub(&unlock_amount)
-									.ok_or(Error::<T>::CalculationOverflow)?;
-								ledger_list_origin.retain(|&x| x != unlock_id);
-							} else {
-								return Err(Error::<T>::UserUnlockLedgerNotFound);
-							}
-							Ok(())
-						},
-					)?;
-					UnlockingTotal::<T>::mutate(&token_id, |pool| -> Result<(), Error<T>> {
-						*pool = pool
-							.checked_sub(&unlock_amount)
-							.ok_or(Error::<T>::CalculationOverflow)?;
-						Ok(())
-					})?;
-
-					TokenUnlockLedger::<T>::remove(&token_id, &unlock_id);
-					unlock_amount
-				},
-				_ => return Err(Error::<T>::TokenUnlockLedgerNotFound.into()),
-			};
-
-			let (token_amount, lst_amount, fee) =
-				Self::mint_without_tranfer(&exchanger, lst_id, token_id, unlock_amount)?;
-
-			TokenToRebond::<T>::mutate(&token_id, |value| -> Result<(), Error<T>> {
-				if let Some(value_info) = value {
-					*value_info = value_info
-						.checked_add(&token_amount)
-						.ok_or(Error::<T>::CalculationOverflow)?;
-				} else {
-					return Err(Error::<T>::InvalidRebondToken);
-				}
-				Ok(())
-			})?;
-
-			Self::deposit_event(Event::RebondedByUnlockId {
-				address: exchanger,
-				token_id,
-				token_amount: unlock_amount,
-				lst_amount,
-				fee,
-				unlock_id,
 			});
 			Ok(())
 		}
@@ -790,7 +809,7 @@ pub mod pallet {
 		) -> DispatchResult {
 			T::ControlOrigin::ensure_origin(origin)?;
 
-			UnlockingTotal::<T>::mutate(&token_id, |unlocking_total| *unlocking_total = amount);
+			UnlockingTotal::<T>::mutate(token_id, |unlocking_total| *unlocking_total = amount);
 
 			Self::deposit_event(Event::UnlockingTotalSet { token_id, amount });
 			Ok(())
@@ -805,7 +824,7 @@ pub mod pallet {
 		) -> DispatchResult {
 			T::ControlOrigin::ensure_origin(origin)?;
 
-			MinTimeUnit::<T>::mutate(&token_id, |old_time_unit| *old_time_unit = time_unit.clone());
+			MinTimeUnit::<T>::mutate(token_id, |old_time_unit| *old_time_unit = time_unit.clone());
 
 			Self::deposit_event(Event::MinTimeUnitSet { token_id, time_unit });
 			Ok(())
@@ -820,11 +839,39 @@ pub mod pallet {
 		) -> DispatchResult {
 			T::ControlOrigin::ensure_origin(origin)?;
 
-			OngoingTimeUnit::<T>::mutate(&token_id, |old_time_unit| {
+			OngoingTimeUnit::<T>::mutate(token_id, |old_time_unit| {
 				*old_time_unit = Some(time_unit.clone())
 			});
 
 			Self::deposit_event(Event::CurrencyTimeUnitRecreated { token_id, time_unit });
+			Ok(())
+		}
+
+		#[pallet::call_index(16)]
+		#[pallet::weight(T::WeightInfo::set_incentive_coef())]
+		pub fn set_incentive_coef(
+			origin: OriginFor<T>,
+			lst_id: CurrencyIdOf<T>,
+			new_coef_op: Option<u128>,
+		) -> DispatchResult {
+			T::ControlOrigin::ensure_origin(origin)?;
+
+			if let Some(new_coef) = new_coef_op {
+				lstIncentiveCoef::<T>::insert(lst_id, new_coef);
+			} else {
+				lstIncentiveCoef::<T>::remove(lst_id);
+			}
+
+			Self::deposit_event(Event::lstIncentiveCoefSet { lst_id, coefficient: new_coef_op });
+
+			Ok(())
+		}
+
+		#[pallet::call_index(17)]
+		#[pallet::weight(T::WeightInfo::set_incentive_coef())]
+		pub fn withdraw_redeemed(origin: OriginFor<T>, nft_id: T::ItemId) -> DispatchResult {
+			let exchanger = ensure_signed(origin)?;
+			Self::withdraw_redeem_inner(exchanger, nft_id);
 			Ok(())
 		}
 	}
@@ -872,11 +919,12 @@ pub mod pallet {
 		}
 
 		#[transactional]
-		pub fn mint_without_tranfer(
+		pub fn mint_without_transfer(
 			exchanger: &AccountIdOf<T>,
 			lst_id: CurrencyId,
 			token_id: CurrencyId,
 			token_amount: BalanceOf<T>,
+			_validators: Vec<MultiLocation>,
 		) -> Result<(BalanceOf<T>, BalanceOf<T>, BalanceOf<T>), DispatchError> {
 			let token_pool_amount = Self::token_pool(token_id);
 			let lst_total_issuance = T::MultiCurrency::total_issuance(lst_id);
@@ -889,7 +937,7 @@ pub mod pallet {
 				lst_amount = U256::from(token_amount_excluding_fee.saturated_into::<u128>())
 					.saturating_mul(lst_total_issuance.saturated_into::<u128>().into())
 					.checked_div(token_pool_amount.saturated_into::<u128>().into())
-					.map(|x| u128::try_from(x))
+					.map(u128::try_from)
 					.ok_or(Error::<T>::CalculationOverflow)?
 					.map_err(|_| Error::<T>::CalculationOverflow)?
 					.unique_saturated_into();
@@ -899,7 +947,7 @@ pub mod pallet {
 			T::MultiCurrency::transfer(token_id, exchanger, &T::FeeAccount::get(), mint_fee)?;
 			// Issue the corresponding lst to the user's account.
 			T::MultiCurrency::deposit(lst_id, exchanger, lst_amount)?;
-			TokenPool::<T>::mutate(&token_id, |pool| -> Result<(), Error<T>> {
+			TokenPool::<T>::mutate(token_id, |pool| -> Result<(), Error<T>> {
 				*pool = pool
 					.checked_add(&token_amount_excluding_fee)
 					.ok_or(Error::<T>::CalculationOverflow)?;
@@ -920,6 +968,7 @@ pub mod pallet {
 		) -> DispatchResult {
 			let ed = T::MultiCurrency::minimum_balance(token_id);
 			let mut account_to_send = account.clone();
+			let mut redeem_to = RedeemTo::Native(account_to_send.clone());
 
 			if unlock_amount < ed {
 				let receiver_balance = T::MultiCurrency::total_balance(token_id, &account);
@@ -929,6 +978,7 @@ pub mod pallet {
 					.ok_or(ArithmeticError::Overflow)?;
 				if receiver_balance_after < ed {
 					account_to_send = T::FeeAccount::get();
+					redeem_to = RedeemTo::Native(T::FeeAccount::get());
 				}
 			}
 			if entrance_account_balance >= unlock_amount {
@@ -938,11 +988,11 @@ pub mod pallet {
 					&account_to_send,
 					unlock_amount,
 				)?;
-				TokenUnlockLedger::<T>::remove(&token_id, &index);
+				TokenUnlockLedger::<T>::remove(token_id, index);
 
 				TimeUnitUnlockLedger::<T>::mutate_exists(
 					&time_unit,
-					&token_id,
+					token_id,
 					|value| -> Result<(), Error<T>> {
 						if let Some((total_locked_origin, ledger_list_origin, _)) = value {
 							if total_locked_origin == &unlock_amount {
@@ -962,7 +1012,7 @@ pub mod pallet {
 
 				UserUnlockLedger::<T>::mutate_exists(
 					&account,
-					&token_id,
+					token_id,
 					|value| -> Result<(), Error<T>> {
 						if let Some((total_locked_origin, ledger_list_origin)) = value {
 							if total_locked_origin == &unlock_amount {
@@ -982,16 +1032,16 @@ pub mod pallet {
 				match redeem_type {
 					RedeemType::Native => {},
 					RedeemType::Astar(receiver) => {
-						let dest = MultiLocation {
-							parents: 1,
-							interior: X2(
+						let dest = Location::new(
+							1,
+							[
 								Parachain(T::AstarParachainId::get()),
 								AccountId32 {
 									network: None,
 									id: receiver.encode().try_into().unwrap(),
 								},
-							),
-						};
+							],
+						);
 						T::XcmTransfer::transfer(
 							account.clone(),
 							token_id,
@@ -999,18 +1049,19 @@ pub mod pallet {
 							dest,
 							Unlimited,
 						)?;
+						redeem_to = RedeemTo::Astar(receiver);
 					},
 					RedeemType::Hydradx(receiver) => {
-						let dest = MultiLocation {
-							parents: 1,
-							interior: X2(
+						let dest = Location::new(
+							1,
+							[
 								Parachain(T::HydradxParachainId::get()),
 								AccountId32 {
 									network: None,
 									id: receiver.encode().try_into().unwrap(),
 								},
-							),
-						};
+							],
+						);
 						T::XcmTransfer::transfer(
 							account.clone(),
 							token_id,
@@ -1018,18 +1069,19 @@ pub mod pallet {
 							dest,
 							Unlimited,
 						)?;
+						redeem_to = RedeemTo::Hydradx(receiver);
 					},
 					RedeemType::Interlay(receiver) => {
-						let dest = MultiLocation {
-							parents: 1,
-							interior: X2(
+						let dest = Location::new(
+							1,
+							[
 								Parachain(T::InterlayParachainId::get()),
 								AccountId32 {
 									network: None,
 									id: receiver.encode().try_into().unwrap(),
 								},
-							),
-						};
+							],
+						);
 						T::XcmTransfer::transfer(
 							account.clone(),
 							token_id,
@@ -1037,18 +1089,19 @@ pub mod pallet {
 							dest,
 							Unlimited,
 						)?;
+						redeem_to = RedeemTo::Interlay(receiver);
 					},
 					RedeemType::Manta(receiver) => {
-						let dest = MultiLocation {
-							parents: 1,
-							interior: X2(
+						let dest = Location::new(
+							1,
+							[
 								Parachain(T::MantaParachainId::get()),
 								AccountId32 {
 									network: None,
 									id: receiver.encode().try_into().unwrap(),
 								},
-							),
-						};
+							],
+						);
 						T::XcmTransfer::transfer(
 							account.clone(),
 							token_id,
@@ -1056,19 +1109,20 @@ pub mod pallet {
 							dest,
 							Unlimited,
 						)?;
+						redeem_to = RedeemTo::Manta(receiver);
 					},
 					RedeemType::Moonbeam(receiver) => {
-						let dest = MultiLocation {
-							parents: 1,
-							interior: X2(
+						let dest = Location::new(
+							1,
+							[
 								Parachain(T::MoonbeamParachainId::get()),
 								AccountKey20 { network: None, key: receiver.to_fixed_bytes() },
-							),
-						};
+							],
+						);
 						if token_id == FIL {
 							let assets = vec![
 								(token_id, unlock_amount),
-								(TNT, T::TangleSlpx::get_moonbeam_transfer_to_fee()),
+								(BNC, T::TangleSlpx::get_moonbeam_transfer_to_fee()),
 							];
 
 							T::XcmTransfer::transfer_multicurrencies(
@@ -1087,6 +1141,7 @@ pub mod pallet {
 								Unlimited,
 							)?;
 						}
+						redeem_to = RedeemTo::Moonbeam(receiver);
 					},
 				};
 			} else {
@@ -1108,8 +1163,8 @@ pub mod pallet {
 					unlock_amount,
 				)?;
 				TokenUnlockLedger::<T>::mutate_exists(
-					&token_id,
-					&index,
+					token_id,
+					index,
 					|value| -> Result<(), Error<T>> {
 						if let Some((_, total_locked_origin, _, _)) = value {
 							if total_locked_origin == &unlock_amount {
@@ -1128,7 +1183,7 @@ pub mod pallet {
 
 				TimeUnitUnlockLedger::<T>::mutate_exists(
 					&time_unit,
-					&token_id,
+					token_id,
 					|value| -> Result<(), Error<T>> {
 						if let Some((total_locked_origin, _ledger_list_origin, _)) = value {
 							if total_locked_origin == &unlock_amount {
@@ -1147,7 +1202,7 @@ pub mod pallet {
 
 				UserUnlockLedger::<T>::mutate_exists(
 					&account,
-					&token_id,
+					token_id,
 					|value| -> Result<(), Error<T>> {
 						if let Some((total_locked_origin, _ledger_list_origin)) = value {
 							if total_locked_origin == &unlock_amount {
@@ -1170,7 +1225,7 @@ pub mod pallet {
 				.checked_sub(&unlock_amount)
 				.ok_or(Error::<T>::CalculationOverflow)?;
 
-			UnlockingTotal::<T>::mutate(&token_id, |pool| -> Result<(), Error<T>> {
+			UnlockingTotal::<T>::mutate(token_id, |pool| -> Result<(), Error<T>> {
 				*pool = pool.checked_sub(&unlock_amount).ok_or(Error::<T>::CalculationOverflow)?;
 				Ok(())
 			})?;
@@ -1180,7 +1235,7 @@ pub mod pallet {
 			Self::deposit_event(Event::RedeemSuccess {
 				unlock_id: *index,
 				token_id,
-				to: account_to_send,
+				to: redeem_to,
 				token_amount: unlock_amount,
 			});
 			Ok(())
@@ -1280,13 +1335,21 @@ pub mod pallet {
 			token_amount: BalanceOf<T>,
 			remark: BoundedVec<u8, ConstU32<32>>,
 			channel_id: Option<u32>,
+			validators: Vec<MultiLocation>,
 		) -> Result<BalanceOf<T>, DispatchError> {
 			ensure!(token_amount >= MinimumMint::<T>::get(token_id), Error::<T>::BelowMinimumMint);
 
-			let lst_id = T::CurrencyIdConversion::convert_to_lst(token_id)
-				.map_err(|_| Error::<T>::NotSupportTokenType)?;
-			let (token_amount_excluding_fee, lst_amount, fee) =
-				Self::mint_without_tranfer(&exchanger, lst_id, token_id, token_amount)?;
+			let lst_id =
+				T::CurrencyIdConversion::convert_to_lst(token_id, Some(validators.clone()))
+					.map_err(|_| Error::<T>::NotSupportTokenType)?;
+			let (token_amount_excluding_fee, lst_amount, fee) = Self::mint_without_transfer(
+				&exchanger,
+				lst_id,
+				token_id,
+				token_amount,
+				validators.clone(),
+			)?;
+
 			// Transfer the user's token to EntranceAccount.
 			T::MultiCurrency::transfer(
 				token_id,
@@ -1298,6 +1361,9 @@ pub mod pallet {
 			// record the minting information for ChannelCommission module
 			T::ChannelCommission::record_mint_amount(channel_id, lst_id, lst_amount)?;
 
+			// attempt staking via agent
+			T::StakingAgent::delegate(&exchanger, &validators, token_id, None)?;
+
 			Self::deposit_event(Event::Minted {
 				address: exchanger,
 				token_id,
@@ -1306,7 +1372,7 @@ pub mod pallet {
 				fee,
 				remark,
 			});
-			Ok(lst_amount.into())
+			Ok(lst_amount)
 		}
 
 		#[transactional]
@@ -1329,15 +1395,21 @@ pub mod pallet {
 			let redeem_fee = redeem_rate * lst_amount;
 			let lst_amount =
 				lst_amount.checked_sub(&redeem_fee).ok_or(Error::<T>::CalculationOverflow)?;
+
 			// Charging fees
-			T::MultiCurrency::transfer(lst_id, &exchanger, &T::FeeAccount::get(), redeem_fee)?;
+			T::MultiCurrency::transfer(
+				lst_id,
+				&exchanger,
+				&T::RedeemFeeAccount::get(),
+				redeem_fee,
+			)?;
 
 			let token_pool_amount = Self::token_pool(token_id);
 			let lst_total_issuance = T::MultiCurrency::total_issuance(lst_id);
 			let token_amount: BalanceOf<T> = U256::from(lst_amount.saturated_into::<u128>())
 				.saturating_mul(token_pool_amount.saturated_into::<u128>().into())
 				.checked_div(lst_total_issuance.saturated_into::<u128>().into())
-				.map(|x| u128::try_from(x))
+				.map(u128::try_from)
 				.ok_or(Error::<T>::CalculationOverflow)?
 				.map_err(|_| Error::<T>::CalculationOverflow)?
 				.unique_saturated_into();
@@ -1353,28 +1425,28 @@ pub mod pallet {
 					)?;
 
 					T::MultiCurrency::withdraw(lst_id, &exchanger, lst_amount)?;
-					TokenPool::<T>::mutate(&token_id, |pool| -> Result<(), Error<T>> {
+					TokenPool::<T>::mutate(token_id, |pool| -> Result<(), Error<T>> {
 						*pool = pool
 							.checked_sub(&token_amount)
 							.ok_or(Error::<T>::CalculationOverflow)?;
 						Ok(())
 					})?;
-					UnlockingTotal::<T>::mutate(&token_id, |pool| -> Result<(), Error<T>> {
+					UnlockingTotal::<T>::mutate(token_id, |pool| -> Result<(), Error<T>> {
 						*pool = pool
 							.checked_add(&token_amount)
 							.ok_or(Error::<T>::CalculationOverflow)?;
 						Ok(())
 					})?;
 					TokenUnlockLedger::<T>::insert(
-						&token_id,
-						&next_id,
+						token_id,
+						next_id,
 						(&exchanger, token_amount, &result_time_unit, redeem_type),
 					);
 
-					if UserUnlockLedger::<T>::get(&exchanger, &token_id).is_some() {
+					if UserUnlockLedger::<T>::get(&exchanger, token_id).is_some() {
 						UserUnlockLedger::<T>::mutate(
 							&exchanger,
-							&token_id,
+							token_id,
 							|value| -> Result<(), Error<T>> {
 								if let Some((total_locked, ledger_list)) = value {
 									ledger_list
@@ -1396,17 +1468,17 @@ pub mod pallet {
 							.map_err(|_| Error::<T>::TooManyRedeems)?;
 						UserUnlockLedger::<T>::insert(
 							&exchanger,
-							&token_id,
+							token_id,
 							(token_amount, ledger_list_origin),
 						);
 					}
 
 					if let Some((_, _, _token_id)) =
-						TimeUnitUnlockLedger::<T>::get(&result_time_unit, &token_id)
+						TimeUnitUnlockLedger::<T>::get(&result_time_unit, token_id)
 					{
 						TimeUnitUnlockLedger::<T>::mutate(
 							&result_time_unit,
-							&token_id,
+							token_id,
 							|value| -> Result<(), Error<T>> {
 								if let Some((total_locked, ledger_list, _token_id)) = value {
 									ledger_list
@@ -1428,7 +1500,7 @@ pub mod pallet {
 
 						TimeUnitUnlockLedger::<T>::insert(
 							&result_time_unit,
-							&token_id,
+							token_id,
 							(token_amount, ledger_list_origin, token_id),
 						);
 					}
@@ -1436,10 +1508,17 @@ pub mod pallet {
 				None => return Err(Error::<T>::OngoingTimeUnitNotSet.into()),
 			}
 
-			TokenUnlockNextId::<T>::mutate(&token_id, |unlock_id| -> Result<(), Error<T>> {
+			TokenUnlockNextId::<T>::mutate(token_id, |unlock_id| -> Result<(), Error<T>> {
 				*unlock_id = unlock_id.checked_add(1).ok_or(Error::<T>::CalculationOverflow)?;
 				Ok(())
 			})?;
+
+			// Minting NFT
+			// Incrementing and using redeem NFT item ID for minting
+			let nft_item_id = NextRedeemNftItemId::<T>::get();
+			T::NftHandler::mint_into(&T::RedeemNftCollectionId::get(), &nft_item_id, &exchanger)?;
+			NextRedeemNftItemId::<T>::mutate(|id| *id += 1_u32.into());
+			NftRedeemRecord::<T>::insert(nft_item_id, (token_id, next_id));
 
 			let extra_weight = T::OnRedeemSuccess::on_redeemed(
 				exchanger.clone(),
@@ -1460,6 +1539,33 @@ pub mod pallet {
 				unlock_id: next_id,
 			});
 			Ok(Some(T::WeightInfo::redeem() + extra_weight).into())
+		}
+
+		#[transactional]
+		pub fn withdraw_redeem_inner(
+			_exchanger: AccountIdOf<T>,
+			nft_id: T::ItemId,
+		) -> DispatchResultWithPostInfo {
+			//T::NftHandler::burn_from(&T::RedeemNftCollectionId::get(), &nft_id, &exchanger)?;
+
+			let (token_id, index) = NftRedeemRecord::<T>::take(nft_id).unwrap();
+
+			// attempt withdraw via agent
+			//T::StakingAgent::liquidize(&exchanger, &validators, token_id, None)?;
+
+			let (exchanger, token_amount, _result_time_unit, _redeem_type) =
+				TokenUnlockLedger::<T>::get(token_id, index).unwrap();
+
+			T::MultiCurrency::transfer(
+				token_id,
+				&T::EntranceAccount::get().into_account_truncating(),
+				&exchanger,
+				token_amount,
+			)?;
+
+			TokenUnlockLedger::<T>::remove(token_id, index);
+
+			Ok(Some(T::WeightInfo::redeem()).into())
 		}
 
 		pub fn token_to_lst_inner(
@@ -1499,11 +1605,116 @@ pub mod pallet {
 		}
 
 		pub fn lst_id_inner(token_id: CurrencyIdOf<T>) -> Option<CurrencyIdOf<T>> {
-			T::CurrencyIdConversion::convert_to_lst(token_id).ok()
+			T::CurrencyIdConversion::convert_to_lst(token_id, None).ok()
 		}
 
 		pub fn token_id_inner(lst_id: CurrencyIdOf<T>) -> Option<CurrencyIdOf<T>> {
 			T::CurrencyIdConversion::convert_to_token(lst_id).ok()
+		}
+
+		pub fn incentive_pool_account() -> AccountIdOf<T> {
+			T::IncentivePoolAccount::get().into_account_truncating()
+		}
+
+		// to lock user lst for incentive minting
+		fn lock_lst_for_incentive_minting(
+			minter: AccountIdOf<T>,
+			lst_id: CurrencyIdOf<T>,
+			lst_amount: BalanceOf<T>,
+		) -> Result<(), Error<T>> {
+			// first, lock the lst
+			// second, record the lock in ledger
+
+			// check whether the minter has enough lst
+			T::MultiCurrency::ensure_can_withdraw(lst_id, &minter, lst_amount)
+				.map_err(|_| Error::<T>::NotEnoughBalance)?;
+
+			// new amount that should be locked
+			let mut new_lock_total = lst_amount;
+
+			// check the previous locked amount under the same lst_id from ledger
+			// and revise ledger to set the new_amount to be previous_amount + lst_amount
+			lstLockLedger::<T>::mutate_exists(&minter, lst_id, |value| -> Result<(), Error<T>> {
+				// get the lst lock duration from lstIncentiveCoef
+				let lock_duration = Self::get_mint_with_lock_blocks(lst_id)
+					.ok_or(Error::<T>::IncentiveLockBlocksNotSet)?;
+				let current_block = frame_system::Pallet::<T>::block_number();
+				let due_block = current_block
+					.checked_add(&lock_duration)
+					.ok_or(Error::<T>::CalculationOverflow)?;
+
+				if let Some(ref mut ledger) = value {
+					new_lock_total =
+						ledger.0.checked_add(&lst_amount).ok_or(Error::<T>::CalculationOverflow)?;
+
+					ledger.0 = new_lock_total;
+
+					// push new item to the boundedvec of the ledger
+					ledger
+						.1
+						.try_push((lst_amount, due_block))
+						.map_err(|_| Error::<T>::TooManyLocks)?;
+				} else {
+					let item = BoundedVec::try_from(vec![(lst_amount, due_block)])
+						.map_err(|_| Error::<T>::ConvertError)?;
+
+					*value = Some((lst_amount, item));
+				}
+				Ok(())
+			})?;
+
+			// extend the locked amount to be new_lock_total
+			T::MultiCurrency::set_lock(INCENTIVE_LOCK_ID, lst_id, &minter, new_lock_total)
+				.map_err(|_| Error::<T>::NotEnoughBalance)?;
+
+			Ok(())
+		}
+
+		pub fn get_exchange_rate(
+			token_id: Option<CurrencyId>,
+		) -> Result<Vec<(CurrencyIdOf<T>, U256)>, DispatchError> {
+			let mut result: Vec<(CurrencyIdOf<T>, U256)> = Vec::new();
+
+			match token_id {
+				Some(token_id) => {
+					let lst_amount = Self::get_lst_amount(token_id, 1000u128)?;
+					result.push((token_id, lst_amount));
+				},
+				None => {
+					for token_id in T::AssetIdMaps::get_all_currency() {
+						if token_id.is_lst() {
+							let lst_id = token_id;
+							let token_id = T::CurrencyIdConversion::convert_to_token(lst_id)
+								.map_err(|_| Error::<T>::NotSupportTokenType)?;
+
+							let lst_amount = Self::get_lst_amount(token_id, 1000u128)?;
+							result.push((token_id, lst_amount));
+						}
+					}
+				},
+			}
+			Ok(result)
+		}
+
+		fn get_lst_amount(token: CurrencyIdOf<T>, amount: u128) -> Result<U256, DispatchError> {
+			let lst_id = T::CurrencyIdConversion::convert_to_lst(token, None)
+				.map_err(|_| Error::<T>::NotSupportTokenType)?;
+
+			let token_pool_amount = Self::token_pool(token);
+			let lst_total_issuance = T::MultiCurrency::total_issuance(lst_id);
+
+			let mut lst_amount = U256::from(amount);
+			if token_pool_amount != BalanceOf::<T>::zero() {
+				let lst_total_issuance_u256 =
+					U256::from(lst_total_issuance.saturated_into::<u128>());
+				let token_pool_amount_u256 = U256::from(token_pool_amount.saturated_into::<u128>());
+
+				lst_amount = lst_amount
+					.saturating_mul(lst_total_issuance_u256)
+					.checked_div(token_pool_amount_u256)
+					.ok_or(Error::<T>::CalculationOverflow)?;
+			}
+			Ok(lst_amount)
 		}
 	}
 }
@@ -1551,7 +1762,7 @@ impl<T: Config> LstMintingOperator<CurrencyId, BalanceOf<T>, AccountIdOf<T>, Tim
 		currency_id: CurrencyId,
 		time_unit: TimeUnit,
 	) -> Option<(BalanceOf<T>, Vec<u32>)> {
-		if let Some((balance, list, _)) = Self::time_unit_unlock_ledger(&time_unit, currency_id) {
+		if let Some((balance, list, _)) = Self::time_unit_unlock_ledger(time_unit, currency_id) {
 			Some((balance, list.into_inner()))
 		} else {
 			None
@@ -1569,14 +1780,14 @@ impl<T: Config> LstMintingOperator<CurrencyId, BalanceOf<T>, AccountIdOf<T>, Tim
 		{
 			ensure!(unlock_amount >= deduct_amount, Error::<T>::NotEnoughBalanceToUnlock);
 
-			UnlockingTotal::<T>::mutate(&currency_id, |pool| -> Result<(), Error<T>> {
+			UnlockingTotal::<T>::mutate(currency_id, |pool| -> Result<(), Error<T>> {
 				*pool = pool.checked_sub(&deduct_amount).ok_or(Error::<T>::CalculationOverflow)?;
 				Ok(())
 			})?;
 
 			TimeUnitUnlockLedger::<T>::mutate_exists(
-				&time_unit,
-				&currency_id,
+				time_unit,
+				currency_id,
 				|value| -> Result<(), Error<T>> {
 					if let Some((total_locked_origin, ledger_list_origin, _)) = value {
 						if total_locked_origin == &deduct_amount {
@@ -1598,7 +1809,7 @@ impl<T: Config> LstMintingOperator<CurrencyId, BalanceOf<T>, AccountIdOf<T>, Tim
 
 			UserUnlockLedger::<T>::mutate_exists(
 				&who,
-				&currency_id,
+				currency_id,
 				|value| -> Result<(), Error<T>> {
 					if let Some((total_locked_origin, ledger_list_origin)) = value {
 						if total_locked_origin == &deduct_amount {
@@ -1619,11 +1830,11 @@ impl<T: Config> LstMintingOperator<CurrencyId, BalanceOf<T>, AccountIdOf<T>, Tim
 			)?;
 
 			if unlock_amount == deduct_amount {
-				TokenUnlockLedger::<T>::remove(&currency_id, &index);
+				TokenUnlockLedger::<T>::remove(currency_id, index);
 			} else {
 				TokenUnlockLedger::<T>::mutate_exists(
-					&currency_id,
-					&index,
+					currency_id,
+					index,
 					|value| -> Result<(), Error<T>> {
 						if let Some((_, total_locked_origin, _, _)) = value {
 							if total_locked_origin == &deduct_amount {
@@ -1675,82 +1886,84 @@ impl<T: Config> LstMintingOperator<CurrencyId, BalanceOf<T>, AccountIdOf<T>, Tim
 	}
 }
 
-impl<T: Config> LstMintingInterface<AccountIdOf<T>, CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> {
-	fn mint(
-		exchanger: AccountIdOf<T>,
-		token_id: CurrencyIdOf<T>,
-		token_amount: BalanceOf<T>,
-		remark: BoundedVec<u8, ConstU32<32>>,
-		channel_id: Option<u32>,
-	) -> Result<BalanceOf<T>, DispatchError> {
-		Self::mint_inner(exchanger, token_id, token_amount, remark, channel_id)
-	}
+// impl<T: Config> lstMintingInterface<AccountIdOf<T>, CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> {
+// 	fn mint(
+// 		exchanger: AccountIdOf<T>,
+// 		token_id: CurrencyIdOf<T>,
+// 		token_amount: BalanceOf<T>,
+// 		remark: BoundedVec<u8, ConstU32<32>>,
+// 		channel_id: Option<u32>,
+//
+// 		validators: Vec<MultiLocation>
+// 	) -> Result<BalanceOf<T>, DispatchError> {
+// 		Self::mint_inner(exchanger, token_id, token_amount, remark, channel_id, dest_chain, validators)
+// 	}
 
-	fn redeem(
-		exchanger: AccountIdOf<T>,
-		lst_id: CurrencyIdOf<T>,
-		lst_amount: BalanceOf<T>,
-	) -> DispatchResultWithPostInfo {
-		Self::redeem_inner(exchanger, lst_id, lst_amount, RedeemType::Native)
-	}
+// 	fn redeem(
+// 		exchanger: AccountIdOf<T>,
+// 		lst_id: CurrencyIdOf<T>,
+// 		lst_amount: BalanceOf<T>,
+// 	) -> DispatchResultWithPostInfo {
+// 		Self::redeem_inner(exchanger, lst_id, lst_amount, RedeemType::Native)
+// 	}
 
-	fn slpx_redeem(
-		exchanger: AccountIdOf<T>,
-		lst_id: CurrencyIdOf<T>,
-		lst_amount: BalanceOf<T>,
-		redeem_type: RedeemType<AccountIdOf<T>>,
-	) -> DispatchResultWithPostInfo {
-		Self::redeem_inner(exchanger, lst_id, lst_amount, redeem_type)
-	}
+// 	fn slpx_redeem(
+// 		exchanger: AccountIdOf<T>,
+// 		lst_id: CurrencyIdOf<T>,
+// 		lst_amount: BalanceOf<T>,
+// 		redeem_type: RedeemType<AccountIdOf<T>>,
+// 	) -> DispatchResultWithPostInfo {
+// 		Self::redeem_inner(exchanger, lst_id, lst_amount, redeem_type)
+// 	}
 
-	fn token_to_lst(
-		token_id: CurrencyIdOf<T>,
-		lst_id: CurrencyIdOf<T>,
-		token_amount: BalanceOf<T>,
-	) -> Result<BalanceOf<T>, DispatchError> {
-		Self::token_to_lst_inner(token_id, lst_id, token_amount)
-	}
+// 	fn token_to_lst(
+// 		token_id: CurrencyIdOf<T>,
+// 		lst_id: CurrencyIdOf<T>,
+// 		token_amount: BalanceOf<T>,
+// 	) -> Result<BalanceOf<T>, DispatchError> {
+// 		Self::token_to_lst_inner(token_id, lst_id, token_amount)
+// 	}
 
-	fn lst_to_token(
-		token_id: CurrencyIdOf<T>,
-		lst_id: CurrencyIdOf<T>,
-		lst_amount: BalanceOf<T>,
-	) -> Result<BalanceOf<T>, DispatchError> {
-		Self::lst_to_token_inner(token_id, lst_id, lst_amount)
-	}
+// 	fn lst_to_token(
+// 		token_id: CurrencyIdOf<T>,
+// 		lst_id: CurrencyIdOf<T>,
+// 		lst_amount: BalanceOf<T>,
+// 	) -> Result<BalanceOf<T>, DispatchError> {
+// 		Self::lst_to_token_inner(token_id, lst_id, lst_amount)
+// 	}
 
-	fn lst_id(token_id: CurrencyIdOf<T>) -> Option<CurrencyIdOf<T>> {
-		Self::lst_id_inner(token_id)
-	}
+// 	fn lst_id(token_id: CurrencyIdOf<T>) -> Option<CurrencyIdOf<T>> {
+// 		Self::lst_id_inner(token_id)
+// 	}
 
-	fn token_id(lst_id: CurrencyIdOf<T>) -> Option<CurrencyIdOf<T>> {
-		Self::token_id_inner(lst_id)
-	}
+// 	fn token_id(lst_id: CurrencyIdOf<T>) -> Option<CurrencyIdOf<T>> {
+// 		Self::token_id_inner(lst_id)
+// 	}
 
-	fn get_minimums_redeem(lst_id: CurrencyIdOf<T>) -> BalanceOf<T> {
-		MinimumRedeem::<T>::get(lst_id)
-	}
+// 	fn get_minimums_redeem(lst_id: CurrencyIdOf<T>) -> BalanceOf<T> {
+// 		MinimumRedeem::<T>::get(lst_id)
+// 	}
 
-	fn get_token_pool(currency_id: CurrencyId) -> BalanceOf<T> {
-		Self::token_pool(currency_id)
-	}
+// 	fn get_token_pool(currency_id: CurrencyId) -> BalanceOf<T> {
+// 		Self::token_pool(currency_id)
+// 	}
 
-	fn get_astar_parachain_id() -> u32 {
-		T::AstarParachainId::get()
-	}
-	fn get_moonbeam_parachain_id() -> u32 {
-		T::MoonbeamParachainId::get()
-	}
-	fn get_hydradx_parachain_id() -> u32 {
-		T::HydradxParachainId::get()
-	}
-	fn get_interlay_parachain_id() -> u32 {
-		T::InterlayParachainId::get()
-	}
-	fn get_manta_parachain_id() -> u32 {
-		T::MantaParachainId::get()
-	}
-}
+// 	fn get_astar_parachain_id() -> u32 {
+// 		T::AstarParachainId::get()
+// 	}
+// 	fn get_moonbeam_parachain_id() -> u32 {
+// 		T::MoonbeamParachainId::get()
+// 	}
+// 	fn get_hydradx_parachain_id() -> u32 {
+// 		T::HydradxParachainId::get()
+// 	}
+// 	fn get_interlay_parachain_id() -> u32 {
+// 		T::InterlayParachainId::get()
+// 	}
+// 	fn get_manta_parachain_id() -> u32 {
+// 		T::MantaParachainId::get()
+// 	}
+// }
 
 impl<T: Config> LstSupplyProvider<CurrencyIdOf<T>, BalanceOf<T>> for Pallet<T> {
 	fn get_lst_supply(lst: CurrencyIdOf<T>) -> Option<BalanceOf<T>> {

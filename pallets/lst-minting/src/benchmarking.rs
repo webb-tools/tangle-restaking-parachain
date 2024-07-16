@@ -1,5 +1,8 @@
 // This file is part of Tangle.
 
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
+
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -20,7 +23,7 @@ use crate::{Pallet as LstMinting, *};
 use frame_benchmarking::v1::{benchmarks, whitelisted_caller, BenchmarkError};
 use frame_support::{assert_ok, sp_runtime::traits::UniqueSaturatedFrom};
 use frame_system::RawOrigin;
-use tangle_primitives::{CurrencyId, TokenSymbol};
+use tangle_primitives::{CurrencyId, TokenSymbol, VKSM};
 
 benchmarks! {
 	set_minimum_mint {
@@ -141,6 +144,83 @@ benchmarks! {
 	on_initialize {
 		let block_num =BlockNumberFor::<T>::from(10u32);
 	}:{LstMinting::<T>::on_initialize(block_num);}
+
+	mint_with_lock {
+		let origin = T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
+
+		let caller: T::AccountId = whitelisted_caller();
+		const KSM: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
+		let token_amount = BalanceOf::<T>::unique_saturated_from(10000000000u128);
+		T::MultiCurrency::deposit(KSM, &caller, token_amount)?;
+
+		pub const FEE: Permill = Permill::from_percent(5);
+		assert_ok!(LstMinting::<T>::set_fees(RawOrigin::Root.into(), FEE, FEE));
+		// Set minimum mint
+		assert_ok!(LstMinting::<T>::set_minimum_mint(origin.clone(), KSM,  BalanceOf::<T>::unique_saturated_from(100u128)));
+		// set Lst coefficient
+		assert_ok!(LstMinting::<T>::set_incentive_coef(origin.clone(), VKSM, Some(1)));
+		// set incentive pool balance
+		assert_ok!(T::MultiCurrency::deposit(
+			VKSM,
+			&LstMinting::<T>::incentive_pool_account(),
+			BalanceOf::<T>::unique_saturated_from(100000000000000000000u128)
+		));
+		// set incentive lock blocks
+		assert_ok!(LstMinting::<T>::set_lst_incentive_lock_blocks(
+			origin.clone(),
+			VKSM,
+			Some(BlockNumberFor::<T>::from(100u32))
+		));
+	}: _(RawOrigin::Signed(caller), KSM, token_amount,BoundedVec::default(), None)
+
+	unlock_incentive_minted_lst {
+		let origin = T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
+
+		let caller: T::AccountId = whitelisted_caller();
+		const KSM: CurrencyId = CurrencyId::Token(TokenSymbol::KSM);
+		let token_amount = BalanceOf::<T>::unique_saturated_from(10000000000u128);
+		T::MultiCurrency::deposit(KSM, &caller, token_amount)?;
+
+		pub const FEE: Permill = Permill::from_percent(5);
+		assert_ok!(LstMinting::<T>::set_fees(RawOrigin::Root.into(), FEE, FEE));
+		// Set minimum mint
+		assert_ok!(LstMinting::<T>::set_minimum_mint(origin.clone(), KSM, BalanceOf::<T>::unique_saturated_from(100u128)));
+		// set Lst coefficient
+		assert_ok!(LstMinting::<T>::set_incentive_coef(origin.clone(), VKSM, Some(1)));
+		// set incentive pool balance
+		assert_ok!(T::MultiCurrency::deposit(
+			VKSM,
+			&LstMinting::<T>::incentive_pool_account(),
+			BalanceOf::<T>::unique_saturated_from(100000000000000000000u128)
+		));
+		// set incentive lock blocks
+		assert_ok!(LstMinting::<T>::set_lst_incentive_lock_blocks(
+			origin.clone(),
+			VKSM,
+			Some(BlockNumberFor::<T>::from(100u32))
+		));
+		// mint with lock
+		assert_ok!(LstMinting::<T>::mint_with_lock(
+			RawOrigin::Signed(caller.clone()).into(),
+			KSM,
+			BalanceOf::<T>::unique_saturated_from(10000000000u128),
+			BoundedVec::default(),
+			None
+		));
+
+		frame_system::Pallet::<T>::set_block_number(BlockNumberFor::<T>::from(101u32));
+
+	}: _(RawOrigin::Signed(caller), VKSM)
+
+	set_incentive_coef {
+		let origin = T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
+		let coef = 1u128;
+	}: _<T::RuntimeOrigin>(origin, VKSM, Some(coef))
+
+	set_lst_incentive_lock_blocks {
+		let origin = T::ControlOrigin::try_successful_origin().map_err(|_| BenchmarkError::Weightless)?;
+		let blocks = Some(BlockNumberFor::<T>::from(1000u32));
+	}: _<T::RuntimeOrigin>(origin, VKSM, blocks)
 
 	impl_benchmark_test_suite!(
 	LstMinting,

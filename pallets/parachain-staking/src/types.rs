@@ -78,19 +78,15 @@ impl<AccountId: Ord, Balance> PartialEq for Bond<AccountId, Balance> {
 
 #[derive(Copy, Clone, PartialEq, Eq, Encode, Decode, RuntimeDebug, TypeInfo)]
 /// The activity status of the collator
+#[derive(Default)]
 pub enum CollatorStatus {
 	/// Committed to be online and producing valid blocks (not equivocating)
+	#[default]
 	Active,
 	/// Temporarily inactive and excused for inactivity
 	Idle,
 	/// Bonded until the inner round
 	Leaving(RoundIndex),
-}
-
-impl Default for CollatorStatus {
-	fn default() -> CollatorStatus {
-		CollatorStatus::Active
-	}
 }
 
 #[derive(Encode, Decode, RuntimeDebug, TypeInfo)]
@@ -578,7 +574,7 @@ impl<
 			// only increment delegation count if we are not kicking a bottom delegation
 			self.delegation_count = self.delegation_count.saturating_add(1u32);
 		}
-		<TopDelegations<T>>::insert(&candidate, top_delegations);
+		<TopDelegations<T>>::insert(candidate, top_delegations);
 		less_total_staked
 	}
 	/// Add delegation to bottom delegations

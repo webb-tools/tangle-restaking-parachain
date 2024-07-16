@@ -1,6 +1,7 @@
 // This file is part of Tangle.
 
-
+// Copyright (C) Liebi Technologies PTE. LTD.
+// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,14 +26,14 @@
 //!
 //! THIS FILE WAS AUTO-GENERATED USING THE SUBSTRATE BENCHMARK CLI VERSION 4.0.0-dev
 //! DATE: 2023-09-14, STEPS: `50`, REPEAT: 20, LOW RANGE: `[]`, HIGH RANGE: `[]`
-//! HOSTNAME: `tangle-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
-//! WASM-EXECUTION: Compiled, CHAIN: Some("tangle-kusama-local"), DB CACHE: 1024
+//! HOSTNAME: `bifrost-jenkins`, CPU: `Intel(R) Xeon(R) CPU E5-26xx v4`
+//! WASM-EXECUTION: Compiled, CHAIN: Some("bifrost-kusama-local"), DB CACHE: 1024
 
 // Executed Command:
-// target/release/tangle
+// target/release/bifrost
 // benchmark
 // pallet
-// --chain=tangle-kusama-local
+// --chain=bifrost-kusama-local
 // --steps=50
 // --repeat=20
 // --pallet=tangle_asset_registry
@@ -58,8 +59,9 @@ pub trait WeightInfo {
 	fn register_lst_metadata() -> Weight;
 	fn register_vstoken_metadata() -> Weight;
 	fn register_vsbond_metadata() -> Weight;
-	fn register_multilocation() -> Weight;
-	fn force_set_multilocation() -> Weight;
+	fn register_location() -> Weight;
+	fn force_set_location() -> Weight;
+	fn update_currency_metadata() -> Weight;
 }
 
 // For backwards compatibility and tests
@@ -148,7 +150,7 @@ impl WeightInfo for () {
 	/// Proof Skipped: AssetRegistry CurrencyIdToLocations (max_values: None, max_size: None, mode: Measured)
 	/// Storage: AssetRegistry CurrencyIdToWeights (r:0 w:1)
 	/// Proof Skipped: AssetRegistry CurrencyIdToWeights (max_values: None, max_size: None, mode: Measured)
-	fn register_multilocation() -> Weight {
+	fn register_location() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `683`
 		//  Estimated: `4148`
@@ -165,7 +167,7 @@ impl WeightInfo for () {
 	/// Proof Skipped: AssetRegistry CurrencyIdToWeights (max_values: None, max_size: None, mode: Measured)
 	/// Storage: AssetRegistry CurrencyIdToLocations (r:0 w:1)
 	/// Proof Skipped: AssetRegistry CurrencyIdToLocations (max_values: None, max_size: None, mode: Measured)
-	fn force_set_multilocation() -> Weight {
+	fn force_set_location() -> Weight {
 		// Proof Size summary in bytes:
 		//  Measured:  `683`
 		//  Estimated: `4148`
@@ -173,5 +175,16 @@ impl WeightInfo for () {
 		Weight::from_parts(55_012_000, 4148)
 			.saturating_add(RocksDbWeight::get().reads(1_u64))
 			.saturating_add(RocksDbWeight::get().writes(3_u64))
+	}
+	/// Storage: `AssetRegistry::CurrencyMetadatas` (r:1 w:1)
+	/// Proof: `AssetRegistry::CurrencyMetadatas` (`max_values`: None, `max_size`: None, mode: `Measured`)
+	fn update_currency_metadata() -> Weight {
+		// Proof Size summary in bytes:
+		//  Measured:  `409`
+		//  Estimated: `3874`
+		// Minimum execution time: 12_000_000 picoseconds.
+		Weight::from_parts(13_000_000, 3874)
+			.saturating_add(RocksDbWeight::get().reads(1_u64))
+			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
 }

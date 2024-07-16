@@ -1253,11 +1253,11 @@ pub mod pallet {
 			ensure!(candidates.len() < 100, <Error<T>>::InsufficientBalance);
 			for candidate in &candidates {
 				ensure!(
-					<CandidateInfo<T>>::get(&candidate).is_none(),
+					<CandidateInfo<T>>::get(candidate).is_none(),
 					<Error<T>>::CandidateNotLeaving
 				);
 				ensure!(
-					<DelegationScheduledRequests<T>>::get(&candidate).is_empty(),
+					<DelegationScheduledRequests<T>>::get(candidate).is_empty(),
 					<Error<T>>::CandidateNotLeaving
 				);
 			}
@@ -1291,8 +1291,8 @@ pub mod pallet {
 				2 * delegators.len() as u64,
 				3 * delegators.len() as u64
 			)
-			.saturating_add(Weight::from_parts(delegators.len() as u64, 0).saturating_mul(100_000_000 as u64))
-			.saturating_add(Weight::from_parts(50_000_000 as u64, 0))
+			.saturating_add(Weight::from_parts(delegators.len() as u64, 0).saturating_mul(100_000_000_u64))
+			.saturating_add(Weight::from_parts(50_000_000_u64, 0))
 		)]
 		pub fn hotfix_migrate_delegators_from_reserve_to_locks(
 			origin: OriginFor<T>,
@@ -1332,8 +1332,8 @@ pub mod pallet {
 				2 * collators.len() as u64,
 				3 * collators.len() as u64
 			)
-			.saturating_add(Weight::from_parts(collators.len() as u64, 0).saturating_mul(100_000_000 as u64))
-			.saturating_add(Weight::from_parts(50_000_000 as u64, 0))
+			.saturating_add(Weight::from_parts(collators.len() as u64, 0).saturating_mul(100_000_000_u64))
+			.saturating_add(Weight::from_parts(50_000_000_u64, 0))
 		)]
 		pub fn hotfix_migrate_collators_from_reserve_to_locks(
 			origin: OriginFor<T>,
@@ -1801,10 +1801,10 @@ pub mod pallet {
 		pub(crate) fn jit_ensure_delegator_reserve_migrated(
 			delegator: &AccountIdOf<T>,
 		) -> DispatchResult {
-			let is_migrated = <DelegatorReserveToLockMigrations<T>>::get(&delegator);
+			let is_migrated = <DelegatorReserveToLockMigrations<T>>::get(delegator);
 			if !is_migrated {
 				let delegator_state =
-					<DelegatorState<T>>::get(&delegator).ok_or(Error::<T>::DelegatorDNE)?;
+					<DelegatorState<T>>::get(delegator).ok_or(Error::<T>::DelegatorDNE)?;
 				let reserved = delegator_state.total();
 				let _remaining = T::Currency::unreserve(delegator, reserved);
 				T::Currency::set_lock(
@@ -1813,7 +1813,7 @@ pub mod pallet {
 					reserved,
 					WithdrawReasons::all(),
 				);
-				<DelegatorReserveToLockMigrations<T>>::insert(&delegator, true);
+				<DelegatorReserveToLockMigrations<T>>::insert(delegator, true);
 			}
 			Ok(())
 		}
@@ -1824,14 +1824,14 @@ pub mod pallet {
 		pub(crate) fn jit_ensure_collator_reserve_migrated(
 			collator: &AccountIdOf<T>,
 		) -> DispatchResult {
-			let is_migrated = <CollatorReserveToLockMigrations<T>>::get(&collator);
+			let is_migrated = <CollatorReserveToLockMigrations<T>>::get(collator);
 			if !is_migrated {
 				let collator_info =
-					<CandidateInfo<T>>::get(&collator).ok_or(Error::<T>::CandidateDNE)?;
+					<CandidateInfo<T>>::get(collator).ok_or(Error::<T>::CandidateDNE)?;
 				let reserved = collator_info.bond;
 				let _remaining = T::Currency::unreserve(collator, reserved);
 				T::Currency::set_lock(COLLATOR_LOCK_ID, collator, reserved, WithdrawReasons::all());
-				<CollatorReserveToLockMigrations<T>>::insert(&collator, true);
+				<CollatorReserveToLockMigrations<T>>::insert(collator, true);
 			}
 			Ok(())
 		}
@@ -1856,7 +1856,7 @@ pub mod pallet {
 
 			let mut candidate_delegation_count = 0;
 			if let Some(state) = <CandidateInfo<T>>::get(&candidate) {
-				candidate_delegation_count = state.delegation_count as u32;
+				candidate_delegation_count = state.delegation_count;
 			}
 
 			(delegation_count, candidate_delegation_count)
@@ -1882,12 +1882,10 @@ pub mod pallet {
 
 	impl<T: Config> pallet_session::SessionManager<AccountIdOf<T>> for Pallet<T> {
 		/// 1. A new session starts.
-		/// 2. In hook new_session: Read the current top n candidates from the
-		///    TopCandidates and assign this set to author blocks for the next
-		///    session.
-		/// 3. AuRa queries the authorities from the session pallet for
-		///    this session and picks authors on round-robin-basis from list of
-		///    authorities.
+		/// 2. In hook new_session: Read the current top n candidates from the TopCandidates and
+		///    assign this set to author blocks for the next session.
+		/// 3. AuRa queries the authorities from the session pallet for this session and picks
+		///    authors on round-robin-basis from list of authorities.
 		fn new_session(new_index: SessionIndex) -> Option<Vec<AccountIdOf<T>>> {
 			log::debug!(
 				"assembling new collators for new session {} at #{:?}",

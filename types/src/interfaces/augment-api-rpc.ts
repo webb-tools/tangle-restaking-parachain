@@ -779,7 +779,7 @@ declare module '@polkadot/rpc-core/types/jsonrpc' {
 			/**
 			 * Get offchain local storage under given key and prefix
 			 **/
-			localStorageGet: AugmentedRpc<
+			locaLstorageGet: AugmentedRpc<
 				(
 					kind: StorageKind | 'PERSISTENT' | 'LOCAL' | number | Uint8Array,
 					key: Bytes | string | Uint8Array,
@@ -788,7 +788,7 @@ declare module '@polkadot/rpc-core/types/jsonrpc' {
 			/**
 			 * Set offchain local storage under given key and prefix
 			 **/
-			localStorageSet: AugmentedRpc<
+			locaLstorageSet: AugmentedRpc<
 				(
 					kind: StorageKind | 'PERSISTENT' | 'LOCAL' | number | Uint8Array,
 					key: Bytes | string | Uint8Array,
