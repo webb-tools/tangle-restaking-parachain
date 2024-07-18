@@ -31,7 +31,7 @@ use tangle_runtime_common::AuraId;
 
 const DEFAULT_PROTOCOL_ID: &str = "tangle_polkadot";
 
-/// Specialized `ChainSpec` for the tangle-polkadot runtime.
+/// Specialized `ChainSpec` for the bifrost-polkadot runtime.
 pub type ChainSpec = sc_service::GenericChainSpec<RuntimeGenesisConfig, RelayExtensions>;
 
 #[allow(non_snake_case)]

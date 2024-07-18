@@ -19,18 +19,18 @@
 #![warn(unused_extern_crates)]
 
 pub mod chain_spec;
-#[cfg(feature = "with-tangle-kusama-runtime")]
+#[cfg(feature = "with-bifrost-kusama-runtime")]
 pub mod collator_kusama;
-#[cfg(feature = "with-tangle-polkadot-runtime")]
+#[cfg(feature = "with-bifrost-polkadot-runtime")]
 pub mod collator_polkadot;
 pub use tangle_rpc as rpc;
 
-/// Can be called for a `Configuration` to check if it is a configuration for the `tangle` network.
+/// Can be called for a `Configuration` to check if it is a configuration for the `Bifrost` network.
 pub trait IdentifyVariant {
-	/// Returns if this is a configuration for the `tangle-Kusama` network.
+	/// Returns if this is a configuration for the `Bifrost-Kusama` network.
 	fn is_tangle_kusama(&self) -> bool;
 
-	/// Returns if this is a configuration for the `tangle-Polkadot` network.
+	/// Returns if this is a configuration for the `Bifrost-Polkadot` network.
 	fn is_tangle_polkadot(&self) -> bool;
 
 	/// Returns if this is a configuration for the `Dev` network.
@@ -39,7 +39,7 @@ pub trait IdentifyVariant {
 
 impl IdentifyVariant for Box<dyn sc_service::ChainSpec> {
 	fn is_tangle_kusama(&self) -> bool {
-		self.id().starts_with("tangle") && !self.id().starts_with("tangle_polkadot")
+		self.id().starts_with("bifrost") && !self.id().starts_with("tangle_polkadot")
 	}
 
 	fn is_tangle_polkadot(&self) -> bool {
@@ -52,7 +52,7 @@ impl IdentifyVariant for Box<dyn sc_service::ChainSpec> {
 }
 
 pub const TANGLE_KUSAMA_RUNTIME_NOT_AVAILABLE: &str =
-	"tangle runtime is not available. Please compile the node with `--features with-tangle-kusama-runtime` to enable it.";
+	"Bifrost runtime is not available. Please compile the node with `--features with-bifrost-kusama-runtime` to enable it.";
 pub const TANGLE_POLKADOT_RUNTIME_NOT_AVAILABLE: &str =
-	"tangle-polkadot runtime is not available. Please compile the node with `--features with-tangle-polkadot-runtime` to enable it.";
+	"Bifrost-polkadot runtime is not available. Please compile the node with `--features with-bifrost-polkadot-runtime` to enable it.";
 pub const UNKNOWN_RUNTIME: &str = "Unknown runtime";
