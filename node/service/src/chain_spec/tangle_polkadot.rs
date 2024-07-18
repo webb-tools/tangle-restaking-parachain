@@ -1,4 +1,4 @@
-// This file is part of Bifrost.
+// This file is part of tangle.
 
 // Copyright (C) Liebi Technologies PTE. LTD.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -31,7 +31,7 @@ use tangle_runtime_common::AuraId;
 
 const DEFAULT_PROTOCOL_ID: &str = "tangle_polkadot";
 
-/// Specialized `ChainSpec` for the bifrost-polkadot runtime.
+/// Specialized `ChainSpec` for the tangle-polkadot runtime.
 pub type ChainSpec = sc_service::GenericChainSpec<RuntimeGenesisConfig, RelayExtensions>;
 
 #[allow(non_snake_case)]
@@ -150,13 +150,13 @@ pub fn local_testnet_config() -> ChainSpec {
 			Some((String::from("Polkadot DOT"), String::from("DOT"), 10u8)),
 		),
 	];
-	let vcurrency = vec![VSToken2(DOT_TOKEN_ID), VToken(TokenSymbol::BNC), VToken2(DOT_TOKEN_ID)];
+	let vcurrency = vec![VSToken2(DOT_TOKEN_ID), Lst(TokenSymbol::BNC), Lst(TokenSymbol::DOT)];
 
 	ChainSpec::builder(
 		tangle_polkadot_runtime::WASM_BINARY.expect("WASM binary was not built, please build it!"),
 		RelayExtensions { relay_chain: "polkadot-local".into(), para_id: PARA_ID },
 	)
-	.with_name("Bifrost Polkadot Local Testnet")
+	.with_name("tangle Polkadot Local Testnet")
 	.with_id("tangle_polkadot_local_testnet")
 	.with_chain_type(ChainType::Local)
 	.with_genesis_config_patch(tangle_polkadot_genesis(
@@ -243,7 +243,7 @@ pub fn paseo_config() -> ChainSpec {
 		tangle_polkadot_runtime::WASM_BINARY.expect("WASM binary was not built, please build it!"),
 		RelayExtensions { relay_chain: "paseo".into(), para_id: PARA_ID },
 	)
-	.with_name("Bifrost Paseo")
+	.with_name("tangle Paseo")
 	.with_id("tangle_paseo")
 	.with_chain_type(ChainType::Live)
 	.with_genesis_config_patch(tangle_polkadot_genesis(
@@ -296,7 +296,7 @@ pub fn chainspec_config() -> ChainSpec {
 		tangle_polkadot_runtime::WASM_BINARY.expect("WASM binary was not built, please build it!"),
 		RelayExtensions { relay_chain: "polkadot".into(), para_id: PARA_ID },
 	)
-	.with_name("Bifrost Polkadot")
+	.with_name("tangle Polkadot")
 	.with_id("tangle_polkadot")
 	.with_chain_type(ChainType::Live)
 	.with_genesis_config_patch(tangle_polkadot_genesis(

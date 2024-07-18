@@ -1,4 +1,4 @@
-// This file is part of Bifrost.
+// This file is part of tangle.
 
 // Copyright (C) Liebi Technologies PTE. LTD.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -24,7 +24,7 @@ use sc_executor::NativeElseWasmExecutor;
 use sc_service::{error::Error as ServiceError, Configuration, TaskManager};
 
 pub type Block = tangle_primitives::Block;
-pub type Executor = crate::collator_kusama::BifrostExecutor;
+pub type Executor = crate::collator_kusama::tangleExecutor;
 pub type RuntimeApi = crate::collator_kusama::tangle_kusama_runtime::RuntimeApi;
 pub type FullClient<RuntimeApi, ExecutorDispatch> =
 	sc_service::TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<ExecutorDispatch>>;
@@ -56,7 +56,7 @@ pub fn start_node(config: Configuration) -> Result<TaskManager, ServiceError> {
 		other: (_, _),
 	} = crate::collator_kusama::new_partial::<
 		tangle_kusama_runtime::RuntimeApi,
-		crate::collator_kusama::BifrostExecutor,
+		crate::collator_kusama::tangleExecutor,
 	>(&config, true)?;
 
 	let (network, system_rpc_tx, network_starter) =

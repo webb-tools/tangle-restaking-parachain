@@ -1,4 +1,4 @@
-// This file is part of Bifrost.
+// This file is part of tangle.
 
 // Copyright (C) Liebi Technologies PTE. LTD.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#[cfg(any(feature = "with-bifrost-polkadot-runtime", feature = "with-bifrost-runtime"))]
+#[cfg(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime"))]
 pub mod tangle_polkadot;
 
 use sc_chain_spec::ChainSpecExtension;
