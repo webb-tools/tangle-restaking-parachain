@@ -1,4 +1,4 @@
-// This file is part of Bifrost.
+// This file is part of tangle.
 
 // Copyright (C) Liebi Technologies PTE. LTD.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -55,7 +55,7 @@ pub struct FullDeps<C, P> {
 /// A IO handler that uses all Full RPC extensions.
 pub type RpcExtension = jsonrpsee::RpcModule<()>;
 
-/// RPC of bifrost-kusama runtime.
+/// RPC of tangle-kusama runtime.
 pub fn create_full<C, P>(
 	deps: FullDeps<C, P>,
 ) -> Result<RpcExtension, Box<dyn std::error::Error + Send + Sync>>
@@ -80,7 +80,7 @@ where
 	Ok(module)
 }
 
-/// RPC of bifrost-polkadot runtime.
+/// RPC of tangle-polkadot runtime.
 pub fn create_full_polkadot<C, P>(
 	deps: FullDeps<C, P>,
 ) -> Result<RpcExtension, Box<dyn std::error::Error + Send + Sync>>

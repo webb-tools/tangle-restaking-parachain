@@ -40,24 +40,24 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
 	let id = if id.is_empty() {
 		let n = get_exec_name().unwrap_or_default();
 
-		["bifrost"]
+		["tangle"]
 			.iter()
 			.cloned()
 			.find(|&chain| n.starts_with(chain))
-			.unwrap_or("bifrost")
+			.unwrap_or("tangle")
 	} else {
 		id
 	};
 	#[allow(unreachable_code)]
 	Ok(match id {
-		#[cfg(any(feature = "with-bifrost-kusama-runtime", feature = "with-bifrost-runtime"))]
-		"bifrost" | "bifrost-kusama" => {
+		#[cfg(any(feature = "with-tangle-kusama-runtime", feature = "with-tangle-runtime"))]
+		"tangle" | "tangle-kusama" => {
 			Box::new(service::chain_spec::tangle_kusama::ChainSpec::from_json_bytes(
-				&include_bytes!("../../service/res/bifrost-kusama.json")[..],
+				&include_bytes!("../../service/res/tangle-kusama.json")[..],
 			)?)
 		},
-		#[cfg(any(feature = "with-bifrost-kusama-runtime", feature = "with-bifrost-runtime"))]
-		"bifrost-genesis" | "bifrost-kusama-genesis" => {
+		#[cfg(any(feature = "with-tangle-kusama-runtime", feature = "with-tangle-runtime"))]
+		"tangle-genesis" | "tangle-kusama-genesis" => {
 			Box::new(service::chain_spec::tangle_kusama::chainspec_config())
 		},
 		#[cfg(any(feature = "with-tangle-kusama-runtime", feature = "with-tangle-runtime"))]
@@ -76,30 +76,30 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
 		"tangle-paseo" => Box::new(service::chain_spec::tangle_polkadot::paseo_config()),
 		path => {
 			let path = std::path::PathBuf::from(path);
-			if path.to_str().map(|s| s.contains("bifrost-polkadot")) == Some(true) {
+			if path.to_str().map(|s| s.contains("tangle-polkadot")) == Some(true) {
 				#[cfg(any(
-					feature = "with-bifrost-polkadot-runtime",
-					feature = "with-bifrost-runtime"
+					feature = "with-tangle-polkadot-runtime",
+					feature = "with-tangle-runtime"
 				))]
 				{
 					Box::new(service::chain_spec::tangle_polkadot::ChainSpec::from_json_file(path)?)
 				}
 				#[cfg(not(any(
-					feature = "with-bifrost-polkadot-runtime",
-					feature = "with-bifrost-runtime"
+					feature = "with-tangle-polkadot-runtime",
+					feature = "with-tangle-runtime"
 				)))]
 				return Err(service::TANGLE_POLKADOT_RUNTIME_NOT_AVAILABLE.into());
-			} else if path.to_str().map(|s| s.contains("bifrost")) == Some(true) {
+			} else if path.to_str().map(|s| s.contains("tangle")) == Some(true) {
 				#[cfg(any(
-					feature = "with-bifrost-kusama-runtime",
-					feature = "with-bifrost-runtime"
+					feature = "with-tangle-kusama-runtime",
+					feature = "with-tangle-runtime"
 				))]
 				{
 					Box::new(service::chain_spec::tangle_kusama::ChainSpec::from_json_file(path)?)
 				}
 				#[cfg(not(any(
-					feature = "with-bifrost-kusama-runtime",
-					feature = "with-bifrost-runtime"
+					feature = "with-tangle-kusama-runtime",
+					feature = "with-tangle-runtime"
 				)))]
 				return Err(service::TANGLE_KUSAMA_RUNTIME_NOT_AVAILABLE.into());
 			} else {
@@ -111,7 +111,7 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
-		"Bifrost Collator".into()
+		"tangle Collator".into()
 	}
 
 	fn impl_version() -> String {
@@ -120,7 +120,7 @@ impl SubstrateCli for Cli {
 
 	fn description() -> String {
 		format!(
-			"Bifrost collator\n\nThe command-line arguments provided first will be \
+			"tangle collator\n\nThe command-line arguments provided first will be \
 		passed to the parachain node, while the arguments provided after -- will be passed \
 		to the relaychain node.\n\n\
 		{} [parachain-args] -- [relaychain-args]",
@@ -158,7 +158,7 @@ impl SubstrateCli for RelayChainCli {
 		"Parachain collator\n\nThe command-line arguments provided first will be \
 		passed to the parachain node, while the arguments provided after -- will be passed \
 		to the relaychain node.\n\n\
-		bifrost-collator [parachain-args] -- [relaychain-args]"
+		tangle-collator [parachain-args] -- [relaychain-args]"
 			.into()
 	}
 
@@ -182,24 +182,24 @@ impl SubstrateCli for RelayChainCli {
 macro_rules! with_runtime_or_err {
 	($chain_spec:expr, { $( $code:tt )* }) => {
 		if $chain_spec.is_tangle_kusama() || $chain_spec.is_dev() {
-			#[cfg(any(feature = "with-bifrost-kusama-runtime",feature = "with-bifrost-runtime"))]
+			#[cfg(any(feature = "with-tangle-kusama-runtime",feature = "with-tangle-runtime"))]
 			#[allow(unused_imports)]
 			use service::collator_kusama::{tangle_kusama_runtime::{Block, RuntimeApi}, start_node,new_partial};
 
-			#[cfg(any(feature = "with-bifrost-kusama-runtime",feature = "with-bifrost-runtime"))]
+			#[cfg(any(feature = "with-tangle-kusama-runtime",feature = "with-tangle-runtime"))]
 			$( $code )*
 
-			#[cfg(not(any(feature = "with-bifrost-kusama-runtime",feature = "with-bifrost-runtime")))]
+			#[cfg(not(any(feature = "with-tangle-kusama-runtime",feature = "with-tangle-runtime")))]
 			return Err(service::TANGLE_KUSAMA_RUNTIME_NOT_AVAILABLE.into());
 		} else if $chain_spec.is_tangle_polkadot() {
-			#[cfg(any(feature = "with-bifrost-polkadot-runtime", feature = "with-bifrost-runtime"))]
+			#[cfg(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime"))]
 			#[allow(unused_imports)]
 			use service::collator_polkadot::{tangle_polkadot_runtime::{Block, RuntimeApi}, start_node,new_partial};
 
-			#[cfg(any(feature = "with-bifrost-polkadot-runtime", feature = "with-bifrost-runtime"))]
+			#[cfg(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime"))]
 			$( $code )*
 
-			#[cfg(not(any(feature = "with-bifrost-polkadot-runtime", feature = "with-bifrost-runtime")))]
+			#[cfg(not(any(feature = "with-tangle-polkadot-runtime", feature = "with-tangle-runtime")))]
 			return Err(service::TANGLE_POLKADOT_RUNTIME_NOT_AVAILABLE.into());
 		} else {
 			return Err(service::UNKNOWN_RUNTIME.into());
@@ -358,7 +358,7 @@ pub fn run() -> Result<()> {
 
 			// Switch on the concrete benchmark sub-command-
 			match cmd {
-				BenchmarkCmd::Pallet(_cmd) => {
+				BenchmarkCmd::Pallet(cmd) => {
 					if cfg!(feature = "runtime-benchmarks") {
 						with_runtime_or_err!(chain_spec, {
 							return runner.sync_run(|config| cmd.run::<Block, ()>(config));
@@ -369,7 +369,7 @@ pub fn run() -> Result<()> {
 							.into())
 					}
 				},
-				BenchmarkCmd::Block(_cmd) => runner.sync_run(|config| {
+				BenchmarkCmd::Block(cmd) => runner.sync_run(|config| {
 					with_runtime_or_err!(config.chain_spec, {
 						{
 							let partials = new_partial(&config, false)?;
@@ -406,10 +406,10 @@ pub fn run() -> Result<()> {
 		},
 		None => {
 			let runner = cli.create_runner(&cli.run.normalize())?;
-			let _collator_options = cli.run.collator_options();
+			let collator_options = cli.run.collator_options();
 
 			runner.run_node_until_exit(|config| async move {
-				let _hwbench = (!cli.no_hardware_benchmarks)
+				let hwbench = (!cli.no_hardware_benchmarks)
 					.then_some(config.database.path().map(|database_path| {
 						let _ = std::fs::create_dir_all(database_path);
 						sc_sysinfo::gather_hwbench(Some(database_path))
@@ -433,7 +433,7 @@ pub fn run() -> Result<()> {
 						&id,
 					);
 
-				let _polkadot_config = SubstrateCli::create_configuration(
+				let polkadot_config = SubstrateCli::create_configuration(
 					&polkadot_cli,
 					&polkadot_cli,
 					config.tokio_handle.clone(),

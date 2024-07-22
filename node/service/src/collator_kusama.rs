@@ -24,7 +24,7 @@ use cumulus_client_collator::service::CollatorService;
 use cumulus_client_consensus_aura::collators::basic::{
 	self as basic_aura, Params as BasicAuraParams,
 };
-#[cfg(any(feature = "with-bifrost-kusama-runtime", feature = "with-bifrost-runtime"))]
+#[cfg(any(feature = "with-tangle-kusama-runtime", feature = "with-tangle-runtime"))]
 pub use tangle_kusama_runtime;
 use tangle_kusama_runtime::RuntimeApi;
 
