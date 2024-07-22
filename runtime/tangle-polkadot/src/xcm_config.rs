@@ -45,12 +45,14 @@ use xcm_builder::{
 	Account32Hash, DescribeAllTerminal, DescribeFamily, FrameTransactionalProcessor,
 	HashedDescription, TrailingSetTopicAsId,
 };
+#[allow(deprecated)]
 pub use xcm_builder::{
 	AccountId32Aliases, AllowKnownQueryResponses, AllowSubscriptionsFrom,
 	AllowTopLevelPaidExecutionFrom, EnsureXcmOrigin, FixedRateOfFungible, FixedWeightBounds,
 	IsConcrete, ParentAsSuperuser, ParentIsPreset, RelayChainAsNative, SiblingParachainAsNative,
 	SiblingParachainConvertsVia, SignedAccountId32AsNative, SignedToAccountId32,
-	SovereignSignedViaLocation, TakeRevenue, TakeWeightCredit,
+	SovereignSignedViaLocation, TakeRevenue, TakeWeightCredit, NoChecking,
+	CurrencyAdapter as XcmCurrencyAdapter, FungiblesAdapter,
 };
 use xcm_executor::traits::{MatchesFungible, Properties, ShouldExecute};
 // orml imports
@@ -114,7 +116,7 @@ impl<T: Get<ParaId>> Convert<Asset, Option<CurrencyId>> for TangleCurrencyIdConv
 pub struct TangleAccountIdToLocation;
 impl Convert<AccountId, Location> for TangleAccountIdToLocation {
 	fn convert(account: AccountId) -> Location {
-		[AccountId32 { network: None, id: account.into() }].into()
+		[xcm::v4::Junction::AccountId32 { network: None, id: account.into() }].into()
 	}
 }
 

@@ -69,13 +69,17 @@ where
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
 	C::Api: BlockBuilder<Block>,
+	C::Api: sygma_runtime_api::SygmaBridgeApi<Block>,
 	P: TransactionPool + Sync + Send + 'static,
 {
+	use sygma_rpc::{SygmaBridgeRpcServer, SygmaBridgeStorage};
+
 	let mut module = RpcExtension::new(());
 	let FullDeps { client, pool, deny_unsafe } = deps;
 
 	module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
 	module.merge(TransactionPayment::new(client.clone()).into_rpc())?;
+	module.merge(SygmaBridgeStorage::new(client.clone()).into_rpc())?;
 
 	Ok(module)
 }
@@ -95,13 +99,17 @@ where
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
 	C::Api: BlockBuilder<Block>,
+	C::Api: sygma_runtime_api::SygmaBridgeApi<Block>,
 	P: TransactionPool + Sync + Send + 'static,
 {
+	use sygma_rpc::{SygmaBridgeRpcServer, SygmaBridgeStorage};
+
 	let mut module = RpcExtension::new(());
 	let FullDeps { client, pool, deny_unsafe } = deps;
 
 	module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
 	module.merge(TransactionPayment::new(client.clone()).into_rpc())?;
+	module.merge(SygmaBridgeStorage::new(client.clone()).into_rpc())?;
 
 	Ok(module)
 }
