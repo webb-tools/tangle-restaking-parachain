@@ -81,15 +81,6 @@ pub fn tangle_polkadot_genesis(
 		"balances": {
 			"balances": balances
 		},
-		"councilMembership": {
-			"members": council_membership
-		},
-		"oracleMembership": {
-			"members": oracle_membership
-		},
-		"technicalCommittee": {
-			"members": technical_committee_membership
-		},
 		"parachainInfo": {
 			"parachainId": id
 		},
@@ -110,18 +101,9 @@ pub fn tangle_polkadot_genesis(
 				})
 				.collect::<Vec<_>>(),
 		},
-		"vesting": {
-			"vesting": vestings
-		},
-		"assetRegistry": {
-			"currency": asset_registry.0,
-			"vcurrency": asset_registry.1,
-			"vsbond": asset_registry.2
-		},
 		"polkadotXcm": {
 			"safeXcmVersion": 3
 		},
-		"salp": { "initialMultisigAccount": Some(salp_multisig_key) }
 	})
 }
 
