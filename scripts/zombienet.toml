@@ -22,7 +22,7 @@ prometheus_port = 9616
 [[parachains]]
 id = 1000
 name = "tangle-parachain"
-chain = "tangle-local"
+chain = "tangle-polkadot-local"
 cumulus_based = true
 add_to_genesis = true
 register_para = true
