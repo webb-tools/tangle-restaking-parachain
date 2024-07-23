@@ -47,7 +47,7 @@ COPY . ./parachain
 
 # Build the parachain.
 RUN cd parachain \
-	&& cargo b -rp tangle-cli --features with-tangle-kusama-runtime
+	&& cargo b -rp tangle-cli --features with-tangle-polkadot-runtime,fast-runtime
 
 # Set the working directory to the parachain directory.
 WORKDIR /app/parachain
