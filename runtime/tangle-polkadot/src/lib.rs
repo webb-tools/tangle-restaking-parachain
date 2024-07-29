@@ -23,8 +23,8 @@
 #[cfg(feature = "std")]
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
-use fixed::{types::extra::U16, FixedU128 as DecimalFixedU128};
 use core::convert::TryInto;
+use fixed::{types::extra::U16, FixedU128 as DecimalFixedU128};
 use frame_support::traits::AsEnsureOriginWithArg;
 use tangle_primitives::staking::QueryResponseManager;
 use tangle_primitives::SlpxOperator;
@@ -33,8 +33,8 @@ use tangle_primitives::SlpxOperator;
 pub use frame_support::{
 	construct_runtime, match_types, parameter_types,
 	traits::{
-		ConstU128, ConstU32, ConstU64, ConstU8, Contains, EqualPrivilegeOnly, Everything,
-		InstanceFilter, IsInVec, Nothing, Randomness, WithdrawReasons, SortedMembers, ContainsPair
+		ConstU128, ConstU32, ConstU64, ConstU8, Contains, ContainsPair, EqualPrivilegeOnly,
+		Everything, InstanceFilter, IsInVec, Nothing, Randomness, SortedMembers, WithdrawReasons,
 	},
 	weights::{
 		constants::{
@@ -57,7 +57,8 @@ use sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
 	traits::{AccountIdConversion, BlakeTwo256, Block as BlockT, Zero},
 	transaction_validity::{TransactionSource, TransactionValidity},
-	ApplyExtrinsicResult, DispatchError, DispatchResult, Perbill, Permill, RuntimeDebug, AccountId32
+	AccountId32, ApplyExtrinsicResult, DispatchError, DispatchResult, Perbill, Permill,
+	RuntimeDebug,
 };
 use sp_std::collections::btree_map::BTreeMap;
 use sp_std::sync::Arc;
@@ -126,7 +127,10 @@ pub use xcm_config::{
 	SiblingParachainConvertsVia, TangleCurrencyIdConvert, TangleTreasuryAccount, XcmConfig,
 	XcmRouter,
 };
-use xcm_executor::{XcmExecutor, traits::{Error as ExecutionError, MatchesFungibles}};
+use xcm_executor::{
+	traits::{Error as ExecutionError, MatchesFungibles},
+	XcmExecutor,
+};
 
 impl_opaque_keys! {
 	pub struct SessionKeys {
@@ -1321,7 +1325,9 @@ pub type FungiblesTransactor = xcm_config::FungiblesAdapter<
 
 pub struct SimpleForeignAssetConverter(PhantomData<()>);
 impl MatchesFungibles<AssetIdNum, Balance> for SimpleForeignAssetConverter {
-	fn matches_fungibles(a: &xcm::v4::Asset) -> result::Result<(AssetIdNum, Balance), ExecutionError> {
+	fn matches_fungibles(
+		a: &xcm::v4::Asset,
+	) -> result::Result<(AssetIdNum, Balance), ExecutionError> {
 		match (&a.fun, &a.id) {
 			(xcm::v4::Fungibility::Fungible(ref amount), xcm::v4::AssetId(ref id)) => {
 				if id == &SygUSDLocation::get() {
@@ -1492,14 +1498,20 @@ impl ConcrateSygmaAsset {
 				(1, Some(xcm::v4::Junction::Parachain(id))) => {
 					// Assume current parachain id is 1000, for production, always get proper parachain info
 					if *id == 1000 {
-						Some(xcm::v4::Location::new(0, X1(Arc::new([slice_to_generalkey(b"sygma")]))))
+						Some(xcm::v4::Location::new(
+							0,
+							X1(Arc::new([slice_to_generalkey(b"sygma")])),
+						))
 					} else {
 						Some(xcm::v4::Location::here())
 					}
 				},
 				(1, _) => Some(xcm::v4::Location::here()),
 				// Children parachain
-				(0, Some(xcm::v4::Junction::Parachain(id))) => Some(xcm::v4::Location::new(0, X1(Arc::new([xcm::v4::Junction::Parachain(*id)])))),
+				(0, Some(xcm::v4::Junction::Parachain(id))) => Some(xcm::v4::Location::new(
+					0,
+					X1(Arc::new([xcm::v4::Junction::Parachain(*id)])),
+				)),
 				// Local: (0, Here)
 				(0, None) => Some(id),
 				_ => None,
@@ -1532,7 +1544,10 @@ impl ExtractDestinationData for crate::DestinationDataParser {
 										1,
 										xcm::v4::Junctions::X2(Arc::new([
 											xcm::v4::Junction::Parachain(parachain_id),
-											xcm::v4::Junction::AccountId32 { network: None, id: recipient },
+											xcm::v4::Junction::AccountId32 {
+												network: None,
+												id: recipient,
+											},
 										])),
 									);
 									(l.encode(), domain_id)
@@ -1594,7 +1609,7 @@ impl ExtractDestinationData for crate::DestinationDataParser {
 
 pub struct SygmaDecimalConverter<DecimalPairs>(PhantomData<DecimalPairs>);
 impl<DecimalPairs: Get<Vec<(xcm::v4::AssetId, u8)>>> DecimalConverter
-for SygmaDecimalConverter<DecimalPairs>
+	for SygmaDecimalConverter<DecimalPairs>
 {
 	fn convert_to(asset: &xcm::v4::Asset) -> Option<u128> {
 		match (&asset.fun, &asset.id) {
