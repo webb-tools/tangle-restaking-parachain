@@ -1330,10 +1330,12 @@ impl MatchesFungibles<AssetIdNum, Balance> for SimpleForeignAssetConverter {
 	) -> result::Result<(AssetIdNum, Balance), ExecutionError> {
 		match (&a.fun, &a.id) {
 			(xcm::v4::Fungibility::Fungible(ref amount), xcm::v4::AssetId(ref id)) => {
-				if id == &SygUSDLocation::get() {
-					Ok((SygUSDAssetId::get(), *amount))
+				if id == &USDTLocation::get() {
+					Ok((USDTAssetId::get(), *amount))
 				} else if id == &PHALocation::get() {
 					Ok((PHAAssetId::get(), *amount))
+				} else if id == &UsdcLocation::get() {
+					Ok((UsdcAssetId::get(), *amount))
 				} else {
 					Err(ExecutionError::AssetNotHandled)
 				}
@@ -1376,41 +1378,55 @@ impl sygma_percentage_feehandler::Config for Runtime {
 parameter_types! {
 	// tTNT: native asset is always a reserved asset
 	pub NativeLocation: xcm::v4::Location = xcm::v4::Location::here();
-	pub NativeSygmaResourceId: [u8; 32] = hex_literal::hex!("0000000000000000000000000000000000000000000000000000000000002000");
+	// pub NativeSygmaResourceId: [u8; 32] = hex_literal::hex!("0000000000000000000000000000000000000000000000000000000000002000");
 
-	// SygUSD: a non-reserved asset
-	pub SygUSDLocation: xcm::v4::Location = xcm::v4::Location::new(
+	// USDC: a non-reserved asset
+	pub UsdcLocation: xcm::v4::Location = xcm::v4::Location::new(
 		1,
 		[
 			xcm::v4::Junction::Parachain(1000),
-			slice_to_generalkey(b"sygma"),
-			slice_to_generalkey(b"sygusd"),
+			xcm::v4::Junction::PalletInstance(50),
+			xcm::v4::Junction::GeneralIndex(1337),
 		],
 	);
-	// SygUSDAssetId is the substrate assetID of SygUSD
-	pub SygUSDAssetId: AssetIdNum = 2000;
-	// SygUSDResourceId is the resourceID that mapping with the foreign asset SygUSD
-	pub SygUSDResourceId: ResourceId = hex_literal::hex!("0000000000000000000000000000000000000000000000000000000000001100");
+	// UsdcAssetId is the substrate assetID of USDC
+	pub UsdcAssetId: AssetIdNum = 1377;
+	// UsdcResourceId is the resourceID that mapping with the foreign asset USDC
+	pub UsdcResourceId: ResourceId = hex_literal::hex!("0000000000000000000000000000000000000000000000000000000000000002");
+
+	// USDT: a non-reserved asset
+	pub USDTLocation: xcm::v4::Location = xcm::v4::Location::new(
+		1,
+		[
+			xcm::v4::Junction::Parachain(1000),
+			xcm::v4::Junction::PalletInstance(50),
+			xcm::v4::Junction::GeneralIndex(1984),
+		],
+	);
+	// USDTAssetId is the substrate assetID of USDT
+	pub USDTAssetId: AssetIdNum = 1984;
+	// USDTResourceId is the resourceID that mapping with the foreign asset USDT
+	pub USDTResourceId: ResourceId = hex_literal::hex!("0000000000000000000000000000000000000000000000000000000000000003");
 
 	// PHA: a reserved asset
 	pub PHALocation: xcm::v4::Location = xcm::v4::Location::new(
 		1,
 		[
-			xcm::v4::Junction::Parachain(2004),
+			xcm::v4::Junction::Parachain(1000),
 			slice_to_generalkey(b"sygma"),
 			slice_to_generalkey(b"pha"),
 		],
 	);
 	// PHAAssetId is the substrate assetID of PHA
-	pub PHAAssetId: AssetIdNum = 2001;
+	pub PHAAssetId: AssetIdNum = 2000;
 	// PHAResourceId is the resourceID that mapping with the foreign asset PHA
-	pub PHAResourceId: ResourceId = hex_literal::hex!("0000000000000000000000000000000000000000000000000000000000001000");
+	pub PHAResourceId: ResourceId = hex_literal::hex!("0000000000000000000000000000000000000000000000000000000000000001");
 }
 
 fn bridge_accounts_generator() -> BTreeMap<xcm::v4::AssetId, AccountId32> {
 	let mut account_map: BTreeMap<xcm::v4::AssetId, AccountId32> = BTreeMap::new();
-	account_map.insert(NativeLocation::get().into(), BridgeAccountNative::get());
-	account_map.insert(SygUSDLocation::get().into(), BridgeAccountOtherToken::get());
+	account_map.insert(USDTLocation::get().into(), BridgeAccountOtherToken::get());
+	account_map.insert(UsdcLocation::get().into(), BridgeAccountOtherToken::get());
 	account_map.insert(PHALocation::get().into(), BridgeAccountOtherToken::get());
 	account_map
 }
@@ -1462,12 +1478,12 @@ parameter_types! {
 	pub RelayNetwork: NetworkId = NetworkId::Polkadot;
 	// ResourcePairs is where all supported assets and their associated resourceID are binding
 	pub ResourcePairs: Vec<(xcm::v4::AssetId, ResourceId)> = vec![
-		(NativeLocation::get().into(), NativeSygmaResourceId::get()),
-		(SygUSDLocation::get().into(), SygUSDResourceId::get()),
+		(USDTLocation::get().into(), USDTResourceId::get()),
+		(UsdcLocation::get().into(), UsdcResourceId::get()),
 		(PHALocation::get().into(), PHAResourceId::get()),
 	];
 
-	pub AssetDecimalPairs: Vec<(xcm::v4::AssetId, u8)> = vec![(NativeLocation::get().into(), 18u8), (SygUSDLocation::get().into(), 6u8), (PHALocation::get().into(), 12u8)];
+	pub AssetDecimalPairs: Vec<(xcm::v4::AssetId, u8)> = vec![(USDTLocation::get().into(), 6u8), (UsdcLocation::get().into(), 6u8), (PHALocation::get().into(), 12u8)];
 }
 
 pub struct ReserveChecker;
