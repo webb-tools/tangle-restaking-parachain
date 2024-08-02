@@ -133,7 +133,6 @@ sygma-fee-handler-router ={ workspace = true }
 sygma-percentage-feehandler = { workspace = true }
 sygma-bridge = { workspace = true }
 sygma-runtime-api = { workspace = true }
-sygma-rpc = { workspace = true }
 
 [build-dependencies]
 substrate-wasm-builder = { workspace = true }
