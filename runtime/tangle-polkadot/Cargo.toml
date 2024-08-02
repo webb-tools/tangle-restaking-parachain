@@ -17,6 +17,8 @@ strum = { workspace = true, features = ["derive"] }
 strum_macros = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
+fixed = { workspace = true }
+hex = { workspace = true }
 
 # frame dependencies
 frame-benchmarking = { workspace = true, optional = true }
@@ -123,12 +125,23 @@ tangle-lst-minting = { workspace = true }
 tangle-xcm-interface = { workspace = true }
 tangle-parachain-staking = { workspace = true }
 
+# Sygma
+sygma-access-segregator = { workspace = true }
+sygma-basic-feehandler = { workspace = true }
+sygma-traits = { workspace = true }
+sygma-fee-handler-router ={ workspace = true }
+sygma-percentage-feehandler = { workspace = true }
+sygma-bridge = { workspace = true }
+sygma-runtime-api = { workspace = true }
+
 [build-dependencies]
 substrate-wasm-builder = { workspace = true }
 
 [features]
 default = ["std"]
 std = [
+	"fixed/std",
+	"hex/std",
 	"strum/std",
 	"parity-scale-codec/std",
 	"scale-info/std",
@@ -179,6 +192,7 @@ std = [
 	"sp-std/std",
 	"sp-transaction-pool/std",
 	"sp-version/std",
+	"sp-genesis-builder/std",
 	"parachains-common/std",
 	"cumulus-pallet-aura-ext/std",
 	"cumulus-pallet-dmp-queue/std",
@@ -226,6 +240,15 @@ std = [
 	"pallet-asset-rate/std",
 	"pallet-message-queue/std",
 	"polkadot-runtime-common/std",
+
+	# Sygma
+	"sygma-basic-feehandler/std",
+	"sygma-traits/std",
+	"sygma-bridge/std",
+	"sygma-access-segregator/std",
+	"sygma-fee-handler-router/std",
+	"sygma-percentage-feehandler/std",
+	"sygma-runtime-api/std",
 ]
 with-tracing = ["frame-executive/with-tracing"]
 
