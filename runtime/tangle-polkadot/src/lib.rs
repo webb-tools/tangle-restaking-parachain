@@ -1408,7 +1408,7 @@ parameter_types! {
 	// USDTResourceId is the resourceID that mapping with the foreign asset USDT
 	pub USDTResourceId: ResourceId = hex_literal::hex!("0000000000000000000000000000000000000000000000000000000000000003");
 
-	// PHA: a reserved asset
+	// PHA: a non-reserved asset
 	pub PHALocation: xcm::v4::Location = xcm::v4::Location::new(
 		1,
 		[
