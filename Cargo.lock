@@ -12780,7 +12780,7 @@ checksum = "734676eb262c623cec13c3155096e08d1f8f29adce39ba17948b18dad1e54142"
 [[package]]
 name = "sygma-access-segregator"
 version = "0.2.0"
-source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#5529772d451b92a426940fb64ec0a3fc8fd7b352"
+source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#32b759911d688145c68b459ff985f95bd5c40363"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -12793,7 +12793,7 @@ dependencies = [
 [[package]]
 name = "sygma-basic-feehandler"
 version = "0.3.0"
-source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#5529772d451b92a426940fb64ec0a3fc8fd7b352"
+source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#32b759911d688145c68b459ff985f95bd5c40363"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -12810,7 +12810,7 @@ dependencies = [
 [[package]]
 name = "sygma-bridge"
 version = "0.3.0"
-source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#5529772d451b92a426940fb64ec0a3fc8fd7b352"
+source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#32b759911d688145c68b459ff985f95bd5c40363"
 dependencies = [
  "arrayref",
  "bounded-collections 0.1.9",
@@ -12851,7 +12851,7 @@ dependencies = [
 [[package]]
 name = "sygma-bridge-forwarder"
 version = "0.3.0"
-source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#5529772d451b92a426940fb64ec0a3fc8fd7b352"
+source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#32b759911d688145c68b459ff985f95bd5c40363"
 dependencies = [
  "cumulus-pallet-xcm",
  "cumulus-primitives-core",
@@ -12874,7 +12874,7 @@ dependencies = [
 [[package]]
 name = "sygma-fee-handler-router"
 version = "0.3.0"
-source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#5529772d451b92a426940fb64ec0a3fc8fd7b352"
+source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#32b759911d688145c68b459ff985f95bd5c40363"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -12893,7 +12893,7 @@ dependencies = [
 [[package]]
 name = "sygma-percentage-feehandler"
 version = "0.3.0"
-source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#5529772d451b92a426940fb64ec0a3fc8fd7b352"
+source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#32b759911d688145c68b459ff985f95bd5c40363"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -12910,7 +12910,7 @@ dependencies = [
 [[package]]
 name = "sygma-rpc"
 version = "0.2.1"
-source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#5529772d451b92a426940fb64ec0a3fc8fd7b352"
+source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#32b759911d688145c68b459ff985f95bd5c40363"
 dependencies = [
  "jsonrpsee",
  "parity-scale-codec",
@@ -12927,7 +12927,7 @@ dependencies = [
 [[package]]
 name = "sygma-runtime-api"
 version = "0.2.1"
-source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#5529772d451b92a426940fb64ec0a3fc8fd7b352"
+source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#32b759911d688145c68b459ff985f95bd5c40363"
 dependencies = [
  "sp-api",
  "sygma-bridge",
@@ -12937,7 +12937,7 @@ dependencies = [
 [[package]]
 name = "sygma-traits"
 version = "0.2.0"
-source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#5529772d451b92a426940fb64ec0a3fc8fd7b352"
+source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#32b759911d688145c68b459ff985f95bd5c40363"
 dependencies = [
  "ethabi",
  "frame-support",
@@ -12952,7 +12952,7 @@ dependencies = [
 [[package]]
 name = "sygma-xcm-bridge"
 version = "0.3.0"
-source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#5529772d451b92a426940fb64ec0a3fc8fd7b352"
+source = "git+https://github.com/sygmaprotocol/sygma-substrate-pallets?branch=release-polkadot-v1.7.0-tangle-restaking-parachain#32b759911d688145c68b459ff985f95bd5c40363"
 dependencies = [
  "cumulus-pallet-xcm",
  "cumulus-primitives-core",
