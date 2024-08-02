@@ -250,7 +250,6 @@ std = [
 	"sygma-fee-handler-router/std",
 	"sygma-percentage-feehandler/std",
 	"sygma-runtime-api/std",
-	"sygma-rpc/std",
 ]
 with-tracing = ["frame-executive/with-tracing"]
 
