@@ -28,10 +28,10 @@ resolver = "2"
 [workspace.dependencies]
 
 # Tangle Runtime
-tangle-polkadot-runtime = { path = "runtime/tangle-polkadot" }
+tangle-polkadot-runtime = { path = "runtime/tangle-polkadot", default-features = false }
 tangle-service = { path = "node/service", default-features = false }
-tangle-cli = { path = "node/cli" }
-tangle-rpc = { path = "node/rpc" }
+tangle-cli = { path = "node/cli", default-features = false }
+tangle-rpc = { path = "node/rpc", default-features = false }
 
 # Tangle pallets
 tangle-asset-registry = { path = "pallets/asset-registry", default-features = false }
@@ -47,10 +47,10 @@ pallet-traits = { path = "pallets/traits", default-features = false }
 # Zenlink
 merkle-distributor = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
 zenlink-protocol = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
-zenlink-protocol-rpc = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0" }
+zenlink-protocol-rpc = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
 zenlink-protocol-runtime-api = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
 zenlink-stable-amm = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
-zenlink-stable-amm-rpc = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0" }
+zenlink-stable-amm-rpc = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
 zenlink-stable-amm-runtime-api = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
 zenlink-swap-router = { git = "https://github.com/bifrost-finance/Zenlink-DEX-Module", branch = "release-polkadot-v1.7.0", default-features = false }
 
